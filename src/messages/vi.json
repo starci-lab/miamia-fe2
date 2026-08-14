@@ -1,0 +1,837 @@
+{
+    "app": {
+        "title": "StarCi Academy",
+        "description": "Bảng điều khiển của người học."
+    },
+    "shell": {
+        "brand": "StarCi Academy",
+        "signIn": "Đăng nhập",
+        "signUp": "Đăng ký",
+        "guestMessage": "Đăng nhập để theo dõi tiến độ của bạn",
+        "routes": {
+            "dashboard": "Trang chủ",
+            "courses": "Khóa học",
+            "contact": "Liên hệ"
+        },
+        "themeLight": "Chuyển sang sáng",
+        "themeDark": "Chuyển sang tối",
+        "locale": "Đổi ngôn ngữ",
+        "tabs": {
+            "overview": "Tổng quan",
+            "explore": "Khám phá",
+            "courses": "Khóa học",
+            "community": "Cộng đồng"
+        },
+        "quickActions": "Truy cập nhanh",
+        "actions": {
+            "course": "Xem khóa học",
+            "review": "Ôn tập",
+            "practice": "Luyện code",
+            "league": "Bảng xếp hạng",
+            "saved": "Đã lưu",
+            "rewards": "Phần thưởng",
+            "blog": "Blog",
+            "talents": "Nhân tài",
+            "jobs": "Việc làm IT"
+        },
+        "search": "Tìm kiếm",
+        "searchPlaceholder": "Tìm kiếm",
+        "searchShortcut": "Ctrl K",
+        "cart": "Giỏ hàng",
+        "notifications": "Thông báo",
+        "account": "Tài khoản",
+        "railHeading": "Thống kê & bảng tin"
+    },
+    "dashboard": {
+        "title": "Bảng điều khiển",
+        "progressHeading": "Tiến độ của bạn",
+        "railHeading": "Vị trí của bạn",
+        "unavailable": "Mục dashboard này hiện chưa khả dụng.",
+        "continueLearning": {
+            "heading": "Tiếp tục học",
+            "resume": "Học tiếp",
+            "browse": "Khám phá khóa học",
+            "onboarding": "Bạn chưa có khóa học nào. Xem danh sách khóa học để bắt đầu.",
+            "empty": "Hiện chưa có gì để học tiếp. Bắt đầu một nội dung hoặc challenge mới nhé.",
+            "failed": "Chưa tải được phần bạn đang học.",
+            "kind": {
+                "content": "Nội dung",
+                "challenge": "Challenge"
+            }
+        },
+        "explore": {
+            "trending": "Nội dung nổi bật",
+            "whoToFollow": "Gợi ý theo dõi",
+            "openToWork": "Sẵn sàng làm việc",
+            "follow": "Theo dõi",
+            "followingState": "Đang theo dõi",
+            "scopeLabel": "Bảng tin",
+            "forYou": "Dành cho bạn",
+            "following": "Đang theo dõi",
+            "categoryLabel": "Danh mục bảng tin",
+            "all": "Tất cả",
+            "courses": "Khóa học",
+            "achievements": "Thành tích",
+            "people": "Mọi người",
+            "today": "Hôm nay",
+            "yesterday": "Hôm qua",
+            "minutesAgo": "{count} phút trước",
+            "hoursAgo": "{count} giờ trước",
+            "react": "Bày tỏ cảm xúc",
+            "reactions": {
+                "like": "Thích",
+                "love": "Yêu thích",
+                "haha": "Haha",
+                "wow": "Wow",
+                "sad": "Buồn",
+                "angry": "Phẫn nộ"
+            },
+            "feedFailed": "Không thể tải bảng tin.",
+            "feedEmptyFiltered": "Không có hoạt động phù hợp bộ lọc này.",
+            "resetFilter": "Xem tất cả hoạt động",
+            "feedEmptyPlatform": "Bảng tin chưa có hoạt động.",
+            "feedEmptyPlatformDescription": "Khám phá nội dung để tạo hoạt động đầu tiên.",
+            "browseCourses": "Khám phá khóa học",
+            "retry": "Thử lại",
+            "loadMore": "Xem thêm",
+            "loadMoreFailed": "Không thể tải thêm hoạt động. Bảng tin hiện tại vẫn được giữ nguyên.",
+            "activity": {
+                "contentRead": "đã đọc",
+                "lessonBookmarked": "đã lưu",
+                "challengePassed": "đã vượt qua",
+                "codingSolved": "đã giải",
+                "milestonePassed": "đã hoàn thành",
+                "milestonePassedGrouped": "đã hoàn thành {count} milestone task",
+                "aiLabPassed": "đã hoàn thành",
+                "courseEnrolled": "đã tham gia",
+                "discussionCommented": "đã bình luận trong",
+                "userFollowed": "đã theo dõi"
+            }
+        }
+    },
+    "identity": {
+        "loading": "Đang tải",
+        "empty": "Đăng nhập để xem",
+        "streak": "Chuỗi ngày học",
+        "aiCredit": "Tín dụng AI",
+        "rewardPoints": "Xu",
+        "days": "{count} ngày",
+        "creditOf": "{remaining} trên {limit}",
+        "points": "{balance} xu"
+    },
+    "courses": {
+        "count": "{count} khóa học",
+        "heading": "Khóa học của tôi",
+        "loading": "Đang tải",
+        "empty": "Bạn chưa ghi danh khóa học nào",
+        "retry": "Kiểm tra lại",
+        "failed": "Không tải được khóa học của bạn",
+        "trial": "Học thử",
+        "progress": {
+            "content": "Nội dung hoàn thành",
+            "challenge": "Thử thách hoàn thành",
+            "milestone": "Milestone"
+        },
+        "recommended": {
+            "heading": "Khóa học cho bạn",
+            "failed": "Không tải được khóa học gợi ý",
+            "retry": "Thử lại",
+            "reason": "Gợi ý riêng cho bạn, vì bạn đã học {count} khóa"
+        },
+        "upcoming": {
+            "heading": "Livestream sắp tới",
+            "failed": "Không tải được lịch livestream sắp tới",
+            "retry": "Thử lại"
+        },
+        "catalog": {
+            "navHome": "Trang chủ",
+            "navCourses": "Khóa học",
+            "title": "Khóa học tiêu biểu",
+            "searchPlaceholder": "Tìm khóa học...",
+            "searchLabel": "Tìm khóa học",
+            "searchClearLabel": "Xoá từ khoá",
+            "viewLabel": "Bố cục danh sách",
+            "viewGrid": "Lưới",
+            "viewLine": "Danh sách",
+            "ownedTitle": "Đang học",
+            "discoverTitle": "Khám phá",
+            "pageLabel": "Trang kết quả",
+            "previousPage": "Trang trước",
+            "nextPage": "Trang sau",
+            "enrolment": "{count} học viên",
+            "promises": "{count} điểm nổi bật",
+            "savings": "Tiết kiệm {amount}",
+            "discount": "−{percent}%",
+            "resume": "Tiếp tục học",
+            "view": "Xem khóa học",
+            "progress": "{percent}% hoàn thành",
+            "progressAria": "Tiến độ hoàn thành khóa học {title}",
+            "empty": "Chưa có khóa học nào để hiển thị.",
+            "emptyAction": "Khám phá lộ trình",
+            "filteredEmpty": "Không tìm thấy khóa học nào khớp với từ khóa.",
+            "clearFilter": "Xóa bộ lọc",
+            "failed": "Không tải được danh sách khóa học.",
+            "retry": "Thử lại",
+            "priceDetail": "Vì sao giá này?",
+            "priceDetailGuest": "Đăng nhập để xem giá dành riêng cho bạn.",
+            "lineList": "Giá niêm yết",
+            "linePhase": "Giá đợt hiện tại",
+            "lineLoyalty": "Ưu đãi học viên thân thiết",
+            "linePayable": "Bạn trả",
+            "nextPhase": "Đợt sau sẽ là {price}.",
+            "seatsThenPrice": "Còn {seats} suất ở giá này, sau đó là {price}.",
+            "reasonEnrolled": "Bạn đã tham gia {count} khóa học nên được giảm thêm.",
+            "reasonDiligent": "Bạn học đều đặn nên được giảm thêm.",
+            "reasonBoth": "Bạn đã tham gia {count} khóa học và học đều đặn nên được giảm thêm.",
+            "addToCart": "Thêm vào giỏ hàng",
+            "inCart": "Đã trong giỏ hàng"
+        },
+        "detail": {
+            "breadcrumbLabel": "Đường dẫn khóa học",
+            "breadcrumbHome": "Trang chủ",
+            "breadcrumbCourses": "Khóa học",
+            "sectionTabsLabel": "Các phần của khóa học",
+            "overviewTab": "Khám phá khóa học",
+            "curriculumTab": "Nội dung",
+            "reviewsTab": "Kết quả học viên",
+            "faqTab": "FAQ",
+            "valuePropsTitle": "Bạn sẽ học được gì",
+            "prerequisitesTitle": "Cần có trước khi bắt đầu",
+            "reviewsTitle": "Đánh giá từ học viên",
+            "reviewsEmpty": "Chưa có đánh giá nào cho khóa học này.",
+            "faqTitle": "Câu hỏi thường gặp",
+            "faqEmpty": "Khóa học này chưa đăng câu hỏi thường gặp nào.",
+            "reviewCount": "{count} đánh giá",
+            "curriculumTitle": "Nội dung khóa học",
+            "statLearners": "{count} Học viên",
+            "statModules": "{count} Module",
+            "statContents": "{count} Nội dung",
+            "statHours": "{count} Giờ học",
+            "statChallenges": "{count} Bài thực hành",
+            "learnerSignalLabel": "Cùng bạn trên hành trình",
+            "moduleSignalLabel": "Độ sâu chương trình",
+            "hourSignalLabel": "Thời lượng tập trung",
+            "contentSignalLabel": "Kho kiến thức",
+            "challengeSignalLabel": "Learning-by-doing",
+            "previewCount": "{count} bài xem trước",
+            "phaseOpen": "Đang mở",
+            "savings": "Tiết kiệm {amount}",
+            "scarcity": "Còn {count} suất ở phase {phase}",
+            "enrolled": "{count} người đã đăng ký",
+            "enroll": "Đăng ký học",
+            "continue": "Tiếp tục học",
+            "notFound": "Không tìm thấy khóa học này.",
+            "failed": "Không tải được khóa học.",
+            "retry": "Thử lại",
+            "tier": {
+                "foundation": "Nền tảng",
+                "intermediate": "Trung cấp",
+                "advanced": "Nâng cao"
+            },
+            "phase": {
+                "pioneer": "Tiên phong",
+                "earlyBird": "Sớm",
+                "regular": "Tiêu chuẩn"
+            }
+        }
+    },
+    "cart": {
+        "navHome": "Trang chủ",
+        "navCart": "Giỏ hàng",
+        "title": "Giỏ hàng",
+        "subtotal": "Tạm tính",
+        "savings": "Tiết kiệm",
+        "total": "Tổng",
+        "unavailable": "—",
+        "installmentFee": "Phí trả góp 3 kỳ",
+        "installmentHint": "Có thể trả góp 3 kỳ — từ {amount} mỗi kỳ. Chi tiết ở bước thanh toán.",
+        "checkout": "Thanh toán ({count})",
+        "checkoutShort": "Thanh toán",
+        "clearAll": "Xoá hết",
+        "confirmClearAll": "Bấm lần nữa để xoá hết",
+        "clearFailed": "Chưa xoá được, thử lại",
+        "remove": "Bỏ khỏi giỏ",
+        "discount": "−{percent}%",
+        "viewFullCart": "Xem giỏ đầy đủ",
+        "drawerTitle": "Giỏ hàng · {count}",
+        "emptyMessage": "Giỏ hàng đang trống.",
+        "emptyAction": "Xem khoá học",
+        "failedMessage": "Chưa đọc được giỏ hàng. Có thể bạn chưa đăng nhập.",
+        "failedAction": "Thử lại",
+        "signedOutMessage": "Đăng nhập để xem giỏ hàng của bạn.",
+        "signedOutAction": "Đăng nhập"
+    },
+    "community": {
+        "anonymous": "Học viên ẩn danh",
+        "you": "Bạn",
+        "points": "{count} XP",
+        "seeMore": "Xem bảng xếp hạng",
+        "retry": "Thử lại",
+        "follow": "Theo dõi",
+        "following": "Đang theo dõi",
+        "daysLeft": "Còn {count} ngày",
+        "up": "Tăng {count} hạng",
+        "down": "Giảm {count} hạng",
+        "noMovement": "Không đổi hạng",
+        "league": {
+            "heading": "League tuần",
+            "rank": "Hạng của bạn · #{rank}",
+            "unplaced": "Chưa vào giải đấu",
+            "empty": "Hoàn thành một hoạt động để vào giải đấu tuần này.",
+            "failed": "Không tải được giải đấu tuần.",
+            "rankLine": "Hạng #{rank} · top {percent}%"
+        },
+        "top": {
+            "heading": "Top học viên tuần",
+            "rank": "Hạng toàn cầu · #{rank}",
+            "empty": "Chưa có học viên trên bảng xếp hạng.",
+            "failed": "Không tải được bảng xếp hạng toàn cầu.",
+            "rankLine": "Hạng #{rank} toàn nền tảng"
+        },
+        "resetIn": "Reset sau {days} ngày {hours} giờ",
+        "othersCount": "còn {count} người",
+        "pointsToNext": "Còn {points} XP nữa để lên hạng #{rank}",
+        "climbCta": "Vào khóa học kiếm XP",
+        "pageTitle": "Bảng xếp hạng",
+        "tabWeekly": "Tuần này",
+        "tabGlobal": "Toàn cầu",
+        "breadcrumbHome": "Trang chủ"
+    },
+    "streak": {
+        "heading": "Đã học",
+        "loading": "Đang tải",
+        "empty": "Học một nội dung để nhóm lửa chuỗi của bạn",
+        "action": "Học một nội dung",
+        "nudge": "Học một nội dung hôm nay để giữ chuỗi của bạn",
+        "failed": "Không tải được chuỗi ngày học",
+        "currentLabel": "Chuỗi hiện tại",
+        "current": "Chuỗi {count} ngày",
+        "longest": "Dài nhất {count}",
+        "retry": "Thử lại"
+    },
+    "auth": {
+        "signIn": {
+            "title": "Đăng nhập",
+            "submitDetails": "Đăng nhập",
+            "submitCode": "Đăng nhập",
+            "passwordLabel": "Mật khẩu",
+            "passwordHint": "",
+            "doneTitle": "Bạn đã đăng nhập",
+            "doneHint": "Bạn có thể tiếp tục chỗ đang dở.",
+            "subtitle": "Đăng nhập để tiếp tục",
+            "promptQuestion": "Chưa có tài khoản?",
+            "promptAction": "Đăng ký"
+        },
+        "signUp": {
+            "title": "Đăng ký",
+            "submitDetails": "Tạo tài khoản",
+            "submitCode": "Hoàn tất đăng ký",
+            "passwordLabel": "Chọn mật khẩu",
+            "passwordHint": "Đây là mật khẩu bạn sẽ dùng để đăng nhập từ giờ trở đi.",
+            "confirmPasswordLabel": "Xác nhận mật khẩu",
+            "confirmPasswordPlaceholder": "Nhập lại mật khẩu",
+            "confirmPasswordMismatch": "Hai mật khẩu phải trùng khớp",
+            "doneTitle": "Tài khoản của bạn đã sẵn sàng",
+            "doneHint": "Bạn đã đăng nhập và có thể bắt đầu ngay.",
+            "subtitle": "Tạo tài khoản để tiếp tục",
+            "promptQuestion": "Đã có tài khoản?",
+            "promptAction": "Đăng nhập"
+        },
+        "forgotPassword": {
+            "title": "Đặt lại mật khẩu",
+            "submitDetails": "Gửi mã cho tôi",
+            "submitCode": "Đổi mật khẩu",
+            "passwordLabel": "Mật khẩu mới",
+            "passwordHint": "Mã ở bước sau là thứ cho phép việc đổi mật khẩu này.",
+            "doneTitle": "Mật khẩu của bạn đã đổi",
+            "doneHint": "Bạn đã đăng nhập bằng mật khẩu mới.",
+            "subtitle": "Chúng tôi sẽ gửi mã tới email của bạn",
+            "promptQuestion": "Nhớ ra rồi?",
+            "promptAction": "Đăng nhập"
+        },
+        "shared": {
+            "emailLabel": "Email",
+            "emailHint": "",
+            "codeLabel": "Mã OTP",
+            "resend": "Gửi lại mã",
+            "useAnotherEmail": "Dùng email khác",
+            "oauthGoogle": "Đăng nhập với Google",
+            "oauthGithub": "Đăng nhập với GitHub",
+            "agreeToTerms": "Tôi đồng ý với điều khoản dịch vụ và chính sách riêng tư",
+            "agreeToTermsPrefix": "Tôi đã đọc và đồng ý với",
+            "termsLabel": "Điều khoản dịch vụ",
+            "andLabel": "và",
+            "privacyLabel": "Chính sách bảo mật",
+            "switchToSignIn": "Đăng nhập thay vì vậy",
+            "switchToSignUp": "Tạo tài khoản",
+            "switchToForgotPassword": "Quên mật khẩu?",
+            "codeHint": "Đã gửi tới {email}.",
+            "yourEmail": "email của bạn",
+            "or": "HOẶC",
+            "emailPlaceholder": "Nhập email của bạn",
+            "passwordLabel": "Mật khẩu",
+            "passwordPlaceholder": "Nhập mật khẩu của bạn",
+            "revealPassword": "Hiện mật khẩu",
+            "hidePassword": "Ẩn mật khẩu",
+            "rememberMe": "Ghi nhớ đăng nhập",
+            "forgotPassword": "Quên mật khẩu?",
+            "codePlaceholder": "Nhập mã OTP 6 số",
+            "dismiss": "Đóng"
+        },
+        "status": {
+            "sending": "Đang kiểm tra thông tin của bạn",
+            "sent": "Chúng tôi đã gửi mã tới email của bạn. Nhập mã bên dưới.",
+            "verifying": "Đang kiểm tra mã của bạn",
+            "resending": "Đang gửi mã mới",
+            "resent": "Mã mới đang trên đường tới. Mã trước đó không còn dùng được.",
+            "signedIn": "Đã đăng nhập",
+            "transport": "Chúng tôi không kết nối được tới máy chủ. Kiểm tra đường truyền rồi thử lại.",
+            "refused": "Chưa được. Vui lòng thử lại."
+        },
+        "expiry": {
+            "seconds": " Mã hết hạn sau {count} giây.",
+            "minutes": " Mã hết hạn sau {count} phút."
+        }
+    },
+    "theme": {
+        "label": "Giao diện",
+        "light": "Sáng",
+        "dark": "Tối",
+        "system": "Theo hệ thống"
+    },
+    "locale": {
+        "label": "Ngôn ngữ",
+        "en": "English",
+        "vi": "Tiếng Việt"
+    },
+    "quest": {
+        "heading": "Nhiệm vụ hôm nay",
+        "empty": "Hôm nay chưa có nhiệm vụ nào",
+        "failed": "Không tải được nhiệm vụ hôm nay",
+        "retry": "Thử lại",
+        "claim": "Nhận {count} xu",
+        "claimed": "Đã nhận thưởng",
+        "reward": "Hoàn thành cả nhiệm vụ để nhận {count} xu",
+        "tasks": {
+            "readContent": "Đọc nội dung",
+            "passChallenge": "Pass challenge",
+            "reviewFlashcards": "Ôn flashcard",
+            "mockInterview": "Hoàn thành 1 phiên Phỏng vấn thử",
+            "quizSession": "Hoàn thành 1 phiên Quiz nhanh"
+        }
+    },
+    "streakFreeze": {
+        "title": "Băng bảo vệ chuỗi",
+        "owned": "{count} / {max} băng bảo vệ",
+        "explainer": "Băng bảo vệ giữ chuỗi của bạn khi lỡ một ngày.",
+        "buy": "Mua băng bảo vệ ({cost} xu)",
+        "full": "Bạn đã đủ rồi",
+        "failed": "Không tải được băng bảo vệ chuỗi.",
+        "retry": "Thử lại"
+    },
+    "jobReadiness": {
+        "title": "Sẵn sàng đi làm của bạn",
+        "error": "Không tải được điểm sẵn sàng đi làm.",
+        "empty": "Bạn chưa có dữ liệu sẵn sàng đi làm.",
+        "retry": "Thử lại",
+        "foundationPercentile": "Thuộc top {percent}% hoạt động coding",
+        "action": "Nâng mức sẵn sàng",
+        "band": {
+            "needsWork": "Cần cải thiện nhiều",
+            "building": "Đang trên đà",
+            "jobReady": "Sẵn sàng ứng tuyển"
+        },
+        "metric": {
+            "capstone": "Dự án",
+            "interview": "Phỏng vấn",
+            "cv": "CV"
+        }
+    },
+    "weeklyChallenge": {
+        "title": "Thử thách tuần",
+        "empty": "Chưa có thử thách tuần nào đang mở",
+        "failed": "Không tải được thử thách tuần này",
+        "retry": "Thử lại",
+        "endsIn": "Còn {days} ngày {hours} giờ",
+        "passedCount": "{count} người đã vượt qua",
+        "claim": "Nhận +{count} coin",
+        "tryNow": "Thử ngay"
+    },
+    "contributions": {
+        "title": "Hoạt động học",
+        "year": "{count} hoạt động học trong năm {year}",
+        "streak": "Chuỗi {count} ngày",
+        "empty": "Chưa có hoạt động học trong năm {year}",
+        "failed": "Không tải được hoạt động học.",
+        "less": "Ít",
+        "more": "Nhiều"
+    },
+    "changelog": {
+        "title": "Có gì mới",
+        "empty": "Chưa có cập nhật.",
+        "failed": "Không tải được changelog.",
+        "category": {
+            "feature": "Tính năng",
+            "fix": "Sửa lỗi",
+            "announcement": "Thông báo"
+        }
+    },
+    "profile": {
+        "notFound": "Không tìm thấy hồ sơ này.",
+        "failed": "Không thể tải hồ sơ. Hãy kiểm tra kết nối và thử lại.",
+        "locked": "Hồ sơ này đang riêng tư",
+        "lockedDescription": "Học viên này đã giới hạn hồ sơ công khai.",
+        "joined": "Tham gia {date}",
+        "followers": "{count} người theo dõi",
+        "following": "Đang theo dõi {count}",
+        "actions": {
+            "edit": "Sửa hồ sơ",
+            "hire": "Mời hợp tác",
+            "follow": "Theo dõi",
+            "following": "Đang theo dõi",
+            "share": "Chia sẻ hồ sơ",
+            "home": "Về trang chủ",
+            "browse": "Khám phá nội dung",
+            "retry": "Thử lại"
+        },
+        "tabs": {
+            "label": "Các mục hồ sơ",
+            "overview": "Tổng quan",
+            "projects": "Dự án",
+            "challenges": "Thử thách",
+            "skills": "Kỹ năng",
+            "cv": "CV",
+            "activity": "Hoạt động"
+        },
+        "evidence": {
+            "error": "Không thể tải bằng chứng này.",
+            "job-readiness": {
+                "label": "Mức sẵn sàng nghề nghiệp",
+                "empty": "Chưa có dữ liệu sẵn sàng nghề nghiệp."
+            },
+            "courses": {
+                "label": "Khóa học",
+                "empty": "Chưa tham gia khóa học nào."
+            },
+            "contributions": {
+                "label": "Hoạt động học tập",
+                "empty": "Năm nay chưa có hoạt động học tập."
+            },
+            "pinned-projects": {
+                "label": "Dự án nổi bật",
+                "empty": "Chưa ghim dự án nào."
+            },
+            "capstones": {
+                "label": "Capstone đã xác minh",
+                "empty": "Chưa có tiến độ capstone."
+            },
+            "solved-challenges": {
+                "label": "Thử thách đã vượt qua",
+                "empty": "Chưa vượt qua thử thách nào."
+            },
+            "challenge-strength": {
+                "label": "Năng lực thử thách",
+                "empty": "Chưa có xếp hạng thử thách."
+            },
+            "coding-skills": {
+                "label": "Phân tích kỹ năng code",
+                "empty": "Chưa có dữ liệu kỹ năng code."
+            },
+            "coding-history": {
+                "label": "Bài toán đã giải",
+                "empty": "Chưa giải bài toán nào."
+            },
+            "achievements": {
+                "label": "Thành tựu",
+                "empty": "Chưa có thành tựu."
+            },
+            "activity": {
+                "label": "Hoạt động gần đây",
+                "empty": "Chưa có hoạt động công khai."
+            }
+        },
+        "overview": {
+            "challengeSkills": "Kỹ năng từ thử thách",
+            "codeSkills": "Kỹ năng từ luyện tập",
+            "passed": "Đã vượt qua",
+            "solved": "Đã giải",
+            "languages": "{count} ngôn ngữ · {list}",
+            "languageBreakdown": "Ngôn ngữ · {list}",
+            "streak": "Chuỗi hiện tại {current} ngày · dài nhất {longest} ngày"
+        },
+        "cv": {
+            "label": "CV công khai",
+            "empty": "Chưa có CV công khai.",
+            "pending": "CV này chưa được biên soạn.",
+            "open": "Mở CV",
+            "edit": "Quản lý CV"
+        }
+    },
+    "kpi": {
+        "heading": "Mục tiêu tuần",
+        "edit": "Sửa",
+        "retry": "Thử lại",
+        "failed": "Không tải được mục tiêu tuần",
+        "prompt": "Đặt mục tiêu tuần để theo dõi tiến độ",
+        "summary": "{percent}% tuần này · đạt {completed}/{total} mục tiêu",
+        "resetIn": "Reset sau {days} ngày {hours} giờ",
+        "labels": {
+            "lessons": "Nội dung",
+            "studyDays": "Ngày học",
+            "challenges": "Challenge",
+            "coding": "Coding",
+            "flashcards": "Flashcard",
+            "milestones": "Dự án cá nhân"
+        }
+    },
+    "learn": {
+        "today": {
+            "title": "H\u00f4m nay",
+            "subtitle": "B\u01b0\u1edbc ti\u1ebfp theo c\u1ee7a b\u1ea1n trong {course}",
+            "primaryLabel": "Ti\u1ebfp t\u1ee5c t\u1eeb ch\u1ed7 \u0111ang d\u1edf",
+            "secondaryLabel": "Nh\u1eefng vi\u1ec7c n\u00ean l\u00e0m h\u00f4m nay",
+            "courseLabel": "Kh\u00f3a h\u1ecdc",
+            "progressLabel": "Ti\u1ebfn \u0111\u1ed9 kh\u00f3a h\u1ecdc",
+            "progressFact": "Ho\u00e0n th\u00e0nh {percent}%",
+            "modules": "C\u00e1c m\u00f4-\u0111un c\u1ee7a kh\u00f3a h\u1ecdc",
+            "resume": "Ti\u1ebfp t\u1ee5c",
+            "open": "M\u1edf m\u00f4-\u0111un",
+            "review": "\u00d4n t\u1eadp ngay",
+            "continue": "Ti\u1ebfp t\u1ee5c nhi\u1ec7m v\u1ee5",
+            "prepare": "Chu\u1ea9n b\u1ecb ph\u1ecfng v\u1ea5n",
+            "dueTitle": "{count} th\u1ebb \u0111ang \u0111\u1ebfn h\u1ea1n",
+            "projectTitle": "Ti\u1ebfp t\u1ee5c nhi\u1ec7m v\u1ee5 d\u1ef1 \u00e1n hi\u1ec7n t\u1ea1i",
+            "interviewTitle": "Chu\u1ea9n b\u1ecb m\u1ed9t bu\u1ed5i ph\u1ecfng v\u1ea5n th\u1eed",
+            "empty": "Kh\u00f3a h\u1ecdc n\u00e0y kh\u00f4ng kh\u1ea3 d\u1ee5ng.",
+            "failed": "Kh\u00f4ng t\u1ea3i \u0111\u01b0\u1ee3c trang H\u00f4m nay.",
+            "retry": "Th\u1eed l\u1ea1i",
+            "kinds": {
+                "interview": "Ph\u1ecfng v\u1ea5n th\u1eed",
+                "challenge": "Th\u1eed th\u00e1ch",
+                "lesson": "B\u00e0i h\u1ecdc",
+                "course": "Kh\u00f3a h\u1ecdc",
+                "flashcards": "Th\u1ebb ghi nh\u1edb",
+                "project": "D\u1ef1 \u00e1n c\u00e1 nh\u00e2n"
+            }
+        },
+        "contentHome": {
+            "title": "C\u00e1c m\u00f4-\u0111un c\u1ee7a kh\u00f3a h\u1ecdc",
+            "description": "Ch\u1ecdn m\u1ed9t m\u00f4-\u0111un \u0111\u1ec3 ti\u1ebfp t\u1ee5c h\u1ecdc.",
+            "modules": "M\u00f4-\u0111un",
+            "moduleCount": "{count} m\u00f4-\u0111un"
+        },
+        "content": {
+            "navCourse": "Khoá học",
+            "navModule": "Chương",
+            "facesLabel": "Mặt của bài học",
+            "searchPlaceholder": "Tìm nội dung...",
+            "searchLabel": "Tìm trong khoá học",
+            "searchClearLabel": "Xoá ô tìm kiếm",
+            "outlineTitle": "Trên trang này",
+            "pageLabel": "Bài trong chương",
+            "previousLabel": "Bài trước",
+            "nextLabel": "Bài sau",
+            "reactionsLabel": "Cảm nhận về bài học",
+            "reactionPrompt": "Bài học này hữu ích chứ?",
+            "nextTitle": "Đi tiếp từ đây",
+            "selectionHint": "Bôi đen một đoạn bất kỳ để hỏi trợ lý về đúng đoạn đó.",
+            "lockedMessage": "Bài học này thuộc gói trả phí của khoá.",
+            "lockedAction": "Xem giá khoá học",
+            "failedMessage": "Không tải được bài học này.",
+            "failedAction": "Thử lại",
+            "moduleCount": "{total} bài",
+      "minutes": "{minutes} phút",
+      "discussionTitle": "Thảo luận",
+      "discussionComposerLabel": "Bình luận về bài học này",
+      "discussionPlaceholder": "Chia sẻ câu hỏi hoặc thông tin hữu ích...",
+      "discussionSubmit": "Đăng bình luận",
+      "discussionSubmitting": "Đang đăng bình luận",
+      "discussionEmpty": "Chưa có bình luận. Hãy bắt đầu cuộc thảo luận.",
+      "discussionFailed": "Không tải được phần thảo luận.",
+      "discussionRetry": "Thử lại",
+      "discussionMeta": "{date} · {replies, plural, =0 {Chưa có phản hồi} other {# phản hồi}}"
+        },
+        "foundations": {
+            "title": "Nền tảng",
+            "description": "Xây nền khái niệm vững chắc trước khi thực hành trong Playground.",
+            "search": "Tìm danh mục nền tảng",
+            "clearSearch": "Xóa tìm kiếm",
+            "empty": "Chưa có danh mục nền tảng nào.",
+            "failed": "Không tải được danh mục nền tảng.",
+            "retry": "Thử lại",
+            "resourcesTitle": "Tài nguyên nền tảng",
+            "resourceSearch": "Tìm tài nguyên nền tảng",
+            "resourceEmpty": "Không tìm thấy tài nguyên phù hợp.",
+            "resourceFailed": "Không tải được các tài nguyên nền tảng.",
+            "resourceTitleFallback": "Tài nguyên nền tảng",
+            "resourceNotFound": "Không tìm thấy tài nguyên nền tảng này.",
+            "back": "Quay lại danh mục",
+            "openPlayground": "Thực hành trong Playground"
+        },
+        "playground": {
+            "title": "Playground",
+            "description": "Thực hành trên máy của bạn và để máy chủ xác minh từng bước.",
+            "stepLabel": "bước hướng dẫn",
+            "empty": "Khóa học này chưa có playground.",
+            "failed": "Không tải được danh sách playground.",
+            "retry": "Thử lại",
+            "layoutFailed": "Không tải được playground.",
+            "setup": {
+                "titleFallback": "Playground",
+                "preparationTitle": "Chuẩn bị môi trường",
+                "installCli": "Cài đặt StarCi CLI",
+                "createSession": "Tạo phiên và sao chép mã ghép nối",
+                "pairMachine": "Ghép máy của bạn với phiên này",
+                "start": "Tạo phiên playground",
+                "starting": "Đang tạo phiên...",
+                "pairing": "Mã ghép nối",
+                "waiting": "Đang chờ agent trên máy của bạn kết nối.",
+                "ready": "Agent đã kết nối. Không gian làm việc đã sẵn sàng.",
+                "enter": "Vào không gian làm việc",
+                "failed": "Không thể chuẩn bị phiên playground."
+            },
+            "session": {
+                "agentConnected": "Agent đã kết nối",
+                "reconnecting": "Đang kết nối lại...",
+                "completed": "Đã hoàn thành",
+                "waiting": "Đang chờ agent...",
+                "verify": "Xác minh bước này",
+                "leave": "Thiết lập",
+                "completedTitle": "Đã hoàn thành playground",
+                "completedText": "Máy chủ đã xác minh mọi bước trong playground này.",
+                "failed": "Phiên playground không khả dụng. Hãy quay lại thiết lập và tạo phiên mới.",
+                "step": "Bước",
+                "passed": "Đã đạt"
+            }
+        },
+        "mindMap": {
+            "title": "Sơ đồ khái niệm",
+            "description": "Tìm và mở nội dung khóa học thật được kết nối với từng khái niệm.",
+            "searchLabel": "Tìm khái niệm",
+            "searchPlaceholder": "Nhập từ khóa",
+            "clearSearch": "Xóa tìm kiếm",
+            "empty": "Khóa học này chưa có sơ đồ khái niệm.",
+            "noResults": "Không có khái niệm nào khớp tìm kiếm.",
+            "failed": "Không tải được sơ đồ khái niệm.",
+            "retry": "Thử lại",
+            "open": "Mở nội dung",
+            "connections": "{count} liên kết"
+        },
+        "shell": {
+            "groups": {
+                "path": "Lộ trình",
+                "practice": "Ôn & luyện",
+                "track": "Theo dõi"
+            },
+            "rows": {
+                "content": "Học phần",
+                "personalProject": "Dự án cá nhân",
+                "flashcards": "Ôn tập",
+                "mockInterview": "Phỏng vấn thử",
+                "foundations": "Nền tảng",
+                "playground": "Playground",
+                "mindMap": "Sơ đồ tư duy",
+                "leaderboard": "Bảng xếp hạng",
+                "qa": "Hỏi đáp"
+            },
+            "tabs": {
+                "today": "H\u00f4m nay",
+                "progress": "Ti\u1ebfn \u0111\u1ed9",
+                "lesson": "B\u00e0i h\u1ecdc",
+                "outline": "Trang n\u00e0y",
+                "course": "Khoá học",
+                "contents": "Mục lục",
+                "page": "Trang này"
+            },
+            "locked": "Khoá",
+            "resume": "Tiếp tục học",
+            "progress": "Đã hoàn thành {percent}%"
+        }
+    },
+    "practice": {
+        "title": "Luyện thuật toán",
+        "navHome": "Trang chủ",
+        "standingLabel": "Bảng xếp hạng",
+        "standingMore": "Xem tất cả",
+        "domainStanding": "Tiến độ chủ đề",
+        "count": "{solved} / {total} bài",
+        "meter": "Tiến độ chủ đề {name}",
+        "openDomain": "Mở chủ đề {name}",
+        "openProblem": "Mở bài {title}",
+        "rowFact": "{difficulty} · {points}đ",
+        "rowFactAttempted": "{difficulty} · {points}đ · đang dở",
+        "emptyDomain": "Chủ đề này chưa có bài nào.",
+        "emptyDomainDetail": "Bài đang được soạn. Chọn chủ đề khác trong lúc chờ.",
+        "allSolved": "Xong cả chủ đề này rồi.",
+        "allSolvedDetail": "{total} trên {total} bài đã giải. Chọn chủ đề tiếp theo.",
+        "backToDomains": "Về danh sách chủ đề",
+        "problemFact": "{difficulty} · {points}đ · {ms}ms · {mb}MB",
+        "tabStatement": "Đề bài",
+        "tabHint": "Gợi ý",
+        "tabSolution": "Lời giải",
+        "tabSubmissions": "Bài nộp",
+        "tabGroup": "Phần đang đọc",
+        "tabEmpty": "Phần này chưa có nội dung.",
+        "hintPending": "Bài này chưa có gợi ý.",
+        "editorLabel": "Vùng soạn lời giải",
+        "languageField": "Ngôn ngữ",
+        "run": "Chạy thử",
+        "submit": "Nộp bài",
+        "submitting": "Đang nộp…",
+        "reread": "Đọc lại kết quả",
+        "verdictDetail": "{passed} / {total} testcase",
+        "difficulty": {
+            "easy": "Dễ",
+            "medium": "Vừa",
+            "hard": "Khó"
+        },
+        "language": {
+            "python": "Python",
+            "javascript": "JavaScript",
+            "typescript": "TypeScript",
+            "java": "Java",
+            "cpp": "C++"
+        },
+        "verdict": {
+            "idle": "Chưa nộp lần nào",
+            "pending": "Đang xếp hàng",
+            "judging": "Đang chấm",
+            "accepted": "Accepted",
+            "wrongAnswer": "Sai kết quả",
+            "timeLimitExceeded": "Quá thời gian",
+            "memoryLimitExceeded": "Quá bộ nhớ",
+            "runtimeError": "Lỗi khi chạy",
+            "compileError": "Không biên dịch được",
+            "internalError": "Máy chấm gặp sự cố",
+            "socket-lost": "Mất kết nối"
+        },
+        "domains": {
+            "arrays": "Mảng",
+            "strings": "Chuỗi",
+            "hashing": "Hash",
+            "twoPointers": "Hai con trỏ",
+            "slidingWindow": "Cửa sổ trượt",
+            "stack": "Ngăn xếp",
+            "queue": "Hàng đợi",
+            "linkedList": "Danh sách liên kết",
+            "trees": "Cây",
+            "heap": "Heap",
+            "graph": "Đồ thị",
+            "binarySearch": "Tìm nhị phân",
+            "sorting": "Sắp xếp",
+            "recursion": "Đệ quy",
+            "backtracking": "Quay lui",
+            "dynamicProgramming": "Quy hoạch động",
+            "greedy": "Tham lam",
+            "math": "Toán",
+            "bitManipulation": "Thao tác bit",
+            "matrix": "Ma trận"
+        },
+        "guestMessage": "Đăng nhập để xem lộ trình luyện tập.",
+        "guestDetail": "Hai mươi chủ đề phỏng vấn, và tiến độ của riêng bạn trong từng chủ đề.",
+        "guestAction": "Đăng nhập",
+        "catalogFailed": "Không tải được danh sách chủ đề.",
+        "retry": "Thử lại",
+        "noDomains": "Chưa có chủ đề nào."
+    }
+}
