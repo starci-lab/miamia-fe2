@@ -50,7 +50,7 @@ export const apiEnv = (): ApiEnv => {
     const bearerToken = process.env.NEXT_PUBLIC_API_BEARER_TOKEN
     return {
         graphql: {
-            url: process.env.NEXT_PUBLIC_API_GRAPHQL_BASE_URL || "http://localhost:3001/graphql",
+            url: process.env.NEXT_PUBLIC_API_GRAPHQL_BASE_URL || "http://localhost:3071/graphql",
             maxRetry: Number(process.env.NEXT_PUBLIC_GRAPHQL_MAX_RETRY || 3),
             maxRetryDelay: Number(process.env.NEXT_PUBLIC_GRAPHQL_MAX_RETRY_DELAY || 1000),
             initialRetryDelay: Number(process.env.NEXT_PUBLIC_GRAPHQL_INITIAL_RETRY_DELAY || 300),

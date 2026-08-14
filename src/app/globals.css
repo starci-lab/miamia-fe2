@@ -9,11 +9,8 @@
  * primitive. Neither of them names a colour: they name a TOKEN - `bg-surface`, `text-muted`,
  * `border-border` - and the token resolves here.
  *
- * WHERE THESE VALUES COME FROM. They are PORTED from the live product's own stylesheet
- * (`starci-academy/src/app/globals.css`), token for token, so this app is the same product
- * wearing a different spine rather than a second palette that happens to look similar. Nothing
- * below was invented: the brand hue, the surfaces, the field family and the container measures
- * are the ones academy.starci.org already ships.
+ * MiaMia reuses the shared frontend structure and changes identity only through these semantic
+ * token values. Components and contracts remain free of product-specific colour declarations.
  *
  * The names are HeroUI's, deliberately. The vendor's own components resolve their fills,
  * foregrounds and focus rings from exactly these variables, so a `Chip` nobody styled comes out
@@ -119,33 +116,33 @@
 .default,
 [data-theme="light"],
 [data-theme="default"] {
-    /* Brand. One accent - hue 354, the product's rose - so that being the accent still means something. */
-    --accent: oklch(70.03% 0.2092 354.13);
-    --accent-foreground: oklch(100% 0 0);
+    /* MiaMia brand: energetic pink on warm paper surfaces. */
+    --accent: oklch(68% 0.255 352);
+    --accent-foreground: oklch(99% 0.01 75);
 
     /* Backgrounds: the page itself, then the surfaces laid on it. */
-    --background: oklch(97.02% 0.0015 354.13);
-    --surface: oklch(100% 0.0008 354.13);
-    --surface-foreground: oklch(21.03% 0.0015 354.13);
-    --surface-secondary: oklch(95.24% 0.0012 354.13);
-    --surface-secondary-foreground: oklch(21.03% 0.0015 354.13);
-    --surface-tertiary: oklch(93.73% 0.0012 354.13);
-    --surface-tertiary-foreground: oklch(21.03% 0.0015 354.13);
-    --overlay: oklch(100% 0.0004 354.13);
-    --overlay-foreground: oklch(21.03% 0.0015 354.13);
-    --default: oklch(94% 0.0015 354.13);
-    --default-foreground: oklch(21.03% 0.0059 354.13);
-    --segment: oklch(100% 0.0015 354.13);
-    --segment-foreground: oklch(21.03% 0.0015 354.13);
+    --background: oklch(97% 0.018 72);
+    --surface: oklch(99% 0.012 72);
+    --surface-foreground: oklch(19% 0.02 342);
+    --surface-secondary: oklch(95% 0.024 348);
+    --surface-secondary-foreground: oklch(19% 0.02 342);
+    --surface-tertiary: oklch(92% 0.035 72);
+    --surface-tertiary-foreground: oklch(19% 0.02 342);
+    --overlay: oklch(99% 0.012 72);
+    --overlay-foreground: oklch(19% 0.02 342);
+    --default: oklch(93% 0.02 72);
+    --default-foreground: oklch(19% 0.02 342);
+    --segment: oklch(99% 0.012 72);
+    --segment-foreground: oklch(19% 0.02 342);
 
     /* Text: one foreground, one muted foreground, and the semantic quartet below. */
-    --foreground: oklch(21.03% 0.0015 354.13);
-    --muted: oklch(55.17% 0.003 354.13);
+    --foreground: oklch(19% 0.02 342);
+    --muted: oklch(49% 0.035 342);
 
     /* Status. Anything categorical maps back onto these rather than inventing a hue. */
     --success: oklch(73.29% 0.1941 162.85);
     --success-foreground: oklch(21.03% 0.0059 162.85);
-    --warning: oklch(78.19% 0.159 84.37);
+    --warning: oklch(84% 0.17 88);
     --warning-foreground: oklch(21.03% 0.0059 84.37);
     --danger: oklch(65.32% 0.2335 37.78);
     --danger-foreground: oklch(99.11% 0 0);
@@ -154,20 +151,20 @@
     --info-foreground: oklch(21.03% 0.0059 250);
 
     /* Borders: a separator for hairlines between things, a border for the outline of one. */
-    --border: oklch(90% 0.0015 354.13);
-    --separator: oklch(92% 0.0015 354.13);
-    --focus: oklch(70.03% 0.2092 354.13);
-    --scrollbar: oklch(87.1% 0.0015 354.13);
+    --border: oklch(29% 0.025 342);
+    --separator: oklch(84% 0.025 342);
+    --focus: oklch(68% 0.255 352);
+    --scrollbar: oklch(78% 0.03 342);
 
     /* Form fields move independently of cards, so they carry their own family. */
-    --field-background: oklch(100% 0.0008 354.13);
-    --field-border: transparent;
-    --field-foreground: oklch(21.03% 0.0015 354.13);
-    --field-placeholder: oklch(55.17% 0.003 354.13);
+    --field-background: oklch(99% 0.012 72);
+    --field-border: oklch(29% 0.025 342);
+    --field-foreground: oklch(19% 0.02 342);
+    --field-placeholder: oklch(49% 0.035 342);
 
     /* Radius. Every `rounded-*` step is derived from these two numbers. */
-    --radius: 0.5rem;
-    --field-radius: 0.75rem;
+    --radius: 1rem;
+    --field-radius: 0.875rem;
 
     /* Tooltips answer immediately - the vendor's 1500ms default reads as a broken hover. */
     --tooltip-delay: 0ms;

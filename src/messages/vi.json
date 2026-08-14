@@ -833,5 +833,31 @@
         "catalogFailed": "Không tải được danh sách chủ đề.",
         "retry": "Thử lại",
         "noDomains": "Chưa có chủ đề nào."
+    },
+    "miamia": {
+        "nav": { "group": "Khám phá", "home": "Trang chủ", "exam": "Thi thử", "study": "Học & ôn tập", "game": "Trò chơi", "ranking": "Xếp hạng", "comingSoon": "Sắp ra mắt" },
+        "comingSoon": { "title": "{feature} đang được hoàn thiện", "body": "MiaMia sẽ mở khu vực này trong một bản cập nhật tiếp theo.", "close": "Đã hiểu" },
+        "membership": {
+            "title": "Mở khóa MiaMia Premium", "body": "Truy cập toàn bộ kho đề hiện có và các bộ đề mới được bổ sung trong tương lai.",
+            "benefitLibrary": "Toàn bộ đề Premium theo chương trình", "benefitResult": "Kết quả chi tiết theo kỹ năng sau khi nộp bài", "benefitFuture": "Tự động nhận các bộ đề mới trong thời hạn thành viên",
+            "checkout": "Tiếp tục thanh toán", "cancel": "Để sau", "failed": "Chưa thể tạo phiên thanh toán. Vui lòng thử lại."
+        },
+        "exam": {
+            "catalog": {
+                "title": "Kho đề MiaMia", "description": "Chọn bộ sưu tập phù hợp rồi bắt đầu một đề thi thử.",
+                "premiumTitle": "Hơn 100 đề trong lộ trình Premium", "premiumBody": "Mở toàn bộ kho đề theo chương trình và nhận thêm các bộ đề mới khi MiaMia cập nhật.", "premiumAction": "Khám phá Premium",
+                "searchLabel": "Tìm đề", "searchPlaceholder": "Tìm theo tên đề…", "searchClear": "Xóa tìm kiếm", "collectionLabel": "Bộ sưu tập đề", "free": "Đề miễn phí", "count": "{count} đề",
+                "premium": "Premium", "demo": "Dùng thử", "open": "Đã mở", "unlock": "Mở khóa", "start": "Bắt đầu", "level": "Trình độ", "questionCount": "Số câu",
+                "pageLabel": "Phân trang kho đề", "previous": "Trang trước", "next": "Trang sau", "empty": "Chưa có đề phù hợp với bộ lọc này.", "failed": "Không tải được kho đề.", "retry": "Thử lại"
+            },
+            "session": {
+                "restoring": "Đang khôi phục phiên đăng nhập…", "signInRequired": "Đăng nhập để mở đề và lưu kết quả làm bài.", "signIn": "Đăng nhập",
+                "position": "Câu {current}/{total}", "questionNumber": "Câu {number}", "exit": "Thoát bài thi", "exitConfirm": "Thoát và bỏ phần trả lời hiện tại",
+                "previous": "Câu trước", "next": "Câu tiếp", "submit": "Nộp bài", "loading": "Đang tải đề thi…", "failed": "Không tải được đề thi.",
+                "submitFailed": "Chưa thể nộp bài. Các câu trả lời vẫn được giữ trên thiết bị này.", "retry": "Thử lại", "resultTitle": "Kết quả bài thi",
+                "score": "{score}/{max} điểm", "resultBody": "Kết quả dưới đây chỉ thuộc lần nộp bài hiện tại.", "skills": "Kết quả theo kỹ năng",
+                "correct": "Đúng", "incorrect": "Chưa đúng", "selected": "Đã chọn", "skipped": "Bỏ trống", "correctAnswer": "Đáp án đúng", "back": "Về kho đề"
+            }
+        }
     }
 }

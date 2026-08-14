@@ -47,3 +47,8 @@ export { useQueryRecommendedCoursesSwr } from "./swr/useQueryRecommendedCoursesS
 export { useQueryMyUpcomingLivestreamsSwr } from "./swr/useQueryMyUpcomingLivestreamsSwr"
 export { useQueryMyLeagueSwr } from "./swr/useQueryMyLeagueSwr"
 export { useQueryGlobalLeaderboardSwr } from "./swr/useQueryGlobalLeaderboardSwr"
+export { useQueryExamProgramsSwr } from "./swr/useQueryExamProgramsSwr"
+export { useQueryPapersSwr } from "./swr/useQueryPapersSwr"
+export { useQueryPaperDetailSwr } from "./swr/useQueryPaperDetailSwr"
+export { useMutateGradePaperSwr } from "./swr/useMutateGradePaperSwr"
+export { useMutatePurchaseMembershipSwr } from "./swr/useMutatePurchaseMembershipSwr"

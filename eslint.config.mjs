@@ -168,6 +168,11 @@ export default defineConfig([
         languageOptions: { globals: globals.node },
         rules: {
             indent: "off",
+            // Canon is generated from the trust tree. Its RuleTester fixtures intentionally
+            // preserve source snippets in both quote styles, and its regexes are authored and
+            // tested there; app-formatting rules must not rewrite that mirrored evidence.
+            quotes: "off",
+            "no-regex-spaces": "off",
         },
     },
     {

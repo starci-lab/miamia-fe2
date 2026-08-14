@@ -28,10 +28,10 @@ export type LayoutClassName =
     | "flex" | "grid" | "flex-col" | "flex-row" | "flex-wrap" | "overflow-hidden"
     | "items-center" | "items-baseline" | "items-start" | "items-end"
     | "justify-between" | "justify-center" | "[&>*]:w-full"
-    | "gap-1" | "gap-2" | "gap-3" | "gap-4" | "gap-6" | "gap-8"
-    | "grid-cols-1" | "grid-cols-2" | "sm:grid-cols-2" | "sm:grid-cols-4" | "lg:grid-cols-3"
+    | "gap-1" | "gap-2" | "gap-3" | "gap-4" | "gap-5" | "gap-6" | "gap-8"
+    | "grid-cols-1" | "grid-cols-2" | "sm:grid-cols-2" | "sm:grid-cols-4" | "md:grid-cols-2" | "lg:grid-cols-3"
     | "sm:flex-row" | "sm:items-start" | "sm:justify-between"
-    | "md:flex" | "md:flex-row" | "md:items-start" | "md:gap-8"
+    | "md:flex" | "md:flex-row" | "md:items-start" | "md:items-center" | "md:justify-between" | "md:gap-8"
     // A PROPORTIONAL split, which the union could not previously express. Every existing two-column
     // token is a FIXED rail (`md:[&>*:first-child]:w-72`), and 288px is a sidebar measure: a problem
     // statement read at that width wraps every second word. `md:shrink-0` comes with it because a
@@ -40,10 +40,11 @@ export type LayoutClassName =
     // column while the two are stacked, and BESIDE it once they are side by side.
     | "md:w-2/5" | "md:shrink-0" | "md:border-b-0" | "md:border-r"
     | "@app-md:flex-row" | "@app-md:items-start" | "@app-md:gap-8" | "@app-md:w-72"
-    | "mx-auto" | "min-h-screen" | "w-full" | "min-w-0" | "grow" | "flex-1" | "shrink-0" | "hidden" | "max-w-app-sm" | "max-w-app-md" | "max-w-app-lg" | "max-w-app-xl" | "max-w-6xl" | "max-w-sm" | "max-w-md" | "@container"
-    | "h-16" | "min-h-16" | "sticky" | "top-0" | "top-16" | "z-40" | "z-50"
-    | "border" | "border-b" | "border-separator" | "divide-y" | "divide-separator" | "bg-background"
-    | "px-3" | "px-4" | "px-6" | "py-2" | "py-3" | "py-6" | "p-0" | "p-2" | "p-4" | "p-6"
+    | "mx-auto" | "min-h-screen" | "min-h-72" | "h-full" | "w-full" | "min-w-0" | "grow" | "flex-1" | "shrink-0" | "hidden" | "max-w-app-sm" | "max-w-app-md" | "max-w-app-lg" | "max-w-app-xl" | "max-w-6xl" | "max-w-sm" | "max-w-md" | "@container"
+    | "h-16" | "min-h-16" | "sticky" | "top-0" | "top-16" | "bottom-20" | "z-30" | "z-40" | "z-50"
+    | "border" | "border-b" | "border-accent" | "border-separator" | "divide-y" | "divide-separator" | "bg-background"
+    | "px-3" | "px-4" | "px-6" | "py-2" | "py-3" | "py-6" | "p-0" | "p-2" | "p-3" | "p-4" | "p-5" | "p-6"
+    | "pb-28" | "md:px-6" | "md:pb-6" | "md:bottom-4"
     | "px-2" | "pl-4" | "cursor-pointer" | "text-left" | "text-foreground" | "hover:opacity-80"
     | "group" | "active:opacity-70"
     | "rounded-xl" | "rounded-2xl" | "rounded-3xl"
@@ -86,7 +87,8 @@ export type LayoutClassName =
     // is a different KIND of line, so it takes a rule and a step of air rather than the even seam
     // that would make it read as one more subtotal.
     | "[&>*:last-child]:border-t" | "[&>*:last-child]:border-separator"
-    | "[&>*:last-child]:pt-3" | "[&>*:last-child]:mt-1"
+    | "[&>*:last-child]:pt-3" | "[&>*:last-child]:mt-1" | "[&>*:last-child]:mt-auto"
+    | "[&>*:only-child]:md:col-span-2"
     // A fixed artwork track does not fit a phone. The reference hides the thumbnail on the
     // narrowest screens rather than shrinking it, because a course cover below a certain size
     // identifies nothing and the name it sits beside identifies everything.
@@ -2681,6 +2683,158 @@ export const CONTRACTS = buildContracts({
             testcase: { leaf: "badge", repeats: true, restingCount: 5 },
         },
         why: "Testcases are equal peers read as a run rather than a ranking, and they wrap because their number is a property of the problem rather than of the layout.",
+    },
+    "exam-catalog-page": {
+        classes: ["mx-auto", "flex", "w-full", "max-w-6xl", "flex-col", "gap-6", "px-4", "py-6", "pb-28", "md:px-6", "md:pb-6"],
+        children: {
+            header: { contract: "page-header-stack" },
+            premium: { contract: "premium-value-band", optional: true },
+            query: { contract: "catalog-query-with-count" },
+            collections: { leaf: "choice-tabs" },
+            section: { contract: "exam-program-section", optional: true },
+            pagination: { leaf: "pagination", optional: true },
+            notice: { composite: "empty-notice", optional: true },
+        },
+        why: "The exam library reads from its promise through collection choice to a bounded set of papers, so a future hundred-paper bank remains navigable instead of becoming one wall of cards.",
+    },
+    "premium-value-band": {
+        classes: ["flex", "flex-col", "gap-3", "rounded-xl", "border", "border-accent", "bg-accent-soft", "p-5", "md:flex-row", "md:items-center", "md:justify-between"],
+        children: {
+            copy: { contract: "premium-copy-stack" },
+            action: { leaf: "button", optional: true },
+        },
+        why: "The premium action follows the value statement it completes and moves beside it only when both can retain a readable measure.",
+    },
+    "premium-copy-stack": {
+        classes: ["flex", "min-w-0", "flex-col", "gap-2"],
+        children: { title: { leaf: "heading" }, body: { leaf: "text" } },
+        why: "The promise is named before its supporting sentence so the action beside it is earned by a readable value statement.",
+    },
+    "exam-program-section": {
+        classes: ["flex", "flex-col", "gap-4"],
+        children: {
+            heading: { contract: "title-with-baseline-fact" },
+            papers: { contract: "exam-paper-grid" },
+        },
+        why: "A selected collection names one set and the papers beneath it are comparable peers inside that set.",
+    },
+    "exam-paper-grid": {
+        classes: ["grid", "grid-cols-1", "gap-4", "sm:grid-cols-2", "lg:grid-cols-3"],
+        children: { paper: { contract: "exam-paper-card", repeats: true, restingCount: 6 } },
+        why: "At most twelve papers are compared in a responsive grid, keeping each offer readable without rendering the whole future bank at once.",
+    },
+    "exam-paper-card": {
+        classes: ["flex", "h-full", "flex-col", "gap-3", "p-4", "[&>*:last-child]:mt-auto"],
+        children: {
+            badge: { leaf: "badge", optional: true },
+            title: { leaf: "heading" },
+            description: { leaf: "text", optional: true },
+            fact: { contract: "label-with-muted-fact-row", repeats: true, restingCount: 2 },
+            action: { leaf: "button" },
+        },
+        why: "A paper states its entitlement, identity and facts before one honest action, and the action rests at a common edge across peer cards.",
+    },
+    "exam-session-page": {
+        classes: ["mx-auto", "flex", "w-full", "max-w-6xl", "flex-col", "gap-5", "px-4", "py-6", "pb-28", "md:px-6", "md:pb-6"],
+        children: {
+            header: { contract: "exam-session-header" },
+            body: { contract: ["exam-passage-question", "exam-result-summary", "exam-state-notice"] },
+            actions: { contract: "exam-session-actions", optional: true },
+        },
+        why: "One route keeps its orientation while the body changes from answering to a graded result; answers never appear in the runner state.",
+    },
+    "exam-state-notice": {
+        classes: ["flex", "min-h-72", "items-center", "justify-center"],
+        children: { notice: { composite: "empty-notice" } },
+        why: "A blocked, failed or empty exam keeps the route's orientation while one settled notice explains the state and offers recovery.",
+    },
+    "exam-session-header": {
+        classes: ["flex", "flex-row", "flex-wrap", "items-center", "justify-between", "gap-3"],
+        children: {
+            title: { contract: "title-with-baseline-fact" },
+            exit: { leaf: "confirm-button", optional: true },
+        },
+        why: "The paper name and question position orient the learner while the confirmed exit remains at the far edge.",
+    },
+    "exam-passage-question": {
+        classes: ["grid", "grid-cols-1", "gap-4", "md:grid-cols-2", "[&>*:only-child]:md:col-span-2"],
+        children: {
+            passage: { leaf: "article", optional: true },
+            question: { contract: "exam-question-card" },
+        },
+        why: "Passage and question are consulted together on desktop and read in source order on a phone; a question without passage takes the full measure.",
+    },
+    "exam-question-card": {
+        classes: ["flex", "flex-col", "gap-4", "rounded-xl", "border", "border-separator", "p-5"],
+        children: {
+            eyebrow: { leaf: "text" },
+            stem: { leaf: "heading" },
+            answer: { leaf: "single-choice" },
+        },
+        why: "The question and its one answer group are a single bounded task, with position supporting the stem rather than competing with it.",
+    },
+    "exam-session-actions": {
+        classes: ["sticky", "bottom-20", "z-30", "flex", "flex-row", "items-center", "justify-between", "gap-3", "rounded-xl", "border", "border-separator", "bg-background", "p-3", "md:bottom-4"],
+        children: {
+            previous: { leaf: "button", optional: true },
+            progress: { leaf: "text" },
+            forward: { leaf: "button" },
+        },
+        why: "Navigation stays reachable below the work, with one forward action that becomes submit only at the final question.",
+    },
+    "exam-result-summary": {
+        classes: ["flex", "flex-col", "gap-6"],
+        children: {
+            score: { contract: "premium-value-band" },
+            skills: { contract: "exam-skill-list", optional: true },
+            answers: { contract: "exam-answer-review-list" },
+            actions: { contract: "exam-session-actions" },
+        },
+        why: "The result moves from score to current-attempt skill evidence and then to every graded answer before offering the way back.",
+    },
+    "exam-skill-list": {
+        classes: ["flex", "flex-col", "gap-3"],
+        children: {
+            title: { leaf: "heading" },
+            skill: { composite: "labelled-progress-row", repeats: true, restingCount: 3 },
+        },
+        why: "Skills from this submitted paper form one comparable run and never claim to be historical weakness data.",
+    },
+    "exam-answer-review-list": {
+        classes: ["flex", "flex-col", "divide-y", "divide-separator", "overflow-hidden", "rounded-xl", "border", "border-separator"],
+        children: { answer: { contract: "exam-answer-review", repeats: true, restingCount: 4 } },
+        why: "Graded answers share one list surface so the learner can scan mistakes without paying for a card edge on every question.",
+    },
+    "exam-answer-review": {
+        classes: ["flex", "flex-col", "gap-2", "p-4"],
+        children: {
+            title: { contract: "title-with-baseline-fact" },
+            stem: { leaf: "text" },
+            selected: { contract: "label-with-muted-fact-row" },
+            correct: { contract: "label-with-muted-fact-row" },
+            explanation: { leaf: "article", optional: true },
+        },
+        why: "After grading, the selected answer, correct answer and explanation stay attached to the exact question they explain.",
+    },
+    "membership-checkout-panel": {
+        classes: ["flex", "flex-col", "gap-4", "p-6"],
+        children: {
+            title: { leaf: "heading" },
+            body: { leaf: "text" },
+            benefit: { leaf: "text", repeats: true, restingCount: 3 },
+            notice: { composite: "empty-notice", optional: true },
+            action: { leaf: "button", repeats: true, restingCount: 2 },
+        },
+        why: "Checkout states the value and provider consequence without inventing a price the public schema cannot read.",
+    },
+    "coming-soon-panel": {
+        classes: ["flex", "flex-col", "gap-4", "p-6"],
+        children: {
+            title: { leaf: "heading" },
+            body: { leaf: "text" },
+            action: { leaf: "button" },
+        },
+        why: "A future destination gives one clear explanation and one way back instead of acting like a broken link.",
     },})
 
 /** Every key in the registry. A key not in this union is a compile error at the call site. */

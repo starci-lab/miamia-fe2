@@ -832,5 +832,31 @@
         "catalogFailed": "Không tải được danh sách chủ đề.",
         "retry": "Thử lại",
         "noDomains": "Chưa có chủ đề nào."
+    },
+    "miamia": {
+        "nav": { "group": "Explore", "home": "Home", "exam": "Mock exams", "study": "Study & review", "game": "Games", "ranking": "Rankings", "comingSoon": "Coming soon" },
+        "comingSoon": { "title": "{feature} is being built", "body": "MiaMia will open this area in a future update.", "close": "Got it" },
+        "membership": {
+            "title": "Unlock MiaMia Premium", "body": "Access the full current library and future paper collections.",
+            "benefitLibrary": "All Premium papers grouped by program", "benefitResult": "Skill-level results after each submission", "benefitFuture": "New paper collections during your membership",
+            "checkout": "Continue to checkout", "cancel": "Maybe later", "failed": "A checkout session could not be created. Please try again."
+        },
+        "exam": {
+            "catalog": {
+                "title": "MiaMia paper library", "description": "Choose a collection, then start a mock exam.",
+                "premiumTitle": "100+ papers on the Premium roadmap", "premiumBody": "Unlock the full program-based library and receive new collections as MiaMia grows.", "premiumAction": "Explore Premium",
+                "searchLabel": "Find a paper", "searchPlaceholder": "Search by paper title…", "searchClear": "Clear search", "collectionLabel": "Paper collections", "free": "Free papers", "count": "{count} papers",
+                "premium": "Premium", "demo": "Demo", "open": "Unlocked", "unlock": "Unlock", "start": "Start", "level": "Level", "questionCount": "Questions",
+                "pageLabel": "Paper library pages", "previous": "Previous page", "next": "Next page", "empty": "No papers match this filter yet.", "failed": "The paper library could not be loaded.", "retry": "Try again"
+            },
+            "session": {
+                "restoring": "Restoring your session…", "signInRequired": "Sign in to open papers and save exam results.", "signIn": "Sign in",
+                "position": "Question {current}/{total}", "questionNumber": "Question {number}", "exit": "Exit exam", "exitConfirm": "Exit and discard current answers",
+                "previous": "Previous question", "next": "Next question", "submit": "Submit exam", "loading": "Loading exam…", "failed": "The exam could not be loaded.",
+                "submitFailed": "The exam could not be submitted. Your answers are still kept on this device.", "retry": "Try again", "resultTitle": "Exam result",
+                "score": "{score}/{max} points", "resultBody": "This result belongs only to the current submission.", "skills": "Results by skill",
+                "correct": "Correct", "incorrect": "Incorrect", "selected": "Selected", "skipped": "Skipped", "correctAnswer": "Correct answer", "back": "Back to library"
+            }
+        }
     }
 }
