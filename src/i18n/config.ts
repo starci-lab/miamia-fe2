@@ -28,6 +28,9 @@ export const LOCALE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365
 /** The locale served when the reader has expressed no preference. */
 export const DEFAULT_LOCALE: Locale = "en"
 
+/** Canonical product day boundary shared by server formatting and the client provider. */
+export const TIME_ZONE = "Asia/Ho_Chi_Minh"
+
 /**
  * Narrow an arbitrary cookie value to a locale the app actually ships.
  *

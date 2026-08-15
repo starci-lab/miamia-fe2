@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server"
 import { hasLocale } from "next-intl"
 import { routing } from "@/i18n/routing"
+import { TIME_ZONE } from "@/i18n/config"
 import { AppProviders } from "../providers"
 import "../globals.css"
 
@@ -69,7 +70,7 @@ const LocaleLayout = async ({ children, params }: LayoutProps<"/[lang]">) => {
         // is narrow - it covers this element's own attributes, not the tree below it.
         <html lang={lang} suppressHydrationWarning>
             <body>
-                <AppProviders locale={lang} messages={messages}>
+                <AppProviders locale={lang} messages={messages} timeZone={TIME_ZONE}>
                     {children}
                 </AppProviders>
             </body>

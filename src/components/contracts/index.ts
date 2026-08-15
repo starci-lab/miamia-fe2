@@ -309,7 +309,7 @@ export const CONTRACTS = buildContracts({
     },
     "learn-shell-frame": {
         classes: [
-            "flex", "min-h-screen", "w-full", "min-w-0", "flex-col", "items-start",
+            "flex", "min-h-screen", "w-full", "min-w-0", "flex-col", "items-stretch",
             "[&>*]:min-w-0", "[&>*]:grow",
             "md:flex-row", "md:items-start",
             "md:[&>[data-node=learn-spine-column]]:w-72",
@@ -802,6 +802,40 @@ export const CONTRACTS = buildContracts({
             section: { contract: ["label-row-over-card", "profile-overview-skill-grid"], repeats: true, restingCount: 4 },
         },
         why: "Each profile evidence family remains an independently landing labelled section while all families retain the legacy twenty-four-pixel reading seam.",
+    },
+    "learner-profile-overview": {
+        classes: ["flex", "min-w-0", "grow", "flex-col", "gap-6"],
+        children: {
+            view: { leaf: "choice-tabs", optional: true },
+            progress: { contract: "learner-progress-snapshot", optional: true },
+            wrapped: { contract: "learner-wrapped-summary", optional: true },
+            public: { contract: "centred-empty-notice", optional: true },
+        },
+        why: "The profile view choice leads its private evidence while the public preview remains an explicit, truthful alternate state.",
+    },
+    "learner-progress-snapshot": {
+        classes: ["flex", "flex-col", "gap-5", "p-4"],
+        children: {
+            metrics: { contract: "profile-metric-ribbon" },
+            level: { composite: "labelled-progress-row" },
+            notice: { contract: "centred-empty-notice", optional: true },
+        },
+        why: "Learning totals scan together before the level bar explains the learner's next milestone.",
+    },
+    "learner-wrapped-summary": {
+        classes: ["flex", "flex-col", "gap-4", "p-4"],
+        children: {
+            heading: { leaf: "heading" },
+            metrics: { contract: "profile-metric-ribbon", optional: true },
+            notice: { contract: "centred-empty-notice", optional: true },
+            action: { leaf: "button", optional: true },
+        },
+        why: "One compact period summary either shows verified statistics or clearly explains why that period is locked.",
+    },
+    "learner-wrapped-page": {
+        classes: ["flex", "min-w-0", "grow", "flex-col", "gap-6"],
+        children: { period: { leaf: "choice-tabs" }, summary: { contract: "learner-wrapped-summary" } },
+        why: "The period choice remains attached to the single Wrapped summary it changes.",
     },
     "profile-overview-skill-grid": {
         classes: ["grid", "grid-cols-1", "gap-6", "sm:grid-cols-2"],
@@ -2685,7 +2719,7 @@ export const CONTRACTS = buildContracts({
         why: "Testcases are equal peers read as a run rather than a ranking, and they wrap because their number is a property of the problem rather than of the layout.",
     },
     "exam-catalog-page": {
-        classes: ["mx-auto", "flex", "w-full", "max-w-6xl", "flex-col", "gap-6", "px-4", "py-6", "pb-28", "md:px-6", "md:pb-6"],
+        classes: ["mx-auto", "flex", "w-full", "min-w-0", "max-w-full", "max-w-6xl", "flex-col", "gap-6", "px-4", "py-6", "pb-28", "md:px-6", "md:pb-6"],
         children: {
             header: { contract: "page-header-stack" },
             premium: { contract: "premium-value-band", optional: true },

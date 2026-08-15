@@ -6,7 +6,7 @@ import { defineContractComponent, defineLeafComponent } from "@/components/contr
 import type { ComponentType } from "react"
 
 /** Enumerates destinations shared by desktop navigation and the mobile footbar. */
-export type MiaMiaDestination = "home" | "exam" | "study" | "game" | "ranking"
+export type MiaMiaDestination = "home" | "exam" | "study" | "game" | "ranking" | "profile"
 /** Describes one destination in MiaMia navigation. */
 export type MiaMiaNavItem = { readonly id: MiaMiaDestination; readonly label: string; readonly icon: IconName; readonly isCurrent?: boolean }
 /** Holds the desktop spine and mobile navigation data. */

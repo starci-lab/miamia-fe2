@@ -1,6 +1,7 @@
 import { getRequestConfig } from "next-intl/server"
 import { hasLocale } from "next-intl"
 import { routing } from "./routing"
+import { TIME_ZONE } from "./config"
 
 /**
  * WHERE COPY COMES FROM, resolved once per request on the server.
@@ -26,8 +27,6 @@ import { routing } from "./routing"
  * handlers on that whole subtree down with it. A product whose readers are in one country has one
  * honest answer to "what day is it", and this is where it is written down.
  */
-const TIME_ZONE = "Asia/Ho_Chi_Minh"
-
 export default getRequestConfig(async ({ requestLocale }) => {
     const requested = await requestLocale
     const locale = hasLocale(routing.locales, requested) ? requested : routing.defaultLocale

@@ -16,8 +16,10 @@
  * foregrounds and focus rings from exactly these variables, so a `Chip` nobody styled comes out
  * in the product's palette on its first render.
  *
- * WHAT IS NOT HERE. No component style of our own. The two vendor overrides at the bottom are
- * ported with the tokens, for the same reason: they are part of how the product's cards look.
+ * WHAT IS HERE BESIDES COLOUR. MiaMia's Sticker Study skin is a global product concern: outline,
+ * offset shadow, press motion and surface hierarchy must stay the same wherever shared StarCi
+ * patterns render. The vendor and semantic-node overrides at the bottom provide that skin without
+ * forking a shared component or putting product CSS into component source.
  */
 
 /*
@@ -172,6 +174,12 @@
 
     /* The resting shape shimmers rather than pulses - it reads as "arriving", not "broken". */
     --skeleton-animation: shimmer;
+
+    /* Sticker Study geometry from the approved MiaMia preview. */
+    --sticker-outline: var(--foreground);
+    --sticker-shadow-xs: 2px 2px 0 var(--sticker-outline);
+    --sticker-shadow-sm: 3px 3px 0 var(--sticker-outline);
+    --sticker-shadow: 4px 4px 0 var(--sticker-outline);
 }
 
 /*
@@ -308,14 +316,104 @@ body {
 /*
  * VENDOR OVERRIDES, ported with the tokens.
  *
- * A card in this product is a SHADOW-LIFTED surface, not an outlined box, and it pads at four
- * spacing steps because it holds groups and its outer edge should breathe at the same rhythm as
- * the seams inside it. Both facts belong to the theme rather than to a component: they are true
- * of every card, and a component that restated them would be a second place to disagree.
+ * A card in this product is an outlined, offset SHADOW-LIFTED sticker surface. Padding still belongs
+ * to the vendor surface; branches that render their own contract node opt out below.
  */
 .card {
-    border: none !important;
+    border: 2px solid var(--sticker-outline) !important;
+    border-radius: 1.25rem !important;
+    box-shadow: var(--sticker-shadow-sm) !important;
     padding: calc(var(--spacing) * 4) !important;
+}
+
+/* Buttons share the same physical press language as preview surfaces. */
+.button {
+    border: 2px solid var(--sticker-outline) !important;
+    border-radius: 0.875rem !important;
+    box-shadow: var(--sticker-shadow-sm) !important;
+    font-weight: 800 !important;
+    transition: box-shadow 80ms ease, transform 80ms ease !important;
+}
+
+.button:hover:not(:disabled, [aria-disabled="true"]) {
+    box-shadow: var(--sticker-shadow) !important;
+    transform: translate(-1px, -1px);
+}
+
+.button:active:not(:disabled, [aria-disabled="true"]) {
+    box-shadow: none !important;
+    transform: translate(3px, 3px);
+}
+
+.button--icon-only {
+    border-radius: 9999px !important;
+}
+
+/* Fields are tactile white stickers rather than borderless holes in a pale surface. */
+.input-group {
+    border: 2px solid var(--sticker-outline) !important;
+    border-radius: 0.875rem !important;
+    background: var(--field-background) !important;
+    box-shadow: var(--sticker-shadow-sm) !important;
+}
+
+/* Segments stay one family while the selected tab becomes the raised sticker. */
+.tabs__list {
+    border: 2px solid var(--sticker-outline) !important;
+    border-radius: 9999px !important;
+    background: var(--surface-tertiary) !important;
+    padding: 0.25rem !important;
+}
+
+.tabs__tab[aria-selected="true"] {
+    border: 1.5px solid var(--sticker-outline) !important;
+    box-shadow: var(--sticker-shadow-xs) !important;
+    font-weight: 800 !important;
+}
+
+.chip {
+    border: 1.5px solid var(--sticker-outline) !important;
+    font-weight: 800 !important;
+}
+
+/* Contract nodes without a vendor surface still receive the same approved hierarchy globally. */
+[data-node="premium-value-band"] {
+    border: 2px solid var(--sticker-outline) !important;
+    border-radius: 1.375rem !important;
+    background: var(--warning) !important;
+    box-shadow: var(--sticker-shadow-sm) !important;
+}
+
+[data-node="page-header-stack"] .typography--h1 {
+    font-size: 1.75rem !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.03em !important;
+}
+
+[data-node="exam-paper-card"] .typography--h3 {
+    font-size: 1rem !important;
+    font-weight: 800 !important;
+}
+
+[data-node="learn-nav-row"] .link {
+    border: 1.5px solid transparent;
+    border-radius: 0.8125rem;
+    font-weight: 700;
+}
+
+[data-node="learn-nav-row"] .link[class*="bg-accent-soft"] {
+    border-color: var(--sticker-outline);
+    background: var(--accent) !important;
+    box-shadow: var(--sticker-shadow-xs);
+    color: var(--accent-foreground) !important;
+}
+
+[data-node="learn-mobile-tab-bar"] .link[class*="border-accent"] {
+    border: 1.5px solid var(--sticker-outline);
+    border-radius: 0.8125rem;
+    background: var(--accent);
+    box-shadow: var(--sticker-shadow-xs);
+    color: var(--accent-foreground) !important;
 }
 
 /*

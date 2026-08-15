@@ -501,7 +501,16 @@
             "challenges": "Challenges",
             "skills": "Skills",
             "cv": "CV",
-            "activity": "Activity"
+            "activity": "Activity",
+            "wrapped": "Wrapped"
+        },
+        "learning": {
+            "retry": "Try again",
+            "view": { "label": "Profile view", "private": "Private to me", "public": "Public preview" },
+            "progress": { "title": "Learning progress", "streak": "Current streak", "studyDays": "Study days", "phrases": "Phrases known", "bestScore": "Best exam score", "level": "Level {level}", "levelPending": "Level", "failed": "Learning progress could not be loaded." },
+            "values": { "days": "{count} days", "none": "Not yet" },
+            "public": { "title": "This is the public profile view", "description": "Progress, XP and Wrapped are visible only to the learner. Public evidence remains under Activity." },
+            "wrapped": { "periodLabel": "Wrapped period", "weekly": "Week", "monthly": "Month", "yearly": "Year", "weeklyTitle": "Weekly Wrapped", "monthlyTitle": "Monthly Wrapped", "yearlyTitle": "Yearly Wrapped", "xp": "XP earned", "phrases": "Phrases learned", "papers": "Papers completed", "streak": "Longest streak", "locked": "This period unlocks in {count} days.", "failed": "Wrapped could not be loaded.", "open": "View all periods" }
         },
         "evidence": {
             "error": "This evidence couldn't be loaded.",
@@ -834,7 +843,7 @@
         "noDomains": "Chưa có chủ đề nào."
     },
     "miamia": {
-        "nav": { "group": "Explore", "home": "Home", "exam": "Mock exams", "study": "Study & review", "game": "Games", "ranking": "Rankings", "comingSoon": "Coming soon" },
+        "nav": { "group": "Explore", "home": "Home", "exam": "Mock exams", "study": "Study & review", "game": "Games", "ranking": "Rankings", "profile": "Profile", "comingSoon": "Coming soon" },
         "comingSoon": { "title": "{feature} is being built", "body": "MiaMia will open this area in a future update.", "close": "Got it" },
         "membership": {
             "title": "Unlock MiaMia Premium", "body": "Access the full current library and future paper collections.",
@@ -845,7 +854,7 @@
             "catalog": {
                 "title": "MiaMia paper library", "description": "Choose a collection, then start a mock exam.",
                 "premiumTitle": "100+ papers on the Premium roadmap", "premiumBody": "Unlock the full program-based library and receive new collections as MiaMia grows.", "premiumAction": "Explore Premium",
-                "searchLabel": "Find a paper", "searchPlaceholder": "Search by paper title…", "searchClear": "Clear search", "collectionLabel": "Paper collections", "free": "Free papers", "count": "{count} papers",
+                "searchLabel": "Find a paper", "searchPlaceholder": "Search by paper title…", "searchClear": "Clear search", "collectionLabel": "Paper collections", "free": "Free papers", "programThptqg": "National high-school graduation mock exams", "count": "{count} papers",
                 "premium": "Premium", "demo": "Demo", "open": "Unlocked", "unlock": "Unlock", "start": "Start", "level": "Level", "questionCount": "Questions",
                 "pageLabel": "Paper library pages", "previous": "Previous page", "next": "Next page", "empty": "No papers match this filter yet.", "failed": "The paper library could not be loaded.", "retry": "Try again"
             },

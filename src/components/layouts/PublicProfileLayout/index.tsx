@@ -5,7 +5,6 @@ import { useParams } from "next/navigation"
 import { usePathname, useRouter } from "@/i18n/navigation"
 import { useTranslations } from "next-intl"
 import { useQueryMeSwr } from "@/hooks/swr/useQueryMeSwr"
-import { useQueryPublicUserCvSwr } from "@/hooks/swr/useQueryPublicUserCvSwr"
 import { useQueryUserProfileSwr } from "@/hooks/swr/useQueryUserProfileSwr"
 import type { ExtendedTab } from "@/components/leaves/ExtendedTabs"
 import { _PublicProfileLayout } from "./component"
@@ -15,11 +14,8 @@ export type PublicProfileLayoutBoundaryProps = { readonly content: ReactNode }
 
 const PROFILE_TABS: ReadonlyArray<Omit<ExtendedTab, "label">> = [
     { id: "overview", icon: "home" },
-    { id: "projects", icon: "course" },
-    { id: "challenges", icon: "review" },
-    { id: "skills", icon: "practice" },
-    { id: "cv", icon: "saved" },
     { id: "activity", icon: "notification" },
+    { id: "wrapped", icon: "saved" },
 ]
 
 /** Connected persistent profile layout: settles canonicalization and whole-screen visibility. */
@@ -31,11 +27,10 @@ export const PublicProfileLayout = ({ content }: PublicProfileLayoutBoundaryProp
     const router = useRouter()
     const username = params?.username ? String(params.username) : undefined
     const profile = useQueryUserProfileSwr(username)
-    const publicCv = useQueryPublicUserCvSwr(username)
     const viewer = useQueryMeSwr()
     const isSelf = profile.data !== null && profile.data !== undefined && viewer.data?.id === profile.data.id
     const visibleTabs = PROFILE_TABS
-        .filter((tab) => tab.id !== "cv" || isSelf || Boolean(publicCv.data))
+        .filter((tab) => tab.id !== "wrapped" || isSelf)
         .map((tab) => ({ ...tab, label: tabsT(tab.id) }))
     const selectedTab = PROFILE_TABS.find((tab) => tab.id !== "overview" && pathname.startsWith(`/profile/${username}/${tab.id}`))?.id ?? "overview"
     const state = profile.error !== undefined && profile.data === undefined

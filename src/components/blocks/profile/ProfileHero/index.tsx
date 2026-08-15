@@ -20,12 +20,9 @@ export const ProfileHero = () => {
     const follow = useMutateSetFollowSwr()
     const user = profile.data
     const isSelf = user !== null && user !== undefined && viewer.data?.id === user.id
-    const canHire = !isSelf && user?.openToWork === true && Boolean(user.githubUsername)
     const primaryLabel = isSelf
         ? t("actions.edit")
-        : canHire
-            ? t("actions.hire")
-            : user?.isFollowedByMe ? t("actions.following") : t("actions.follow")
+        : user?.isFollowedByMe ? t("actions.following") : t("actions.follow")
     const joinedLabel = useMemo(() => {
         if (!user?.createdAt) return ""
         const date = new Date(user.createdAt)
@@ -36,10 +33,6 @@ export const ProfileHero = () => {
         if (!user) return
         if (isSelf) {
             router.push("/profile/settings/edit")
-            return
-        }
-        if (canHire && user.githubUsername) {
-            window.open(`https://github.com/${user.githubUsername}`, "_blank", "noopener,noreferrer")
             return
         }
         void follow.trigger({ userId: user.id, follow: !user.isFollowedByMe }).then(() => profile.mutate())

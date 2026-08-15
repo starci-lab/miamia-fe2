@@ -34,6 +34,8 @@ export interface AppProvidersProps {
     locale: string
     /** The resolved message catalogue for that locale. */
     messages: Record<string, unknown>
+    /** Canonical zone used by every next-intl formatter on both sides of hydration. */
+    timeZone: string
     /** Everything rendered under the contexts - in practice, the whole shell. */
     children: ReactNode
 }
@@ -43,8 +45,8 @@ export interface AppProvidersProps {
  *
  * @param props - {@link AppProvidersProps}
  */
-export const AppProviders = ({ locale, messages, children }: AppProvidersProps) => (
-    <NextIntlClientProvider locale={locale} messages={messages}>
+export const AppProviders = ({ locale, messages, timeZone, children }: AppProvidersProps) => (
+    <NextIntlClientProvider locale={locale} messages={messages} timeZone={timeZone}>
         <I18nProvider locale={locale}>
             {/*
               * `class` rather than the `data-theme` attribute because the vendor's own stylesheet

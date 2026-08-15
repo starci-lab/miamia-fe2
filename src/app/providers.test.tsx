@@ -29,7 +29,7 @@ afterEach(() => {
 describe("AppProviders", () => {
     it("renders the tree beneath it untouched", () => {
         const { container } = render(
-            <AppProviders locale="en" messages={MESSAGES}>
+            <AppProviders locale="en" messages={MESSAGES} timeZone="Asia/Ho_Chi_Minh">
                 <p data-part="routed">Routed</p>
             </AppProviders>,
         )
@@ -42,7 +42,7 @@ describe("AppProviders", () => {
         // script is the ONLY thing these providers put in the tree, and this test pins it: a
         // second element appearing here is a provider that started deciding layout.
         const { container } = render(
-            <AppProviders locale="en" messages={MESSAGES}>
+            <AppProviders locale="en" messages={MESSAGES} timeZone="Asia/Ho_Chi_Minh">
                 <p data-part="routed">Routed</p>
             </AppProviders>,
         )
@@ -53,7 +53,7 @@ describe("AppProviders", () => {
 
     it("resolves a message for the tree beneath it", () => {
         const { container } = render(
-            <AppProviders locale="en" messages={MESSAGES}>
+            <AppProviders locale="en" messages={MESSAGES} timeZone="Asia/Ho_Chi_Minh">
                 <Reader />
             </AppProviders>,
         )

@@ -14,7 +14,7 @@ afterEach(() => {
 describe("apiEnv", () => {
     it("falls back to the local endpoint when the URL is unset", () => {
         vi.stubEnv("NEXT_PUBLIC_API_GRAPHQL_BASE_URL", "")
-        expect(apiEnv().graphql.url).toBe("http://localhost:3001/graphql")
+        expect(apiEnv().graphql.url).toBe("http://localhost:3071/graphql")
     })
 
     it("reads the endpoint from NEXT_PUBLIC_API_GRAPHQL_BASE_URL", () => {

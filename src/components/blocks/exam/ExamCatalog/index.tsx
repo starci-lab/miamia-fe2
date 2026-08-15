@@ -17,22 +17,29 @@ export const ExamCatalog = (input: ExamCatalogConnectedProps) => {
     const locale = useLocale()
     const programs = useQueryExamProgramsSwr()
     const papers = useQueryPapersSwr()
+    // SWR keeps its cache across client navigations, while the server always starts
+    // without that cache. Hold the connected data until after mount so React hydrates
+    // the exact loading tree the server emitted before revealing cached catalogue data.
+    const [isMounted, setIsMounted] = useState(false)
+    useEffect(() => { setIsMounted(true) }, [])
+    const programData = isMounted ? programs.data : undefined
+    const paperData = isMounted ? papers.data : undefined
     const [collection, setCollection] = useState("free")
     const [query, setQuery] = useState("")
     const [page, setPage] = useState(1)
     const localized = (vi?: string | null, en?: string | null, fallback = "") => (locale === "vi" ? vi || en : en || vi) || fallback
     const collections = useMemo(() => [
-        { id: "free", label: t("free"), count: (papers.data ?? []).filter((paper) => !paper.isLocked).length },
-        ...(programs.data ?? []).slice().sort((a, b) => a.sortIndex - b.sortIndex).map((program) => ({ id: program.slug, label: localized(program.nameVi, program.nameEn, program.slug.toUpperCase()), count: (papers.data ?? []).filter((paper) => paper.programSlug === program.slug).length })),
-    ], [papers.data, programs.data, t, locale])
+        { id: "free", label: t("free"), count: (paperData ?? []).filter((paper) => !paper.isLocked).length },
+        ...(programData ?? []).slice().sort((a, b) => a.sortIndex - b.sortIndex).map((program) => ({ id: program.slug, label: locale === "vi" && program.slug === "thptqg" ? t("programThptqg") : localized(program.nameVi, program.nameEn, program.slug.toUpperCase()), count: (paperData ?? []).filter((paper) => paper.programSlug === program.slug).length })),
+    ], [paperData, programData, t, locale])
     useEffect(() => { if (!collections.some((item) => item.id === collection)) setCollection("free") }, [collection, collections])
     const selected = collections.find((item) => item.id === collection) ?? collections[0] ?? { id: "free", label: t("free"), count: 0 }
-    const filtered = (papers.data ?? []).filter((paper) => collection === "free" ? !paper.isLocked : paper.programSlug === collection).filter((paper) => localized(paper.titleVi, paper.titleEn, paper.slug).toLowerCase().includes(query.trim().toLowerCase()))
+    const filtered = (paperData ?? []).filter((paper) => collection === "free" ? !paper.isLocked : paper.programSlug === collection).filter((paper) => localized(paper.titleVi, paper.titleEn, paper.slug).toLowerCase().includes(query.trim().toLowerCase()))
     const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
     const shown = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
-    const failed = programs.error !== undefined || papers.error !== undefined || programs.data === null || papers.data === null
-    const loading = !failed && (programs.data === undefined || papers.data === undefined)
-    const cardOf = (paper: PaperSummary) => ({ id: paper.id, title: localized(paper.titleVi, paper.titleEn, paper.slug), description: localized(paper.descriptionVi, paper.descriptionEn) || undefined, level: paper.level, questionCount: paper.questionCount, levelLabel: t("level"), questionCountLabel: t("questionCount"), badgeLabel: paper.isLocked ? t("premium") : paper.isDemo ? t("demo") : t("open"), actionLabel: paper.isLocked ? t("unlock") : t("start"), isLocked: paper.isLocked })
+    const failed = isMounted && (programs.error !== undefined || papers.error !== undefined || programData === null || paperData === null)
+    const loading = !failed && (programData === undefined || paperData === undefined)
+    const cardOf = (paper: PaperSummary) => ({ id: paper.id, title: localized(paper.titleVi, paper.titleEn, paper.slug), description: localized(paper.descriptionVi, paper.descriptionEn) || undefined, level: paper.level.toUpperCase(), questionCount: paper.questionCount, levelLabel: t("level"), questionCountLabel: t("questionCount"), badgeLabel: paper.isLocked ? t("premium") : paper.isDemo ? t("demo") : t("open"), actionLabel: paper.isLocked ? t("unlock") : t("start"), isLocked: paper.isLocked })
     return <_ExamCatalog
         state={failed ? "failed" : loading ? "loading" : shown.length === 0 ? "empty" : "ready"}
         props={{ title: t("title"), description: t("description"), premiumTitle: t("premiumTitle"), premiumBody: t("premiumBody"), premiumAction: t("premiumAction"), searchLabel: t("searchLabel"), searchPlaceholder: t("searchPlaceholder"), searchClearLabel: t("searchClear"), collectionLabel: t("collectionLabel"), selectedCollectionId: selected.id, collections, sectionTitle: selected.label, countLabel: t("count", { count: filtered.length }), papers: shown.map(cardOf), page, totalPages: pageCount, pageLabel: t("pageLabel"), previousLabel: t("previous"), nextLabel: t("next"), emptyMessage: t("empty"), failedMessage: t("failed"), retryLabel: t("retry") }}

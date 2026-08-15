@@ -3,9 +3,9 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "dev": "next dev --hostname localhost --port 3000",
+        "dev": "node scripts/run-dev.mjs",
         "build": "next build",
-        "start": "next start --hostname localhost --port 3000",
+        "start": "next start --hostname localhost --port 3070",
         "lint": "npm run gate:canon && eslint",
         "test": "vitest run",
         "test:watch": "vitest",
@@ -13,6 +13,7 @@
         "typecheck": "tsc --noEmit",
         "verify": "npm run typecheck && npm run lint && npm run test && npm run test:rules",
         "seed:test-account": "node --env-file-if-exists=.env.local scripts/provision-test-account.mjs",
+        "sync:ports": "node scripts/sync-ports.mjs",
         "gate:canon": "node ../starci-academy-backend/.claude/scripts/sync-fe-lint.mjs --target ."
     },
     "dependencies": {

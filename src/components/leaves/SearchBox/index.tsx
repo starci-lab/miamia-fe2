@@ -16,8 +16,8 @@ import type { LeafProps } from "@/components/contracts/props"
  * author. It is drawn as a hint rather than a control, because it is a fact about the keyboard and
  * not a thing to click.
  *
- * IT IS UNCONTROLLED like every other box. Search runs on submit, and a field that re-rendered the
- * whole bar on each keystroke would repaint the navigation while somebody typed.
+ * IT IS UNCONTROLLED like every other box. The field keeps its own value, while each edit publishes
+ * the current query so catalogue results never lag behind the visible text.
  *
  * IT OWNS ITS CLEAR CONTROL, and that is a correction. `type="search"` summons one from the user
  * agent, and this product cannot reach it: it is painted from a fixed mask, so it answers to no
@@ -106,7 +106,10 @@ export const SearchBox = ({ props, on }: SearchBoxProps) => {
                     type="search"
                     aria-label={props.label}
                     placeholder={props.placeholder}
-                    onChange={(event) => setHasText(event.target.value !== "")}
+                    onChange={(event) => {
+                        setHasText(event.target.value !== "")
+                        on?.search?.(event.target.value)
+                    }}
                 />
                 {/*
                  * CLEARING SEARCHES AGAIN, because a box emptied over a filtered list leaves the

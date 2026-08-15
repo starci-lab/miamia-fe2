@@ -501,7 +501,16 @@
             "challenges": "Thử thách",
             "skills": "Kỹ năng",
             "cv": "CV",
-            "activity": "Hoạt động"
+            "activity": "Hoạt động",
+            "wrapped": "Tổng kết"
+        },
+        "learning": {
+            "retry": "Thử lại",
+            "view": { "label": "Chế độ hồ sơ", "private": "Của riêng tôi", "public": "Xem như công khai" },
+            "progress": { "title": "Tiến độ học tập", "streak": "Chuỗi hiện tại", "studyDays": "Ngày đã học", "phrases": "Cụm từ đã nhớ", "bestScore": "Điểm thi tốt nhất", "level": "Cấp {level}", "levelPending": "Cấp độ" , "failed": "Chưa tải được tiến độ học tập." },
+            "values": { "days": "{count} ngày", "none": "Chưa có" },
+            "public": { "title": "Đây là phần công khai của hồ sơ", "description": "Tiến độ, XP và Wrapped chỉ hiển thị cho chính người học. Hoạt động công khai nằm ở thẻ Hoạt động." },
+            "wrapped": { "periodLabel": "Kỳ tổng kết", "weekly": "Tuần", "monthly": "Tháng", "yearly": "Năm", "weeklyTitle": "Tổng kết tuần", "monthlyTitle": "Tổng kết tháng", "yearlyTitle": "Tổng kết năm", "xp": "XP nhận được", "phrases": "Cụm từ đã học", "papers": "Đề đã hoàn thành", "streak": "Chuỗi dài nhất", "locked": "Còn {count} ngày để mở tổng kết kỳ này.", "failed": "Chưa tải được tổng kết.", "open": "Xem tất cả kỳ" }
         },
         "evidence": {
             "error": "Không thể tải bằng chứng này.",
@@ -835,7 +844,7 @@
         "noDomains": "Chưa có chủ đề nào."
     },
     "miamia": {
-        "nav": { "group": "Khám phá", "home": "Trang chủ", "exam": "Thi thử", "study": "Học & ôn tập", "game": "Trò chơi", "ranking": "Xếp hạng", "comingSoon": "Sắp ra mắt" },
+        "nav": { "group": "Khám phá", "home": "Trang chủ", "exam": "Thi thử", "study": "Học & ôn tập", "game": "Trò chơi", "ranking": "Xếp hạng", "profile": "Hồ sơ", "comingSoon": "Sắp ra mắt" },
         "comingSoon": { "title": "{feature} đang được hoàn thiện", "body": "MiaMia sẽ mở khu vực này trong một bản cập nhật tiếp theo.", "close": "Đã hiểu" },
         "membership": {
             "title": "Mở khóa MiaMia Premium", "body": "Truy cập toàn bộ kho đề hiện có và các bộ đề mới được bổ sung trong tương lai.",
@@ -846,7 +855,7 @@
             "catalog": {
                 "title": "Kho đề MiaMia", "description": "Chọn bộ sưu tập phù hợp rồi bắt đầu một đề thi thử.",
                 "premiumTitle": "Hơn 100 đề trong lộ trình Premium", "premiumBody": "Mở toàn bộ kho đề theo chương trình và nhận thêm các bộ đề mới khi MiaMia cập nhật.", "premiumAction": "Khám phá Premium",
-                "searchLabel": "Tìm đề", "searchPlaceholder": "Tìm theo tên đề…", "searchClear": "Xóa tìm kiếm", "collectionLabel": "Bộ sưu tập đề", "free": "Đề miễn phí", "count": "{count} đề",
+                "searchLabel": "Tìm đề", "searchPlaceholder": "Tìm theo tên đề…", "searchClear": "Xóa tìm kiếm", "collectionLabel": "Bộ sưu tập đề", "free": "Đề miễn phí", "programThptqg": "Đề thi thử tốt nghiệp THPT", "count": "{count} đề",
                 "premium": "Premium", "demo": "Dùng thử", "open": "Đã mở", "unlock": "Mở khóa", "start": "Bắt đầu", "level": "Trình độ", "questionCount": "Số câu",
                 "pageLabel": "Phân trang kho đề", "previous": "Trang trước", "next": "Trang sau", "empty": "Chưa có đề phù hợp với bộ lọc này.", "failed": "Không tải được kho đề.", "retry": "Thử lại"
             },
