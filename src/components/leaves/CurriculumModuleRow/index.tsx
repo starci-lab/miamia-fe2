@@ -130,18 +130,18 @@ export const CurriculumModuleRow = (input: CurriculumModuleRowProps) => {
             className="group"
         >
             <summary className={SUMMARY_CLASSES}>{head}</summary>
-            <ul className="mt-3 flex flex-col gap-2 pl-7">
+            <div className="mt-3 flex flex-col gap-2 pl-7">
                 {lessons.map((lesson) => (
-                    <li key={lesson.id} className="flex flex-row items-center gap-2">
+                    <div key={lesson.id} className="flex flex-row items-center gap-2">
                         <span className="min-w-0 grow text-xs leading-4 text-muted">{lesson.title}</span>
                         {lesson.isPreview === true ? (
                             <span className="shrink-0 text-accent-soft-foreground">
                                 <Icon props={{ name: "review", role: "chip" }} />
                             </span>
                         ) : null}
-                    </li>
+                    </div>
                 ))}
-            </ul>
+            </div>
         </details>
     )
 }
