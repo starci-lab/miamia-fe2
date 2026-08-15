@@ -16,5 +16,7 @@ describe("MiaMiaAppLayout", () => {
         expect(studyLinks.some((link) => link.getAttribute("aria-current") === "page")).toBe(true)
         fireEvent.click(studyLinks[0])
         expect(mocks.push).toHaveBeenCalledWith("/study")
+        fireEvent.click(screen.getAllByRole("link", { name: "game" })[0])
+        expect(mocks.push).toHaveBeenCalledWith("/game")
     })
 })

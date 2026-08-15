@@ -28,8 +28,9 @@ if (sync.status !== 0) process.exit(sync.status ?? 1)
 const registry = JSON.parse(readFileSync(registryPath, "utf8"))
 const webPort = registry.ports?.web
 const apiPort = registry.ports?.api
-if (!Number.isInteger(webPort) || !Number.isInteger(apiPort)) {
-    throw new Error("MiaMia registry must declare numeric ports.web and ports.api")
+const colyseusPort = registry.ports?.colyseus
+if (!Number.isInteger(webPort) || !Number.isInteger(apiPort) || !Number.isInteger(colyseusPort)) {
+    throw new Error("MiaMia registry must declare numeric ports.web, ports.api and ports.colyseus")
 }
 
 const child = spawn(process.execPath, [nextBin, "dev", "--hostname", "localhost", "--port", String(webPort)], {
@@ -37,6 +38,7 @@ const child = spawn(process.execPath, [nextBin, "dev", "--hostname", "localhost"
     env: {
         ...process.env,
         NEXT_PUBLIC_API_GRAPHQL_BASE_URL: `http://localhost:${apiPort}/graphql`,
+        NEXT_PUBLIC_COLYSEUS_URL: `ws://localhost:${colyseusPort}`,
     },
     stdio: "inherit",
 })

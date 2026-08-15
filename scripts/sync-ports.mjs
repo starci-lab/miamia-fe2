@@ -44,22 +44,25 @@ try {
 const offset = registry.portOffset
 const webPort = registry.ports?.web
 const apiPort = registry.ports?.api
+const colyseusPort = registry.ports?.colyseus
 const webBasePort = registry.basePorts?.web
 const apiBasePort = registry.basePorts?.api
+const colyseusBasePort = registry.basePorts?.colyseus
 
 for (const [name, value] of Object.entries({
-    offset, webPort, apiPort, webBasePort, apiBasePort,
+    offset, webPort, apiPort, colyseusPort, webBasePort, apiBasePort, colyseusBasePort,
 })) {
     if (!Number.isInteger(value)) {
         die(`metadata.json does not declare numeric ${name}`)
     }
 }
 
-if (webPort !== webBasePort + offset || apiPort !== apiBasePort + offset) {
+if (webPort !== webBasePort + offset || apiPort !== apiBasePort + offset || colyseusPort !== colyseusBasePort + offset) {
     die("metadata.json resolved ports do not equal basePorts + portOffset")
 }
 
 const apiUrl = `http://localhost:${apiPort}/graphql`
+const colyseusUrl = `ws://localhost:${colyseusPort}`
 const generatedEnv = [
     MARKER,
     "#",
@@ -67,6 +70,7 @@ const generatedEnv = [
     `# web: http://localhost:${webPort}`,
     "",
     `NEXT_PUBLIC_API_GRAPHQL_BASE_URL=${apiUrl}`,
+    `NEXT_PUBLIC_COLYSEUS_URL=${colyseusUrl}`,
     "",
 ].join("\n")
 
@@ -84,6 +88,8 @@ const apiEnvSource = readFileSync(API_ENV, "utf8")
 if (!apiEnvSource.includes(`http://localhost:${apiPort}/graphql`)) {
     drift.push(`src/modules/api/env.ts fallback must use ${apiUrl}`)
 }
+const gameEnvSource = readFileSync(join(REPO_ROOT, "src/modules/games/env.ts"), "utf8")
+if (!gameEnvSource.includes(`ws://localhost:${colyseusPort}`)) drift.push(`src/modules/games/env.ts fallback must use ${colyseusUrl}`)
 
 if (CHECK_ONLY) {
     if (!existsSync(ENV_TARGET) || readFileSync(ENV_TARGET, "utf8") !== generatedEnv) {
@@ -101,4 +107,4 @@ if (drift.length > 0) {
     process.exit(1)
 }
 
-console.log(`sync:ports: ok (web ${webBasePort} + ${offset} = ${webPort}; API ${apiBasePort} + ${offset} = ${apiPort})`)
+console.log(`sync:ports: ok (web :${webPort}; API :${apiPort}; Colyseus :${colyseusPort}; offset +${offset})`)

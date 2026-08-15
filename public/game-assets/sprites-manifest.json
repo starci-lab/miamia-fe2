@@ -1,0 +1,81 @@
+{
+  "frameWidth": 256,
+  "frameHeight": 256,
+  "frameCount": 6,
+  "characters": {
+    "mia": {
+      "idle": {
+        "sheet": "sprites/mia/idle.png",
+        "preview": "sprites/mia/idle-preview.webp",
+        "fps": 6
+      },
+      "run": {
+        "sheet": "sprites/mia/run.png",
+        "preview": "sprites/mia/run-preview.webp",
+        "fps": 10
+      },
+      "attack": {
+        "sheet": "sprites/mia/attack.png",
+        "preview": "sprites/mia/attack-preview.webp",
+        "fps": 10
+      },
+      "shield": {
+        "sheet": "sprites/mia/shield.png",
+        "preview": "sprites/mia/shield-preview.webp",
+        "fps": 10
+      },
+      "think": {
+        "sheet": "sprites/mia/think.png",
+        "preview": "sprites/mia/think-preview.webp",
+        "fps": 6
+      },
+      "hurt": {
+        "sheet": "sprites/mia/hurt.png",
+        "preview": "sprites/mia/hurt-preview.webp",
+        "fps": 10
+      },
+      "celebrate": {
+        "sheet": "sprites/mia/celebrate.png",
+        "preview": "sprites/mia/celebrate-preview.webp",
+        "fps": 10
+      }
+    },
+    "max": {
+      "idle": {
+        "sheet": "sprites/max/idle.png",
+        "preview": "sprites/max/idle-preview.webp",
+        "fps": 6
+      },
+      "run": {
+        "sheet": "sprites/max/run.png",
+        "preview": "sprites/max/run-preview.webp",
+        "fps": 10
+      },
+      "attack": {
+        "sheet": "sprites/max/attack.png",
+        "preview": "sprites/max/attack-preview.webp",
+        "fps": 10
+      },
+      "shield": {
+        "sheet": "sprites/max/shield.png",
+        "preview": "sprites/max/shield-preview.webp",
+        "fps": 10
+      },
+      "think": {
+        "sheet": "sprites/max/think.png",
+        "preview": "sprites/max/think-preview.webp",
+        "fps": 6
+      },
+      "hurt": {
+        "sheet": "sprites/max/hurt.png",
+        "preview": "sprites/max/hurt-preview.webp",
+        "fps": 10
+      },
+      "celebrate": {
+        "sheet": "sprites/max/celebrate.png",
+        "preview": "sprites/max/celebrate-preview.webp",
+        "fps": 10
+      }
+    }
+  }
+}

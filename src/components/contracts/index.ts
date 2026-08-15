@@ -2980,6 +2980,86 @@ export const CONTRACTS = buildContracts({
         },
         why: "The completed sitting reports only verified counters and local correctness before offering a repeat or a return to Study.",
     },
+    "game-hub-page": {
+        classes: ["mx-auto", "flex", "w-full", "max-w-6xl", "flex-col", "gap-6", "px-4", "py-6", "pb-28", "md:px-6", "md:pb-6"],
+        children: { standing: { contract: "standing-hero-card" }, catalog: { contract: "game-catalog-section" } },
+        why: "Friend rivalry gives the reason to play before the four legacy-backed games provide the concrete choice.",
+    },
+    "game-active-session-page": {
+        classes: ["mx-auto", "flex", "w-full", "max-w-6xl", "flex-col", "gap-4", "px-4", "py-6", "pb-28", "md:px-6", "md:pb-6"],
+        children: { runner: { contract: "game-runner-stack" } },
+        why: "An active game replaces discovery in place so room identity and the Phaser canvas remain the only task.",
+    },
+    "game-catalog-section": {
+        classes: ["flex", "flex-col", "gap-4"],
+        children: { header: { contract: "page-header-stack" }, games: { contract: "game-grid" } },
+        why: "The section names the shared-play promise before the four games are compared as peers.",
+    },
+    "game-grid": {
+        classes: ["grid", "grid-cols-1", "gap-4", "sm:grid-cols-2"],
+        children: { game: { composite: "game-catalog-card", repeats: true, restingCount: 4 } },
+        why: "Four equally available games form a scan-friendly grid while each card keeps its own mode evidence and setup action.",
+    },
+    "game-card": {
+        classes: ["flex", "h-full", "flex-col", "gap-4", "p-4"],
+        children: { cover: { leaf: "cover-image" }, body: { contract: "evidence-title-over-subtitle" }, modes: { contract: "game-card-actions" }, action: { leaf: "button" } },
+        why: "The illustrated legacy identity leads, then the game promise, supported modes and one unambiguous setup action.",
+    },
+    "game-card-actions": {
+        classes: ["flex", "flex-wrap", "items-center", "gap-2"],
+        children: { mode: { leaf: "badge", repeats: true, restingCount: 2 } },
+        why: "Mode chips wrap together as supporting availability facts; without the row they split into unrelated controls and compete with the setup action.",
+    },
+    "game-setup-panel": {
+        classes: ["flex", "flex-col", "gap-5", "p-5"],
+        children: { header: { contract: "page-header-stack" }, back: { leaf: "button", optional: true }, content: { contract: ["game-mode-grid", "game-character-grid", "game-code-join-row"] } },
+        why: "One modal advances through one setup decision at a time and keeps the selected game visible.",
+    },
+    "game-mode-grid": {
+        classes: ["grid", "grid-cols-1", "gap-3", "sm:grid-cols-2"],
+        children: { mode: { leaf: "button", repeats: true, restingCount: 3 } },
+        why: "Solo, friend room and team matchmaking are explicit mutually exclusive launch paths.",
+    },
+    "game-character-grid": {
+        classes: ["grid", "grid-cols-2", "gap-3"],
+        children: { character: { leaf: "button", repeats: true, restingCount: 2 } },
+        why: "Mia and Max are parallel playable identities selected after transport mode is settled.",
+    },
+    "game-code-join-row": {
+        classes: ["flex", "flex-col", "gap-3"],
+        children: { create: { leaf: "button" }, label: { leaf: "text" }, code: { leaf: "input" }, join: { leaf: "button" } },
+        why: "Creating and joining remain distinct friend-room actions while the room code stays attached to its join control.",
+    },
+    "game-runner-stack": {
+        classes: ["flex", "flex-col", "gap-4"],
+        children: { lobby: { composite: "game-lobby-panel", optional: true }, canvas: { contract: "game-canvas-frame", optional: true }, result: { composite: "game-result-card", optional: true }, notice: { composite: "empty-notice", optional: true }, exit: { leaf: "button" } },
+        why: "Connection chrome, authoritative canvas and result appear in phase order while an exit remains reachable in every state.",
+    },
+    "game-canvas-frame": {
+        classes: ["w-full"],
+        children: { canvas: { leaf: "game-canvas" } },
+        why: "The Phaser viewport keeps its intrinsic 16:9 play field and one stable visual boundary across screen sizes.",
+    },
+    "game-lobby-card": {
+        classes: ["flex", "flex-col", "gap-4", "p-4"],
+        children: { title: { leaf: "heading" }, code: { leaf: "text", optional: true }, players: { contract: "game-player-list" }, action: { leaf: "button", optional: true } },
+        why: "Room code and actual roster are read together before the match starts.",
+    },
+    "game-player-list": {
+        classes: ["flex", "flex-col", "gap-2"],
+        children: { player: { leaf: "text", repeats: true, restingCount: 2 } },
+        why: "Connected learners stack on one axis so names and scores stay comparable; without it they collapse into an unreadable inline sentence.",
+    },
+    "game-result-card": {
+        classes: ["flex", "flex-col", "gap-4", "p-4"],
+        children: { title: { leaf: "heading" }, players: { contract: "game-player-list" }, actions: { contract: "game-result-actions" } },
+        why: "The verified winner and ordered scores lead directly to rematch or lobby without inventing a reward receipt.",
+    },
+    "game-result-actions": {
+        classes: ["flex", "flex-wrap", "gap-3"],
+        children: { action: { leaf: "button", repeats: true, restingCount: 2 } },
+        why: "Rematch and lobby are the two explicit next moves after the authoritative result settles.",
+    },
 })
 
 /** Every key in the registry. A key not in this union is a compile error at the call site. */

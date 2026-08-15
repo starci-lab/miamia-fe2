@@ -1,0 +1,3 @@
+import { BaseGameScene, GAME_HEIGHT, GAME_WIDTH } from "./BaseGameScene"
+/** Split the arena into a direct Mia-versus-Max quiz presentation. */
+export class CoupleQuizScene extends BaseGameScene { constructor() { super("couple-quiz", "COUPLE_QUIZ") } protected paintBackground(): void { this.cameras.main.setBackgroundColor("#f6efff"); this.add.rectangle(GAME_WIDTH / 4, GAME_HEIGHT - 70, GAME_WIDTH / 2, 200, 0xffd9ec); this.add.rectangle(GAME_WIDTH * 0.75, GAME_HEIGHT - 70, GAME_WIDTH / 2, 200, 0xd7f4ea); this.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 30, "VS", this.style(30, "#8a5cc2")).setOrigin(0.5) } }

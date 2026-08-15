@@ -1,0 +1,6 @@
+import { fireEvent, render, screen } from "@testing-library/react"; import { describe, expect, it, vi } from "vitest"
+type CatalogMockProps = { readonly onPickGame: (game: "match_pairs") => void }
+type SetupMockProps = { readonly isOpen: boolean }
+vi.mock("@/hooks/auth/useSessionToken", () => ({ useSessionToken: () => "token" })); vi.mock("@/components/blocks/games/GameFriendStanding", () => ({ GameFriendStanding: () => <>standing</> })); vi.mock("@/components/blocks/games/GameCatalog", () => ({ GameCatalog: ({ onPickGame }: CatalogMockProps) => <button onClick={() => onPickGame("match_pairs")}>pick</button> })); vi.mock("@/components/overlays/games/GameSetupOverlay", () => ({ GameSetupOverlay: ({ isOpen }: SetupMockProps) => isOpen ? <>setup</> : null })); vi.mock("@/components/overlays/auth/SignInOverlay", () => ({ SignInOverlay: () => null })); vi.mock("@/components/blocks/games/GameRunner", () => ({ GameRunner: () => <>runner</> }))
+import { GameHubPage } from "./index"
+describe("GameHubPage", () => { it("opens setup after a catalog choice", () => { render(<GameHubPage />); fireEvent.click(screen.getByRole("button", { name: "pick" })); expect(screen.getByText("setup")).toBeInTheDocument() }) })

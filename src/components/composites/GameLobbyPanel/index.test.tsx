@@ -1,0 +1,2 @@
+import { render, screen } from "@testing-library/react"; import { describe, expect, it } from "vitest"; import { GameLobbyPanel } from "./index"
+describe("GameLobbyPanel", () => { it("renders the authoritative room identity", () => { render(<GameLobbyPanel props={{ title: "Waiting", roomCode: "ABC", players: ["Mia", "Max"], copyLabel: "Copy" }} />); expect(screen.getByText("Mã phòng: ABC")).toBeInTheDocument(); expect(screen.getByText("Max")).toBeInTheDocument() }) })

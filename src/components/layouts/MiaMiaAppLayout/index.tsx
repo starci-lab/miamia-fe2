@@ -30,19 +30,22 @@ export const MiaMiaAppLayout = ({ surface }: MiaMiaAppLayoutProps) => {
         ? pathname.includes("/profile")
         : id === "exam"
             ? pathname.includes("/exam")
-            : id === "study" && (pathname.endsWith("/study") || pathname.includes("/study/"))
+            : id === "study"
+                ? pathname.endsWith("/study") || pathname.includes("/study/")
+                : id === "game" && (pathname.endsWith("/game") || pathname.includes("/game/"))
     const mobileItems = useMemo(() => MOBILE_ITEMS.map((item) => ({ ...item, label: t(item.id), isCurrent: isCurrent(item.id) })), [pathname, t])
     const spineItems = useMemo(() => SPINE_ITEMS.map((item) => ({ ...item, label: t(item.id), isCurrent: isCurrent(item.id) })), [pathname, t])
     const open = (id: string) => {
         if (id === "exam") router.push("/exam")
         else if (id === "study") router.push("/study")
+        else if (id === "game") router.push("/game")
         else if (id === "profile") router.push("/profile")
         else setComing(SPINE_ITEMS.find((item) => item.id === id)?.id)
     }
     return (
         <>
             <_MiaMiaAppLayout
-                props={{ spine: { lockedLabel: t("comingSoon"), groups: [{ id: "learn", label: t("group"), rows: spineItems.map((item) => ({ ...item, isLocked: item.id !== "exam" && item.id !== "study" && item.id !== "profile" })) }] }, mobileTabs: mobileItems }}
+                props={{ spine: { lockedLabel: t("comingSoon"), groups: [{ id: "learn", label: t("group"), rows: spineItems.map((item) => ({ ...item, isLocked: item.id !== "exam" && item.id !== "study" && item.id !== "game" && item.id !== "profile" })) }] }, mobileTabs: mobileItems }}
                 on={{ openDestination: open }}
                 surface={surface}
             />

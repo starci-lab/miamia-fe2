@@ -1,0 +1,2 @@
+import { fireEvent, render, screen } from "@testing-library/react"; import { describe, expect, it, vi } from "vitest"; import { _GameFriendStanding } from "./component"
+describe("_GameFriendStanding", () => { it("routes the guest CTA to authentication", () => { const requireSignIn = vi.fn(); render(<_GameFriendStanding state="guest" props={{ title: "Friends", subtitle: "Play", ctaLabel: "Sign in" }} on={{ requireSignIn }} />); fireEvent.click(screen.getByRole("button", { name: "Sign in" })); expect(requireSignIn).toHaveBeenCalledOnce() }) })

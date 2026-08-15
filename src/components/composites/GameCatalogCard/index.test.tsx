@@ -1,0 +1,2 @@
+import { render, screen } from "@testing-library/react"; import { describe, expect, it, vi } from "vitest"; import { GameCatalogCard } from "./index"
+describe("GameCatalogCard", () => { it("keeps modes as facts beside one action", () => { render(<GameCatalogCard props={{ title: "Pairs", description: "Match", cover: "/cover.webp", modes: ["SINGLE", "COUPLE"], actionLabel: "Setup" }} on={{ pick: vi.fn() }} />); expect(screen.getByText("Chơi đơn")).toBeInTheDocument(); expect(screen.getByRole("button", { name: "Setup" })).toBeInTheDocument() }) })

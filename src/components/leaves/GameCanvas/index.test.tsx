@@ -1,0 +1,5 @@
+import { render, screen } from "@testing-library/react"; import { describe, expect, it, vi } from "vitest"
+class Scene { scene = { isActive: () => false }; setAnswer = vi.fn(); setReady = vi.fn(); applySnapshot = vi.fn(); applyAnswerResult = vi.fn() }
+vi.mock("phaser", () => ({ Game: class Game { destroy = vi.fn() }, AUTO: 0, Scale: { FIT: 0, CENTER_BOTH: 0 } })); vi.mock("@/modules/games/phaser/scenes/VocabRaceScene", () => ({ VocabRaceScene: Scene })); vi.mock("@/modules/games/phaser/scenes/MatchPairsScene", () => ({ MatchPairsScene: Scene })); vi.mock("@/modules/games/phaser/scenes/CoupleQuizScene", () => ({ CoupleQuizScene: Scene })); vi.mock("@/modules/games/phaser/scenes/VocabDefenseScene", () => ({ VocabDefenseScene: Scene }))
+import { GameCanvas } from "./index"
+describe("GameCanvas", () => { it("owns one accessible 16:9 Phaser host", () => { render(<GameCanvas props={{ gameType: "MATCH_PAIRS", character: "MIA" }} />); expect(screen.getByLabelText("Màn chơi MIA")).toHaveClass("aspect-video") }) })

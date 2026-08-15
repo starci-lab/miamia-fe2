@@ -1,0 +1,2 @@
+import { fireEvent, render, screen } from "@testing-library/react"; import { describe, expect, it, vi } from "vitest"; import { GameResultCard } from "./index"
+describe("GameResultCard", () => { it("offers rematch and lobby after verified scores", () => { const rematch = vi.fn(); render(<GameResultCard props={{ title: "Winner", players: ["1. Mia"], rematchLabel: "Again", lobbyLabel: "Lobby" }} on={{ rematch }} />); fireEvent.click(screen.getByRole("button", { name: "Again" })); expect(rematch).toHaveBeenCalledOnce() }) })
