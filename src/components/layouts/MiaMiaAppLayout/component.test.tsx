@@ -7,4 +7,9 @@ describe("_MiaMiaAppLayout", () => {
         render(<_MiaMiaAppLayout props={{ spine: { lockedLabel: "Soon", groups: [] }, mobileTabs }} surface={() => <main>Surface</main>} />)
         expect(screen.getAllByRole("link")).toHaveLength(5)
     })
+    it("announces Study as the current mobile destination", () => {
+        const currentTabs = mobileTabs.map((tab) => ({ ...tab, isCurrent: tab.id === "study" }))
+        render(<_MiaMiaAppLayout props={{ spine: { lockedLabel: "Soon", groups: [] }, mobileTabs: currentTabs }} surface={() => <main>Study</main>} />)
+        expect(screen.getByRole("link", { name: "study" })).toHaveAttribute("aria-current", "page")
+    })
 })

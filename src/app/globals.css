@@ -416,6 +416,19 @@ body {
     color: var(--accent-foreground) !important;
 }
 
+/* The approved Study direction is hero-first: its primary learning move is the pink sticker,
+ * while progress remains a quieter evidence surface below it. Structure stays in the contract;
+ * this product identity belongs with MiaMia's other semantic-node skin overrides. */
+[data-node="study-resume-hero"] {
+    background: var(--accent-soft);
+}
+
+[data-node="study-resume-hero"] .typography--h1 {
+    font-size: clamp(1.75rem, 3vw, 2.5rem) !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.035em !important;
+}
+
 /*
  * HeroUI's dropdown trigger is block-level by default, unlike the other icon-only buttons in the
  * same navigation cluster. Give that vendor trigger the button contract's centring mechanics so

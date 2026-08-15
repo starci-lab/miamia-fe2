@@ -26,7 +26,7 @@
  */
 export type LayoutClassName =
     | "flex" | "grid" | "flex-col" | "flex-row" | "flex-wrap" | "overflow-hidden"
-    | "items-center" | "items-baseline" | "items-start" | "items-end"
+    | "items-center" | "items-baseline" | "items-start" | "items-end" | "items-stretch"
     | "justify-between" | "justify-center" | "[&>*]:w-full"
     | "gap-1" | "gap-2" | "gap-3" | "gap-4" | "gap-5" | "gap-6" | "gap-8"
     | "grid-cols-1" | "grid-cols-2" | "sm:grid-cols-2" | "sm:grid-cols-4" | "md:grid-cols-2" | "lg:grid-cols-3"
@@ -40,7 +40,7 @@ export type LayoutClassName =
     // column while the two are stacked, and BESIDE it once they are side by side.
     | "md:w-2/5" | "md:shrink-0" | "md:border-b-0" | "md:border-r"
     | "@app-md:flex-row" | "@app-md:items-start" | "@app-md:gap-8" | "@app-md:w-72"
-    | "mx-auto" | "min-h-screen" | "min-h-72" | "h-full" | "w-full" | "min-w-0" | "grow" | "flex-1" | "shrink-0" | "hidden" | "max-w-app-sm" | "max-w-app-md" | "max-w-app-lg" | "max-w-app-xl" | "max-w-6xl" | "max-w-sm" | "max-w-md" | "@container"
+    | "mx-auto" | "min-h-screen" | "min-h-72" | "h-full" | "w-full" | "min-w-0" | "grow" | "flex-1" | "shrink-0" | "hidden" | "max-w-app-sm" | "max-w-app-md" | "max-w-app-lg" | "max-w-app-xl" | "max-w-full" | "max-w-6xl" | "max-w-sm" | "max-w-md" | "@container"
     | "h-16" | "min-h-16" | "sticky" | "top-0" | "top-16" | "bottom-20" | "z-30" | "z-40" | "z-50"
     | "border" | "border-b" | "border-accent" | "border-separator" | "divide-y" | "divide-separator" | "bg-background"
     | "px-3" | "px-4" | "px-6" | "py-2" | "py-3" | "py-6" | "p-0" | "p-2" | "p-3" | "p-4" | "p-5" | "p-6"
@@ -255,7 +255,7 @@ export interface ContractSpec {
  * A function rather than a bare literal so the keys are checked in one place and stay literal
  * without an `as const` at the call site.
  */
-const buildContracts = <const T extends { readonly [K in keyof T]: ContractSpec }>(contracts: T): T =>
+const buildContracts = <const T>(contracts: T & { readonly [K in keyof T]: ContractSpec }): T =>
     contracts
 
 /**
@@ -2869,7 +2869,118 @@ export const CONTRACTS = buildContracts({
             action: { leaf: "button" },
         },
         why: "A future destination gives one clear explanation and one way back instead of acting like a broken link.",
-    },})
+    },
+    "study-home-grid": {
+        classes: ["mx-auto", "grid", "w-full", "max-w-6xl", "grid-cols-1", "gap-6", "px-4", "py-6", "pb-28", "md:px-6", "md:pb-6"],
+        children: {
+            resume: { contract: "study-resume-hero" },
+            progress: { contract: "study-progress-card" },
+        },
+        why: "The next learning move occupies the full reading width before private progress, matching the approved hero-first hierarchy while both requests settle independently.",
+    },
+    "study-resume-hero": {
+        classes: ["flex", "h-full", "flex-col", "gap-4", "p-6"],
+        children: {
+            eyebrow: { leaf: "badge" },
+            title: { leaf: "heading" },
+            body: { leaf: "text" },
+            action: { leaf: "button" },
+            secondary: { leaf: "button", optional: true },
+        },
+        why: "A single response-backed resume target stays visually dominant, with discovery as the honest fallback when no target exists.",
+    },
+    "study-progress-card": {
+        classes: ["flex", "h-full", "flex-col", "gap-4", "p-6"],
+        children: {
+            title: { leaf: "heading" },
+            stat: { composite: "stat-row", repeats: true, restingCount: 3, optional: true },
+            progress: { composite: "labelled-progress-row", optional: true },
+            notice: { composite: "empty-notice", optional: true },
+        },
+        why: "Verified learning totals and the level meter share one private evidence surface; guests and failures replace only that evidence.",
+    },
+    "study-catalog-stack": {
+        classes: ["mx-auto", "flex", "w-full", "max-w-6xl", "flex-col", "gap-6", "px-4", "py-6", "pb-28", "md:px-6", "md:pb-6"],
+        children: {
+            header: { contract: "page-header-stack" },
+            description: { leaf: "text", props: { size: "sm", tone: "muted" } },
+            query: { leaf: "search-box" },
+            filter: { leaf: "choice-tabs" },
+            topics: { contract: "study-topic-grid", optional: true },
+            notice: { composite: "empty-notice", optional: true },
+        },
+        why: "The topic question and level choice resolve before the matching public topic surfaces, while settled absence keeps one recovery path.",
+    },
+    "study-topic-grid": {
+        classes: ["grid", "grid-cols-1", "gap-4", "sm:grid-cols-2", "lg:grid-cols-3"],
+        children: { topic: { contract: "study-topic-card", repeats: true, restingCount: 6 } },
+        why: "Topics are equal catalogue peers and gain columns only when each card keeps a readable measure.",
+    },
+    "study-topic-card": {
+        classes: ["flex", "h-full", "flex-col", "gap-3", "p-5"],
+        children: {
+            level: { leaf: "badge" },
+            title: { leaf: "heading" },
+            body: { leaf: "text" },
+            fact: { leaf: "text", props: { size: "sm", tone: "muted" } },
+            action: { leaf: "button" },
+        },
+        why: "Level, promise and phrase count establish a topic before the one action that opens its detail.",
+    },
+    "study-topic-overview": {
+        classes: ["mx-auto", "flex", "w-full", "max-w-6xl", "flex-col", "gap-6", "px-4", "py-6", "pb-28", "md:px-6", "md:pb-6"],
+        children: {
+            back: { leaf: "button" },
+            header: { contract: "page-header-stack" },
+            description: { leaf: "text", props: { size: "sm", tone: "muted" }, optional: true },
+            phrases: { contract: "study-phrase-list", optional: true },
+            notice: { composite: "empty-notice", optional: true },
+            action: { leaf: "button", optional: true },
+        },
+        why: "A public topic explains itself before its ordered phrase evidence and ends with one deliberate way into practice.",
+    },
+    "study-phrase-list": {
+        classes: ["flex", "flex-col", "divide-y", "divide-separator", "overflow-hidden", "rounded-3xl", "border", "border-separator"],
+        children: { phrase: { contract: "study-phrase-row", repeats: true, restingCount: 6 } },
+        why: "Phrases form one authored sequence so meaning and example can be compared without a separate card edge for every row.",
+    },
+    "study-phrase-row": {
+        classes: ["flex", "flex-col", "gap-2", "p-4"],
+        children: {
+            phrase: { leaf: "heading" },
+            meaning: { leaf: "text" },
+            example: { leaf: "text", props: { size: "sm", tone: "muted" }, optional: true },
+        },
+        why: "The English phrase leads its localized meaning and optional usage example as one study unit.",
+    },
+    "study-practice-stack": {
+        classes: ["mx-auto", "flex", "w-full", "max-w-app-md", "flex-col", "gap-6", "px-4", "py-6", "pb-28", "md:px-6", "md:pb-6"],
+        children: {
+            header: { contract: "title-with-baseline-fact" },
+            prompt: { leaf: "heading", optional: true },
+            options: { contract: "study-option-grid", optional: true },
+            result: { contract: "study-result-stack", optional: true },
+            notice: { composite: "empty-notice", optional: true },
+            action: { leaf: "button", repeats: true, restingCount: 2, optional: true },
+            exit: { leaf: "button", optional: true },
+        },
+        why: "One prompt, one answer set and one forward action stay in sequence; a settled result replaces the answer work without changing route identity.",
+    },
+    "study-option-grid": {
+        classes: ["grid", "grid-cols-1", "gap-3"],
+        children: { answer: { leaf: "single-choice" } },
+        why: "All phrase candidates belong to one radio group so exactly one recalled phrase can answer the current meaning.",
+    },
+    "study-result-stack": {
+        classes: ["flex", "flex-col", "gap-4", "rounded-3xl", "bg-success-soft", "p-6"],
+        children: {
+            title: { leaf: "heading" },
+            stat: { composite: "stat-row", repeats: true, restingCount: 3 },
+            action: { leaf: "button", repeats: true, restingCount: 2 },
+        },
+        why: "The completed sitting reports only verified counters and local correctness before offering a repeat or a return to Study.",
+    },
+})
 
 /** Every key in the registry. A key not in this union is a compile error at the call site. */
 export type ContractKey = keyof typeof CONTRACTS

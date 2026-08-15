@@ -26,17 +26,23 @@ export const MiaMiaAppLayout = ({ surface }: MiaMiaAppLayoutProps) => {
     const pathname = usePathname()
     const router = useRouter()
     const [coming, setComing] = useState<MiaMiaDestination | undefined>()
-    const mobileItems = useMemo(() => MOBILE_ITEMS.map((item) => ({ ...item, label: t(item.id), isCurrent: item.id === "exam" && pathname.includes("/exam") })), [pathname, t])
-    const spineItems = useMemo(() => SPINE_ITEMS.map((item) => ({ ...item, label: t(item.id), isCurrent: item.id === "profile" ? pathname.includes("/profile") : item.id === "exam" && pathname.includes("/exam") })), [pathname, t])
+    const isCurrent = (id: MiaMiaDestination) => id === "profile"
+        ? pathname.includes("/profile")
+        : id === "exam"
+            ? pathname.includes("/exam")
+            : id === "study" && (pathname.endsWith("/study") || pathname.includes("/study/"))
+    const mobileItems = useMemo(() => MOBILE_ITEMS.map((item) => ({ ...item, label: t(item.id), isCurrent: isCurrent(item.id) })), [pathname, t])
+    const spineItems = useMemo(() => SPINE_ITEMS.map((item) => ({ ...item, label: t(item.id), isCurrent: isCurrent(item.id) })), [pathname, t])
     const open = (id: string) => {
         if (id === "exam") router.push("/exam")
+        else if (id === "study") router.push("/study")
         else if (id === "profile") router.push("/profile")
         else setComing(SPINE_ITEMS.find((item) => item.id === id)?.id)
     }
     return (
         <>
             <_MiaMiaAppLayout
-                props={{ spine: { lockedLabel: t("comingSoon"), groups: [{ id: "learn", label: t("group"), rows: spineItems.map((item) => ({ ...item, isLocked: item.id !== "exam" && item.id !== "profile" })) }] }, mobileTabs: mobileItems }}
+                props={{ spine: { lockedLabel: t("comingSoon"), groups: [{ id: "learn", label: t("group"), rows: spineItems.map((item) => ({ ...item, isLocked: item.id !== "exam" && item.id !== "study" && item.id !== "profile" })) }] }, mobileTabs: mobileItems }}
                 on={{ openDestination: open }}
                 surface={surface}
             />
