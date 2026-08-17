@@ -246,7 +246,7 @@ export const contractHostOf = (filename, key) => {
    * landmark. The rule was right about the law and wrong about where one entry stops.
    */
   const rest = source.slice(opening + 1)
-  const nextKey = rest.search(/\n    "[a-z0-9-]+": \{/)
+  const nextKey = rest.search(/\n[ ]{4}"[a-z0-9-]+": \{/)
   const window = nextKey === -1 ? source.slice(opening) : source.slice(opening, opening + 1 + nextKey)
   const host = window.match(/\bhost:\s*"([a-z]+)"/)
   return host ? host[1] : "div"

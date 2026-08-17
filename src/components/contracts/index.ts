@@ -2850,16 +2850,80 @@ export const CONTRACTS = buildContracts({
         },
         why: "After grading, the selected answer, correct answer and explanation stay attached to the exact question they explain.",
     },
-    "membership-checkout-panel": {
+    "pricing-page-stack": {
+        host: "main",
+        classes: ["mx-auto", "flex", "w-full", "max-w-6xl", "flex-col", "gap-6", "px-4", "py-6", "pb-28", "md:px-6", "md:pb-6"],
+        children: {
+            status: { contract: "payment-return-status", optional: true },
+            catalog: { contract: "pricing-offer-catalog" },
+        },
+        why: "A verified payment outcome interrupts the buying decision before the catalog offers another purchase, while the application shell remains route-stable.",
+    },
+    "pricing-offer-catalog": {
+        classes: ["flex", "flex-col", "gap-6"],
+        children: {
+            header: { contract: "page-header-stack" },
+            description: { leaf: "text", props: { size: "sm", tone: "muted" } },
+            learning: { contract: "pricing-offer-card" },
+            licenseTitle: { leaf: "heading" },
+            licenses: { contract: "pricing-license-grid" },
+        },
+        why: "Learning access is explained before file licensing so recurring product access cannot be mistaken for ownership of downloadable material.",
+    },
+    "pricing-license-grid": {
+        classes: ["grid", "grid-cols-1", "gap-4", "md:grid-cols-2"],
+        children: { offer: { contract: "pricing-offer-card", repeats: true, restingCount: 3 } },
+        why: "The three lifetime-license choices share one comparison field after the separate subscription commitment has been understood.",
+    },
+    "pricing-offer-card": {
+        classes: ["flex", "h-full", "flex-col", "gap-4", "p-6"],
+        children: {
+            badge: { leaf: "badge" },
+            title: { leaf: "heading" },
+            price: { leaf: "text" },
+            body: { leaf: "text" },
+            benefit: { leaf: "text", repeats: true, restingCount: 3 },
+            action: { leaf: "button" },
+        },
+        why: "Each offer keeps its price, license boundary, evidence and one next action together so comparison never separates cost from consequence.",
+    },
+    "payment-return-status": {
+        classes: ["flex", "flex-col", "gap-4", "p-6", "border", "border-accent"],
+        children: {
+            badge: { leaf: "badge" },
+            title: { leaf: "heading" },
+            body: { leaf: "text" },
+            action: { leaf: "button", optional: true },
+        },
+        why: "The persisted provider-confirmed state and its only valid next move remain one bounded announcement above any new offer.",
+    },
+    "purchase-checkout-panel": {
         classes: ["flex", "flex-col", "gap-4", "p-6"],
         children: {
             title: { leaf: "heading" },
             body: { leaf: "text" },
+            price: { leaf: "text" },
             benefit: { leaf: "text", repeats: true, restingCount: 3 },
             notice: { composite: "empty-notice", optional: true },
             action: { leaf: "button", repeats: true, restingCount: 2 },
         },
-        why: "Checkout states the value and provider consequence without inventing a price the public schema cannot read.",
+        why: "Checkout states the server-owned value and provider consequence without merging subscription and download-license behavior.",
+    },
+    "white-label-inquiry-panel": {
+        host: "form",
+        classes: ["flex", "flex-col", "gap-4", "p-6"],
+        children: {
+            title: { leaf: "heading" },
+            body: { leaf: "text" },
+            name: { composite: "field" },
+            email: { composite: "field" },
+            messageLabel: { leaf: "label" },
+            message: { leaf: "textarea" },
+            messageHint: { leaf: "text", optional: true },
+            notice: { composite: "empty-notice", optional: true },
+            action: { leaf: "button", repeats: true, restingCount: 2 },
+        },
+        why: "The assisted-sale request keeps every labelled field, validation result and submission outcome in one anonymous form boundary.",
     },
     "coming-soon-panel": {
         classes: ["flex", "flex-col", "gap-4", "p-6"],

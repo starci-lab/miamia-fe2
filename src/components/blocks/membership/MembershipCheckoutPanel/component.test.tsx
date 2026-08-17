@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 import { _MembershipCheckoutPanel } from "./component"
 
-const props = { title: "Premium", body: "Mở kho đề", benefits: ["100+ đề"], checkoutLabel: "Thanh toán", cancelLabel: "Để sau", errorMessage: "Thử lại" }
+const props = { title: "Premium", body: "Mở kho đề", price: "49.000đ / tháng", benefits: ["100+ đề"], checkoutLabel: "Thanh toán", cancelLabel: "Để sau", errorMessage: "Thử lại" }
 
 describe("_MembershipCheckoutPanel", () => {
     it("shows value before its checkout action", () => {
