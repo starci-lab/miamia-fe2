@@ -44,4 +44,4 @@ export const _CoursePriceOverlay = <const K extends ContractKey>(input: CoursePr
 )
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "branch", world: "pure", domain: "courses" } as const
+export const meta = { shape: "overlay", world: "pure", domain: "courses" } as const

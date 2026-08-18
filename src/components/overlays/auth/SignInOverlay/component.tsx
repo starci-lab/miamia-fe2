@@ -42,4 +42,4 @@ export const _SignInOverlay = <const K extends ContractKey>(input: SignInOverlay
 )
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "branch", world: "pure", domain: "auth" } as const
+export const meta = { shape: "overlay", world: "pure", domain: "auth" } as const
