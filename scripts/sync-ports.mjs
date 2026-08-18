@@ -2,8 +2,9 @@
 /**
  * Synchronize MiaMia FE's local API endpoint with the backend port registry.
  *
- * The backend owns the project offset. This repository consumes its resolved
- * web/API ports and writes only an ignored development env file; production
+ * The Source owns the family offset and application slot. The backend exposes
+ * their resolved web/API projection; this repository consumes it and writes
+ * only an ignored development env file; production
  * continues to receive its public API URL from deployment configuration.
  */
 
@@ -41,24 +42,16 @@ try {
     die(`backend registry is not valid JSON: ${error.message}`)
 }
 
-const offset = registry.portOffset
 const webPort = registry.ports?.web
 const apiPort = registry.ports?.api
 const colyseusPort = registry.ports?.colyseus
-const webBasePort = registry.basePorts?.web
-const apiBasePort = registry.basePorts?.api
-const colyseusBasePort = registry.basePorts?.colyseus
 
 for (const [name, value] of Object.entries({
-    offset, webPort, apiPort, colyseusPort, webBasePort, apiBasePort, colyseusBasePort,
+    webPort, apiPort, colyseusPort,
 })) {
     if (!Number.isInteger(value)) {
         die(`metadata.json does not declare numeric ${name}`)
     }
-}
-
-if (webPort !== webBasePort + offset || apiPort !== apiBasePort + offset || colyseusPort !== colyseusBasePort + offset) {
-    die("metadata.json resolved ports do not equal basePorts + portOffset")
 }
 
 const apiUrl = `http://localhost:${apiPort}/graphql`
@@ -66,7 +59,7 @@ const colyseusUrl = `ws://localhost:${colyseusPort}`
 const generatedEnv = [
     MARKER,
     "#",
-    `# source: ../mia-mia-backend/metadata.json (offset +${offset})`,
+    "# source: ../mia-mia-backend/metadata.json (resolved Source allocation)",
     `# web: http://localhost:${webPort}`,
     "",
     `NEXT_PUBLIC_API_GRAPHQL_BASE_URL=${apiUrl}`,
@@ -107,4 +100,4 @@ if (drift.length > 0) {
     process.exit(1)
 }
 
-console.log(`sync:ports: ok (web :${webPort}; API :${apiPort}; Colyseus :${colyseusPort}; offset +${offset})`)
+console.log(`sync:ports: ok (web :${webPort}; API :${apiPort}; Colyseus :${colyseusPort})`)
