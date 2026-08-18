@@ -277,7 +277,7 @@ export const CONTRACTS = buildContracts({
             progress: { contract: "label-fact-over-progress", optional: true },
             notice: { composite: "empty-notice", optional: true },
         },
-        why: "Today gives the learner one deterministic next move before any alternatives. Course and progress are alternate mobile compositions of the same route, so each owns a named optional slot instead of mutating the URL or drawing a second page.",
+        why: "Use this when you need today's deterministic next move before any alternatives, with course and progress as alternate mobile compositions in named optional slots instead of URL mutations or a second page.",
     },
     "course-learn-content-home-page": {
         host: "main",
@@ -288,7 +288,7 @@ export const CONTRACTS = buildContracts({
             modulesTitle: { leaf: "heading", optional: true },
             module: { leaf: "curriculum-module-row", repeats: true, restingCount: 3, optional: true },
         },
-        why: "The Modules landing page names the enrolled course, explains the collection, then keeps every authored module in one scannable run; loading and failure retain that same route landmark instead of replacing the page identity.",
+        why: "Use this when you need a Modules landing page that names the enrolled course, explains the collection, and keeps every authored module in one scannable run while loading and failure retain the same route landmark.",
     },
     "course-learn-module-page": {
         host: "main",
@@ -297,7 +297,7 @@ export const CONTRACTS = buildContracts({
             title: { leaf: "heading" },
             module: { leaf: "curriculum-module-row" },
         },
-        why: "A selected module keeps its title and authored contents together under one main landmark, so opening a module narrows the curriculum without inventing a second navigation shell.",
+        why: "Use this when you need a selected module's title and authored contents under one main landmark, narrowing the curriculum without inventing a second navigation shell.",
     },
     "learn-mobile-tab-bar": {
         host: "nav",
@@ -305,7 +305,7 @@ export const CONTRACTS = buildContracts({
         children: {
             tab: { leaf: "nav-link", props: { kind: "tab" }, repeats: true, restingCount: 3 },
         },
-        why: "Use this when the spine rail is hidden below its breakpoint and course navigation still needs a thumb-reachable, bottom-pinned strip of peer destinations. It is a nav of routes, not an action bar: an action bar of the same shape instead pairs a price with the control that buys it, so pick this only when every item is a place to go, never a thing to trigger.",
+        why: "Use this when you need course navigation to remain a thumb-reachable, bottom-pinned strip of peer destinations while the spine rail is hidden below its breakpoint. Every item must be a route, never a trigger; use an action bar instead when pairing a price with its purchase control.",
     },
     "learn-shell-frame": {
         classes: [
@@ -326,7 +326,7 @@ export const CONTRACTS = buildContracts({
             body: { leaf: "page" },
             bar: { contract: "learn-mobile-tab-bar", optional: true },
         },
-        why: "Use this for the outer learn-route shell when you need a persistent, independently scrolling course spine standing beside a routed main body, plus a mobile tab bar in its place below the breakpoint. Because the spine sits beside the routed body rather than wrapping it, only the body repaints on navigation, so the spine never flickers as the learner moves between modes.",
+        why: "Use this when you need an outer learn-route shell with a persistent, independently scrolling course spine beside a routed main body and a mobile tab bar replacing it below the breakpoint, so navigation repaints only the body and never flickers the spine.",
     },
     "learn-spine-column": {
         host: "nav",
@@ -335,7 +335,7 @@ export const CONTRACTS = buildContracts({
             resume: { contract: "learn-resume-card", optional: true },
             group: { contract: "learn-nav-group", repeats: true, restingCount: 3 },
         },
-        why: "Use this for the desktop rail's content when you need a resume-where-you-left-off card standing above a run of labelled navigation groups, kept as a separate top slot rather than folded into any one group because it answers a different question than 'where can I go'.",
+        why: "Use this when you need the desktop rail to keep a resume-where-you-left-off card above labelled navigation groups in a separate top slot because it answers a different question than 'where can I go'.",
     },
     "learn-nav-group": {
         classes: ["flex", "w-full", "min-w-0", "flex-col", "gap-1"],
@@ -351,7 +351,7 @@ export const CONTRACTS = buildContracts({
             link: { leaf: "nav-link", props: { kind: "route" } },
             fact: { leaf: ["text", "icon"], optional: true },
         },
-        why: "Use this for a single nav destination that needs one trailing read-only fact - a due count, a rank, or a lock state - without turning that fact into a pressable control; the destination link owns the row's width and the fact is read as part of the row, not acted on.",
+        why: "Use this when you need a single nav destination with one trailing read-only fact - a due count, rank, or lock state - that remains part of the full-width destination row rather than becoming a pressable control.",
     },
     "learn-resume-card": {
         classes: ["flex", "w-full", "min-w-0", "flex-col", "gap-1", "p-4"],
@@ -372,7 +372,7 @@ export const CONTRACTS = buildContracts({
             milestone: { leaf: "nav-link", props: { kind: "section" }, repeats: true, restingCount: 4 },
             body: { leaf: "page" },
         },
-        why: "Use this as the top-level frame for personal-project routes when you need a milestone nav rail that stays visible across the dashboard, task, and result subroutes while only the routed body underneath changes.",
+        why: "Use this when you need a top-level personal-project frame whose milestone nav rail stays visible across dashboard, task, and result subroutes while only the routed body changes.",
     },
     "course-personal-project-task-page": {
         classes: ["mx-auto", "flex", "w-full", "max-w-app-lg", "flex-col", "gap-6", "px-6", "py-6"],
@@ -380,7 +380,7 @@ export const CONTRACTS = buildContracts({
             header: { contract: "centred-title-pair" },
             controls: { contract: "stacked-peer-controls" },
         },
-        why: "A task brief is read before its score constraint and one submission action, so the controls remain one bounded vertical decision directly below the title rather than entering a generic page body run.",
+        why: "Use this when you need a task brief read before its score constraint and single submission action, keeping the controls as one bounded vertical decision directly below the title rather than in a generic page body run.",
     },
     "course-personal-project-result-page": {
         classes: ["mx-auto", "flex", "w-full", "max-w-app-lg", "flex-col", "gap-6", "px-6", "py-6"],
@@ -390,7 +390,7 @@ export const CONTRACTS = buildContracts({
             feedback: { contract: "stacked-peer-controls", optional: true },
             action: { leaf: "button", optional: true },
         },
-        why: "Attempt history is the result's primary evidence, feedback is its optional explanation, and retry closes the reading order as a page action instead of being repeated inside either evidence group.",
+        why: "Use this when you need attempt history as a result's primary evidence, optional feedback as its explanation, and retry closing the reading order once as a page action outside both evidence groups.",
     },
     "course-personal-project-page": {
         classes: ["flex", "w-full", "min-w-0", "flex-col", "gap-4", "px-6", "py-6"],
@@ -403,7 +403,7 @@ export const CONTRACTS = buildContracts({
             notice: { leaf: "text", props: { size: "sm", tone: "muted" }, optional: true },
             retry: { leaf: "button", optional: true },
         },
-        why: "The capstone overview reads from identity through completion into its ordered tasks, with empty and failed notices occupying the same sentence rather than opening a second page shape.",
+        why: "Use this when you need a capstone overview read from identity through completion into ordered tasks, with empty and failed notices occupying the same reading flow rather than opening a second page shape.",
     },
     "course-foundations-page": {
         host: "main",
@@ -415,7 +415,7 @@ export const CONTRACTS = buildContracts({
             category: { leaf: "nav-link", props: { kind: "section" }, repeats: true, restingCount: 4, optional: true },
             notice: { composite: "empty-notice", optional: true },
         },
-        why: "The foundation catalog introduces why the prerequisite library exists before the query and its live category results, while empty and failed outcomes replace only the result run.",
+        why: "Use this when you need a foundation catalog to introduce why the prerequisite library exists before its query and live category results, while empty and failed outcomes replace only the result run.",
     },
     "course-foundation-category-page": {
         host: "main",
@@ -426,7 +426,7 @@ export const CONTRACTS = buildContracts({
             resource: { leaf: "nav-link", props: { kind: "section" }, repeats: true, restingCount: 6, optional: true },
             notice: { composite: "empty-notice", optional: true },
         },
-        why: "One category is a searchable reading list, so its title and query precede one ordered run of backend resources and the settled notice occupies that run when no resource can be shown.",
+        why: "Use this when you need one category as a searchable reading list whose title and query precede an ordered run of backend resources and whose settled notice occupies that run when no resource can be shown.",
     },
     "course-foundation-resource-page": {
         host: "main",
@@ -439,7 +439,7 @@ export const CONTRACTS = buildContracts({
             practice: { leaf: "button", optional: true },
             notice: { composite: "empty-notice", optional: true },
         },
-        why: "A prerequisite resource is read from its server title through its authored body before the related practice action, while back navigation remains available across ready and recovery states.",
+        why: "Use this when you need a prerequisite resource read from its server title through its authored body before the related practice action, with back navigation available across ready and recovery states.",
     },
     "playground-session-frame": {
         classes: ["flex", "min-h-screen", "w-full", "min-w-0", "flex-col"],
@@ -447,7 +447,7 @@ export const CONTRACTS = buildContracts({
             surface: { leaf: "page", optional: true },
             notice: { composite: "empty-notice", optional: true },
         },
-        why: "Use this as the slug-level frame for a playground session when you need one full-width frame to stay mounted, owning the pairing/socket, while setup and live-session surfaces swap beneath it; only a load failure replaces that routed surface with a notice.",
+        why: "Use this when you need a slug-level playground-session frame to stay mounted at full width and own the pairing/socket while setup and live-session surfaces swap beneath it, with only a load failure replacing that routed surface.",
     },
     "course-playground-page": {
         host: "main",
@@ -458,7 +458,7 @@ export const CONTRACTS = buildContracts({
             playground: { leaf: "nav-link", props: { kind: "section" }, repeats: true, restingCount: 4, optional: true },
             notice: { composite: "empty-notice", optional: true },
         },
-        why: "The live lab catalog explains server verification once, then presents each backend playground as a peer destination; pending, empty and failed states keep the same page identity.",
+        why: "Use this when you need a live lab catalog to explain server verification once before presenting each backend playground as a peer destination, with pending, empty, and failed states retaining the same page identity.",
     },
     "course-playground-setup-page": {
         host: "main",
@@ -474,7 +474,7 @@ export const CONTRACTS = buildContracts({
             action: { leaf: "button", repeats: true, restingCount: 1, optional: true },
             notice: { composite: "empty-notice", optional: true },
         },
-        why: "Preparation is read before a session is created; once the server returns a pairing code, that identity and agent readiness replace the create action before entry becomes available.",
+        why: "Use this when you need preparation read before session creation, then the server-returned pairing identity and agent readiness to replace the create action before entry becomes available.",
     },
     "course-playground-session-page": {
         host: "main",
@@ -490,7 +490,7 @@ export const CONTRACTS = buildContracts({
             submit: { leaf: "button", optional: true },
             notice: { composite: "empty-notice", optional: true },
         },
-        why: "The persistent live workspace keeps connection state and server-owned steps ahead of the selected instruction; verification is one action and completion or failure replaces the instruction without inventing client progress.",
+        why: "Use this when you need a persistent live workspace to keep connection state and server-owned steps ahead of the selected instruction, with one verification action and completion or failure replacing that instruction without invented client progress.",
     },
     "course-mind-map-page": {
         host: "main",
@@ -505,7 +505,7 @@ export const CONTRACTS = buildContracts({
             open: { leaf: "button", optional: true },
             notice: { composite: "empty-notice", optional: true },
         },
-        why: "The concept map keeps search and graph scale ahead of one selectable backend node field, then exposes an open action only for the selected node whose linked entity resolves to a real course route.",
+        why: "Use this when you need a concept map with search and graph scale ahead of one selectable backend node field, exposing an open action only when the selected node resolves to a real course route.",
     },
     "course-mock-interview-setup-page": {
         host: "main",
@@ -519,7 +519,7 @@ export const CONTRACTS = buildContracts({
             status: { leaf: "text", props: { size: "sm", tone: "muted" }, optional: true },
             action: { leaf: "button", repeats: true, restingCount: 2 },
         },
-        why: "The green room asks for seniority before format, then reports the persisted session state before either starting or resuming, so each decision keeps a named place in one narrow reading column.",
+        why: "Use this when you need a green room to ask for seniority before format and report persisted session state before start or resume, keeping each decision in a named place within one narrow reading column.",
     },
     "course-mock-interview-session-page": {
         host: "main",
@@ -537,7 +537,7 @@ export const CONTRACTS = buildContracts({
             workspaceTitle: { leaf: "heading" },
             workspace: { leaf: ["code-block", "text"] },
         },
-        why: "The live room reads from the current prompt and server clock through the persisted conversation into one answer decision, with the question workspace following as supporting evidence rather than becoming a second untyped page frame.",
+        why: "Use this when you need a live room read from the current prompt and server clock through persisted conversation into one answer decision, with the question workspace following as supporting evidence instead of a second untyped page frame.",
     },
     "course-mock-interview-result-page": {
         host: "main",
@@ -559,7 +559,7 @@ export const CONTRACTS = buildContracts({
             review: { composite: "evidence-row", repeats: true, restingCount: 3, optional: true },
             action: { leaf: "button", repeats: true, restingCount: 2 },
         },
-        why: "A persisted debrief moves from outcome to rubric, then from general strengths and gaps to question evidence, and closes with the next interview action so grading and recovery replace the evidence without changing the page owner.",
+        why: "Use this when you need a persisted debrief to move from outcome to rubric, then strengths and gaps to question evidence, and close with the next interview action while grading and recovery replace evidence without changing the page owner.",
     },
     "course-learn-challenge-page": {
         host: "main",
@@ -568,7 +568,7 @@ export const CONTRACTS = buildContracts({
             header: { contract: "centred-title-pair" },
             body: { contract: "stacked-peer-controls" },
         },
-        why: "A challenge reads from its authored brief into one ordered run of deliverables and submission controls, so pending, editing, submitting, passed and failed states keep the same dedicated route identity.",
+        why: "Use this when you need a challenge read from its authored brief into one ordered run of deliverables and submission controls while pending, editing, submitting, passed, and failed states keep the same dedicated route identity.",
     },
     "course-learn-challenge-result-page": {
         host: "main",
@@ -578,7 +578,7 @@ export const CONTRACTS = buildContracts({
             score: { leaf: "text", props: { size: "sm", tone: "muted" }, optional: true },
             body: { contract: "stacked-peer-controls" },
         },
-        why: "A persisted challenge result keeps its score, scorer findings and retry-or-continue decision under one result identity, while loading and recovery replace only the evidence body.",
+        why: "Use this when you need a persisted challenge result to keep its score, scorer findings, and retry-or-continue decision under one identity while loading and recovery replace only the evidence body.",
     },
     "flashcard-mode-tabs": {
         host: "nav",
@@ -620,7 +620,7 @@ export const CONTRACTS = buildContracts({
             deck: { contract: "flashcard-review-deck-card", repeats: true, restingCount: 4, optional: true },
             notice: { composite: "empty-notice", optional: true },
         },
-        why: "The review overview keeps its identity and mode switch stable while pending, recovery and ready states replace only the study evidence: due work first, progress second, then the peer deck run.",
+        why: "Use this when you need a review overview whose identity and mode switch stay stable while pending, recovery, and ready states replace only the study evidence ordered as due work, progress, then peer decks.",
     },
     "flashcard-quiz-configuration": {
         classes: ["flex", "flex-col", "gap-4", "rounded-xl", "border", "border-separator", "p-4"],
@@ -645,7 +645,7 @@ export const CONTRACTS = buildContracts({
             configuration: { contract: "flashcard-quiz-configuration", optional: true },
             notice: { composite: "empty-notice", optional: true },
         },
-        why: "The quiz route keeps the shared flashcard identity and mode switch above one finite configuration surface, while empty or failed transport replaces only that setup decision.",
+        why: "Use this when you need a quiz route to keep shared flashcard identity and its mode switch above one finite configuration surface while empty or failed transport replaces only that setup decision.",
     },
     "flashcard-session-header": {
         classes: ["flex", "flex-row", "flex-wrap", "items-center", "justify-between", "gap-4", "border-b", "border-separator", "py-3"],
@@ -675,7 +675,7 @@ export const CONTRACTS = buildContracts({
             action: { leaf: "button", repeats: true, restingCount: 4, optional: true },
             notice: { composite: "empty-notice", optional: true },
         },
-        why: "The live session preserves orientation before progress and one focused card, then exposes only the actions admitted by the current reveal and transport state; recovery replaces the card, never the page owner.",
+        why: "Use this when you need a live session to preserve orientation before progress and one focused card, exposing only actions admitted by the current reveal and transport state while recovery replaces the card but never the page owner.",
     },
     "flashcard-result-stat": {
         classes: ["flex", "flex-col", "gap-2", "rounded-xl", "border", "border-separator", "p-4"],
@@ -708,7 +708,7 @@ export const CONTRACTS = buildContracts({
             action: { leaf: "button", repeats: true, restingCount: 2, optional: true },
             notice: { composite: "empty-notice", optional: true },
         },
-        why: "A persisted flashcard result reads from route mode and outcome through comparable summary figures, optional due and diagnostic evidence, then closes with back and repeat actions; loading and failure keep the same identity.",
+        why: "Use this when you need a persisted flashcard result read from route mode and outcome through comparable summary figures and optional evidence, closing with back and repeat actions while loading and failure retain the same identity.",
     },
     "nav-over-body-page": {
         classes: ["flex", "min-h-screen", "w-full", "flex-col"],
@@ -835,7 +835,7 @@ export const CONTRACTS = buildContracts({
     "learner-wrapped-page": {
         classes: ["flex", "min-w-0", "grow", "flex-col", "gap-6"],
         children: { period: { leaf: "choice-tabs" }, summary: { contract: "learner-wrapped-summary" } },
-        why: "Use this when a period switcher must stay bound to exactly one summary view it controls, so changing the period swaps only that summary rather than navigating away or duplicating the page.",
+        why: "Use this when you need a period switcher bound to exactly one summary view, so changing the period swaps only that summary rather than navigating away or duplicating the page.",
     },
     "profile-overview-skill-grid": {
         classes: ["grid", "grid-cols-1", "gap-6", "sm:grid-cols-2"],
@@ -1513,7 +1513,7 @@ export const CONTRACTS = buildContracts({
             scope: { contract: "scope-switch-row" },
             board: { contract: "league-board-stack" },
         },
-        why: "The board is one reading column: where the reader is and what this page is, which competition is being read, then that competition — so switching scope changes the answer beneath the question rather than moving the question.",
+        why: "Use this when you need one board reading column ordered as reader and page identity, selected competition, then that competition, so switching scope changes the answer beneath the question rather than moving the question.",
     },
     "scope-switch-row": {
         // A row, so the switch takes the width of its two words. In the page column it was a
@@ -2009,7 +2009,7 @@ export const CONTRACTS = buildContracts({
             faces: { contract: "dual-tabs-toolbar", optional: true },
             body: { contract: ["content-reading-column", "centred-empty-notice"] },
         },
-        why: "A content is read straight down one measure, so the page holds one column: the trail and the title, the faces this content actually has, the face that is open, and the ways on. The body slot admits the empty-notice surface as well as the article because a locked content replaces the reading rather than decorating it - the reader is told the same thing in the same place either way.",
+        why: "Use this when you need content read straight down one measure through trail, title, available faces, open face, and ways on, with the body slot admitting either the article or an empty notice when locked.",
     },
     /*
     /*
@@ -2050,7 +2050,7 @@ export const CONTRACTS = buildContracts({
             notice: { composite: "empty-notice", optional: true },
             pager: { leaf: "pagination", optional: true },
         },
-        why: "One toolbar narrows both groups at once, so it is a peer of them rather than something either group owns, and every region on the route keeps the same seam instead of choosing its own spacing.",
+        why: "Use this when you need one toolbar to narrow both catalog groups as their peer rather than belonging to either, while every route region keeps the same seam instead of choosing its own spacing.",
     },
     "course-qa-page": {
         host: "main",
@@ -2061,7 +2061,7 @@ export const CONTRACTS = buildContracts({
             thread: { contract: "catalog-section-group", optional: true },
             notice: { composite: "empty-notice", optional: true },
         },
-        why: "Course Q&A keeps search and the inline question composer together before the selected question-or-reply thread; settled empty and failed states replace that thread without turning the route into a course catalog.",
+        why: "Use this when you need course Q&A search and its inline question composer together before the selected question-or-reply thread, with settled empty and failed states replacing that thread without turning the route into a catalog.",
     },
     "course-headhuntings-page": {
         host: "main",
@@ -2072,7 +2072,7 @@ export const CONTRACTS = buildContracts({
             directories: { contract: "catalog-section-group", optional: true },
             notice: { composite: "empty-notice", optional: true },
         },
-        why: "The headhunting directory reads from course identity through one company query into the company and consultant runs it narrows; empty and failed outcomes replace those directories in place.",
+        why: "Use this when you need a headhunting directory read from course identity through one company query into the company and consultant runs it narrows, with empty and failed outcomes replacing those directories in place.",
     },
     "course-headhunting-company-page": {
         host: "main",
@@ -2083,7 +2083,7 @@ export const CONTRACTS = buildContracts({
             profile: { contract: "catalog-section-group", optional: true },
             notice: { composite: "empty-notice", optional: true },
         },
-        why: "One company profile keeps back and contact actions ahead of its description and consultant contacts; not-found and failed outcomes replace the profile while preserving the company route identity.",
+        why: "Use this when you need one company profile with back and contact actions ahead of its description and consultant contacts, while not-found and failed outcomes replace the profile without losing the company route identity.",
     },
     "catalog-search-count-view-row": {
         classes: ["flex", "flex-row", "flex-wrap", "items-center", "justify-between", "gap-4"],
@@ -2217,7 +2217,7 @@ export const CONTRACTS = buildContracts({
             body: { contract: "main-then-rail" },
             action: { contract: "course-mobile-action-bar", optional: true },
         },
-        why: "The page begins at the navbar seam with peer section navigation and carries no horizontal inset or bottom padding: the navigation reads as the primary navbar's second layer while the body owns its readable measure and the pinned phone action still reaches both viewport edges.",
+        why: "Use this when you need a course-detail page to begin at the navbar seam with peer section navigation as its second layer, leaving body measure to the body and both viewport edges reachable by the pinned phone action.",
     },
     "course-section-navigation": {
         host: "nav",
@@ -2466,7 +2466,7 @@ export const CONTRACTS = buildContracts({
             name: { leaf: ["text", "badge"] },
             value: { leaf: "text", props: { size: "xs", tone: "muted" } },
         },
-        why: "Use this for a single compact pricing-phase offer that needs its name leading and a resolved price or open-status line beneath it, marking the active phase with a badge instead of switching to a different layout.",
+        why: "Use this when you need a single compact pricing-phase offer with its name leading, a resolved price or open-status line beneath it, and a badge marking the active phase without switching layouts.",
     },
     "cart-line-list": {
         classes: [
@@ -2531,7 +2531,7 @@ export const CONTRACTS = buildContracts({
             label: { leaf: "text", props: { size: "sm", weight: "semibold" } },
             amount: { leaf: "text", props: { size: "md", weight: "semibold" } },
         },
-        why: "Use this for the final amount the reader is actually being asked to pay, when it needs to sit in the same column as the muted subtotal rows above it but read at a visibly higher rank than they do.",
+        why: "Use this when you need the final payable amount in the same column as muted subtotal rows while reading at a visibly higher rank than those rows.",
     },
     "cart-page-column": {
         classes: ["mx-auto", "flex", "w-full", "max-w-6xl", "flex-col", "gap-6", "px-6", "py-6"],
@@ -2543,7 +2543,7 @@ export const CONTRACTS = buildContracts({
             actions: { contract: "stacked-peer-controls", optional: true },
             notice: { composite: "empty-notice", optional: true },
         },
-        why: "Use this as the full cart page body, matched in measure and inset to the catalog and leaderboard pages so navigating to and from the basket does not shift the surrounding chrome, and where every region below the header must disappear together for an empty basket rather than render in an emptied state.",
+        why: "Use this when you need the full cart body to match catalog and leaderboard measure and inset, while every region below its header disappears together for an empty basket instead of rendering in an emptied state.",
     },
     "cart-drawer-column": {
         classes: ["flex", "flex-col", "gap-4", "p-4"],
@@ -2561,7 +2561,7 @@ export const CONTRACTS = buildContracts({
             price: { contract: "price-discount-line" },
             action: { leaf: "button" },
         },
-        why: "Use this when the purchase price and its action would otherwise scroll out of view below the pricing rail's breakpoint, to pin them to the bottom edge until the rail is wide enough to hold them again.",
+        why: "Use this when you need the purchase price and its action pinned to the bottom edge below the pricing rail's breakpoint because they would otherwise scroll out of view, until the rail can hold them again.",
     },
     "coding-practice-page": {
         classes: ["mx-auto", "flex", "w-full", "max-w-6xl", "flex-col", "gap-6", "px-6", "py-6"],
@@ -2571,7 +2571,7 @@ export const CONTRACTS = buildContracts({
             domains: { contract: "domain-mastery-grid" },
             standing: { contract: "leaderboard-card", optional: true },
         },
-        why: "The learner is asked to continue before being asked to choose: the thing already half-done is the cheapest next move and it is the only region that can be absent. The domain field follows because it answers where to go NEXT, and the ranking comes last because it is the only region that says nothing about what to do.",
+        why: "Use this when you need coding practice ordered as the resumable next move, then the domain choice, then ranking, keeping the already-started work first and optional while evidence unrelated to the next action remains last.",
     },
     "domain-mastery-grid": {
         classes: ["grid", "grid-cols-1", "sm:grid-cols-2", "lg:grid-cols-3", "gap-4"],
@@ -2587,7 +2587,7 @@ export const CONTRACTS = buildContracts({
             count: { leaf: "text", props: { size: "xs", tone: "muted" } },
             meter: { leaf: "progress" },
         },
-        why: "Use this for one domain's mastery summary when a reader needs both a scannable shape and a precise figure for the same fact — a meter to compare at a glance across many topics, and a count to read once they've stopped on one.",
+        why: "Use this when you need one domain's mastery as both a scannable meter for comparison across topics and a precise count to read after stopping on one.",
     },
     "coding-domain-page": {
         classes: ["mx-auto", "flex", "w-full", "max-w-6xl", "flex-col", "gap-6", "px-6", "py-6"],
@@ -2597,7 +2597,7 @@ export const CONTRACTS = buildContracts({
             problems: { contract: "marked-row-list", optional: true },
             notice: { composite: "empty-notice", optional: true },
         },
-        why: "One topic's page opens on how far through it the reader is, because that is the question the hub sent them here holding; the problems follow as the answer to it.",
+        why: "Use this when you need a topic page to open with the reader's progress before its problems, answering the question carried from the hub before presenting what remains.",
     },
     "coding-problem-page": {
         classes: ["flex", "w-full", "min-h-screen", "flex-col", "md:flex-row"],
@@ -2605,7 +2605,7 @@ export const CONTRACTS = buildContracts({
             reading: { contract: "problem-reading-column" },
             work: { contract: "problem-work-column" },
         },
-        why: "Reading and writing are side by side on a desktop because the statement is consulted WHILE the solution is written, and stacked below the breakpoint because two columns of forty characters are worse than one of eighty.",
+        why: "Use this when you need a problem statement consulted beside its solution editor on desktop and stacked before that editor below the breakpoint so each side retains a readable measure.",
     },
     "problem-reading-column": {
         // `md:shrink-0` is not decoration. Without it the work column's `grow` squeezes this one
@@ -2706,7 +2706,7 @@ export const CONTRACTS = buildContracts({
             pagination: { leaf: "pagination", optional: true },
             notice: { composite: "empty-notice", optional: true },
         },
-        why: "The exam library reads from its promise through collection choice to a bounded set of papers, so a future hundred-paper bank remains navigable instead of becoming one wall of cards.",
+        why: "Use this when you need an exam library read from its promise through collection choice to a bounded paper set, keeping a future hundred-paper bank navigable rather than rendering one wall of cards.",
     },
     "premium-value-band": {
         classes: ["flex", "flex-col", "gap-3", "rounded-xl", "border", "border-accent", "bg-accent-soft", "p-5", "md:flex-row", "md:items-center", "md:justify-between"],
@@ -2752,12 +2752,12 @@ export const CONTRACTS = buildContracts({
             body: { contract: ["exam-passage-question", "exam-result-summary", "exam-state-notice"] },
             actions: { contract: "exam-session-actions", optional: true },
         },
-        why: "One route keeps its orientation while the body changes from answering to a graded result; answers never appear in the runner state.",
+        why: "Use this when you need one exam route to retain its orientation while the body changes from answering to a graded result, without exposing answers in the runner state.",
     },
     "exam-state-notice": {
         classes: ["flex", "min-h-72", "items-center", "justify-center"],
         children: { notice: { composite: "empty-notice" } },
-        why: "Use this when an exam session is blocked, failed, or empty and you need one centered notice that explains the state and offers recovery while the route keeps its orientation.",
+        why: "Use this when you need one centered notice to explain and recover a blocked, failed, or empty exam session while the route keeps its orientation.",
     },
     "exam-session-header": {
         classes: ["flex", "flex-row", "flex-wrap", "items-center", "justify-between", "gap-3"],
@@ -2773,7 +2773,7 @@ export const CONTRACTS = buildContracts({
             passage: { leaf: "article", optional: true },
             question: { contract: "exam-question-card" },
         },
-        why: "Use this when a question is paired with a reading passage that must be consulted side by side on desktop and in source order on a phone, and a question with no passage should take the full measure instead of leaving an empty column.",
+        why: "Use this when you need a question paired with a reading passage side by side on desktop and in source order on a phone, while passage-free questions take the full measure without an empty column.",
     },
     "exam-question-card": {
         classes: ["flex", "flex-col", "gap-4", "rounded-xl", "border", "border-separator", "p-5"],
@@ -2834,7 +2834,7 @@ export const CONTRACTS = buildContracts({
             status: { contract: "payment-return-status", optional: true },
             catalog: { contract: "pricing-offer-catalog" },
         },
-        why: "A verified payment outcome interrupts the buying decision before the catalog offers another purchase, while the application shell remains route-stable.",
+        why: "Use this when you need a verified payment outcome to interrupt the buying decision before the catalog offers another purchase while the application shell remains route-stable.",
     },
     "pricing-offer-catalog": {
         classes: ["flex", "flex-col", "gap-6"],
@@ -2917,7 +2917,7 @@ export const CONTRACTS = buildContracts({
             resume: { contract: "study-resume-hero" },
             progress: { contract: "study-progress-card" },
         },
-        why: "The next learning move occupies the full reading width before private progress, matching the approved hero-first hierarchy while both requests settle independently.",
+        why: "Use this when you need the next learning move at full reading width before private progress, preserving the hero-first hierarchy while both requests settle independently.",
     },
     "study-resume-hero": {
         classes: ["flex", "h-full", "flex-col", "gap-4", "p-6"],
@@ -2950,7 +2950,7 @@ export const CONTRACTS = buildContracts({
             topics: { contract: "study-topic-grid", optional: true },
             notice: { composite: "empty-notice", optional: true },
         },
-        why: "The topic question and level choice resolve before the matching public topic surfaces, while settled absence keeps one recovery path.",
+        why: "Use this when you need a topic question and level choice to resolve before matching public topics appear, with settled absence retaining one recovery path.",
     },
     "study-topic-grid": {
         classes: ["grid", "grid-cols-1", "gap-4", "sm:grid-cols-2", "lg:grid-cols-3"],
@@ -3024,12 +3024,12 @@ export const CONTRACTS = buildContracts({
     "game-hub-page": {
         classes: ["mx-auto", "flex", "w-full", "max-w-6xl", "flex-col", "gap-6", "px-4", "py-6", "pb-28", "md:px-6", "md:pb-6"],
         children: { standing: { contract: "standing-hero-card" }, catalog: { contract: "game-catalog-section" } },
-        why: "Friend rivalry gives the reason to play before the four legacy-backed games provide the concrete choice.",
+        why: "Use this when you need friend rivalry to establish the reason to play before four legacy-backed games provide the concrete choice.",
     },
     "game-active-session-page": {
         classes: ["mx-auto", "flex", "w-full", "max-w-6xl", "flex-col", "gap-4", "px-4", "py-6", "pb-28", "md:px-6", "md:pb-6"],
         children: { runner: { contract: "game-runner-stack" } },
-        why: "An active game replaces discovery in place so room identity and the Phaser canvas remain the only task.",
+        why: "Use this when you need an active game to replace discovery in place, leaving room identity and the Phaser canvas as the only task.",
     },
     "game-catalog-section": {
         classes: ["flex", "flex-col", "gap-4"],
