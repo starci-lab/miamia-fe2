@@ -1,6 +1,8 @@
 import { Badge } from "@/components/leaves/Badge"
 import { Icon } from "@/components/leaves/Icon"
-import type { LeafProps } from "@/components/contracts/props"
+import { CurriculumLessonRow } from "@/components/leaves/CurriculumLessonRow"
+import { Tree } from "@/components/branches/Tree"
+import { defineContractComponent, defineLeafComponent, type LeafProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `CurriculumModuleRow`: one course module, folded until asked for.
@@ -22,6 +24,13 @@ import type { LeafProps } from "@/components/contracts/props"
  *
  * A MODULE WITH NO LESSONS DOES NOT DISCLOSE. An empty disclosure invites a press that opens onto
  * nothing, which reads as a broken control rather than an empty one, so that row renders flat.
+ *
+ * THIS FILE OWNS THE SHELL, NOT THE LIST. Everything the disclosure reveals used to be a hand-built
+ * `div` wrapping a `.map()` of hand-built rows - two structural arrangements nested inside a leaf,
+ * which is exactly what `no-structural-arrangement-in-leaf` exists to catch. The lessons are now a
+ * registry node (`curriculum-module-lesson-list`) drawn through `Tree`, so this file writes no
+ * structural class for anything beyond its own one-line head; each lesson is `CurriculumLessonRow`,
+ * a leaf in its own right.
  */
 
 /** One lesson inside a module. */
@@ -130,18 +139,17 @@ export const CurriculumModuleRow = (input: CurriculumModuleRowProps) => {
             className="group"
         >
             <summary className={SUMMARY_CLASSES}>{head}</summary>
-            <div className="mt-3 flex flex-col gap-2 pl-7">
-                {lessons.map((lesson) => (
-                    <div key={lesson.id} className="flex flex-row items-center gap-2">
-                        <span className="min-w-0 grow text-xs leading-4 text-muted">{lesson.title}</span>
-                        {lesson.isPreview === true ? (
-                            <span className="shrink-0 text-accent-soft-foreground">
-                                <Icon props={{ name: "review", role: "chip" }} />
-                            </span>
-                        ) : null}
-                    </div>
-                ))}
-            </div>
+            <Tree
+                contract="curriculum-module-lesson-list"
+                render={defineContractComponent("curriculum-module-lesson-list", {
+                    lesson: lessons.map((lesson) => defineLeafComponent("curriculum-lesson-row", {}, () => (
+                        <CurriculumLessonRow
+                            props={{ title: lesson.title, isPreview: lesson.isPreview }}
+                            isLoading={isLoading}
+                        />
+                    ))),
+                })}
+            />
         </details>
     )
 }

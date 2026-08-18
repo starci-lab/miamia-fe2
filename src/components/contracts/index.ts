@@ -45,7 +45,7 @@ export type LayoutClassName =
     | "border" | "border-b" | "border-accent" | "border-separator" | "divide-y" | "divide-separator" | "bg-background"
     | "px-3" | "px-4" | "px-6" | "py-2" | "py-3" | "py-6" | "p-0" | "p-2" | "p-3" | "p-4" | "p-5" | "p-6"
     | "pb-28" | "md:px-6" | "md:pb-6" | "md:bottom-4"
-    | "px-2" | "pl-4" | "cursor-pointer" | "text-left" | "text-foreground" | "hover:opacity-80"
+    | "px-2" | "pl-4" | "mt-3" | "cursor-pointer" | "text-left" | "text-foreground" | "hover:opacity-80"
     | "group" | "active:opacity-70"
     | "rounded-xl" | "rounded-2xl" | "rounded-3xl"
     | "bg-surface" | "bg-accent-soft" | "bg-success-soft" | "bg-warning-soft"
@@ -2425,6 +2425,13 @@ export const CONTRACTS = buildContracts({
             module: { leaf: "curriculum-module-row" },
         },
         why: "One module is one item of the ordered list, and the leaf inside it is a disclosure rather than a list item - a details element cannot be an ol's child and stay valid, and the browser stops counting the sequence the moment it is. Separating them also puts the list's own padding on the item, so an open module's lessons sit inside the same inset as its title instead of escaping it.",
+    },
+    "curriculum-module-lesson-list": {
+        classes: ["flex", "flex-col", "gap-2", "pl-4", "mt-3"],
+        children: {
+            lesson: { leaf: "curriculum-lesson-row", repeats: true, restingCount: 0 },
+        },
+        why: "A module's lessons are read only once it discloses, so this run carries no skeleton placeholders and is simply absent while the module rests; without it the lessons lose the shared indent that reads them as this module's children rather than as unrelated siblings of the row above.",
     },
     "course-pricing-rail": {
         host: "aside",
