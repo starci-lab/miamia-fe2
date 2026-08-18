@@ -22,6 +22,7 @@ vi.mock("next-intl", () => ({
     useTranslations: (namespace: string) => (key: string) => `${namespace}:${key}`,
 }))
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn() }) }))
+vi.mock("@/i18n/navigation", () => ({ useRouter: () => ({ push: vi.fn() }) }))
 vi.mock("@/hooks", () => ({
     useQueryMeSwr: vi.fn(),
     useMutateClaimWeeklyChallengeRewardSwr: vi.fn(),

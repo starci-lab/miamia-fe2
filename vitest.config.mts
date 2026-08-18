@@ -28,6 +28,15 @@ export default defineConfig({
         include: [
             "src/**/*.test.{ts,tsx}",
         ],
+        server: {
+            deps: {
+                // `next` ships no `exports` map, so Vitest's native resolver — which externalizes
+                // node_modules from Vite's normal (extension-resolving) pipeline by default — fails
+                // on next-intl's bare `next/navigation` import. Inlining next-intl routes it through
+                // Vite's own resolver instead, where extension resolution applies.
+                inline: ["next-intl"],
+            },
+        },
     },
     resolve: {
         alias: {
