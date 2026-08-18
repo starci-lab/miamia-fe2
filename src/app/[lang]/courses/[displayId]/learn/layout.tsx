@@ -1,4 +1,4 @@
-import { RouteShell } from "@/components/shells/RouteShell"
+import { RouteShell } from "@/components/route/RouteShell"
 import { LearnShellLayout } from "@/components/layouts/LearnShellLayout"
 import type { ReactNode } from "react"
 

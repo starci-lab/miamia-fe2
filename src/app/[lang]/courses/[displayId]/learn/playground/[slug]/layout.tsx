@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import { RouteShell } from "@/components/shells/RouteShell"
+import { RouteShell } from "@/components/route/RouteShell"
 import { PlaygroundSessionLayout } from "@/components/layouts/PlaygroundSessionLayout"
 
 /** Framework inputs for the persistent playground slug boundary. */

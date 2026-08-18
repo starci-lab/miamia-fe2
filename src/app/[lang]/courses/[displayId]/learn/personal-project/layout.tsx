@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
 import { PersonalProjectWorkspaceLayout } from "@/components/layouts/PersonalProjectWorkspaceLayout"
-import { RouteShell } from "@/components/shells/RouteShell"
+import { RouteShell } from "@/components/route/RouteShell"
 
 interface PersonalProjectLayoutRouteProps {
     readonly children: ReactNode
