@@ -596,7 +596,7 @@ export const CONTRACTS = buildContracts({
             fact: { leaf: "text", props: { size: "sm", weight: "medium" } },
             action: { leaf: "button", optional: true },
         },
-        why: "Use this for a single card presenting one resumable body of due work: a name and explanation state what it is, a fact states its size, and an optional start-or-resume action is the only next step offered.",
+        why: "Use this when you need a single resumable due-work card that names and explains one batch of work, states its size as one fact, and offers at most one start-or-resume action.",
     },
     "flashcard-review-deck-card": {
         classes: ["flex", "flex-col", "gap-3", "rounded-xl", "border", "border-separator", "p-4"],
@@ -634,7 +634,7 @@ export const CONTRACTS = buildContracts({
             level: { leaf: "button", repeats: true, restingCount: 5 },
             start: { leaf: "button" },
         },
-        why: "Use this for a single setup card that walks a quiz configuration in order — size and any resumable session first, then mode choice, then level choice — ending in one start action that commits the selection.",
+        why: "Use this when you need one setup card that walks a quiz configuration in order — an existing session to resume, then mode choice, then level choice — ending in one action that commits the selection.",
     },
     "course-flashcards-quiz-page": {
         host: "main",
@@ -654,7 +654,7 @@ export const CONTRACTS = buildContracts({
             title: { leaf: "heading" },
             leave: { leaf: "button" },
         },
-        why: "Use this for a fixed session header that names the active deck against the session title on one side and keeps a leave action pinned on the other, so orientation and escape stay visible through every lifecycle state.",
+        why: "Use this when you need a session header that keeps the active deck and title identifiable on one side and a leave action pinned on the other through every lifecycle state.",
     },
     "flashcard-session-card": {
         classes: ["flex", "flex-1", "flex-col", "justify-center", "gap-6", "rounded-2xl", "border", "border-separator", "p-6"],
@@ -662,7 +662,7 @@ export const CONTRACTS = buildContracts({
             prompt: { leaf: "text", props: { size: "md", weight: "medium" } },
             answer: { leaf: "text", props: { size: "sm", tone: "muted" }, optional: true },
         },
-        why: "Use this for the single focused reading surface of a flashcard session, where the prompt owns the available height and a revealed answer appears only as supporting evidence beneath it, without a second structural owner.",
+        why: "Use this when you need the one focused reading surface of a flashcard session, where the prompt owns the available height and a revealed answer appears only as supporting evidence beneath it.",
     },
     "course-flashcard-session-page": {
         host: "main",
@@ -748,7 +748,7 @@ export const CONTRACTS = buildContracts({
             title: { leaf: "heading" },
             end: { leaf: ["button", "see-more-link"], optional: true },
         },
-        why: "Use when you need a title with one control at the far end of its own line, read name-first then action-second, where the control wraps to a line below rather than squeezing the title when space runs out.",
+        why: "if you need a title with one control at the far end of its own line, read name-first then action-second, where the control wraps to a line below rather than squeezing the title when space runs out.",
     },
     "title-with-baseline-fact": {
         classes: ["flex", "flex-row", "flex-wrap", "items-baseline", "gap-2"],
@@ -756,7 +756,7 @@ export const CONTRACTS = buildContracts({
             title: { leaf: "heading" },
             fact: { leaf: "text", props: { size: "sm", tone: "muted" } },
         },
-        why: "Use when you need one short muted fact to read as part of the heading sentence, sitting on the title's own baseline and wrapping beneath it rather than narrowing the title.",
+        why: "if you need one short muted fact to read as part of the heading sentence, sitting on the title's own baseline and wrapping beneath it rather than narrowing the title.",
     },
     "profile-tabs-over-body": {
         classes: ["flex", "w-full", "flex-col"],
@@ -764,22 +764,22 @@ export const CONTRACTS = buildContracts({
             tabs: { contract: "underlined-tab-strip" },
             body: { contract: "profile-page-measure" },
         },
-        why: "Use when you need persistent profile-route tab chrome to sit above a measured identity-and-evidence body as part of the profile layout itself, not as a second layer owned by the global navbar.",
+        why: "if you need persistent tab chrome bound directly above the one measured body it switches, as one owned layout piece rather than a second layer floating over the content.",
     },
     "profile-page-measure": {
         classes: ["@container", "mx-auto", "w-full", "max-w-app-xl"],
         children: { inset: { contract: "profile-page-inset" } },
-        why: "Use when you need a container keeping the legacy eighty-rem content measure for the public profile, instead of inheriting the narrower dashboard width cap.",
+        why: "if you need a container that holds a wider legacy content measure than the narrower dashboard width cap it would otherwise inherit.",
     },
     "profile-page-inset": {
         classes: ["p-6"],
         children: { shell: { contract: "profile-rail-container" } },
-        why: "Use when you need to add page padding inside an already-measured container without shrinking the measure its container-query breakpoints observe.",
+        why: "if you need page padding added inside an already width-capped container without shrinking the measure its container-query breakpoints observe.",
     },
     "profile-rail-container": {
         classes: ["@container", "w-full"],
         children: { split: { contract: "profile-rail-then-main" } },
-        why: "Use when you need a rail/main switch to measure against its own region's width rather than an ancestor's breakpoint, matching self-contained legacy rail behavior.",
+        why: "if you need a rail/main split whose breakpoint measures its own region's width rather than an ancestor's, so the split stays self-contained.",
     },
     "profile-rail-then-main": {
         classes: ["flex", "w-full", "flex-col", "gap-6", "@app-md:flex-row", "@app-md:items-start", "@app-md:gap-8"],
@@ -787,21 +787,21 @@ export const CONTRACTS = buildContracts({
             rail: { contract: "profile-identity-rail" },
             main: { contract: ["profile-main", "centred-empty-notice"] },
         },
-        why: "Use when you need identity content to hold a stable reading width beside flexible evidence on wide screens, then stack above that evidence on narrow screens, so context is never lost or forced into a second card column.",
+        why: "if you need identity content to hold a stable reading width beside flexible evidence on wide screens, then stack above that evidence once the screen narrows.",
     },
     "profile-identity-rail": {
         classes: ["flex", "w-full", "shrink-0", "flex-col", "@app-md:w-72"],
         children: {
             hero: { contract: "profile-hero-rail" },
         },
-        why: "Use when you need a profile rail owned by one identity story as a single object, rather than split across unrelated identity, social-proof, and action cards.",
+        why: "if you need a profile rail wrapping one identity hero as a single owned object, rather than splitting identity across separate unrelated cards.",
     },
     "profile-main": {
         classes: ["flex", "min-w-0", "grow", "flex-col", "gap-6"],
         children: {
             section: { contract: ["label-row-over-card", "profile-overview-skill-grid"], repeats: true, restingCount: 4 },
         },
-        why: "Use when you need a stack of independently landing labelled evidence sections, each family separated by the legacy twenty-four-pixel reading seam.",
+        why: "if you need a vertical stack of independently landing, labelled evidence sections, each separated by the same reading gap.",
     },
     "learner-profile-overview": {
         classes: ["flex", "min-w-0", "grow", "flex-col", "gap-6"],
@@ -842,17 +842,17 @@ export const CONTRACTS = buildContracts({
         children: {
             section: { contract: "label-row-over-card", repeats: true, restingCount: 2 },
         },
-        why: "Use this when you need exactly two labeled evidence sections that stack on narrow screens and sit side by side only once both keep a readable width.",
+        why: "if you need exactly two labelled evidence sections that stack on narrow screens and sit side by side only once both keep a readable width.",
     },
     "profile-metric-ribbon": {
         classes: ["grid", "grid-cols-2", "gap-3", "p-4", "sm:grid-cols-4"],
         children: { metric: { composite: "profile-metric", repeats: true, restingCount: 4 } },
-        why: "Use this when you need four composite proof metrics arranged as equal-weight peers in a responsive ribbon, reflowing from two columns to four as width allows.",
+        why: "if you need up to four composite proof metrics shown as equal-weight peers in a ribbon that reflows from two columns to four as width allows.",
     },
     "profile-breakdown-stack": {
         classes: ["flex", "flex-col", "gap-4", "p-4"],
         children: { breakdown: { contract: "profile-breakdown", repeats: true, restingCount: 3 } },
-        why: "Use this when you need to stack several independent evidence breakdowns (such as difficulty, topic and language) vertically while each keeps its own label and visual distinct.",
+        why: "if you need several independent evidence breakdowns (such as difficulty, topic and language) stacked vertically while each keeps its own label and visual distinct.",
     },
     "profile-breakdown": {
         classes: ["flex", "flex-col", "gap-3"],
@@ -861,27 +861,27 @@ export const CONTRACTS = buildContracts({
             visual: { contract: ["profile-segment-run", "profile-topic-chip-run"] },
             caption: { leaf: "text", props: { size: "xs", tone: "muted" }, optional: true },
         },
-        why: "Use this when you need one labeled breakdown pairing a single compact visual (a segment run or topic-chip run) with an optional explanatory caption, so distinct evidence groups never collapse into one anonymous chart.",
+        why: "if you need one labelled breakdown pairing a single compact visual (a segment run or topic-chip run) with an optional explanatory caption.",
     },
     "profile-segment-run": {
         classes: ["flex", "flex-row", "overflow-hidden", "rounded-xl"],
         children: { segment: { composite: "profile-segment", repeats: true, restingCount: 3 } },
-        why: "Use this when you need several distribution segments joined into one bounded, rounded run so their relative contribution reads as a single whole rather than separate progress bars.",
+        why: "if you need several distribution segments joined into one bounded, rounded run so their relative contribution reads as a single whole rather than separate progress bars.",
     },
     "profile-segment-piece": {
         classes: ["flex-1", "p-2", "text-center"],
         children: { value: { leaf: "text", props: { size: "xs", tone: "muted" } } },
-        why: "Use this when you need one proportional slice inside a segment run that still displays its own count value alongside its peers.",
+        why: "if you need one proportional slice inside a segment run that still displays its own count value alongside its peers.",
     },
     "profile-topic-chip-run": {
         classes: ["flex", "flex-row", "flex-wrap", "gap-2"],
         children: { topic: { leaf: "badge", repeats: true, restingCount: 4 } },
-        why: "Use this when you need a wrapping row of compact topic-count badges that wrap onto new lines as peers before any single label gets squeezed or clipped.",
+        why: "if you need a wrapping row of compact topic-count badges that wrap onto new lines as peers before any single label gets squeezed or clipped.",
     },
     "profile-achievement-grid": {
         classes: ["grid", "grid-cols-1", "gap-4", "sm:grid-cols-2", "lg:grid-cols-3"],
         children: { achievement: { composite: "profile-achievement", repeats: true, restingCount: 3 } },
-        why: "Use this when you need a responsive grid of equal achievement cards that gains columns only while each card's name and rarity stay readable.",
+        why: "if you need a responsive grid of equal achievement cards that gains columns only while each card's name and rarity stay readable.",
     },
     "profile-achievement-card": {
         classes: ["flex", "flex-col", "gap-2", "p-4"],
@@ -890,17 +890,17 @@ export const CONTRACTS = buildContracts({
             name: { leaf: "text", props: { size: "sm", weight: "semibold" } },
             rarity: { leaf: "text", props: { size: "xs", tone: "muted" } },
         },
-        why: "Use this when you need one achievement's icon mark, name and rarity combined into a single earned-proof unit rather than three separate, detached facts.",
+        why: "if you need one achievement's icon mark, name and rarity combined into a single earned-proof unit rather than three separate, detached facts.",
     },
     "profile-toolbar-over-list": {
         classes: ["flex", "flex-col", "gap-3", "p-4"],
         children: { toolbar: { contract: "profile-search-filter-row" }, list: { contract: "profile-evidence-list" } },
-        why: "Use this when you need a search/filter toolbar bound directly above the one evidence list it modifies, rather than floating at the whole-route level.",
+        why: "if you need a search/filter toolbar bound directly above the one evidence list it modifies, rather than floating at the whole-route level.",
     },
     "profile-search-filter-row": {
         classes: ["flex", "flex-row", "items-center", "justify-between", "gap-3"],
         children: { search: { leaf: "search-box" }, filter: { leaf: "button" } },
-        why: "Use this when you need a control row where a flexible search box owns most of the width and a short filter action stays pinned visible at its end.",
+        why: "if you need a control row where a flexible search box owns most of the width and a short filter action stays pinned visible at its end.",
     },
     "profile-cv-page": {
         classes: ["flex", "flex-col", "gap-6"],
@@ -910,17 +910,17 @@ export const CONTRACTS = buildContracts({
     "profile-cv-paper": {
         classes: ["mx-auto", "w-full", "max-w-app-lg", "overflow-hidden", "p-4"],
         children: { document: { leaf: "profile-cv-document" } },
-        why: "Use this when you need the public CV rendered on a single bounded-width paper surface, readable without acquiring unrelated profile-card chrome.",
+        why: "if you need a document rendered on one bounded-width paper surface, readable without acquiring unrelated profile-card chrome.",
     },
     "profile-proof-header": {
         classes: ["flex", "flex-col", "gap-3"],
         children: { back: { leaf: "button" }, title: { leaf: "heading" }, meta: { leaf: "text", props: { size: "sm", tone: "muted" } } },
-        why: "Use this when you need a back action, a proof title and a qualifier combined into one route-local orientation block that sits before detailed evidence begins.",
+        why: "if you need a back action, a proof title and a qualifier combined into one orientation block that sits before detailed evidence begins.",
     },
     "profile-coding-statement": {
         classes: ["flex", "flex-col", "gap-3", "p-4"],
         children: { statement: { leaf: "text" }, tags: { contract: "profile-topic-chip-run", optional: true } },
-        why: "Use this when you need to present a coding proof's problem statement and optional topic tags only, never the underlying source, as one honest description standing before its submission evidence.",
+        why: "if you need a coding proof's problem statement and optional topic tags shown, never the underlying source, before its submission evidence.",
     },
     "profile-coding-detail-main": {
         classes: ["flex", "min-w-0", "grow", "flex-col", "gap-6"],
@@ -933,17 +933,17 @@ export const CONTRACTS = buildContracts({
     "profile-proof-metrics": {
         classes: ["grid", "grid-cols-2", "gap-3", "p-4", "sm:grid-cols-4"],
         children: { metric: { contract: "profile-proof-metric", repeats: true, restingCount: 4 } },
-        why: "Use this when you need four standing (non-composite) proof metrics arranged as equal peers in the same two-to-four column responsive ribbon layout.",
+        why: "if you need up to four standing (non-composite) proof metrics arranged as equal peers in the same two-to-four column responsive ribbon layout.",
     },
     "profile-proof-metric": {
         classes: ["flex", "flex-col", "gap-1"],
         children: { figure: { leaf: "text" }, label: { leaf: "text", props: { size: "xs", tone: "muted" } } },
-        why: "Use this when you need a proof figure paired with its short qualifier label as one metric sentence, so the two never split into separate rows.",
+        why: "if you need a proof figure paired with its short qualifier label as one metric sentence, so the two never split into separate rows.",
     },
     "profile-project-card-grid": {
         classes: ["grid", "grid-cols-1", "gap-4", "sm:grid-cols-2"],
         children: { card: { contract: "profile-project-card", repeats: true, restingCount: 2 } },
-        why: "Use this when you need to lay out pinned project proof cards that stack single-column on a narrow screen and become two equal peer columns once each card can keep readable title and description width.",
+        why: "if you need pinned project proof cards laid out single-column on a narrow screen and as two equal peer columns once each card keeps readable title and description width.",
     },
     "profile-project-card": {
         classes: ["flex", "flex-col", "gap-3", "p-4"],
@@ -953,12 +953,12 @@ export const CONTRACTS = buildContracts({
             description: { leaf: "text", props: { size: "xs", tone: "muted" }, optional: true },
             tech: { contract: "profile-project-tech-run", optional: true },
         },
-        why: "Use this when you need one bounded portfolio proof card that combines a verification badge, project title, an optional description, and an optional technology run.",
+        why: "if you need one bounded portfolio proof card that combines a verification badge, project title, an optional description, and an optional technology run.",
     },
     "profile-project-tech-run": {
         classes: ["flex", "flex-row", "flex-wrap", "items-center", "gap-2"],
         children: { tech: { leaf: "badge", repeats: true, restingCount: 3 } },
-        why: "Use this when you need a compact, wrapping run of technology badges inside a project card, so the list wraps instead of widening or truncating the card.",
+        why: "if you need a compact, wrapping run of technology badges inside a project card, so the list wraps instead of widening or truncating the card.",
     },
     "profile-proof-summary": {
         classes: ["flex", "flex-col", "gap-3"],
@@ -968,7 +968,7 @@ export const CONTRACTS = buildContracts({
             meta: { leaf: "text", props: { size: "sm", tone: "muted" }, optional: true },
             progress: { leaf: "progress", optional: true },
         },
-        why: "Use this when you need a header that orients the reader before detailed evidence, combining a route-local back action, proof identity, an optional qualifier, and an optional completion measure.",
+        why: "if you need a header that orients the reader before detailed evidence, combining a back action, proof identity, an optional qualifier, and an optional completion measure.",
     },
     "profile-detail-toolbar": {
         classes: ["flex", "flex-row", "flex-wrap", "items-center", "justify-between", "gap-3"],
@@ -977,12 +977,12 @@ export const CONTRACTS = buildContracts({
             filter: { leaf: "button", optional: true },
             fact: { leaf: "text", props: { size: "sm", tone: "muted" }, optional: true },
         },
-        why: "Use this when you need a route-local control row combining search, an optional filter action, and an optional result-count fact, wrapping before any control becomes unreadable.",
+        why: "if you need a control row combining search, an optional filter action, and an optional result-count fact, wrapping before any control becomes unreadable.",
     },
     "profile-roadmap-list": {
         classes: ["flex", "flex-col", "divide-y", "divide-separator", "p-0"],
         children: { milestone: { composite: "evidence-row", repeats: true, restingCount: 4 } },
-        why: "Use this when you need an ordered list of capstone milestones sharing one joined proof list, where separators preserve the sequence instead of turning every milestone into its own card.",
+        why: "if you need an ordered list of milestones sharing one joined proof list, where separators preserve the sequence instead of turning every milestone into its own card.",
     },
     "profile-hero-rail": {
         classes: ["flex", "flex-col", "gap-4"],
@@ -995,7 +995,7 @@ export const CONTRACTS = buildContracts({
             actions: { contract: "profile-action-row" },
             meta: { contract: "profile-meta-list", optional: true },
         },
-        why: "Use this when you need a frameless identity rail combining avatar, name/role identity, optional bio context, optional peer facts, public proof, one contextual action row, and optional supporting links, with no surface boundary invented around them.",
+        why: "if you need a frameless identity rail combining avatar, name/role identity, optional bio context, optional peer facts, public proof, one contextual action row, and optional supporting links, with no surface boundary invented around them.",
     },
     "profile-name-role-stack": {
         classes: ["flex", "min-w-0", "flex-col", "gap-1"],
@@ -1004,21 +1004,21 @@ export const CONTRACTS = buildContracts({
             handle: { leaf: "text", props: { size: "xs", tone: "muted" } },
             role: { leaf: "text", props: { size: "sm" }, optional: true },
         },
-        why: "Use this when you need a person's display name paired tightly with their public handle and an optional role as one identity sentence, rather than as competing headings.",
+        why: "if you need a person's display name paired tightly with their public handle and an optional role as one identity sentence, rather than as competing headings.",
     },
     "profile-fact-run": {
         classes: ["flex", "flex-row", "flex-wrap", "items-center", "gap-2"],
         children: {
             fact: { leaf: "badge", repeats: true, restingCount: 2 },
         },
-        why: "Use this when you need a run of short peer facts (such as location or work mode) that wrap together before either fact forces the identity column wider.",
+        why: "if you need a run of short peer facts (such as location or work mode) that wrap together before either fact forces the identity column wider.",
     },
     "profile-proof-row": {
         classes: ["flex", "flex-row", "flex-wrap", "items-baseline", "gap-2"],
         children: {
             fact: { leaf: "text", props: { size: "sm", weight: "semibold" }, repeats: true, restingCount: 2 },
         },
-        why: "Use this when you need peer social-proof facts (such as follower count and standing) sharing one text baseline, so they scan as evidence without either becoming a second profile heading.",
+        why: "if you need peer social-proof facts (such as follower count and standing) sharing one text baseline, so they scan as evidence without either becoming a second profile heading.",
     },
     "profile-action-row": {
         classes: ["flex", "w-full", "flex-row", "items-center", "gap-2", "[&>*:first-child]:grow"],
@@ -1049,7 +1049,7 @@ export const CONTRACTS = buildContracts({
             fact: { leaf: ["badge", "text"], optional: true },
             disclosure: { leaf: "icon", optional: true },
         },
-        why: "Use this when you need an evidence row where a title-and-qualifier identity block owns the available width while a short trailing proof fact and an optional disclosure stay scannable at the end, without pushing the title onto an anonymous second line.",
+        why: "if you need an evidence row where a title-and-qualifier identity block owns the available width while a short trailing proof fact and an optional disclosure stay scannable at the end, without pushing the title onto an anonymous second line.",
     },
     "evidence-title-over-subtitle": {
         classes: ["flex", "min-w-0", "flex-col", "gap-1"],
@@ -1057,7 +1057,7 @@ export const CONTRACTS = buildContracts({
             title: { leaf: "text", props: { size: "sm", weight: "semibold" } },
             subtitle: { leaf: "text", props: { size: "xs", tone: "muted" }, optional: true },
         },
-        why: "Use this when you need a proof title with an optional smaller qualifying line stacked directly beneath it, rather than placed as a peer fact elsewhere in the row.",
+        why: "if you need a proof title with an optional smaller qualifying line stacked directly beneath it, rather than placed as a peer fact elsewhere in the row.",
     },
     "dashboard-rail-then-main": {
         classes: ["mx-auto", "flex", "w-full", "max-w-6xl", "flex-col", "gap-6", "md:gap-8", "px-6", "py-6", "md:flex-row", "md:items-start", "md:[&>*:first-child]:w-72", "md:[&>*:first-child]:shrink-0", "md:[&>*:last-child]:min-w-0", "md:[&>*:last-child]:grow"],
@@ -1079,14 +1079,14 @@ export const CONTRACTS = buildContracts({
         children: {
             section: { contract: ["label-row-over-card", "explore-main"], repeats: true, restingCount: 8 },
         },
-        why: "The production overview has eight product sections in a fixed reading order. They repeat at the product's 24px seam so each labelled surface reads as a separate part of the learner's overview rather than one long card; a refactor may not invent another section from data the product does not display.",
+        why: "if you need the dashboard's main column to hold a stack of independently loading, labelled sections in one fixed reading order — as many as the product currently shows — without a refactor silently inventing or reordering a section.",
     },
     "dashboard-tab-main": {
         classes: ["flex", "min-w-0", "grow", "flex-col", "gap-6"],
         children: {
             section: { contract: "label-row-over-card", repeats: true, restingCount: 3 },
         },
-        why: "A selected tab fills the main column with labelled sections that keep their legacy reading order and settle independently, so the tab orchestrates the order without owning any child request. Which sections a tab names is the tab's own content and not a second column shape.",
+        why: "if you need a selected dashboard tab to fill the main column with its own independently loading labelled sections in a fixed reading order, without introducing a second column shape just for that tab.",
     },
     "label-row-over-card": {
         classes: ["flex", "flex-col", "gap-3"],
@@ -1094,14 +1094,14 @@ export const CONTRACTS = buildContracts({
             label: { contract: ["title-with-end-action", "title-with-baseline-fact"] },
             body: { contract: "$content" },
         },
-        why: "Use this when a section's label must sit outside the surface it names, so a section whose content is itself a set of cards never draws a card inside a card; the label keeps the ordinary gap-3 seam to its owned surface while major sections stay farther apart.",
+        why: "if you need a section's label to sit outside the surface it names, so a section whose content is itself a set of cards never draws a card inside a card.",
     },
     "empty-notice-card": {
         classes: ["flex", "flex-col", "gap-3", "p-4"],
         children: {
             notice: { composite: "empty-notice" },
         },
-        why: "Use this when a section's empty-state recovery notice needs one bounded card beneath the section label, so its message and way out read as that section's answer rather than as a sibling section.",
+        why: "if you need a section's empty-state recovery notice bounded inside one card beneath the section label, so its message and way out read as that section's answer rather than as a sibling section.",
     },
     "empty-notice-stack": {
         classes: ["flex", "flex-col", "items-center", "gap-3", "text-center"],
@@ -1111,7 +1111,7 @@ export const CONTRACTS = buildContracts({
             description: { leaf: "text", props: { size: "xs", tone: "muted" }, optional: true },
             action: { leaf: "button", optional: true },
         },
-        why: "Use this for the centred empty-state content itself: an optional mark (only when the absence has a generic visual identity), a settled message, an optional detail, and an optional recovery action, all in one centred reading order.",
+        why: "if you need the centred empty-state content itself: an optional mark (only when the absence has a generic visual identity), a settled message, an optional detail, and an optional recovery action, all in one centred reading order.",
     },
     "resume-item-card": {
         classes: ["flex", "flex-col", "gap-3", "p-4"],
@@ -1120,7 +1120,7 @@ export const CONTRACTS = buildContracts({
             kind: { leaf: "text", props: { size: "sm", tone: "muted" } },
             resume: { leaf: "see-more-link", optional: true },
         },
-        why: "Use this when you need one bounded card identifying a resumable content item by kind and title together with an optional link back into it, since none of the three identifies the item alone.",
+        why: "if you need one bounded card identifying a resumable content item by kind and title together with an optional link back into it, since none of the three identifies the item alone.",
     },
     "weekly-challenge-card": {
         classes: ["flex", "flex-col", "gap-4", "p-4"],
@@ -1138,7 +1138,7 @@ export const CONTRACTS = buildContracts({
             glyph: { leaf: "icon", optional: true },
             title: { leaf: "text" },
         },
-        why: "Use this for a challenge's identity title line, when an optional generic practice glyph should lead the title and can disappear during loading without changing the line's contract.",
+        why: "if you need a challenge's identity title line, where an optional generic practice glyph can lead the title and safely disappear during loading without changing the line's contract.",
     },
     "weekly-challenge-status": {
         classes: ["flex", "flex-row", "items-center", "justify-between", "gap-3", "w-full"],
@@ -1146,7 +1146,7 @@ export const CONTRACTS = buildContracts({
             endsIn: { leaf: "text", props: { size: "xs", tone: "muted" } },
             action: { leaf: ["button", "badge"] },
         },
-        why: "Use this when a countdown and the viewer's one available action/outcome must share a single row, so that outcome never becomes a second challenge section.",
+        why: "if you need a countdown and the viewer's one available action or outcome to share a single row, so the outcome never becomes a second challenge section.",
     },
     "weekly-challenge-finisher-row": {
         classes: ["flex", "flex-row", "items-center", "gap-3", "w-full"],
@@ -1171,14 +1171,14 @@ export const CONTRACTS = buildContracts({
             metrics: { contract: "job-readiness-list" },
             action: { leaf: "button", optional: true },
         },
-        why: "Use this when you need a card wrapping a readiness list plus its optional supporting percentile and next-action outcomes; the inner list stays outlined-only since the outer card already supplies elevation.",
+        why: "if you need a card wrapping a readiness list plus its optional supporting percentile and next-action outcomes; the inner list stays outlined-only since the outer card already supplies elevation.",
     },
     "job-readiness-list": {
         classes: ["overflow-hidden", "divide-y", "divide-separator", "p-0", "[&>*]:px-4", "[&>*]:py-3", "[&>*:first-child]:pt-4", "[&>*:last-child]:pb-4"],
         children: {
             row: { composite: "labelled-progress-row", repeats: true, restingCount: 3 },
         },
-        why: "Use this when you need a nested joined list of scored readiness pillars sharing one outlined surface and full-width rules, without adding a second shadow inside a card that already has one.",
+        why: "if you need a nested joined list of scored readiness pillars sharing one outlined surface and full-width rules, without adding a second shadow inside a card that already has one.",
     },
     "marked-row-list": {
         classes: ["overflow-hidden", "divide-y", "divide-separator", "p-0", "[&>*]:px-4", "[&>*]:py-3", "[&>*:first-child]:pt-4", "[&>*:last-child]:pb-4"],
@@ -1192,7 +1192,7 @@ export const CONTRACTS = buildContracts({
             // been identical to this one, which is what `no-duplicate-entry-shape` exists to catch.
             row: { composite: "task-progress-row", contract: "task-mark-title-fact-row", repeats: true, restingCount: 5 },
         },
-        why: "Use this for a joined list of rows that each carry their own completion mark - something still to finish and something already true as one statement in two states - so the tick belongs to the row, never redrawn per list; a shared surface and full-width rule (not card spacing) separate rows and keep matching rows aligned across side-by-side lists.",
+        why: "if you need a joined list of rows that each carry their own completion mark — something still to finish and something already true, as one statement in two states — with a shared surface and full-width rule (not card spacing) so matching rows stay aligned across side-by-side lists.",
     },
     "rank-title-row": {
         classes: ["flex", "flex-row", "items-center", "gap-2", "w-full", "[&>*:first-child]:w-5", "[&>*:first-child]:shrink-0", "[&>*:first-child]:text-center", "[&>*:first-child]:tabular-nums", "[&>*:nth-child(2)]:min-w-0", "[&>*:nth-child(2)]:grow"],
@@ -1210,7 +1210,7 @@ export const CONTRACTS = buildContracts({
             badge: { leaf: "badge", optional: true },
             action: { leaf: "button" },
         },
-        why: "Use this for a suggested-identity row read in fixed order - avatar recognised first, an optional badge qualifying it only when needed, and an action last - where the name/handle stack owns the flexible middle.",
+        why: "if you need a suggested-identity row read in fixed order — avatar recognised first, an optional badge qualifying it only when needed, and an action last — where the name/handle stack owns the flexible middle.",
     },
     "name-over-handle": {
         classes: ["flex", "flex-col", "gap-1"],
@@ -1253,7 +1253,7 @@ export const CONTRACTS = buildContracts({
             grid: { leaf: "contribution-grid" },
             footer: { contract: "contribution-calendar-footer-row" },
         },
-        why: "Use this when you need a fixed contribution-calendar visualization that closes a year-summary heading, the intrinsic grid plot, and a streak/legend footer into one composite, without owning the grid's own DOM mechanics.",
+        why: "if you need a fixed contribution-calendar visualization that closes a year-summary heading, the intrinsic grid plot, and a streak/legend footer into one composite, without owning the grid's own DOM mechanics.",
     },
     "contribution-calendar-heading-row": {
         classes: ["flex", "flex-row", "flex-wrap", "items-center", "justify-between", "gap-3"],
@@ -1261,7 +1261,7 @@ export const CONTRACTS = buildContracts({
             total: { leaf: "text", props: { size: "xs", tone: "muted" } },
             years: { leaf: "choice-tabs" },
         },
-        why: "Use this when you need a header row that pairs an activity-total label with peer year tabs that switch the plot's time window, kept out of the grid's own mechanics.",
+        why: "if you need a header row that pairs an activity-total label with peer year tabs that switch the plot's time window, kept out of the grid's own mechanics.",
     },
     "contribution-calendar-footer-row": {
         classes: ["flex", "flex-row", "flex-wrap", "items-center", "justify-between", "gap-3"],
@@ -1269,7 +1269,7 @@ export const CONTRACTS = buildContracts({
             streak: { leaf: "text", props: { size: "sm" } },
             intensity: { leaf: "contribution-intensity-legend" },
         },
-        why: "Use this when you need a footer row pairing a streak-result caption with an intensity legend that together explain the same contribution plot, which itself stays an intrinsic leaf outside this row.",
+        why: "if you need a footer row pairing a streak-result caption with an intensity legend that together explain the same contribution plot, which itself stays an intrinsic leaf outside this row.",
     },
     "trending-content-list": {
         classes: ["overflow-hidden", "divide-y", "divide-separator", "p-0", "[&>*]:px-4", "[&>*]:py-3", "[&>*:first-child]:pt-4", "[&>*:last-child]:pb-4"],
@@ -1371,7 +1371,7 @@ export const CONTRACTS = buildContracts({
         children: {
             calendar: { composite: "contribution-calendar" },
         },
-        why: "Use this when you need the full contribution-calendar composite (year choice, activity grid, intensity key, streak caption) bounded inside one card surface, rather than split into separate dashboard sections.",
+        why: "if you need the full contribution-calendar composite (year choice, activity grid, intensity key, streak caption) bounded inside one card surface, rather than split into separate dashboard sections.",
     },
     "weekly-goals-card": {
         classes: ["flex", "flex-col", "gap-3", "p-4"],
@@ -1446,17 +1446,17 @@ export const CONTRACTS = buildContracts({
     "recommended-course-list": {
         classes: ["overflow-hidden", "divide-y", "divide-separator", "p-0", "[&>*]:px-4", "[&>*]:py-3", "[&>*:first-child]:pt-4", "[&>*:last-child]:pb-4"],
         children: { course: { composite: "recommended-course-row", repeats: true, restingCount: 3 } },
-        why: "Use when you need a joined list of recommended-course offer rows, each carrying title, pricing, and reason, separated by full-width dividers on one surface.",
+        why: "if you need a joined list of recommended-course offer rows, each carrying title, pricing, and reason, separated by full-width dividers on one surface.",
     },
     "recommended-course-row": {
         classes: ["flex", "w-full", "flex-row", "items-start", "gap-3", "[&>*:nth-child(2)]:min-w-0", "[&>*:nth-child(2)]:grow"],
         children: { mark: { leaf: "icon-tile" }, body: { contract: "recommended-course-body" } },
-        why: "Use when you need a recommended-course row where an icon mark leads a whole-row destination and its commerce facts (price, note, reason) sit together in one flexible column beside it.",
+        why: "if you need a recommended-course row where an icon mark leads a whole-row destination and its commerce facts (price, note, reason) sit together in one flexible column beside it.",
     },
     "recommended-course-body": {
         classes: ["flex", "min-w-0", "grow", "flex-col", "gap-1"],
         children: { title: { leaf: "text", props: { size: "md", weight: "semibold" } }, price: { contract: "price-discount-line" }, note: { contract: "price-note-row", optional: true }, reason: { leaf: "text", props: { size: "xs", tone: "muted" }, optional: true } },
-        why: "Use when you need to stack a course offer's title, price with its saving evidence, and suggestion reason in that reading order, with no room for a description paragraph — the shape deliberately excludes one so price and reason stay above the fold.",
+        why: "if you need a course offer's title, price with its saving evidence, and suggestion reason stacked in that reading order, with no room for a description paragraph — the shape deliberately excludes one so price and reason stay above the fold.",
     },
     "price-discount-line": {
         classes: ["flex", "flex-row", "flex-wrap", "items-center", "gap-2"],
@@ -1624,7 +1624,7 @@ export const CONTRACTS = buildContracts({
             current: { leaf: "text", props: { size: "sm", weight: "medium" } },
             record: { leaf: "badge" },
         },
-        why: "Use this when a current streak value and its record/best value need to read as one compact line, without a separate column, an invented fixed width, or a decorative icon.",
+        why: "if you need a current streak value and its record/best value to read as one compact line, without a separate column, an invented fixed width, or a decorative icon.",
     },
     "streak-daily-nudge": {
         classes: ["flex", "flex-row", "flex-wrap", "items-center", "justify-between", "gap-4"],
@@ -1632,7 +1632,7 @@ export const CONTRACTS = buildContracts({
             message: { leaf: "text", props: { size: "sm", weight: "medium" } },
             action: { leaf: "button", props: { size: "sm", variant: "primary" } },
         },
-        why: "Use this when an idle-today streak needs its reminder message and the action that preserves it joined into one decision row placed beneath other content, rather than promoted into its own dashboard section.",
+        why: "if you need an idle-today streak's reminder message and the action that preserves it joined into one decision row placed beneath other content, rather than promoted into its own dashboard section.",
     },
     "glyph-title-fact-row": {
         classes: ["flex", "flex-row", "items-center", "gap-2", "[&>*:nth-child(2)]:min-w-0", "[&>*:nth-child(2)]:grow"],
@@ -1641,7 +1641,7 @@ export const CONTRACTS = buildContracts({
             title: { leaf: "text", props: { size: "md", tone: "default" } },
             fact: { leaf: "text", props: { size: "xs", tone: "muted" } },
         },
-        why: "Use this when a row is identified by a leading icon rather than by its own name, needs a title that can clip instead of pushing content off the end when long, and a quiet fact trailing at the far edge.",
+        why: "if you need a row identified by a leading icon rather than by its own name, with a title that clips instead of pushing content off the end when long, and a quiet fact trailing at the far edge.",
     },
     "task-mark-title-fact-row": {
         classes: ["flex", "w-full", "flex-row", "items-center", "gap-2", "[&>*:nth-child(2)]:min-w-0", "[&>*:nth-child(2)]:grow"],
@@ -1650,7 +1650,7 @@ export const CONTRACTS = buildContracts({
             title: { leaf: "text" },
             fact: { leaf: "text", props: { size: "xs", tone: "muted" } },
         },
-        why: "Use this when a full-width row needs a completion-state mark leading, a title filling the flexible middle, and a quiet target value that stays aligned at the far edge across every row of a joined list.",
+        why: "if you need a full-width row with a completion-state mark leading, a title filling the flexible middle, and a quiet target value that stays aligned at the far edge across every row of a joined list.",
     },
     "label-fact-over-progress": {
         classes: ["flex", "flex-col", "gap-3"],
@@ -1658,7 +1658,7 @@ export const CONTRACTS = buildContracts({
             line: { contract: "label-with-muted-fact-row" },
             progress: { leaf: "progress" },
         },
-        why: "Use this when a labeled fact row needs to sit directly above the progress bar it measures, keeping the figure paired with its label rather than floating separately from the bar it describes.",
+        why: "if you need a labeled fact row to sit directly above the progress bar it measures, keeping the figure paired with its label rather than floating separately from the bar it describes.",
     },
     "label-with-muted-fact-row": {
         classes: ["flex", "flex-row", "flex-wrap", "items-baseline", "justify-between", "gap-2"],
@@ -1666,14 +1666,14 @@ export const CONTRACTS = buildContracts({
             label: { leaf: "text", props: { size: "sm", weight: "semibold" } },
             fact: { leaf: "text", props: { size: "xs", tone: "muted" } },
         },
-        why: "Use this when rows inside a joined list need a semibold label paired with a smaller muted fact on one shared baseline, and list membership alone already identifies each row so no leading icon is needed.",
+        why: "if you need a row inside a joined list to pair a semibold label with a smaller muted fact on one shared baseline, where list membership alone already identifies the row so no leading icon is needed.",
     },
     "resume-card-grid": {
         classes: ["grid", "grid-cols-1", "gap-4", "sm:grid-cols-2", "lg:grid-cols-3"],
         children: {
             card: { contract: "resume-item-card", repeats: true, restingCount: 3 },
         },
-        why: "Use this when a set of resume/next-step cards needs a responsive grid running one column on phone, two at mid-width, and three beside a dashboard rail, keeping each card's copy comparable in size across breakpoints.",
+        why: "if you need a set of resume/next-step cards laid out in a responsive grid running one column on phone, two at mid-width, and three beside a dashboard rail, keeping each card's copy comparable in size across breakpoints.",
     },
     "label-field-hint": {
         classes: ["flex", "flex-col", "gap-3"],
@@ -1682,7 +1682,7 @@ export const CONTRACTS = buildContracts({
             field: { leaf: ["input", "field"] },
             hint: { leaf: "text", props: { size: "xs", tone: "muted" }, optional: true },
         },
-        why: "Use this when a labeled field needs an optional hint placed under the control itself rather than beside the label, for the case where the reader only consults it after struggling with the control.",
+        why: "if you need a labeled field's optional hint placed under the control itself rather than beside the label, for when the reader only consults it after struggling with the control.",
     },
     "double-navbar": {
         classes: ["sticky", "top-0", "z-50", "w-full", "border-b", "border-separator", "bg-background"],
@@ -1690,7 +1690,7 @@ export const CONTRACTS = buildContracts({
             primary: { contract: "brand-links-then-tools-bar" },
             bottom: { contract: "underlined-tab-strip", optional: true },
         },
-        why: "Use this when the current page's tab strip needs to travel with the sticky navbar as one landmark sharing a single bottom border, instead of being drawn as a second, unrelated bar.",
+        why: "if you need the current page's tab strip to travel with the sticky navbar as one landmark sharing a single bottom border, instead of being drawn as a second, unrelated bar.",
     },
     "brand-links-then-tools-bar": {
         classes: ["flex", "h-16", "min-h-16", "w-full", "flex-row", "items-center", "justify-between", "gap-3", "px-3"],
@@ -1698,7 +1698,7 @@ export const CONTRACTS = buildContracts({
             navigation: { contract: "inline-nav-links" },
             tools: { contract: "inline-tool-row" },
         },
-        why: "Use this when a navbar row needs wayfinding (brand and routes) on the left and action tools on the right, wrapping on narrow widths rather than letting either group be cut off.",
+        why: "if you need a navbar row with wayfinding (brand and routes) on the left and action tools on the right, wrapping on narrow widths rather than letting either group be cut off.",
     },
     "inline-nav-links": {
         classes: ["flex", "flex-row", "items-center", "gap-6"],
@@ -1706,14 +1706,14 @@ export const CONTRACTS = buildContracts({
             brand: { leaf: "link", props: { emphasis: "brand" } },
             routes: { contract: "inline-route-links" },
         },
-        why: "Use this when the product's brand mark needs to sit beside its route group at the legacy 24px gap, distinct enough to read separately but not detached from the routes it anchors.",
+        why: "if you need the product's brand mark sitting beside its route group at the legacy 24px gap, distinct enough to read separately but not detached from the routes it anchors.",
     },
     "inline-route-links": {
         classes: ["hidden", "flex-1", "items-center", "justify-center", "gap-2", "md:flex"],
         children: {
             route: { leaf: "nav-link", props: { kind: "route" }, repeats: true, restingCount: 0 },
         },
-        why: "Use this when you need the desktop-only row of route pills at the original 8px gap that disappears as a group below the navigation breakpoint, handing navigation to the compact shell instead.",
+        why: "if you need the desktop-only row of route pills at the original 8px gap that disappears as a group below the navigation breakpoint, handing navigation to the compact shell instead.",
     },
     "inline-tool-row": {
         classes: ["flex", "flex-row", "items-center", "gap-2"],
@@ -1721,7 +1721,7 @@ export const CONTRACTS = buildContracts({
             desktop: { contract: "desktop-navbar-tools" },
             tool: { leaf: ["icon-button", "account-menu"], repeats: true, restingCount: 3 },
         },
-        why: "Use this when desktop-only field controls and round icon/account action buttons need to share one centred row despite having different intrinsic heights, so they still align on the same navbar axis.",
+        why: "if you need desktop-only field controls and round icon/account action buttons to share one centred row despite having different intrinsic heights, so they still align on the same navbar axis.",
     },
     "desktop-navbar-tools": {
         classes: ["hidden", "items-center", "gap-2", "md:flex"],
@@ -1737,7 +1737,7 @@ export const CONTRACTS = buildContracts({
         children: {
             tabs: { leaf: "extended-tabs" },
         },
-        why: "Use this when a tab strip needs to be the single typed ExtendedTabs primitive (owning inset, compound anatomy, and selected indicator) so no caller can redraw one tab differently from its peers.",
+        why: "if you need a tab strip to be the single typed ExtendedTabs primitive (owning inset, compound anatomy, and selected indicator) so no caller can redraw one tab differently from its peers.",
     },
     "centred-page-column": {
         classes: ["mx-auto", "flex", "w-full", "max-w-md", "flex-col", "gap-6"],
@@ -1751,7 +1751,7 @@ export const CONTRACTS = buildContracts({
             },
             footer: { contract: ["spread-choice-row", "centred-prompt-row"], optional: true },
         },
-        why: "Use this when a surface (such as an auth or form page) needs to be read one control at a time in a centred, narrow column, avoiding a full-desktop-width form where the eye must travel too far between a label and the box it names.",
+        why: "if you need a surface such as an auth or form page read one control at a time in a centred, narrow column, avoiding a full-desktop-width form where the eye must travel too far between a label and the box it names.",
     },
     "auth-entry-stack": {
         classes: ["flex", "flex-col", "gap-3", "[&>*]:w-full"],
@@ -1767,7 +1767,7 @@ export const CONTRACTS = buildContracts({
             title: { leaf: "heading" },
             description: { leaf: "text", props: { size: "sm" } },
         },
-        why: "Use this when a surface needs a centred title with a supporting description directly beneath it (not beside it), so the pair reads as the surface's own name rather than as the first row of its content.",
+        why: "if you need a centred title with a supporting description directly beneath it rather than beside it, so the pair reads as the surface's own name rather than the first row of its content.",
     },
     "auth-shortcuts-over-divider": {
         classes: ["flex", "flex-col", "gap-3", "[&>*]:w-full"],
@@ -1867,7 +1867,7 @@ export const CONTRACTS = buildContracts({
             reading: { contract: "content-reading-paper" },
             footer: { contract: "content-reader-footer", optional: true },
         },
-        why: "Use this when you need the article and the footer chrome under it to sit flush with no seam between them, because each already closes with its own trailing space and a gap here would read as the page changing subject between article and reactions.",
+        why: "if you need the article and its footer chrome to sit flush with no seam between them, because each already closes with its own trailing space and a gap here would read as the page changing subject.",
     },
     "content-reading-paper": {
         classes: ["mx-auto", "flex", "w-full", "min-w-0", "max-w-app-md", "flex-col", "gap-4", "p-4"],
@@ -1876,7 +1876,7 @@ export const CONTRACTS = buildContracts({
             article: { leaf: "article" },
             paywall: { composite: "empty-notice", optional: true },
         },
-        why: "Use this when you need the article rendered on its own raised page, separate from surrounding chrome, and — for locked content — when you need a paywall notice to join that page INSIDE alongside the faded article rather than replacing it, so the reader can see what they'd be paying for.",
+        why: "if you need the article rendered on its own raised page separate from surrounding chrome, with a paywall notice joining inside alongside the faded article when the content is locked, so the reader can see what they'd be paying for.",
     },
     "content-reader-footer": {
         classes: ["flex", "w-full", "min-w-0", "flex-col", "gap-6"],
@@ -1886,7 +1886,7 @@ export const CONTRACTS = buildContracts({
             next: { contract: "content-next-list", optional: true },
             pager: { leaf: "pagination", optional: true },
         },
-        why: "Use this when you need the run of stand-alone blocks that follow content — reactions, discussion, next-up, pager — each spaced at the block seam as independent peers rather than parts of one group, and omitted entirely when the content is locked and there is nothing yet to react to, discuss, or page past.",
+        why: "if you need the run of stand-alone blocks that follow content — reactions, discussion, next-up, pager — each spaced at the block seam as independent peers, and omitted entirely when the content is locked.",
     },
     "content-discussion-panel": {
         host: "section",
@@ -1898,7 +1898,7 @@ export const CONTRACTS = buildContracts({
             notice: { composite: "empty-notice", optional: true },
             list: { contract: "content-discussion-list", optional: true },
         },
-        why: "Use this when you need a self-contained discussion block — heading, one top-level composer, and the settled comment list — held at reading width so posting only changes the action state, without carrying the thread away from the content it discusses.",
+        why: "if you need a self-contained discussion block — heading, one top-level composer, and the settled comment list — held at reading width so posting only changes the action state.",
     },
     "content-discussion-list": {
         host: "ul",
@@ -1906,7 +1906,7 @@ export const CONTRACTS = buildContracts({
         children: {
             comment: { contract: "content-discussion-comment-row", repeats: true, restingCount: 3 },
         },
-        why: "Use this when you need an ordered list of top-level comment rows on the same lesson, joined by a stable divider, rather than rendered as unrelated cards competing visually with the article.",
+        why: "if you need an ordered list of top-level comment rows on the same lesson, joined by a stable divider, rather than rendered as unrelated cards.",
     },
     "content-discussion-comment-row": {
         host: "li",
@@ -1916,7 +1916,7 @@ export const CONTRACTS = buildContracts({
             meta: { leaf: "text", props: { size: "xs", tone: "muted" } },
             body: { leaf: "text", props: { size: "sm" } },
         },
-        why: "Use this when you need a single comment row that fixes the reading order as author, then time-and-reply metadata, then body, so the metadata cannot be mistaken for part of the authored response.",
+        why: "if you need a single comment row that fixes the reading order as author, then time-and-reply metadata, then body, so the metadata cannot be mistaken for the authored response.",
     },
     "content-reaction-card": {
         classes: ["mx-auto", "flex", "w-full", "max-w-app-md", "flex-row", "items-center", "gap-3", "p-4", "[&>*:first-child]:grow"],
@@ -1924,7 +1924,7 @@ export const CONTRACTS = buildContracts({
             prompt: { leaf: "text", props: { size: "sm", tone: "muted" } },
             reactions: { leaf: "reaction-picker" },
         },
-        why: "Use this when you need a reaction control set on its own ground rather than loose beneath the article — so it doesn't read as the article's last line — while still held to the reading measure so it sits under the words it belongs to.",
+        why: "if you need a reaction control set held to the reading measure but on its own ground rather than loose beneath the article, so it doesn't read as the article's last line.",
     },
 
     /*
@@ -1959,7 +1959,7 @@ export const CONTRACTS = buildContracts({
             main: { contract: "learn-content-page" },
             outline: { contract: "content-outline-rail", optional: true },
         },
-        why: "Use this when you need a two-rail reading frame — a course-position rail and a page-position rail flanking a flexible middle body, each rail sticky and independently scrollable so neither costs the reader a scroll back — with the outline rail dropped entirely (not shown empty) whenever the body carries no headings to outline.",
+        why: "if you need a two-rail reading frame — a course-position rail and a page-position rail flanking a flexible middle body, each sticky and independently scrollable — with the outline rail dropped entirely whenever the body carries no headings.",
     },
     "content-map-panel": {
         host: "nav",
@@ -1969,7 +1969,7 @@ export const CONTRACTS = buildContracts({
             search: { leaf: "search-box" },
             module: { contract: "content-map-module", repeats: true, restingCount: 4 },
         },
-        why: "Use this when you need a course navigation panel that answers progress, search, and structure in that fixed order — a progress row, then a search box sitting above (not inside) the module tree because it filters the whole tree, then the module list reusing the curriculum's own disclosing row rather than a second, drifting one.",
+        why: "if you need a course navigation panel that orders progress, search, and module structure in that fixed sequence, with search sitting above the module tree because it filters the whole tree.",
     },
     "content-map-module-summary": {
         classes: ["flex", "w-full", "min-w-0", "flex-row", "items-center", "gap-3", "px-3", "py-2", "[&>*:first-child]:min-w-0", "[&>*:first-child]:grow", "[&>*:nth-child(2)]:shrink-0", "[&>*:last-child]:shrink-0"],
@@ -1978,7 +1978,7 @@ export const CONTRACTS = buildContracts({
             fact: { leaf: "text", props: { size: "xs", tone: "muted" } },
             caret: { leaf: "icon", props: { role: "chip" } },
         },
-        why: "Use this when you need one summary line for a collapsible module that states its name, its progress fact, and whether it is open, in that reading order. The caret stays isolated at the far end so a reader reaching for the progress count never lands on the open/close control instead.",
+        why: "if you need one summary line for a collapsible module that states its name, its progress fact, and whether it is open, in that reading order, with the caret isolated at the far end.",
     },
     "content-map-module": {
         classes: ["flex", "w-full", "min-w-0", "flex-col", "gap-1"],
@@ -1986,7 +1986,7 @@ export const CONTRACTS = buildContracts({
             title: { contract: "content-map-module-summary" },
             row: { leaf: "content-map-row", repeats: true, restingCount: 0 },
         },
-        why: "Use this when you need a module block that keeps its own summary row and its content rows as one identity rather than a heading over a separate list. An unopened module renders zero rows, not an empty placeholder run, since the map is scanned module-by-module first.",
+        why: "if you need a module block that keeps its own summary row and its content rows as one identity, rendering zero rows rather than an empty placeholder run while unopened.",
     },
     "content-outline-rail": {
         host: "nav",
@@ -1995,7 +1995,7 @@ export const CONTRACTS = buildContracts({
             label: { leaf: "text", props: { size: "sm", tone: "muted" } },
             heading: { leaf: "nav-link", props: { kind: "section" }, repeats: true, restingCount: 5 },
         },
-        why: "Use this when you need a labeled, in-page navigation list of section destinations inside the current content - real links that move the reader, not lines of descriptive text.",
+        why: "if you need a labeled, in-page navigation list of real section links that move the reader inside the current content, not lines of descriptive text.",
     },
 
     "learn-content-page": {
@@ -2025,7 +2025,7 @@ export const CONTRACTS = buildContracts({
         children: {
             step: { contract: "content-next-row", repeats: true, restingCount: 2 },
         },
-        why: "Use this when you need a short, ordered run of where-to-go-next destinations on one shared surface with full-width rules between them, matching the dashboard's joined-list pattern instead of separate cards.",
+        why: "if you need a short, ordered run of where-to-go-next destinations on one shared surface with full-width rules between them, matching the dashboard's joined-list pattern.",
     },
     "content-next-row": {
         classes: ["flex", "w-full", "flex-row", "items-center", "gap-3", "[&>*:first-child]:min-w-0", "[&>*:first-child]:grow"],
@@ -2033,7 +2033,7 @@ export const CONTRACTS = buildContracts({
             label: { leaf: "text", props: { size: "md" } },
             disclosure: { leaf: "icon", optional: true },
         },
-        why: "Use this when you need a single next-destination row: a label that owns the width plus a trailing open-indicator glyph, with no completion mark - a tick would wrongly promise something to finish rather than a place to open.",
+        why: "if you need a single next-destination row — a label that owns the width plus a trailing open-indicator glyph — with no completion mark, since a tick would wrongly promise something to finish rather than a place to open.",
     },
     "courses-catalog-page": {
         // The same measure and inset the dashboard and the leaderboard use. A catalog reached from
@@ -2476,7 +2476,7 @@ export const CONTRACTS = buildContracts({
         children: {
             line: { contract: "cart-line-row", repeats: true, restingCount: 3 },
         },
-        why: "Use this when you need to list courses already committed to a basket as one joined list rather than as separate offer cards, with just enough division between rows that a single line can still be located and removed.",
+        why: "if you need courses already committed to a basket listed as one joined list rather than as separate offer cards, with just enough division between rows that a single line can still be located and removed.",
     },
     "cart-line-row": {
         classes: [
@@ -2509,7 +2509,7 @@ export const CONTRACTS = buildContracts({
             price: { contract: "price-discount-line" },
             remove: { leaf: "icon-button" },
         },
-        why: "Use this for one course already committed to the basket that needs its cover, identity, and price shown alongside a single removal control, with that control placed as a glyph at the trailing edge — farthest from the artwork — so undoing a purchase is the hardest action on the row to trigger by accident.",
+        why: "if you need one committed-basket line showing its cover, identity, and price alongside a single removal control, with that control placed as a glyph at the trailing edge — farthest from the artwork — so undoing a purchase is the hardest action on the row to trigger by accident.",
     },
     "order-summary-stack": {
         classes: [
@@ -2553,7 +2553,7 @@ export const CONTRACTS = buildContracts({
             actions: { contract: "stacked-peer-controls", optional: true },
             notice: { composite: "empty-notice", optional: true },
         },
-        why: "Use this for basket contents shown inside a slide-out drawer rather than the full cart page, at a narrower measure with its own inset, and only when the drawer's own title bar already names what is open so no second heading is needed inside.",
+        why: "if you need basket contents shown inside a slide-out drawer rather than the full cart page, at a narrower measure with its own inset, and only when the drawer's own title bar already names what is open so no second heading is needed inside.",
     },
     "course-mobile-action-bar": {
         classes: ["sticky", "bottom-0", "z-40", "flex", "flex-row", "items-center", "justify-between", "gap-3", "border-t", "border-separator", "bg-background", "px-4", "py-3", "md:hidden"],
@@ -2617,7 +2617,7 @@ export const CONTRACTS = buildContracts({
             tabs: { leaf: "extended-tabs" },
             body: { contract: "problem-statement-stack" },
         },
-        why: "Use this for the reading side of a coding-problem layout when the tabs above the content must stay fixed in place while the content beneath them switches, so a reader who moves between tabs and back does not lose their place.",
+        why: "if you need the reading side of a coding-problem layout where tabs above the content stay fixed in place while the content beneath them switches, so a reader who moves between tabs and back does not lose their place.",
     },
     "problem-statement-stack": {
         classes: ["flex", "min-w-0", "flex-col", "gap-3"],
@@ -2632,7 +2632,7 @@ export const CONTRACTS = buildContracts({
             prose: { leaf: "article" },
             tags: { contract: "profile-topic-chip-run", optional: true },
         },
-        why: "Use this when a problem needs a title carrying its difficulty on the title's own baseline, followed by the authored problem body, with optional topic tags closing the statement for a reader scanning whether to skip it.",
+        why: "if you need a title carrying its difficulty on the title's own baseline, followed by the authored problem body, with optional topic tags closing the statement for a reader scanning whether to skip it.",
     },
     "problem-work-column": {
         classes: ["flex", "w-full", "min-w-0", "grow", "flex-col"],
@@ -2643,7 +2643,7 @@ export const CONTRACTS = buildContracts({
             verdict: { contract: "judge-status-strip" },
             work: { contract: "editor-over-console" },
         },
-        why: "Use this when a coding attempt needs a socket-driven verdict strip pinned above a keyboard-driven editor-and-console block, so the verdict stays watched during a wait while the editor takes whatever height remains and grows on taller screens.",
+        why: "if you need a socket-driven verdict strip pinned above a keyboard-driven editor-and-console block, so the verdict stays watched during a wait while the editor takes whatever height remains and grows on taller screens.",
     },
     "judge-status-strip": {
         classes: ["flex", "flex-row", "items-center", "gap-3", "w-full", "border-b", "border-separator", "px-4", "py-3", "[&>*:nth-child(3)]:min-w-0", "[&>*:nth-child(3)]:grow"],
@@ -2845,12 +2845,12 @@ export const CONTRACTS = buildContracts({
             licenseTitle: { leaf: "heading" },
             licenses: { contract: "pricing-license-grid" },
         },
-        why: "Use this when you need the pricing catalog body that presents the recurring learning-access offer before the lifetime license grid, so a subscription is never confused with owning downloadable material.",
+        why: "if you need a pricing catalog body that presents the recurring learning-access offer before the lifetime license grid, so a subscription is never confused with owning downloadable material.",
     },
     "pricing-license-grid": {
         classes: ["grid", "grid-cols-1", "gap-4", "md:grid-cols-2"],
         children: { offer: { contract: "pricing-offer-card", repeats: true, restingCount: 3 } },
-        why: "Use this when you need a comparison grid of lifetime license offers, shown only after the separate subscription offer has already been presented.",
+        why: "if you need a comparison grid of lifetime license offers, shown only after the separate subscription offer has already been presented.",
     },
     "pricing-offer-card": {
         classes: ["flex", "h-full", "flex-col", "gap-4", "p-6"],
@@ -2862,7 +2862,7 @@ export const CONTRACTS = buildContracts({
             benefit: { leaf: "text", repeats: true, restingCount: 3 },
             action: { leaf: "button" },
         },
-        why: "Use this when you need a single reusable offer card, subscription or license, that keeps its price, benefit list, and one purchase action together so cost and consequence are never compared apart.",
+        why: "if you need a single reusable offer card, subscription or license, that keeps its price, benefit list, and one purchase action together so cost and consequence are never compared apart.",
     },
     "payment-return-status": {
         classes: ["flex", "flex-col", "gap-4", "p-6", "border", "border-accent"],
@@ -3034,72 +3034,72 @@ export const CONTRACTS = buildContracts({
     "game-catalog-section": {
         classes: ["flex", "flex-col", "gap-4"],
         children: { header: { contract: "page-header-stack" }, games: { contract: "game-grid" } },
-        why: "Use when you need to introduce the games catalog with a header stating the shared-play promise, immediately followed by the grid of available games.",
+        why: "if you need a header announcing the games catalog immediately followed by the grid of available games.",
     },
     "game-grid": {
         classes: ["grid", "grid-cols-1", "gap-4", "sm:grid-cols-2"],
         children: { game: { composite: "game-catalog-card", repeats: true, restingCount: 4 } },
-        why: "Use when you need a responsive grid of exactly four peer game-catalog cards, each carrying its own mode evidence and setup action.",
+        why: "if you need a responsive grid of game-catalog cards, each carrying its own mode evidence and one setup action.",
     },
     "game-card": {
         classes: ["flex", "h-full", "flex-col", "gap-4", "p-4"],
         children: { cover: { leaf: "cover-image" }, body: { contract: "evidence-title-over-subtitle" }, modes: { contract: "game-card-actions" }, action: { leaf: "button" } },
-        why: "Use when you need a single game's catalog card: cover art establishing legacy identity, a title/subtitle promise, its supported-mode chips, and one unambiguous setup action.",
+        why: "if you need a single game's catalog card combining cover art, a title/subtitle promise, its supported-mode chips, and one unambiguous setup action.",
     },
     "game-card-actions": {
         classes: ["flex", "flex-wrap", "items-center", "gap-2"],
         children: { mode: { leaf: "badge", repeats: true, restingCount: 2 } },
-        why: "Use when you need up to two mode-availability chips to sit together as a wrapping row of supporting facts, kept visually separate from the card's setup action.",
+        why: "if you need up to two mode-availability chips wrapped together as a row of supporting facts, kept visually separate from the card's setup action.",
     },
     "game-setup-panel": {
         classes: ["flex", "flex-col", "gap-5", "p-5"],
         children: { header: { contract: "page-header-stack" }, back: { leaf: "button", optional: true }, content: { contract: ["game-mode-grid", "game-character-grid", "game-code-join-row"] } },
-        why: "Use when you need a modal that advances through exactly one setup decision at a time (mode choice, character choice, or code entry) with a header and optional back control, while the already-chosen game stays visible.",
+        why: "if you need a modal that advances through exactly one setup decision at a time — mode, character, or code entry — with an optional back control while the already-chosen game stays visible.",
     },
     "game-mode-grid": {
         classes: ["grid", "grid-cols-1", "gap-3", "sm:grid-cols-2"],
         children: { mode: { leaf: "button", repeats: true, restingCount: 3 } },
-        why: "Use when you need a grid of up to three mutually exclusive launch-mode buttons, such as solo, friend room, and team matchmaking.",
+        why: "if you need a grid of mutually exclusive launch-mode buttons, such as solo, friend room, and team matchmaking.",
     },
     "game-character-grid": {
         classes: ["grid", "grid-cols-2", "gap-3"],
         children: { character: { leaf: "button", repeats: true, restingCount: 2 } },
-        why: "Use when you need a two-up grid of parallel playable-character buttons, presented after the launch mode has already been chosen.",
+        why: "if you need a two-up grid of parallel playable-character buttons, shown after the launch mode has already been chosen.",
     },
     "game-code-join-row": {
         classes: ["flex", "flex-col", "gap-3"],
         children: { create: { leaf: "button" }, label: { leaf: "text" }, code: { leaf: "input" }, join: { leaf: "button" } },
-        why: "Use when you need one row that keeps creating a room and joining one by code as two distinct actions, with the code input attached directly to its join control.",
+        why: "if you need one row that keeps creating a room and joining one by code as two distinct actions, with the code input attached directly to its join control.",
     },
     "game-runner-stack": {
         classes: ["flex", "flex-col", "gap-4"],
         children: { lobby: { composite: "game-lobby-panel", optional: true }, canvas: { contract: "game-canvas-frame", optional: true }, result: { composite: "game-result-card", optional: true }, notice: { composite: "empty-notice", optional: true }, exit: { leaf: "button" } },
-        why: "Use when you need the in-session game shell showing lobby, authoritative canvas, and result panels in phase order, with an optional empty-state notice and an exit control reachable in every state.",
+        why: "if you need the in-session game shell that shows lobby, canvas, and result panels in phase order, with an optional empty-state notice and an exit control reachable in every state.",
     },
     "game-canvas-frame": {
         classes: ["w-full"],
         children: { canvas: { leaf: "game-canvas" } },
-        why: "Use this when you need a frame that holds the Phaser game canvas at its intrinsic 16:9 aspect ratio with one stable visual boundary, regardless of screen size.",
+        why: "if you need a frame that holds the Phaser game canvas at its intrinsic 16:9 aspect ratio with one stable visual boundary, regardless of screen size.",
     },
     "game-lobby-card": {
         classes: ["flex", "flex-col", "gap-4", "p-4"],
         children: { title: { leaf: "heading" }, code: { leaf: "text", optional: true }, players: { contract: "game-player-list" }, action: { leaf: "button", optional: true } },
-        why: "Use this when you need a pre-match card that shows the room code next to the live connected-player roster in one glance, with an optional action to start the match.",
+        why: "if you need a pre-match card that shows the room code next to the live connected-player roster in one glance, with an optional action to start the match.",
     },
     "game-player-list": {
         classes: ["flex", "flex-col", "gap-2"],
         children: { player: { leaf: "text", repeats: true, restingCount: 2 } },
-        why: "Use this when you need a vertical, single-axis list of connected players' names and scores kept comparable row by row, instead of collapsing into an unreadable inline run.",
+        why: "if you need a vertical, single-axis list of connected players' names and scores kept comparable row by row, instead of collapsing into an unreadable inline run.",
     },
     "game-result-card": {
         classes: ["flex", "flex-col", "gap-4", "p-4"],
         children: { title: { leaf: "heading" }, players: { contract: "game-player-list" }, actions: { contract: "game-result-actions" } },
-        why: "Use this when you need a post-match card that shows the verified winner with the ordered player scores and leads straight into rematch-or-lobby actions, without a reward-receipt display.",
+        why: "if you need a post-match card that shows the verified winner with the ordered player scores and leads straight into rematch-or-lobby actions, without a reward-receipt display.",
     },
     "game-result-actions": {
         classes: ["flex", "flex-wrap", "gap-3"],
         children: { action: { leaf: "button", repeats: true, restingCount: 2 } },
-        why: "Use this when you need the two explicit next-move buttons, rematch and return to lobby, offered once the authoritative match result has settled.",
+        why: "if you need the two explicit next-move buttons, rematch and return to lobby, offered once the authoritative match result has settled.",
     },
 })
 
