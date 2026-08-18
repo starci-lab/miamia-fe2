@@ -1,5 +1,7 @@
-import type { ReactNode } from "react"
 import { Drawer } from "@heroui/react"
+import { Tree } from "@/components/branches/Tree"
+import type { ContractKey } from "@/components/contracts"
+import type { ContractComponent } from "@/components/contracts/props"
 
 /**
  * BRANCH - `DrawerBranch`: the vendor's edge-anchored covering mechanics, wrapped once.
@@ -20,9 +22,18 @@ import { Drawer } from "@heroui/react"
  * `ModalBranch`, `DrawerBranch` and `DropdownBranch` - so the drawer was vocabulary before it was
  * written.
  *
- * IT IS AN UNTYPED INTERIOR HOLE, deliberately. A drawer owns focus trapping, Escape, backdrop
- * dismissal, scroll locking and placement, but it neither knows nor arranges what is mounted in
- * the vendor body's `children` slot.
+ * SLOTS-4: it takes `{contract, render}`, exactly like `Tree`, instead of an untyped `children`
+ * hole. A drawer owns focus trapping, Escape, backdrop dismissal, scroll locking and placement; the
+ * content it covers is now always a checked contract identity rather than an arbitrary subtree.
+ *
+ * BOUND SLOTS DRAW THROUGH `Tree`, the one file that turns a key into an element (CONTRACT-7): the
+ * vendor body hosts `<Tree contract render />`, and the entry's own host lands INSIDE that body,
+ * never ON it (CONTRACT-4).
+ *
+ * A PROJECTION HAS ALREADY DRAWN ITS OWN HOST. Routing it through `Tree` a second time would open a
+ * second host around content that already opened one - the same fault `Tree`'s own `ContractContent`
+ * refuses for a projected SLOT, reproduced here for a projected ROOT. So a projection's `project()`
+ * is called directly and its output is handed to the vendor body with no host in between.
  *
  * IT IMPLEMENTS NONE OF THOSE MECHANICS ITSELF, exactly as `ModalBranch` does not: no effect, no
  * ref, no scroll handling. All of it belongs to the vendor, which is what stops two overlays in
@@ -33,15 +44,17 @@ import { Drawer } from "@heroui/react"
 export type DrawerBranchSide = "left" | "right"
 
 /** Props for {@link DrawerBranch}. */
-export type DrawerBranchProps = {
+export type DrawerBranchProps<K extends ContractKey> = {
     /** Whether the drawer is showing. Owned by whoever mounts it, never by the shell. */
     readonly isOpen: boolean
     /** The edge it opens from. Absent is `right`, which is where this product's basket lives. */
     readonly side?: DrawerBranchSide
     /** The already-resolved title. A drawer names itself; the interior does not repeat it. */
     readonly title: string
-    /** Content passed straight to the vendor body without inspection or arrangement. */
-    readonly children?: ReactNode
+    /** The registry key the interior must satisfy. */
+    readonly contract: K
+    /** Named content whose metadata and source body satisfy this exact contract. */
+    readonly render: ContractComponent<NoInfer<K>>
     /** Every way out: the close control, Escape, and the backdrop. */
     readonly onDismiss: () => void
 }
@@ -51,7 +64,7 @@ export type DrawerBranchProps = {
  *
  * @param input - {@link DrawerBranchProps}
  */
-export const DrawerBranch = (input: DrawerBranchProps) => (
+export const DrawerBranch = <const K extends ContractKey>(input: DrawerBranchProps<K>) => (
     <Drawer
         isOpen={input.isOpen}
         onOpenChange={(open) => {
@@ -70,7 +83,11 @@ export const DrawerBranch = (input: DrawerBranchProps) => (
                      * interior owns its own padding, so a shell that also padded would inset the
                      * same content twice and the two insets would drift apart.
                      */}
-                    <Drawer.Body className="p-0">{input.children}</Drawer.Body>
+                    <Drawer.Body className="p-0">
+                        {input.render.kind === "projection"
+                            ? input.render.project()
+                            : <Tree contract={input.contract} render={input.render} />}
+                    </Drawer.Body>
                 </Drawer.Dialog>
             </Drawer.Content>
         </Drawer.Backdrop>

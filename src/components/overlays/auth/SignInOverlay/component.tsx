@@ -1,5 +1,4 @@
 import { ModalBranch } from "@/components/branches/ModalBranch"
-import { ContractContent } from "@/components/branches/Tree"
 import type { ContractKey } from "@/components/contracts"
 import type { ContractComponent } from "@/components/contracts/props"
 
@@ -36,9 +35,13 @@ export type SignInOverlayProps<K extends ContractKey> = {
  * @param input - {@link SignInOverlayProps}
  */
 export const _SignInOverlay = <const K extends ContractKey>(input: SignInOverlayProps<K>) => (
-    <ModalBranch isOpen={input.isOpen} size="xs" onDismiss={input.onDismiss}>
-        <ContractContent contract={input.render.meta.contract} render={input.render} />
-    </ModalBranch>
+    <ModalBranch
+        isOpen={input.isOpen}
+        size="xs"
+        contract={input.render.meta.contract}
+        render={input.render}
+        onDismiss={input.onDismiss}
+    />
 )
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
