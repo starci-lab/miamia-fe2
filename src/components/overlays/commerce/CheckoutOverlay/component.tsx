@@ -2,7 +2,7 @@ import { Button } from "@/components/leaves/Button"
 import { ChoiceTabs } from "@/components/leaves/ChoiceTabs"
 import { StatusDot } from "@/components/leaves/StatusDot"
 import { Text } from "@/components/leaves/Text"
-import { ModalShell } from "@/components/shells/ModalShell"
+import { ModalBranch } from "@/components/branches/ModalBranch"
 import { Tree } from "@/components/branches/Tree"
 import {
     defineContractComponent,
@@ -116,7 +116,7 @@ export const _CheckoutOverlay = (input: CheckoutOverlayProps) => {
     const cycles = input.props.cycles ?? []
 
     return (
-        <ModalShell
+        <ModalBranch
             isOpen={input.props.isOpen}
             size="sm"
             onDismiss={input.on?.dismiss ?? (() => undefined)}
@@ -197,7 +197,7 @@ export const _CheckoutOverlay = (input: CheckoutOverlayProps) => {
                     )),
                 })}
             />
-        </ModalShell>
+        </ModalBranch>
     )
 }
 

@@ -1,4 +1,4 @@
-import { ModalShell } from "@/components/shells/ModalShell"
+import { ModalBranch } from "@/components/branches/ModalBranch"
 import { Tree } from "@/components/branches/Tree"
 import { Button } from "@/components/leaves/Button"
 import { Heading } from "@/components/leaves/Heading"
@@ -10,13 +10,13 @@ export type ComingSoonOverlayProps = { readonly isOpen: boolean; readonly title:
 
 /** Renders the pure coming-soon dialog. */
 export const _ComingSoonOverlay = (input: ComingSoonOverlayProps) => (
-    <ModalShell isOpen={input.isOpen} size="xs" onDismiss={input.onDismiss}>
+    <ModalBranch isOpen={input.isOpen} size="xs" onDismiss={input.onDismiss}>
         <Tree contract="coming-soon-panel" render={defineContractComponent("coming-soon-panel", {
             title: defineLeafComponent("heading", {}, () => <Heading props={{ content: input.title, level: 2 }} />),
             body: defineLeafComponent("text", {}, () => <Text props={{ content: input.body, tone: "muted" }} />),
             action: defineLeafComponent("button", {}, () => <Button props={{ label: input.closeLabel, variant: "primary" }} on={{ press: input.onDismiss }} />),
         })} />
-    </ModalShell>
+    </ModalBranch>
 )
 
 /** Declares the component architecture metadata. */

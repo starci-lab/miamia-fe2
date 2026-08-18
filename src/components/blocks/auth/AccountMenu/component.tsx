@@ -1,5 +1,5 @@
 import { Icon } from "@/components/leaves/Icon"
-import { DropdownShell } from "@/components/shells/DropdownShell"
+import { DropdownBranch } from "@/components/branches/DropdownBranch"
 
 /** Resolved account copy owned by the account-menu block. */
 export type AccountMenuData = {
@@ -24,11 +24,11 @@ export type AccountMenuProps = {
 /**
  * BLOCK - the guest account sentence and the journeys it offers.
  *
- * DropdownShell owns only vendor mechanics. This block decides that a guest first sees an account
+ * DropdownBranch owns only vendor mechanics. This block decides that a guest first sees an account
  * summary, then chooses sign in or sign up; that decision is product behavior, not a leaf shape.
  */
 export const _AccountMenu = (input: AccountMenuProps) => (
-    <DropdownShell
+    <DropdownBranch
         props={{
             label: input.props.label,
             sections: [

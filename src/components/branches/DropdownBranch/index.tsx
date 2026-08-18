@@ -3,10 +3,10 @@ import { Dropdown } from "@heroui/react"
 import { Icon, type IconName } from "@/components/leaves/Icon"
 
 /** Placement choices exposed without leaking the vendor vocabulary beyond the shell. */
-export type DropdownShellPlacement = "bottom left" | "bottom right" | "top left" | "top right"
+export type DropdownBranchPlacement = "bottom left" | "bottom right" | "top left" | "top right"
 
 /** One menu item described by its caller without exposing HeroUI anatomy. */
-export type DropdownShellItemData<I extends string> = {
+export type DropdownBranchItemData<I extends string> = {
     readonly id: I
     readonly label: string
     readonly icon?: IconName
@@ -14,36 +14,36 @@ export type DropdownShellItemData<I extends string> = {
 }
 
 /** One semantic section in a menu. */
-export type DropdownShellSectionData<I extends string> = {
-    readonly items: ReadonlyArray<DropdownShellItemData<I>>
+export type DropdownBranchSectionData<I extends string> = {
+    readonly items: ReadonlyArray<DropdownBranchItemData<I>>
 }
 
 /** Data the shell projects into complete vendor dropdown anatomy. */
-export type DropdownShellData<I extends string> = {
+export type DropdownBranchData<I extends string> = {
     readonly label: string
-    readonly placement?: DropdownShellPlacement
-    readonly sections: ReadonlyArray<DropdownShellSectionData<I>>
+    readonly placement?: DropdownBranchPlacement
+    readonly sections: ReadonlyArray<DropdownBranchSectionData<I>>
 }
 
 /** Menu selection reported without putting functions in item data. */
-export type DropdownShellActions<I extends string> = {
+export type DropdownBranchActions<I extends string> = {
     readonly action?: (id: I) => void
 }
 
 /** Props for the content-agnostic dropdown mechanics. */
-export type DropdownShellProps<I extends string> = {
-    readonly props: DropdownShellData<I>
-    readonly on?: DropdownShellActions<I>
+export type DropdownBranchProps<I extends string> = {
+    readonly props: DropdownBranchData<I>
+    readonly on?: DropdownBranchActions<I>
     readonly trigger: ReactNode
 }
 
 /**
- * SHELL - the vendor's trigger, popover, focus, keyboard, section and item mechanics.
+ * BRANCH - `DropdownBranch`: the vendor's trigger, popover, focus, keyboard, section and item mechanics.
  *
  * Callers decide item meaning and grouping as data. This shell alone expands that data into the
  * complete HeroUI compound structure, so no block has to know that Section and Item exist.
  */
-export const DropdownShell = <const I extends string>(input: DropdownShellProps<I>) => (
+export const DropdownBranch = <const I extends string>(input: DropdownBranchProps<I>) => (
     <Dropdown>
         <Dropdown.Trigger
             aria-label={input.props.label}
@@ -75,4 +75,4 @@ export const DropdownShell = <const I extends string>(input: DropdownShellProps<
 )
 
 /** Source-level tier marker for the content-agnostic dropdown mechanics. */
-export const meta = { shape: "shell", mechanics: true, world: "pure" } as const
+export const meta = { shape: "branch", mechanics: true, world: "pure" } as const

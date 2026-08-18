@@ -1,5 +1,5 @@
 import { Tree } from "@/components/branches/Tree"; import { Button } from "@/components/leaves/Button"; import { Heading } from "@/components/leaves/Heading"; import { Input } from "@/components/leaves/Input"; import { Text } from "@/components/leaves/Text"
-import { defineContractComponent, defineLeafComponent } from "@/components/contracts/props"; import { ModalShell } from "@/components/shells/ModalShell"
+import { defineContractComponent, defineLeafComponent } from "@/components/contracts/props"; import { ModalBranch } from "@/components/branches/ModalBranch"
 import type { GameCharacter, GameMode } from "@/modules/games/types"
 
 /** Finite decision step shown by the game setup overlay. */
@@ -32,11 +32,11 @@ export const _GameSetupOverlay = (input: GameSetupOverlayProps) => {
                 defineLeafComponent("button", {}, () => <Button props={{ label: "Chọn Mia", variant: "primary" }} on={{ press: () => input.on?.chooseCharacter?.("MIA") }} />), // vn-ok: localized runtime copy
                 defineLeafComponent("button", {}, () => <Button props={{ label: "Chọn Max", variant: "secondary" }} on={{ press: () => input.on?.chooseCharacter?.("MAX") }} />), // vn-ok: localized runtime copy
             ] })
-    return <ModalShell isOpen={input.isOpen} size="md" onDismiss={input.onDismiss}><Tree contract="game-setup-panel" render={defineContractComponent("game-setup-panel", {
+    return <ModalBranch isOpen={input.isOpen} size="md" onDismiss={input.onDismiss}><Tree contract="game-setup-panel" render={defineContractComponent("game-setup-panel", {
         header,
         ...(input.state === "mode" ? {} : { back: defineLeafComponent("button", {}, () => <Button props={{ label: "Quay lại", variant: "ghost", size: "sm" }} on={{ press: input.on?.back }} />) }), // vn-ok: localized runtime copy
         content,
-    })} /></ModalShell>
+    })} /></ModalBranch>
 }
 /** Declares the setup renderer as a pure game overlay. */
 export const meta = { shape: "overlay", world: "pure", domain: "games" } as const

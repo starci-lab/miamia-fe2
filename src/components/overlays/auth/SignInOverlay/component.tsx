@@ -1,4 +1,4 @@
-import { ModalShell } from "@/components/shells/ModalShell"
+import { ModalBranch } from "@/components/branches/ModalBranch"
 import { ContractContent } from "@/components/branches/Tree"
 import type { ContractKey } from "@/components/contracts"
 import type { ContractComponent } from "@/components/contracts/props"
@@ -16,7 +16,7 @@ import type { ContractComponent } from "@/components/contracts/props"
  * thing only a covering surface can: the way out.
  *
  * IT DOES NOT TOUCH THE VENDOR. The focus trap, the backdrop, the placement and the scroll lock
- * are `ModalShell`'s, wrapped once at the shell tier - which is what stops two surfaces disagreeing
+ * are `ModalBranch`'s, wrapped once inside a named branch - which is what stops two surfaces disagreeing
  * about how a modal behaves.
  */
 
@@ -36,9 +36,9 @@ export type SignInOverlayProps<K extends ContractKey> = {
  * @param input - {@link SignInOverlayProps}
  */
 export const _SignInOverlay = <const K extends ContractKey>(input: SignInOverlayProps<K>) => (
-    <ModalShell isOpen={input.isOpen} size="xs" onDismiss={input.onDismiss}>
+    <ModalBranch isOpen={input.isOpen} size="xs" onDismiss={input.onDismiss}>
         <ContractContent contract={input.render.meta.contract} render={input.render} />
-    </ModalShell>
+    </ModalBranch>
 )
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */

@@ -1,4 +1,4 @@
-import { ModalShell } from "@/components/shells/ModalShell"
+import { ModalBranch } from "@/components/branches/ModalBranch"
 import { ContractContent } from "@/components/branches/Tree"
 import type { ContractKey } from "@/components/contracts"
 import type { ContractComponent } from "@/components/contracts/props"
@@ -15,7 +15,7 @@ import type { ContractComponent } from "@/components/contracts/props"
  * already framed.
  *
  * IT DOES NOT TOUCH THE VENDOR. The focus trap, the backdrop, the placement and the scroll lock are
- * `ModalShell`'s, which is what stops two overlays disagreeing about how a modal behaves.
+ * `ModalBranch`'s, which is what stops two overlays disagreeing about how a modal behaves.
  *
  * `sm` RATHER THAN `xs`, because the body is a reckoning read line by line - a label and an amount
  * per row - and at `xs` the amounts wrap under their labels, which is the moment the column stops
@@ -38,9 +38,9 @@ export type CoursePriceOverlayProps<K extends ContractKey> = {
  * @param input - {@link CoursePriceOverlayProps}
  */
 export const _CoursePriceOverlay = <const K extends ContractKey>(input: CoursePriceOverlayProps<K>) => (
-    <ModalShell isOpen={input.isOpen} size="sm" onDismiss={input.onDismiss}>
+    <ModalBranch isOpen={input.isOpen} size="sm" onDismiss={input.onDismiss}>
         <ContractContent contract={input.render.meta.contract} render={input.render} />
-    </ModalShell>
+    </ModalBranch>
 )
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */

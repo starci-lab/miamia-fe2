@@ -7,7 +7,7 @@ import {
     defineContractProjection,
     defineLeafComponent,
 } from "@/components/contracts/props"
-import { DrawerShell } from "@/components/shells/DrawerShell"
+import { DrawerBranch } from "@/components/branches/DrawerBranch"
 import { CartLine } from "@/components/blocks/commerce/CartLine"
 import { type CartLineData } from "@/components/blocks/commerce/CartLine/component"
 import { _OrderSummary, type OrderSummaryLabels } from "@/components/blocks/commerce/OrderSummary/component"
@@ -21,7 +21,7 @@ import { _OrderSummary, type OrderSummaryLabels } from "@/components/blocks/comm
  * beside the same decision. The covering panel is already the bounded object; a `SurfaceCard`
  * inside it would draw a second border and a second inset around a body that is already framed.
  *
- * IT HOLDS NO HEADING. `DrawerShell` names the panel in the vendor's own header, and a second
+ * IT HOLDS NO HEADING. `DrawerBranch` names the panel in the vendor's own header, and a second
  * title inside would name the thing the reader has just opened, by name, twice.
  *
  * IT DRAWS THE SAME TWO BLOCKS THE PAGE DRAWS, not narrower copies of them. `CartLine` and
@@ -113,7 +113,7 @@ export const _CartDrawer = (input: CartDrawerProps) => {
     const lines = isLoading ? restingLines : input.props.lines ?? []
 
     return (
-        <DrawerShell
+        <DrawerBranch
             isOpen={input.props.isOpen}
             title={labels.title}
             onDismiss={input.on?.dismiss ?? (() => undefined)}
@@ -183,7 +183,7 @@ export const _CartDrawer = (input: CartDrawerProps) => {
                     } : {}),
                 })}
             />
-        </DrawerShell>
+        </DrawerBranch>
     )
 }
 
