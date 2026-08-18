@@ -202,4 +202,4 @@ export const _CheckoutOverlay = (input: CheckoutOverlayProps) => {
 }
 
 /** Source-level ownership marker. */
-export const meta = { shape: "branch", world: "pure", domain: "commerce" } as const
+export const meta = { shape: "overlay", world: "pure", domain: "commerce" } as const

@@ -27,3 +27,23 @@ if (typeof window !== "undefined" && typeof window.matchMedia !== "function") {
         dispatchEvent: () => false,
     })
 }
+
+// jsdom ships no `ResizeObserver`, and HeroUI's ScrollShadow asks for one to learn a real size the
+// moment it mounts. Answering with "nothing is listening" rather than crashing is the honest
+// stand-in: a test asserting on scroll behavior sets it up explicitly rather than pretending a
+// layout engine is watching.
+if (typeof window !== "undefined" && typeof window.ResizeObserver !== "function") {
+    class ResizeObserverPolyfill {
+        observe(): void {
+            // no-op
+        }
+        unobserve(): void {
+            // no-op
+        }
+        disconnect(): void {
+            // no-op
+        }
+    }
+    window.ResizeObserver = ResizeObserverPolyfill
+    globalThis.ResizeObserver = ResizeObserverPolyfill
+}

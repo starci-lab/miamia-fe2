@@ -14,7 +14,7 @@
 export { useMutateAddToCartSwr } from "./swr/useMutateAddToCartSwr"
 export { useMutateRemoveFromCartSwr } from "./swr/useMutateRemoveFromCartSwr"
 export { useMutateClearCartSwr } from "./swr/useMutateClearCartSwr"
-export { useQueryMyCartSwr, QUERY_MY_CART_SWR_KEY } from "./swr/useQueryMyCartSwr"
+export { useQueryMyCartSwr } from "./swr/useQueryMyCartSwr"
 export { useQueryCoursesCheckoutPreviewSwr } from "./swr/useQueryCoursesCheckoutPreviewSwr"
 export { useMutateCoursesCheckoutSwr } from "./swr/useMutateCoursesCheckoutSwr"
 export { useQueryCoursePricePreviewSwr } from "./swr/useQueryCoursePricePreviewSwr"
