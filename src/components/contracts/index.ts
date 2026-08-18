@@ -2533,18 +2533,6 @@ export const CONTRACTS = buildContracts({
         },
         why: "Use this for the final amount the reader is actually being asked to pay, when it needs to sit in the same column as the muted subtotal rows above it but read at a visibly higher rank than they do.",
     },
-    "checkout-panel-column": {
-        classes: ["flex", "flex-col", "gap-4", "p-6"],
-        children: {
-            choice: { leaf: "choice-tabs" },
-            summary: { contract: "order-summary-stack" },
-            schedule: { contract: "ordered-step-ladder", optional: true },
-            terms: { leaf: "text", props: { size: "xs", tone: "muted" }, optional: true },
-            gateways: { leaf: "text", props: { size: "xs", tone: "muted" } },
-            action: { leaf: "button" },
-        },
-        why: "Use this for the full checkout step — payment method, cost, due dates, terms, gateway, and the pay action — read top to bottom as one decision, where the schedule and terms drop out together whenever the chosen payment method has no cycles to list and no lateness to warn about.",
-    },
     "cart-page-column": {
         classes: ["mx-auto", "flex", "w-full", "max-w-6xl", "flex-col", "gap-6", "px-6", "py-6"],
         children: {
@@ -2566,24 +2554,6 @@ export const CONTRACTS = buildContracts({
             notice: { composite: "empty-notice", optional: true },
         },
         why: "Use this for basket contents shown inside a slide-out drawer rather than the full cart page, at a narrower measure with its own inset, and only when the drawer's own title bar already names what is open so no second heading is needed inside.",
-    },
-    "ordered-step-ladder": {
-        host: "ol",
-        classes: ["flex", "flex-col", "gap-2"],
-        children: {
-            step: { contract: "ordered-step-row", repeats: true, restingCount: 3 },
-        },
-        why: "Use this for any list of steps whose sequence itself carries meaning — one step marks the reader's current position and the rest represent what precedes or follows it, as with a pricing ladder's phases or an instalment schedule's cycles — where reordering the steps would change what is being said.",
-    },
-    "ordered-step-row": {
-        host: "li",
-        classes: ["flex", "flex-row", "items-center", "gap-3", "[&>*:nth-child(2)]:min-w-0", "[&>*:nth-child(2)]:grow"],
-        children: {
-            mark: { leaf: ["status-dot", "text"] },
-            name: { leaf: "text", props: { size: "sm" } },
-            value: { leaf: "text", props: { size: "xs" } },
-        },
-        why: "Use this for one row in an ordered step ladder that needs to state its position and its value on a shared baseline, with a mark slot that stays present whether or not this particular step is the reader's current position, so the names down the ladder stay aligned.",
     },
     "course-mobile-action-bar": {
         classes: ["sticky", "bottom-0", "z-40", "flex", "flex-row", "items-center", "justify-between", "gap-3", "border-t", "border-separator", "bg-background", "px-4", "py-3", "md:hidden"],
