@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useTranslations } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
 import { useQueryFoundationsSwr } from "@/hooks/swr/useQueryFoundationsSwr"
-import { _CourseFoundationCategoryPage } from "./component"
+import { CourseFoundationCategoryPageBase } from "./component"
 
 /** Route identities required by the connected foundation-category page. */
 export type CourseFoundationCategoryPageProps = { readonly displayId: string; readonly categoryId: string }
@@ -22,7 +22,7 @@ export const CourseFoundationCategoryPage = ({ displayId, categoryId }: CourseFo
     }
     const state = deriveState()
     return (
-        <_CourseFoundationCategoryPage
+        <CourseFoundationCategoryPageBase
             state={state}
             props={{
                 title: t("resourcesTitle"),

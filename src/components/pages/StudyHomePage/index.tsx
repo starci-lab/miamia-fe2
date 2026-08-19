@@ -5,7 +5,7 @@ import { StudyContinue } from "@/components/blocks/study/StudyContinue"
 import { StudyProgress } from "@/components/blocks/study/StudyProgress"
 import { SignInOverlay } from "@/components/overlays/auth/SignInOverlay"
 import { useRouter } from "@/i18n/navigation"
-import { _StudyHomePage as StudyHomePageView } from "./component"
+import { StudyHomePageBase as StudyHomePageView } from "./component"
 
 /** Connects both independent Study landing surfaces and their navigation. */
 export const StudyHomePage = () => {

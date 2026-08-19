@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
-import { _ProfileOverviewPage, type ProfileOverviewPageProps } from "./component"
+import { ProfileOverviewPageBase, type ProfileOverviewPageProps } from "./component"
 vi.stubGlobal("ResizeObserver", class { observe() {}; unobserve() {}; disconnect() {} })
 
 const input: ProfileOverviewPageProps = {
@@ -14,17 +14,17 @@ const input: ProfileOverviewPageProps = {
     },
 }
 
-describe("_ProfileOverviewPage", () => {
+describe("ProfileOverviewPageBase", () => {
     it("renders private evidence and reports the public view choice", () => {
         const selectView = vi.fn()
-        render(<_ProfileOverviewPage {...input} on={{ selectView }} />)
+        render(<ProfileOverviewPageBase {...input} on={{ selectView }} />)
         expect(screen.getByText("Progress")).toBeInTheDocument()
         fireEvent.click(screen.getByText("Public"))
         expect(selectView).toHaveBeenCalledWith("public")
     })
 
     it("never renders private evidence to a visitor", () => {
-        render(<_ProfileOverviewPage {...input} state="visitor" />)
+        render(<ProfileOverviewPageBase {...input} state="visitor" />)
         expect(screen.queryByText("Progress")).not.toBeInTheDocument()
         expect(screen.getByText("Public profile")).toBeInTheDocument()
     })

@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react"
 import { useLocale, useTranslations } from "next-intl"
 import { useQueryLearnTopicsSwr } from "@/hooks"
-import { _StudyTopicCatalog } from "./component"
+import { StudyTopicCatalogBase } from "./component"
 
 type StudyTopicCatalogConnectedProps = { readonly onOpenTopic: (slug: string) => void }
 
@@ -43,7 +43,7 @@ export const StudyTopicCatalog = ({ onOpenTopic }: StudyTopicCatalogConnectedPro
             .map((id) => ({ id, label: id.toUpperCase() })),
     ]
     return (
-        <_StudyTopicCatalog
+        <StudyTopicCatalogBase
             state={state}
             props={{
                 title: t("title"),

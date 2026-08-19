@@ -4,7 +4,7 @@ import { useCallback, useRef } from "react"
 import { AuthenticationPanel } from "@/components/blocks/auth/AuthenticationPanel"
 import type { AuthMode } from "@/components/blocks/auth/AuthenticationPanel/component"
 import { defineContractProjection } from "@/components/contracts/props"
-import { _SignInOverlay as SignInOverlayView } from "./component"
+import { SignInOverlayBase as SignInOverlayView } from "./component"
 
 /**
  * OVERLAY - `SignInOverlay`, connected half.

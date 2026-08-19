@@ -1,7 +1,7 @@
 /** @vitest-environment jsdom */
 import { afterEach, describe, expect, it, vi } from "vitest"
 import { cleanup, fireEvent, render, screen } from "@testing-library/react"
-import { _ShellNav } from "./component"
+import { ShellNavBase } from "./component"
 
 class TestResizeObserver implements ResizeObserver {
     observe = () => undefined
@@ -32,10 +32,10 @@ const props = {
     isSignedIn: false,
 } as const
 
-describe("_ShellNav", () => {
+describe("ShellNavBase", () => {
     it("reports internal navigation without rendering href", () => {
         const navigate = vi.fn()
-        render(<_ShellNav props={props} on={{ navigate }} />)
+        render(<ShellNavBase props={props} on={{ navigate }} />)
         const home = screen.getByRole("link", { name: "Home" })
         expect(home.getAttribute("href")).toBeNull()
         fireEvent.click(home)
@@ -43,13 +43,13 @@ describe("_ShellNav", () => {
     })
 
     it("draws search as one press target rather than a text field", () => {
-        render(<_ShellNav props={props} />)
+        render(<ShellNavBase props={props} />)
         expect(screen.getByRole("button", { name: "Open search" })).toBeTruthy()
         expect(screen.queryByRole("textbox")).toBeNull()
     })
 
     it("draws the original switch, account dropdown trigger and ExtendedTabs bottom layer", () => {
-        const { container } = render(<_ShellNav props={props} />)
+        const { container } = render(<ShellNavBase props={props} />)
         expect(screen.getByRole("switch", { name: "Switch theme" })).toBeTruthy()
         expect(screen.getByRole("button", { name: "Account" })).toBeTruthy()
         expect(screen.queryByText("Sign in")).toBeNull()
@@ -59,7 +59,7 @@ describe("_ShellNav", () => {
     })
 
     it("opens guest authentication choices from the account trigger", async () => {
-        render(<_ShellNav props={props} />)
+        render(<ShellNavBase props={props} />)
         fireEvent.click(screen.getByRole("button", { name: "Account" }))
         expect(await screen.findByText("Sign in to follow your progress")).toBeTruthy()
         expect(screen.getByRole("menuitem", { name: "Sign in" })).toBeTruthy()

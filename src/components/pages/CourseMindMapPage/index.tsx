@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
 import { useQueryCourseMindMapSwr } from "@/hooks/swr/useQueryCourseMindMapSwr"
 import type { MindMapLink, MindMapNode } from "@/modules/api/graphql/queries/query-course-mind-map"
-import { _CourseMindMapPage as CourseMindMapPageView, type CourseMindMapNodeView, type CourseMindMapPageState } from "./component"
+import { CourseMindMapPageBase as CourseMindMapPageView, type CourseMindMapNodeView, type CourseMindMapPageState } from "./component"
 
 /** Course route identity consumed by the connected concept map. */
 export type CourseMindMapPageProps = { readonly displayId: string }

@@ -6,7 +6,7 @@ vi.mock("@/hooks/auth/useSessionToken", () => ({ useSessionToken: () => m.token 
 vi.mock("@/hooks", () => ({ useQueryPhrasePracticeSwr: () => m.query }))
 vi.mock("swr/mutation", () => ({ default: () => ({ isMutating: false, trigger: m.trigger }) }))
 type MockPracticeProps = { readonly state: string; readonly on: Record<string, ((...args: ReadonlyArray<unknown>) => unknown) | undefined> }
-vi.mock("./component", () => ({ _PhrasePractice: ({ state, on }: MockPracticeProps) => <><output data-testid="state">{state}</output><button onClick={() => on.select?.("p1")}>select</button><button onClick={on.previous}>previous</button><button onClick={on.next}>next</button><button onClick={on.submit}>submit</button><button onClick={on.retry}>retry</button><button onClick={on.repeat}>repeat</button><button onClick={on.exit}>exit</button></> }))
+vi.mock("./component", () => ({ PhrasePracticeBase: ({ state, on }: MockPracticeProps) => <><output data-testid="state">{state}</output><button onClick={() => on.select?.("p1")}>select</button><button onClick={on.previous}>previous</button><button onClick={on.next}>next</button><button onClick={on.submit}>submit</button><button onClick={on.retry}>retry</button><button onClick={on.repeat}>repeat</button><button onClick={on.exit}>exit</button></> }))
 import { PhrasePractice } from "./index"
 beforeEach(() => { vi.clearAllMocks(); m.token = "token"; m.query.data = undefined; m.query.error = undefined; m.trigger.mockReset() })
 describe("PhrasePractice connected state", () => {

@@ -30,7 +30,7 @@ const resolveNotice = (input: WhiteLabelInquiryPanelProps) => {
 }
 
 /** Renders the complete anonymous White-label inquiry form. */
-export const _WhiteLabelInquiryPanel = (input: WhiteLabelInquiryPanelProps) => <SurfaceFormCard contract="white-label-inquiry-panel" render={defineContractComponent("white-label-inquiry-panel", {
+export const WhiteLabelInquiryPanelBase = (input: WhiteLabelInquiryPanelProps) => <SurfaceFormCard contract="white-label-inquiry-panel" render={defineContractComponent("white-label-inquiry-panel", {
     title: defineLeafComponent("heading", {}, () => <Heading props={{ content: input.copy.title, level: 2 }} />),
     body: defineLeafComponent("text", {}, () => <Text props={{ content: input.copy.body, tone: "muted" }} />),
     name: defineCompositeComponent("field", {}, () => <Field props={{ id: "white-label-name", name: "name", label: input.copy.name, placeholder: input.copy.namePlaceholder, hint: input.errors.name, isInvalid: input.errors.name !== undefined, disabled: input.state === "submitting" }} on={{ change: (value) => input.onChange("name", value) }} />),

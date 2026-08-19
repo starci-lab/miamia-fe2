@@ -3,7 +3,7 @@
 import { useCallback } from "react"
 import { StudyTopicOverview } from "@/components/blocks/study/StudyTopicOverview"
 import { useRouter } from "@/i18n/navigation"
-import { _StudyTopicPage as StudyTopicPageView } from "./component"
+import { StudyTopicPageBase as StudyTopicPageView } from "./component"
 
 type StudyTopicPageConnectedProps = { readonly slug: string }
 /** Connects one topic slug to detail and practice navigation. */

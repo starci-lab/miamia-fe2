@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
 import { useQueryMyJobReadinessSwr } from "@/hooks"
-import { _JobReadinessWidget, type JobReadinessMetric } from "./component"
+import { JobReadinessWidgetBase, type JobReadinessMetric } from "./component"
 
 /** Widget load lifecycle: an error with no data fails, no data yet is pending, no track is empty. */
 const resolveReadinessState = (hasError: boolean, dataLoaded: boolean, hasTrack: boolean) => {
@@ -28,7 +28,7 @@ export const JobReadinessWidget = () => {
     const percentile = readiness.data?.foundation.codingPercentile
 
     return (
-        <_JobReadinessWidget
+        <JobReadinessWidgetBase
             state={state}
             props={{
                 label: t("title"),

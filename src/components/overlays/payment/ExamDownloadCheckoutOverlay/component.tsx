@@ -9,7 +9,7 @@ export type ExamDownloadCheckoutOverlayProps<K extends ContractKey> = {
     readonly onDismiss: () => void
 }
 /** Mounts download checkout inside shared modal mechanics. */
-export const _ExamDownloadCheckoutOverlay = <const K extends ContractKey>(input: ExamDownloadCheckoutOverlayProps<K>) => (
+export const ExamDownloadCheckoutOverlayBase = <const K extends ContractKey>(input: ExamDownloadCheckoutOverlayProps<K>) => (
     <ModalBranch
         isOpen={input.isOpen}
         size="sm"

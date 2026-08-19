@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
 import { usePlaygroundSession } from "@/components/layouts/PlaygroundSessionLayout"
-import { _CoursePlaygroundSetupPage, type CoursePlaygroundSetupState } from "./component"
+import { CoursePlaygroundSetupPageBase, type CoursePlaygroundSetupState } from "./component"
 
 /** Course and playground route identities consumed by setup. */
 export type CoursePlaygroundSetupPageProps = { readonly displayId: string; readonly slug: string }
@@ -24,7 +24,7 @@ export const CoursePlaygroundSetupPage = ({ displayId, slug }: CoursePlaygroundS
     const state = deriveState()
 
     return (
-        <_CoursePlaygroundSetupPage
+        <CoursePlaygroundSetupPageBase
             state={state}
             props={{
                 playground: session.playground,

@@ -23,7 +23,7 @@ const offerCard = (offer: PricingOfferView, selected: MiaMiaOfferId, onSelect: (
 })
 
 /** Renders the approved two-job offer hierarchy. */
-export const _PricingOfferCatalog = (input: PricingOfferCatalogProps) => input.state !== "ready" || input.learning === undefined || input.licenses === undefined
+export const PricingOfferCatalogBase = (input: PricingOfferCatalogProps) => input.state !== "ready" || input.learning === undefined || input.licenses === undefined
     ? <EmptyNotice props={{ message: input.notice, actionLabel: input.state === "failed" ? input.retryLabel : undefined }} on={{ act: input.onRetry }} />
     : (
         <Tree contract="pricing-offer-catalog" render={defineContractComponent("pricing-offer-catalog", {

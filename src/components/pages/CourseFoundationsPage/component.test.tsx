@@ -1,13 +1,13 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
-import { _CourseFoundationsPage } from "./component"
+import { CourseFoundationsPageBase } from "./component"
 
-describe("_CourseFoundationsPage", () => {
+describe("CourseFoundationsPageBase", () => {
     it("renders the canonical catalog and forwards live category actions", () => {
         const openCategory = vi.fn()
         const search = vi.fn()
         const { container } = render(
-            <_CourseFoundationsPage
+            <CourseFoundationsPageBase
                 state="ready"
                 props={{
                     title: "Foundations",

@@ -8,7 +8,7 @@ import { SignInOverlay } from "@/components/overlays/auth/SignInOverlay"
 import { useSessionRefresh } from "@/hooks/auth/useSessionRefresh"
 import { useSessionToken } from "@/hooks/auth/useSessionToken"
 import { useRouter } from "@/i18n/navigation"
-import { _ExamSessionPage } from "./component"
+import { ExamSessionPageBase } from "./component"
 
 /** Defines the paper route consumed by the connected exam-session page. */
 export type ExamSessionPageConnectedProps = { readonly slug: string }
@@ -25,7 +25,7 @@ export const ExamSessionPage = ({ slug }: ExamSessionPageConnectedProps) => {
         ? <ExamSession slug={slug} onExit={() => router.push("/exam")} />
         : <EmptyNotice props={{ icon: "account", message: session.isRestoring ? t("restoring") : t("signInRequired"), actionLabel: session.isRestoring ? undefined : t("signIn") }} on={{ act: () => setSignInOpen(true) }} />,
     [router, session.isRestoring, slug, t, token])
-    return <><_ExamSessionPage surface={Surface} /><SignInOverlay isOpen={signInOpen && !token} onDismiss={() => setSignInOpen(false)} /></>
+    return <><ExamSessionPageBase surface={Surface} /><SignInOverlay isOpen={signInOpen && !token} onDismiss={() => setSignInOpen(false)} /></>
 }
 
 /** Declares the component architecture metadata. */

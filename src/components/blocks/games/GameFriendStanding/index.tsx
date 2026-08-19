@@ -2,7 +2,7 @@
 import { useSessionToken } from "@/hooks/auth/useSessionToken"
 import { useQueryFriendsLeaderboardSwr } from "@/hooks/swr/useQueryFriendsLeaderboardSwr"
 import type { FriendsLeaderboardRow } from "@/modules/api/graphql/queries/types/friends-leaderboard"
-import { _GameFriendStanding } from "./component"
+import { GameFriendStandingBase } from "./component"
 
 /** Navigation and authentication actions exposed by the friend standing block. */
 export type GameFriendStandingProps = { readonly onChooseGame: () => void; readonly onRequireSignIn: () => void }
@@ -54,7 +54,7 @@ export const GameFriendStanding = ({ onChooseGame, onRequireSignIn }: GameFriend
         : Math.min(1, viewer.weeklyXp / Math.max(1, ahead.weeklyXp))
 
     return (
-        <_GameFriendStanding
+        <GameFriendStandingBase
             state={state}
             props={{
                 rank: viewer?.rank,

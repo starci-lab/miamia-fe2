@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
-import { _CoursePricingRail } from "./component"
+import { CoursePricingRailBase } from "./component"
 
 const props = {
     title: "Fullstack Mastery",
@@ -18,10 +18,10 @@ const props = {
     enrolmentLabel: "13 learners enrolled",
 }
 
-describe("_CoursePricingRail", () => {
+describe("CoursePricingRailBase", () => {
     it("keeps one sticky-card decision with compact phase comparison", () => {
         const act = vi.fn()
-        render(<_CoursePricingRail state="ready" props={props} on={{ act }} />)
+        render(<CoursePricingRailBase state="ready" props={props} on={{ act }} />)
 
         expect(document.querySelector("[data-component=\"SurfaceCardSurface\"]")).toBeTruthy()
         expect(screen.getAllByText("Early")).toHaveLength(2)
@@ -32,7 +32,7 @@ describe("_CoursePricingRail", () => {
     })
 
     it("rests only the unresolved price", () => {
-        render(<_CoursePricingRail state="price-pending" props={{ ...props, price: undefined }} />)
+        render(<CoursePricingRailBase state="price-pending" props={{ ...props, price: undefined }} />)
         expect(screen.getByText("100 seats left in Early")).toBeInTheDocument()
         expect(screen.queryByText("1,250,000 ₫")).toBeNull()
     })

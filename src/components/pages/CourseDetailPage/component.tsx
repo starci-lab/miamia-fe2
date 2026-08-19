@@ -2,8 +2,8 @@ import { CONTRACTS } from "@/components/contracts"
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
 import { Tree } from "@/components/branches/Tree"
 import { SurfaceListCard, type SurfaceListCardData } from "@/components/branches/SurfaceListCard"
-import { _CoursePrerequisiteList as CoursePrerequisiteListLeaf, type CoursePrerequisite } from "@/components/blocks/courses/CoursePrerequisiteList/component"
-import { _CourseReviewBlock as CourseReviewBlockView, type CourseReview } from "@/components/blocks/courses/CourseReviewBlock/component"
+import { CoursePrerequisiteListBase as CoursePrerequisiteListLeaf, type CoursePrerequisite } from "@/components/blocks/courses/CoursePrerequisiteList/component"
+import { CourseReviewBlockBase as CourseReviewBlockView, type CourseReview } from "@/components/blocks/courses/CourseReviewBlock/component"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { ChoiceTabs } from "@/components/leaves/ChoiceTabs"
 import { Breadcrumbs } from "@/components/leaves/Breadcrumbs"
@@ -180,7 +180,7 @@ export type CourseDetailPageActions = {
 /** The situations the page can be in. */
 export type CourseDetailPageState = "pending" | "ready" | "not-found" | "failed"
 
-/** Props for {@link _CourseDetailPage}. */
+/** Props for {@link CourseDetailPageBase}. */
 export type CourseDetailPageProps = {
     /** The business situation, which picks the tree. */
     readonly state: CourseDetailPageState
@@ -351,7 +351,7 @@ const CourseFaqList = defineContractComponent("course-faq-list", CourseFaqListVi
  *
  * @param input - {@link CourseDetailPageProps}
  */
-export const _CourseDetailPage = (input: CourseDetailPageProps) => {
+export const CourseDetailPageBase = (input: CourseDetailPageProps) => {
     if (input.state === "not-found" || input.state === "failed") {
         return (
             <EmptyNotice

@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react"
 import { useTranslations } from "next-intl"
 import { usePathname, useRouter } from "@/i18n/navigation"
 import {
-    _LearnShellLayout as LearnShellLayoutView,
+    LearnShellLayoutBase as LearnShellLayoutView,
     type LearnMobileTab,
     type LearnMobileView,
 } from "./component"

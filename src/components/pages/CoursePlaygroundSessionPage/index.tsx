@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useTranslations } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
 import { usePlaygroundSession } from "@/components/layouts/PlaygroundSessionLayout"
-import { _CoursePlaygroundSessionPage as CoursePlaygroundSessionPageView, type CoursePlaygroundSessionState } from "./component"
+import { CoursePlaygroundSessionPageBase as CoursePlaygroundSessionPageView, type CoursePlaygroundSessionState } from "./component"
 
 /** Course and playground route identities consumed by the live session. */
 export type CoursePlaygroundSessionPageProps = { readonly displayId: string; readonly slug: string }

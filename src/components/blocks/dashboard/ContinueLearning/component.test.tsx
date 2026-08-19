@@ -1,14 +1,14 @@
 /** @vitest-environment jsdom */
 import { cleanup, render, screen } from "@testing-library/react"
 import { afterEach, describe, expect, it } from "vitest"
-import { _ContinueLearning } from "./component"
+import { ContinueLearningBase } from "./component"
 
 afterEach(cleanup)
 
-describe("_ContinueLearning", () => {
+describe("ContinueLearningBase", () => {
     it("keeps business kind labels text-only", () => {
         render(
-            <_ContinueLearning
+            <ContinueLearningBase
                 state="ready"
                 props={{
                     label: "Continue learning",

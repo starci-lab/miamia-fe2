@@ -1,11 +1,11 @@
 import { render, screen } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
-import { _ExamCatalogPage } from "./component"
+import { ExamCatalogPageBase } from "./component"
 
-describe("_ExamCatalogPage", () => {
+describe("ExamCatalogPageBase", () => {
     it("mounts the connected catalogue surface without a second frame", () => {
         const Surface = () => <div>catalogue surface</div>
-        render(<_ExamCatalogPage surface={Surface} />)
+        render(<ExamCatalogPageBase surface={Surface} />)
         expect(screen.getByText("catalogue surface")).toBeTruthy()
     })
 })

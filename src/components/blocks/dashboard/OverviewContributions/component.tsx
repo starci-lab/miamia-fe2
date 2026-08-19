@@ -44,7 +44,7 @@ const resolveTotalLabel = (input: OverviewContributionsProps) => {
 }
 
 /** Draw the complete contribution calendar without owning its query or selected-year state. */
-export const _OverviewContributions = (input: OverviewContributionsProps) => {
+export const OverviewContributionsBase = (input: OverviewContributionsProps) => {
     const isLoading = input.state === "pending"
     const totalLabel = resolveTotalLabel(input)
 

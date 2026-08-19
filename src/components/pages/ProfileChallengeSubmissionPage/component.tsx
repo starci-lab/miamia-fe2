@@ -20,7 +20,7 @@ const resolveSummaryTitle = (state: ProfileChallengeSubmissionPageProps["state"]
 }
 
 /** One immutable public proof: source URL, every attempt, then structured grading feedback. */
-export const _ProfileChallengeSubmissionPage = ({ state, detail, onBack }: ProfileChallengeSubmissionPageProps) => {
+export const ProfileChallengeSubmissionPageBase = ({ state, detail, onBack }: ProfileChallengeSubmissionPageProps) => {
     const attempts: NonNullable<ChallengeDetail["attempts"]> = state === "pending" ? Array.from({ length: 3 }, (_, index) => ({ attemptNumber: index + 1 })) : detail?.attempts ?? []
     const feedbacks: NonNullable<ChallengeDetail["feedbacks"]> = state === "pending" ? Array.from({ length: 3 }, () => ({})) : detail?.feedbacks ?? []
     const missing = state === "ready" && !detail

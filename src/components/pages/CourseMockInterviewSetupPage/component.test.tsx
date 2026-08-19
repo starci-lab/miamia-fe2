@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
-import { _CourseMockInterviewSetupPage } from "./component"
+import { CourseMockInterviewSetupPageBase } from "./component"
 
 const props = {
     title: "Mock interview",
@@ -16,10 +16,10 @@ const props = {
     retryLabel: "Try again",
 } as const
 
-describe("_CourseMockInterviewSetupPage", () => {
+describe("CourseMockInterviewSetupPageBase", () => {
     it("offers the persisted session instead of hiding it", () => {
         const resume = vi.fn()
-        const { container } = render(<_CourseMockInterviewSetupPage state="resumable" props={{ ...props, status: "Session available" }} on={{ resume }} />)
+        const { container } = render(<CourseMockInterviewSetupPageBase state="resumable" props={{ ...props, status: "Session available" }} on={{ resume }} />)
 
         fireEvent.click(screen.getByText("Resume interview"))
         expect(resume).toHaveBeenCalledOnce()

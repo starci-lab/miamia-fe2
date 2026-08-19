@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
-import { _CourseMockInterviewSessionPage, type CourseMockInterviewSessionData } from "./component"
+import { CourseMockInterviewSessionPageBase, type CourseMockInterviewSessionData } from "./component"
 
 const props: CourseMockInterviewSessionData = {
     title: "Mock interview",
@@ -23,11 +23,11 @@ const props: CourseMockInterviewSessionData = {
     workspaceLabel: "Question workspace",
 }
 
-describe("_CourseMockInterviewSessionPage", () => {
+describe("CourseMockInterviewSessionPageBase", () => {
     it("emits answer and finish intents while keeping restored turns visible", () => {
         const answer = vi.fn()
         const finish = vi.fn()
-        const { container } = render(<_CourseMockInterviewSessionPage state="live" props={props} on={{ answer, finish }} />)
+        const { container } = render(<CourseMockInterviewSessionPageBase state="live" props={props} on={{ answer, finish }} />)
 
         fireEvent.change(screen.getByPlaceholderText("Answer here"), { target: { value: "New answer" } })
         fireEvent.click(screen.getByText("Finish and grade"))
@@ -39,7 +39,7 @@ describe("_CourseMockInterviewSessionPage", () => {
     })
     it("renders streaming abort and failed retry actions with a code workspace", () => {
         const abort = vi.fn(); const retry = vi.fn()
-        const { container } = render(<_CourseMockInterviewSessionPage state="failed" props={{ ...props, streamingText: "Thinking…", workspaceCode: "const answer = 1" }} on={{ abort, retry }} />)
+        const { container } = render(<CourseMockInterviewSessionPageBase state="failed" props={{ ...props, streamingText: "Thinking…", workspaceCode: "const answer = 1" }} on={{ abort, retry }} />)
         fireEvent.click(screen.getByText("Try again")); fireEvent.click(screen.getByText("Stop response"))
         expect(retry).toHaveBeenCalledOnce(); expect(abort).toHaveBeenCalledOnce(); expect(container.textContent).toContain("const answer = 1")
     })

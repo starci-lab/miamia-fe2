@@ -16,7 +16,7 @@ type PhrasePracticeActions = { readonly select?: (id: string) => void; readonly 
 type PhrasePracticeProps = BlockProps<"pending" | "failed" | "empty" | "answering" | "submitting" | "result", PhrasePracticeData> & { readonly on?: PhrasePracticeActions }
 
 /** Renders phrase answering, submission and verified result without changing route identity. */
-export const _PhrasePractice = (input: PhrasePracticeProps) => {
+export const PhrasePracticeBase = (input: PhrasePracticeProps) => {
     const terminal = input.state === "pending" || input.state === "failed" || input.state === "empty"
     const isResult = input.state === "result"
     const terminalMessage = () => {

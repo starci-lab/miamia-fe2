@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
-import { _CoursePlaygroundSessionPage, type CoursePlaygroundSessionPageProps } from "./component"
+import { CoursePlaygroundSessionPageBase, type CoursePlaygroundSessionPageProps } from "./component"
 
 const props = (overrides: Partial<CoursePlaygroundSessionPageProps> = {}): CoursePlaygroundSessionPageProps => ({
     state: "live",
@@ -23,10 +23,10 @@ const props = (overrides: Partial<CoursePlaygroundSessionPageProps> = {}): Cours
     ...overrides,
 })
 
-describe("_CoursePlaygroundSessionPage", () => {
+describe("CoursePlaygroundSessionPageBase", () => {
     it("requests server verification without exposing a local next-step action", () => {
         const input = props()
-        render(<_CoursePlaygroundSessionPage {...input} />)
+        render(<CoursePlaygroundSessionPageBase {...input} />)
 
         fireEvent.click(screen.getByRole("button", { name: "Verify this step" }))
 
@@ -36,7 +36,7 @@ describe("_CoursePlaygroundSessionPage", () => {
 
     it("shows completion only when the connected owner supplies completed state", () => {
         const input = props({ state: "completed" })
-        render(<_CoursePlaygroundSessionPage {...input} />)
+        render(<CoursePlaygroundSessionPageBase {...input} />)
 
         expect(screen.getByText("Playground completed")).toBeInTheDocument()
         expect(screen.queryByRole("button", { name: "Verify this step" })).not.toBeInTheDocument()

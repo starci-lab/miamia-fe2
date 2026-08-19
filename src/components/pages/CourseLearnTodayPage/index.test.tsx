@@ -13,7 +13,7 @@ vi.mock("@/hooks/swr/useQueryCoursePersonalProjectSwr", () => ({ useQueryCourseP
 vi.mock("@/hooks/swr/useQueryMyInProgressMockInterviewSessionSwr", () => ({ useQueryMyInProgressMockInterviewSessionSwr: () => m.interview }))
 vi.mock("@/hooks/swr/useQueryResolveRouteSwr", () => ({ useQueryResolveRouteSwr: () => m.route }))
 vi.mock("@/components/layouts/LearnShellLayout", () => ({ useLearnMobileView: () => ({ view: m.view }) }))
-vi.mock("./component", () => ({ _CourseLearnTodayPage: ({ state, on }: TestPageInput) => <><output data-testid="state">{state}</output><output data-testid="primary">interview-resume</output><button onClick={() => on.open("interview-resume")}>open</button><button onClick={on.retry}>retry</button></> }))
+vi.mock("./component", () => ({ CourseLearnTodayPageBase: ({ state, on }: TestPageInput) => <><output data-testid="state">{state}</output><output data-testid="primary">interview-resume</output><button onClick={() => on.open("interview-resume")}>open</button><button onClick={on.retry}>retry</button></> }))
 import { CourseLearnTodayPage } from "./index"
 beforeEach(() => { vi.clearAllMocks(); m.course.data = undefined; m.course.error = undefined; m.mine.data = undefined; m.mine.error = undefined; m.lessons.data = []; m.challenges.data = []; m.decks.data = []; m.project.data = {}; m.interview.data = undefined })
 describe("CourseLearnTodayPage route", () => {

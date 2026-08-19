@@ -86,7 +86,7 @@ export type DomainMasteryGridActions = {
     readonly recover?: () => void
 }
 
-/** Props for {@link _DomainMasteryGrid}. */
+/** Props for {@link DomainMasteryGridBase}. */
 export type DomainMasteryGridProps =
     BlockProps<DomainMasteryGridState, DomainMasteryGridData> & {
         readonly on?: DomainMasteryGridActions
@@ -105,9 +105,9 @@ const resolveNoticeIcon = (state: DomainMasteryGridProps["state"]): IconName => 
 /**
  * Draw the topic field.
  *
- * @param input - {@link _DomainMasteryGrid}
+ * @param input - {@link DomainMasteryGridBase}
  */
-export const _DomainMasteryGrid = (input: DomainMasteryGridProps) => {
+export const DomainMasteryGridBase = (input: DomainMasteryGridProps) => {
     const isLoading = input.state === "pending"
     const showsFigures = input.state === "ready"
     const showsNotice = input.state === "guest"

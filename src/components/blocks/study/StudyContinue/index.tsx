@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { useTranslations } from "next-intl"
 import { useQueryContinueLearningSwr } from "@/hooks"
 import { useSessionToken } from "@/hooks/auth/useSessionToken"
-import { _StudyContinue } from "./component"
+import { StudyContinueBase } from "./component"
 
 type StudyContinueConnectedProps = { readonly onBrowse: () => void; readonly onResumeTopic: (slug: string) => void }
 type StudyContinueState = "pending" | "empty" | "failed" | "ready"
@@ -58,7 +58,7 @@ export const StudyContinue = ({ onBrowse, onResumeTopic }: StudyContinueConnecte
     )
     const copy = resolveStudyContinueCopy(state, t)
     return (
-        <_StudyContinue
+        <StudyContinueBase
             state={state}
             props={{
                 eyebrow: copy.eyebrow,

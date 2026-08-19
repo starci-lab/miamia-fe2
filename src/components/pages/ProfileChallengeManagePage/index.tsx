@@ -5,7 +5,7 @@ import { useRouter } from "@/i18n/navigation"
 import { useQueryProfileEvidenceSwr } from "@/hooks/swr/useQueryProfileEvidenceSwr"
 import { useQueryUserProfileSwr } from "@/hooks/swr/useQueryUserProfileSwr"
 import type { ProfileSolvedChallenge } from "@/modules/api/graphql/queries/types/profile-evidence"
-import { _ProfileChallengeManagePage as ProfileChallengeManagePageView } from "./component"
+import { ProfileChallengeManagePageBase as ProfileChallengeManagePageView } from "./component"
 
 /** A load failure outranks the loading flag; otherwise the list is either still settling or ready. */
 const resolveManageState = (hasError: boolean, isLoading: boolean): "error" | "pending" | "ready" => {

@@ -10,7 +10,7 @@ import { useMutateGradeMockInterviewSessionSwr } from "@/hooks/swr/useMutateGrad
 import { useMutateSyncMockInterviewSessionTurnsSwr } from "@/hooks/swr/useMutateSyncMockInterviewSessionTurnsSwr"
 import { useMockInterviewSocketIo } from "@/hooks/socketio/useMockInterviewSocketIo"
 import type { InProgressMockInterviewSession, MockInterviewTurn } from "@/modules/api/graphql/queries/query-my-in-progress-mock-interview-session"
-import { _CourseMockInterviewSessionPage as CourseMockInterviewSessionPageView, type CourseMockInterviewSessionState } from "./component"
+import { CourseMockInterviewSessionPageBase as CourseMockInterviewSessionPageView, type CourseMockInterviewSessionState } from "./component"
 
 /** Route identity required to restore one durable interview room. */
 export type CourseMockInterviewSessionPageProps = {

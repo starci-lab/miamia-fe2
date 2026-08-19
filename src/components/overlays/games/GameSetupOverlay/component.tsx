@@ -36,7 +36,7 @@ const resolveGameSetupContent = (input: GameSetupOverlayProps) => {
 }
 
 /** Render exactly one setup decision inside the shared modal shell. */
-export const _GameSetupOverlay = (input: GameSetupOverlayProps) => {
+export const GameSetupOverlayBase = (input: GameSetupOverlayProps) => {
     const header = defineContractComponent("page-header-stack", { title: defineLeafComponent("heading", {}, () => <Heading props={{ content: `${input.props.title} · ${input.props.gameTitle}`, level: 2 }} />) })
     const content = resolveGameSetupContent(input)
     return <ModalBranch

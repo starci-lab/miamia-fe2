@@ -3,7 +3,7 @@ type GameCatalogData = { readonly title: string; readonly games: ReadonlyArray<G
 type GameCatalogActions = { readonly pick?: (game: GameId) => void }
 type GameCatalogProps = BlockProps<"ready", GameCatalogData> & { readonly on?: GameCatalogActions }
 /** Render the fixed four-game catalog below its section heading. */
-export const _GameCatalog = (input: GameCatalogProps) => <Tree contract="game-catalog-section" render={defineContractComponent("game-catalog-section", {
+export const GameCatalogBase = (input: GameCatalogProps) => <Tree contract="game-catalog-section" render={defineContractComponent("game-catalog-section", {
     header: defineContractComponent("page-header-stack", { title: defineLeafComponent("heading", {}, () => <Heading props={{ content: input.props.title, level: 2 }} />) }),
     games: defineContractComponent("game-grid", { game: input.props.games.map((game) => defineCompositeComponent("game-catalog-card", {}, () => <GameCatalogCard props={{ ...game, actionLabel: input.props.actionLabel }} on={{ pick: () => input.on?.pick?.(game.id) }} />)) }),
 })} />

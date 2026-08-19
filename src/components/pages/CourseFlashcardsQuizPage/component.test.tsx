@@ -1,7 +1,7 @@
 /** @vitest-environment jsdom */
 import { cleanup, fireEvent, render, screen } from "@testing-library/react"
 import { afterEach, describe, expect, it, vi } from "vitest"
-import { _CourseFlashcardsQuizPage, type CourseFlashcardsQuizPageProps } from "./component"
+import { CourseFlashcardsQuizPageBase, type CourseFlashcardsQuizPageProps } from "./component"
 
 const makeInput = (): CourseFlashcardsQuizPageProps => ({
     state: "ready",
@@ -35,10 +35,10 @@ const makeInput = (): CourseFlashcardsQuizPageProps => ({
 
 afterEach(cleanup)
 
-describe("_CourseFlashcardsQuizPage", () => {
+describe("CourseFlashcardsQuizPageBase", () => {
     it("selects the deep/staff configuration and starts the quiz", () => {
         const input = makeInput()
-        const { container } = render(<_CourseFlashcardsQuizPage {...input} />)
+        const { container } = render(<CourseFlashcardsQuizPageBase {...input} />)
 
         expect(container.querySelector("[data-node=course-flashcards-quiz-page]")).toBeTruthy()
         expect(container.querySelector("[data-node=flashcard-quiz-configuration]")).toBeTruthy()

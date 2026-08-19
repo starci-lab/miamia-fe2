@@ -14,7 +14,7 @@ vi.mock("@/components/overlays/auth/SignInOverlay", () => ({ SignInOverlay: ({ i
 vi.mock("@/components/overlays/membership/MembershipCheckoutOverlay", () => ({ MembershipCheckoutOverlay: ({ isOpen }: OpenProps) => isOpen ? <output>membership</output> : null }))
 vi.mock("@/components/overlays/payment/ExamDownloadCheckoutOverlay", () => ({ ExamDownloadCheckoutOverlay: ({ isOpen }: OpenProps) => isOpen ? <output>download</output> : null }))
 vi.mock("@/components/overlays/payment/WhiteLabelInquiryOverlay", () => ({ WhiteLabelInquiryOverlay: ({ isOpen }: OpenProps) => isOpen ? <output>white-label</output> : null }))
-vi.mock("./component", () => ({ _PricingPage: ({ catalog: Catalog }: ViewProps) => <Catalog /> }))
+vi.mock("./component", () => ({ PricingPageBase: ({ catalog: Catalog }: ViewProps) => <Catalog /> }))
 import { PricingPage } from "./index"
 beforeEach(() => { vi.clearAllMocks(); m.token = undefined; m.error = undefined })
 describe("PricingPage", () => {

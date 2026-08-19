@@ -19,7 +19,7 @@ const emptyEvidenceMessage = (state: ProfileChallengeManagePageProps["state"], q
 }
 
 /** Draw the course proof header, toolbar and filtered joined submissions. */
-export const _ProfileChallengeManagePage = ({ state, courseTitle, rows, query, filterLabel, on }: ProfileChallengeManagePageProps) => {
+export const ProfileChallengeManagePageBase = ({ state, courseTitle, rows, query, filterLabel, on }: ProfileChallengeManagePageProps) => {
     const displayed = state === "pending" ? Array.from({ length: 3 }, (_, index): ProfileSolvedChallenge => ({ id: `pending-${index}`, title: "", passedAt: "" })) : rows
     return <Tree contract="profile-main" render={defineContractComponent("profile-main", { section: [
         defineContractProjection("label-row-over-card", () => <Tree contract="profile-proof-summary" render={defineContractComponent("profile-proof-summary", {

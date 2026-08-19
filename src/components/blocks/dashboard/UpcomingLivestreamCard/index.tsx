@@ -4,7 +4,7 @@ import { withoutLocale } from "@/modules/utils/localised-path"
 import { useLocale, useTranslations } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
 import { useQueryMyUpcomingLivestreamsSwr, useQueryResolveRouteSwr } from "@/hooks"
-import { _UpcomingLivestreamCard } from "./component"
+import { UpcomingLivestreamCardBase } from "./component"
 
 /** Fetch, sort and route the viewer's upcoming live sessions. */
 export const UpcomingLivestreamCard = () => {
@@ -30,13 +30,13 @@ export const UpcomingLivestreamCard = () => {
     const props = { label: t("heading"), rows, errorMessage: t("failed"), retryLabel: t("retry") }
 
     if (query.error !== undefined && query.data === undefined) {
-        return <_UpcomingLivestreamCard state="failed" props={props} on={{ retry: () => { void query.mutate() } }} />
+        return <UpcomingLivestreamCardBase state="failed" props={props} on={{ retry: () => { void query.mutate() } }} />
     }
     if (query.data === undefined) {
-        return <_UpcomingLivestreamCard state="pending" props={props} />
+        return <UpcomingLivestreamCardBase state="pending" props={props} />
     }
     if (rows.length === 0) {
-        return <_UpcomingLivestreamCard state="hidden" props={props} />
+        return <UpcomingLivestreamCardBase state="hidden" props={props} />
     }
 
     const openRow = async (routeId: string) => {
@@ -51,7 +51,7 @@ export const UpcomingLivestreamCard = () => {
     }
 
     return (
-        <_UpcomingLivestreamCard
+        <UpcomingLivestreamCardBase
             state="ready"
             props={props}
             on={Object.fromEntries(rows.map((row) => [`open:${row.id}`, () => openRow(row.routeId)]))}

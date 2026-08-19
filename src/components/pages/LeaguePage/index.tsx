@@ -10,7 +10,7 @@ import { useMutateSetFollowSwr, useQueryGlobalLeaderboardSwr, useQueryMeSwr, use
 import { fromGlobalId } from "@/modules/utils/global-id"
 import type { RankedUserRowData, RankedUserVerdict } from "@/components/composites/RankedUserRow"
 import type { GlobalLeaderboard, GlobalLeaderboardEntry, LeagueEntry } from "@/modules/api/graphql/queries/types/dashboard-learning-community"
-import { _LeaguePage, type LeagueBoardData, type LeagueScope } from "./component"
+import { LeaguePageBase, type LeagueBoardData, type LeagueScope } from "./component"
 
 /**
  * PAGE - `LeaguePage`, connected half.
@@ -346,13 +346,13 @@ export const LeaguePage = () => {
     if (session.isRestoring || token === undefined) return null
 
     if (query.error !== undefined && query.data === undefined) {
-        return <_LeaguePage state="failed" props={props} on={on} />
+        return <LeaguePageBase state="failed" props={props} on={on} />
     }
-    if (query.data === undefined) return <_LeaguePage state="pending" props={props} on={on} />
+    if (query.data === undefined) return <LeaguePageBase state="pending" props={props} on={on} />
     if (board.podium.length === 0 && board.rows.length === 0) {
-        return <_LeaguePage state="empty" props={props} on={on} />
+        return <LeaguePageBase state="empty" props={props} on={on} />
     }
-    return <_LeaguePage state="ready" props={props} on={on} />
+    return <LeaguePageBase state="ready" props={props} on={on} />
 }
 
 /** Source-level tier marker. */

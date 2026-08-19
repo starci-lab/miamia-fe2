@@ -7,7 +7,7 @@ import { useMutateStartPlaygroundSessionSwr } from "@/hooks/swr/useMutateStartPl
 import { usePlaygroundSocketIo } from "@/hooks/socketio/usePlaygroundSocketIo"
 import type { Playground } from "@/modules/api/graphql/queries/query-playground"
 import type { PlaygroundSession } from "@/modules/api/graphql/mutations/mutation-start-playground-session"
-import { _PlaygroundSessionLayout, type PlaygroundSessionFrameState } from "./component"
+import { PlaygroundSessionLayoutBase, type PlaygroundSessionFrameState } from "./component"
 
 /** Persistent playground data and live actions shared by setup and session routes. */
 export type PlaygroundSessionContextValue = {
@@ -101,7 +101,7 @@ export const PlaygroundSessionLayout = (input: PlaygroundSessionLayoutProps) => 
 
     return (
         <PlaygroundSessionContext.Provider value={value}>
-            <_PlaygroundSessionLayout
+            <PlaygroundSessionLayoutBase
                 state={resolveFrameState(value.failed, value.isLoading)}
                 surface={input.surface}
                 failedLabel={t("layoutFailed")}

@@ -8,7 +8,7 @@ vi.mock("next-intl", () => ({ useTranslations: () => (key: string) => key }))
 vi.mock("@/hooks/swr/useQueryPlaygroundSwr", () => ({ useQueryPlaygroundSwr: () => m.playground }))
 vi.mock("@/hooks/swr/useMutateStartPlaygroundSessionSwr", () => ({ useMutateStartPlaygroundSessionSwr: () => m.start }))
 vi.mock("@/hooks/socketio/usePlaygroundSocketIo", () => ({ usePlaygroundSocketIo: () => m.socket }))
-vi.mock("./component", () => ({ _PlaygroundSessionLayout: (input: unknown) => { m.frame = input; const frame = input as { surface: ComponentType; onRetry?: () => void }; const Surface = frame.surface; return <><Surface /><button onClick={frame.onRetry}>retry-frame</button></> } }))
+vi.mock("./component", () => ({ PlaygroundSessionLayoutBase: (input: unknown) => { m.frame = input; const frame = input as { surface: ComponentType; onRetry?: () => void }; const Surface = frame.surface; return <><Surface /><button onClick={frame.onRetry}>retry-frame</button></> } }))
 
 const Probe = () => { const value = usePlaygroundSession(); return <><output data-testid="state">{value.isLoading ? "pending" : value.failed ? "failed" : value.session ? "session" : "ready"}</output><button onClick={() => void value.start()}>start</button><button onClick={value.verify}>verify</button><button onClick={value.retry}>retry-context</button></> }
 

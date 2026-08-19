@@ -8,7 +8,7 @@ import { defineContractComponent, defineLeafComponent } from "@/components/contr
 export type ComingSoonOverlayProps = { readonly isOpen: boolean; readonly title: string; readonly body: string; readonly closeLabel: string; readonly onDismiss: () => void }
 
 /** Renders the pure coming-soon dialog. */
-export const _ComingSoonOverlay = (input: ComingSoonOverlayProps) => (
+export const ComingSoonOverlayBase = (input: ComingSoonOverlayProps) => (
     <ModalBranch
         isOpen={input.isOpen}
         size="xs"

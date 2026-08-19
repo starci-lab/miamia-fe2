@@ -8,7 +8,7 @@ vi.mock("@/hooks/swr/useQueryContentSwr", () => ({ useQueryContentSwr: () => m.c
 vi.mock("@/hooks/swr/useQueryCourseSwr", () => ({ useQueryCourseSwr: () => m.course }))
 vi.mock("@/hooks/swr/useQueryContentChallengeProgressSwr", () => ({ useQueryContentChallengeProgressSwr: () => m.progress }))
 vi.mock("@/hooks/swr/useMutateSubmitContentChallengeSwr", () => ({ useMutateSubmitContentChallengeSwr: () => m.submission }))
-vi.mock("./component", () => ({ _CourseLearnChallengePage: ({ state, on }: TestPageInput) => <><output data-testid="state">{state}</output><button onClick={() => on.changeUrl("submission", "https://github.com/example/repo")}>url</button><button onClick={() => on.submit("submission")}>submit</button><button onClick={() => on.openResult("submission")}>result</button><button onClick={on.retry}>retry</button></> }))
+vi.mock("./component", () => ({ CourseLearnChallengePageBase: ({ state, on }: TestPageInput) => <><output data-testid="state">{state}</output><button onClick={() => on.changeUrl("submission", "https://github.com/example/repo")}>url</button><button onClick={() => on.submit("submission")}>submit</button><button onClick={() => on.openResult("submission")}>result</button><button onClick={on.retry}>retry</button></> }))
 import { CourseLearnChallengePage } from "./index"
 beforeEach(() => { vi.clearAllMocks(); m.content.data = undefined; m.content.error = undefined; m.course.data = undefined; m.course.error = undefined; m.progress.data = undefined; m.progress.error = undefined; m.submission.isMutating = false; m.submission.trigger.mockResolvedValue({}) })
 describe("CourseLearnChallengePage route", () => {

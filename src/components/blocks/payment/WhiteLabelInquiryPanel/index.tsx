@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react"
 import { useTranslations } from "next-intl"
 import { useMutateSubmitContactSwr } from "@/hooks/swr/useMutateSubmitContactSwr"
-import { _WhiteLabelInquiryPanel, type WhiteLabelInquiryErrors, type WhiteLabelInquiryValues } from "./component"
+import { WhiteLabelInquiryPanelBase, type WhiteLabelInquiryErrors, type WhiteLabelInquiryValues } from "./component"
 
 /** Dismissal and pending-state reporting for the inquiry overlay. */
 export type WhiteLabelInquiryPanelConnectedProps = { readonly onDismiss: () => void; readonly onPendingChange?: (pending: boolean) => void }
@@ -47,7 +47,7 @@ export const WhiteLabelInquiryPanel = ({ onDismiss, onPendingChange }: WhiteLabe
         return Object.keys(errors).length > 0 ? "invalid" : "idle"
     }
     const state = deriveState()
-    return <_WhiteLabelInquiryPanel state={state} values={values} errors={errors} copy={copy} onChange={change} onSubmit={run} onDismiss={onDismiss} />
+    return <WhiteLabelInquiryPanelBase state={state} values={values} errors={errors} copy={copy} onChange={change} onSubmit={run} onDismiss={onDismiss} />
 }
 /** Declares the connected inquiry block boundary. */
 export const meta = { shape: "block", world: "connected", domain: "payment" } as const

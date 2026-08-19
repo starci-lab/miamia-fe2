@@ -7,7 +7,7 @@ vi.mock("next-intl", () => ({ useLocale: () => m.locale, useTranslations: () => 
 vi.mock("@/i18n/navigation", () => ({ useRouter: () => ({ push: m.push }) }))
 vi.mock("@/hooks/auth/useAuthPanel", () => ({ useAuthPanel: (args: unknown) => { m.args = args; return m.panel } }))
 vi.mock("./component", () => ({
-    _AuthenticationPanel: (input: unknown) => {
+    AuthenticationPanelBase: (input: unknown) => {
         const view = input as { state: string; on?: Record<string, (...args: ReadonlyArray<unknown>) => unknown> }
         return <><output data-testid="state">{view.state}</output><button onClick={() => view.on?.submitDetails?.({ email: "a@example.com", password: "secret" })}>details</button><button onClick={() => view.on?.submitCode?.({ otp: "123456" })}>code</button><button onClick={() => view.on?.resend?.()}>resend</button><button onClick={() => view.on?.changeMode?.("signUp")}>sign-up</button><button onClick={() => view.on?.changeAgreedToTerms?.(true)}>agree</button><button onClick={() => view.on?.changeRememberMe?.(true)}>remember</button><button onClick={() => view.on?.openLegal?.("terms")}>terms</button><button onClick={() => view.on?.openLegal?.("privacy")}>privacy</button><button onClick={() => view.on?.oauthPress?.("google")}>oauth</button></>
     },

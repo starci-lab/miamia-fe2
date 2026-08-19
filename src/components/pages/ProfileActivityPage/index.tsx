@@ -6,7 +6,7 @@ import { useQueryProfileEvidenceSwr } from "@/hooks/swr/useQueryProfileEvidenceS
 import { useQueryUserProfileSwr } from "@/hooks/swr/useQueryUserProfileSwr"
 import type { ProfileAchievement, ProfileActivity } from "@/modules/api/graphql/queries/types/profile-evidence"
 import type { ActivityDayData } from "@/components/blocks/dashboard/ActivityFeed/component"
-import { _ProfileActivityPage } from "./component"
+import { ProfileActivityPageBase } from "./component"
 
 const actionLabel = (type: string) => type.replaceAll("_", " ").toLowerCase()
 const dayLabel = (at: string) => new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(new Date(at))
@@ -48,7 +48,7 @@ export const ProfileActivityPage = () => {
     }, [activity.data])
     const achievementState = deriveAchievementState(Boolean(achievements.error), achievements.isLoading || profile.isLoading)
     const feedState = deriveFeedState(Boolean(activity.error), activity.isLoading || profile.isLoading, days.length === 0)
-    return <_ProfileActivityPage
+    return <ProfileActivityPageBase
         achievementState={achievementState}
         achievements={achievements.data ?? []}
         feed={{ state: feedState, props: { days, message: activity.error ? "Activity couldn't be loaded." : "No public activity yet.", description: activity.error ? "Try again to load this timeline." : undefined, actionLabel: activity.error ? "Try again" : undefined }, on: { resultAction: () => { void activity.mutate() } } }}

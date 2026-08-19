@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
 import { useQueryFoundationCategoriesSwr } from "@/hooks/swr/useQueryFoundationCategoriesSwr"
 import type { FoundationCategoriesPage } from "@/modules/api/graphql/queries/query-foundation-categories"
-import { _CourseFoundationsPage } from "./component"
+import { CourseFoundationsPageBase } from "./component"
 
 /** Route identity required by the connected foundations hub. */
 export type CourseFoundationsPageProps = { readonly displayId: string }
@@ -28,7 +28,7 @@ export const CourseFoundationsPage = ({ displayId }: CourseFoundationsPageProps)
     const query = useQueryFoundationCategoriesSwr({ search })
     const state = resolveFoundationsState(query.error !== undefined, query.data)
     return (
-        <_CourseFoundationsPage
+        <CourseFoundationsPageBase
             state={state}
             props={{
                 title: t("title"),

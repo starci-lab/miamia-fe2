@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { GAME_CATALOG } from "@/modules/games/catalog"; import { isTeamGameId, type GameCharacter, type GameId, type GameLaunchConfig, type GameMode } from "@/modules/games/types"
-import { _GameSetupOverlay as GameSetupOverlayView, type GameSetupState } from "./component"
+import { GameSetupOverlayBase as GameSetupOverlayView, type GameSetupState } from "./component"
 
 /** Controlled game choice and resolved launch callback owned by the page. */
 export type GameSetupOverlayConnectedProps = { readonly game?: GameId; readonly isOpen: boolean; readonly onResolved: (config: GameLaunchConfig) => void; readonly onCancelled: () => void }

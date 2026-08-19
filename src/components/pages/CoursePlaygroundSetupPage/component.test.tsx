@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
-import { _CoursePlaygroundSetupPage, type CoursePlaygroundSetupPageProps } from "./component"
+import { CoursePlaygroundSetupPageBase, type CoursePlaygroundSetupPageProps } from "./component"
 
 const input = (state: CoursePlaygroundSetupPageProps["state"]): CoursePlaygroundSetupPageProps => ({
     state,
@@ -22,10 +22,10 @@ const input = (state: CoursePlaygroundSetupPageProps["state"]): CoursePlayground
     on: { start: vi.fn(), enter: vi.fn(), retry: vi.fn() },
 })
 
-describe("_CoursePlaygroundSetupPage", () => {
+describe("CoursePlaygroundSetupPageBase", () => {
     it("shows server pairing identity and enters only from ready state", () => {
         const props = input("ready")
-        const { container } = render(<_CoursePlaygroundSetupPage {...props} />)
+        const { container } = render(<CoursePlaygroundSetupPageBase {...props} />)
 
         fireEvent.click(screen.getByRole("button", { name: "Enter workspace" }))
 

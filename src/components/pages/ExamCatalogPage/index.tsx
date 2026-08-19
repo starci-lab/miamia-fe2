@@ -6,7 +6,7 @@ import { SignInOverlay } from "@/components/overlays/auth/SignInOverlay"
 import { MembershipCheckoutOverlay } from "@/components/overlays/membership/MembershipCheckoutOverlay"
 import { useRouter } from "@/i18n/navigation"
 import { useSessionToken } from "@/hooks/auth/useSessionToken"
-import { _ExamCatalogPage as ExamCatalogPageView } from "./component"
+import { ExamCatalogPageBase as ExamCatalogPageView } from "./component"
 
 type DeferredIntent = { readonly kind: "paper"; readonly slug: string } | { readonly kind: "checkout" } | undefined
 

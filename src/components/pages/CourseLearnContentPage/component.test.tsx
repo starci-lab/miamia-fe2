@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
-import { _CourseLearnContentPage, type CourseLearnContentPageData } from "./component"
+import { CourseLearnContentPageBase, type CourseLearnContentPageData } from "./component"
 
 const labels: CourseLearnContentPageData["labels"] = {
     navCourse: "Course",
@@ -37,7 +37,7 @@ const discussion = {
     },
 }
 
-describe("_CourseLearnContentPage", () => {
+describe("CourseLearnContentPageBase", () => {
     it("shows one selected mobile panel and keeps all three panels on desktop", () => {
         const props: CourseLearnContentPageData = {
             labels,
@@ -47,7 +47,7 @@ describe("_CourseLearnContentPage", () => {
             outline: [{ id: "heading-1", label: "Heading" }],
         }
         const { container, rerender } = render(
-            <_CourseLearnContentPage state="ready" props={props} />,
+            <CourseLearnContentPageBase state="ready" props={props} />,
         )
 
         expect(container.querySelector("[data-node=content-map-panel]")).not.toBeNull()
@@ -61,7 +61,7 @@ describe("_CourseLearnContentPage", () => {
         ] as const
         for (const [mobileView, node] of cases) {
             rerender(
-                <_CourseLearnContentPage state="ready" props={{ ...props, mobileView }} />,
+                <CourseLearnContentPageBase state="ready" props={{ ...props, mobileView }} />,
             )
             expect(container.firstElementChild?.getAttribute("data-node")).toBe(node)
             expect(container.querySelectorAll("[data-node=content-map-panel]")).toHaveLength(mobileView === "contents" ? 1 : 0)
@@ -73,7 +73,7 @@ describe("_CourseLearnContentPage", () => {
     it("opens a module-map content through the page-owned action", () => {
         const openContent = vi.fn()
         render(
-            <_CourseLearnContentPage
+            <CourseLearnContentPageBase
                 state="ready"
                 props={{
                     labels,
@@ -101,7 +101,7 @@ describe("_CourseLearnContentPage", () => {
         const goCourse = vi.fn()
         const goModule = vi.fn()
         render(
-            <_CourseLearnContentPage
+            <CourseLearnContentPageBase
                 state="ready"
                 props={{ labels, title: "Current lesson", body: "Lesson body" }}
                 on={{ goCourse, goModule }}
@@ -117,7 +117,7 @@ describe("_CourseLearnContentPage", () => {
     it("offers the failed reader recovery action", () => {
         const act = vi.fn()
         render(
-            <_CourseLearnContentPage
+            <CourseLearnContentPageBase
                 state="failed"
                 props={{
                     labels,
@@ -135,7 +135,7 @@ describe("_CourseLearnContentPage", () => {
     it("keeps the visible discussion inside the unlocked lesson footer", () => {
         const submitDiscussion = vi.fn()
         const { container } = render(
-            <_CourseLearnContentPage
+            <CourseLearnContentPageBase
                 state="ready"
                 props={{ labels, title: "Current lesson", body: "Lesson body", discussion }}
                 on={{ submitDiscussion }}
@@ -150,7 +150,7 @@ describe("_CourseLearnContentPage", () => {
     })
 
     it("keeps a locked preview inside its paper and omits reading actions", () => {
-        const { container } = render(<_CourseLearnContentPage state="locked" props={{ labels, title: "Locked lesson", body: "Preview", noticeMessage: "Unlock this lesson" }} />)
+        const { container } = render(<CourseLearnContentPageBase state="locked" props={{ labels, title: "Locked lesson", body: "Preview", noticeMessage: "Unlock this lesson" }} />)
         expect(screen.getByText("Unlock this lesson")).toBeInTheDocument()
         expect(container.querySelector("[data-node=content-reader-footer]")).toBeNull()
     })

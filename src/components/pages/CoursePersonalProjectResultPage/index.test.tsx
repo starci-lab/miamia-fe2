@@ -7,7 +7,7 @@ vi.mock("@/hooks/swr/useQueryCoursePersonalProjectSwr", () => ({ useQueryCourseP
 vi.mock("@/hooks/swr/useQueryPersonalTaskAttemptsSwr", () => ({ useQueryPersonalTaskAttemptsSwr: () => m.attempts }))
 vi.mock("@/hooks/swr/useQueryPersonalTaskAttemptFeedbacksSwr", () => ({ useQueryPersonalTaskAttemptFeedbacksSwr: () => m.feedbacks }))
 type ResultProps = { readonly state: string; readonly on: { readonly retryTask: () => void } }
-vi.mock("./component", () => ({ _CoursePersonalProjectResultPage: ({ state, on }: ResultProps) => <><output data-testid="state">{state}</output><button onClick={on.retryTask}>retry</button></> }))
+vi.mock("./component", () => ({ CoursePersonalProjectResultPageBase: ({ state, on }: ResultProps) => <><output data-testid="state">{state}</output><button onClick={on.retryTask}>retry</button></> }))
 import { CoursePersonalProjectResultPage } from "./index"
 const project = { course: { id: "course" }, milestones: [{ tasks: [{ id: "task", title: "Task" }] }] }
 beforeEach(() => { vi.clearAllMocks(); m.project.data = undefined; m.project.error = undefined; m.attempts.data = undefined; m.attempts.error = undefined; m.feedbacks.data = undefined; m.feedbacks.error = undefined })

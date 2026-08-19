@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl"
 import { useQueryModuleSwr } from "@/hooks/swr/useQueryModuleSwr"
-import { _CourseLearnModulePage as CourseLearnModulePageView } from "./component"
+import { CourseLearnModulePageBase as CourseLearnModulePageView } from "./component"
 
 /** Route identity required to load one enrolled module. */
 export interface CourseLearnModulePageConnectedProps { readonly moduleId: string }

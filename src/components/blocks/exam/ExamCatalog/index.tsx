@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl"
 import { useQueryExamProgramsSwr } from "@/hooks/swr/useQueryExamProgramsSwr"
 import { useQueryPapersSwr } from "@/hooks/swr/useQueryPapersSwr"
 import type { PaperSummary } from "@/modules/api/graphql/queries/types/exam"
-import { _ExamCatalog } from "./component"
+import { ExamCatalogBase } from "./component"
 
 const PAGE_SIZE = 12
 /** Navigation and entitlement intents owned by the catalogue page. */
@@ -55,7 +55,7 @@ export const ExamCatalog = (input: ExamCatalogConnectedProps) => {
     const failed = isMounted && (programs.error !== undefined || papers.error !== undefined || programData === null || paperData === null)
     const loading = !failed && (programData === undefined || paperData === undefined)
     const cardOf = (paper: PaperSummary) => ({ id: paper.id, title: localized(paper.titleVi, paper.titleEn, paper.slug), description: localized(paper.descriptionVi, paper.descriptionEn) || undefined, level: paper.level.toUpperCase(), questionCount: paper.questionCount, levelLabel: t("level"), questionCountLabel: t("questionCount"), badgeLabel: resolveBadgeLabel(paper, t), actionLabel: paper.isLocked ? t("unlock") : t("start"), isLocked: paper.isLocked })
-    return <_ExamCatalog
+    return <ExamCatalogBase
         state={resolveCatalogState(failed, loading, shown.length > 0)}
         props={{ title: t("title"), description: t("description"), premiumTitle: t("premiumTitle"), premiumBody: t("premiumBody"), premiumAction: t("premiumAction"), searchLabel: t("searchLabel"), searchPlaceholder: t("searchPlaceholder"), searchClearLabel: t("searchClear"), collectionLabel: t("collectionLabel"), selectedCollectionId: selected.id, collections, sectionTitle: selected.label, countLabel: t("count", { count: filtered.length }), papers: shown.map(cardOf), page, totalPages: pageCount, pageLabel: t("pageLabel"), previousLabel: t("previous"), nextLabel: t("next"), emptyMessage: t("empty"), failedMessage: t("failed"), retryLabel: t("retry") }}
         on={{ search: (value) => { setQuery(value); setPage(1) }, selectCollection: (id) => { setCollection(id); setPage(1) }, changePage: setPage, requestPremium: input.onRequestPremium, retry: () => { void programs.mutate(); void papers.mutate() }, ...Object.fromEntries(shown.map((paper) => [`open:${paper.id}`, () => paper.isLocked ? input.onRequestPremium() : input.onOpenPaper(paper.slug)])) }}

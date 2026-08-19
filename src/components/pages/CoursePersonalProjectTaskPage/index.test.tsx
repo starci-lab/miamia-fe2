@@ -7,7 +7,7 @@ vi.mock("@/hooks/swr/useQueryCoursePersonalProjectSwr", () => ({ useQueryCourseP
 vi.mock("@/hooks/swr/useQueryPersonalTaskAttemptsSwr", () => ({ useQueryPersonalTaskAttemptsSwr: () => m.attempts }))
 vi.mock("@/hooks/swr/useMutateSubmitPersonalTaskAttemptSwr", () => ({ useMutateSubmitPersonalTaskAttemptSwr: () => m.submission }))
 type TaskProps = { readonly state: string; readonly on: { readonly submit: () => void; readonly retry: () => void } }
-vi.mock("./component", () => ({ _CoursePersonalProjectTaskPage: ({ state, on }: TaskProps) => <><output data-testid="state">{state}</output><button onClick={on.submit}>submit</button><button onClick={on.retry}>retry</button></> }))
+vi.mock("./component", () => ({ CoursePersonalProjectTaskPageBase: ({ state, on }: TaskProps) => <><output data-testid="state">{state}</output><button onClick={on.submit}>submit</button><button onClick={on.retry}>retry</button></> }))
 import { CoursePersonalProjectTaskPage } from "./index"
 const project = { course: { id: "course" }, milestones: [{ tasks: [{ id: "task", title: "Task", type: "Write", maxScore: 10 }] }] }
 beforeEach(() => { vi.clearAllMocks(); m.project.data = undefined; m.project.error = undefined; m.submission.error = undefined; m.submission.isMutating = false })

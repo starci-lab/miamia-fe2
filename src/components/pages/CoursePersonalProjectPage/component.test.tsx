@@ -1,11 +1,11 @@
 import { render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
-import { _CoursePersonalProjectPage } from "./component"
+import { CoursePersonalProjectPageBase } from "./component"
 
-describe("_CoursePersonalProjectPage", () => {
+describe("CoursePersonalProjectPageBase", () => {
     it("keeps progress facts before ordered task destinations", () => {
         const { container } = render(
-            <_CoursePersonalProjectPage
+            <CoursePersonalProjectPageBase
                 state="ready"
                 props={{
                     title: "Personal Project",

@@ -15,7 +15,7 @@ const COUNT = CONTRACTS["upcoming-livestream-list"].children.session.restingCoun
 const View = ({ props, on, isLoading = false }: LeafProps<UpcomingData, UpcomingActions>) => { const rows = isLoading ? Array.from({ length: COUNT }, (_, i) => ({ id: `resting-${i}` })) : props.rows; return <Tree contract="upcoming-livestream-list" render={defineContractComponent("upcoming-livestream-list", { session: rows.map((row) => defineCompositeComponent("upcoming-livestream-row", {}, () => <UpcomingLivestreamRow props={row} on={{ open: on?.[`open:${row.id}`] }} isLoading={isLoading} />)) })} /> }
 const List = defineContractComponent("upcoming-livestream-list", View)
 /** Draw upcoming sessions and their local request outcomes. */
-export const _UpcomingLivestreamCard = (input: UpcomingProps) => {
+export const UpcomingLivestreamCardBase = (input: UpcomingProps) => {
     if (input.state === "hidden") return null
     if (input.state === "failed") {
         return (

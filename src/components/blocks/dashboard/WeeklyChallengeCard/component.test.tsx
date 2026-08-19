@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
-import { _WeeklyChallengeCard } from "./component"
+import { WeeklyChallengeCardBase } from "./component"
 
 const frame = {
     label: "Weekly challenge",
@@ -9,10 +9,10 @@ const frame = {
     retryLabel: "Retry",
 } as const
 
-describe("_WeeklyChallengeCard", () => {
+describe("WeeklyChallengeCardBase", () => {
     it("draws challenge facts, viewer outcome and recent finishers as distinct rows", () => {
         const act = vi.fn()
-        const { container } = render(<_WeeklyChallengeCard state="ready" props={{
+        const { container } = render(<WeeklyChallengeCardBase state="ready" props={{
             ...frame,
             title: "Build an event store",
             endsInLabel: "Ends in 5d 8h",
@@ -42,21 +42,21 @@ describe("_WeeklyChallengeCard", () => {
     })
 
     it("rests with the same header, status and three-finisher cardinality", () => {
-        const { container } = render(<_WeeklyChallengeCard state="pending" props={frame} />)
+        const { container } = render(<WeeklyChallengeCardBase state="pending" props={frame} />)
         expect(container.querySelectorAll("[data-node=\"weekly-challenge-finisher-row\"]")).toHaveLength(3)
         expect(container.querySelectorAll("[data-component=\"StatRow\"]")).toHaveLength(0)
         expect(container.querySelector("[data-component=\"Button\"][data-loading=\"true\"]")).toBeInTheDocument()
     })
 
     it("keeps the labelled slot mounted when no event is active", () => {
-        render(<_WeeklyChallengeCard state="empty" props={frame} />)
+        render(<WeeklyChallengeCardBase state="empty" props={frame} />)
         expect(screen.getByText(frame.label)).toBeInTheDocument()
         expect(screen.getByText(frame.emptyMessage)).toBeInTheDocument()
     })
 
     it("reports retry from the failed state", () => {
         const retry = vi.fn()
-        render(<_WeeklyChallengeCard state="failed" props={frame} on={{ retry }} />)
+        render(<WeeklyChallengeCardBase state="failed" props={frame} on={{ retry }} />)
         fireEvent.click(screen.getByRole("button", { name: frame.retryLabel }))
         expect(retry).toHaveBeenCalledOnce()
     })

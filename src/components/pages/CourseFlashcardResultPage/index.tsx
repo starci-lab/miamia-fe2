@@ -4,7 +4,7 @@ import { useLocale } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
 import { useQueryFlashcardSessionResultSwr } from "@/hooks/swr/useQueryFlashcardSessionResultSwr"
 import type { FlashcardSessionMode } from "@/modules/api/graphql/queries/query-my-in-progress-flashcard-session"
-import { _CourseFlashcardResultPage as CourseFlashcardResultPageView } from "./component"
+import { CourseFlashcardResultPageBase as CourseFlashcardResultPageView } from "./component"
 
 /** A missing result is still pending; a resolved-but-absent one is a real load failure. */
 const resolveResultState = (error: unknown, data: unknown): "failed" | "pending" | "ready" => {

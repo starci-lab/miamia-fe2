@@ -5,7 +5,7 @@ import { defineContractComponent, defineContractProjection } from "@/components/
 type StudyHomePageProps = { readonly continueSurface: ComponentType; readonly progressSurface: ComponentType }
 
 /** Keeps resume before progress in the Study landing reading order. */
-export const _StudyHomePage = ({ continueSurface, progressSurface }: StudyHomePageProps) => <Tree contract="study-home-grid" render={defineContractComponent("study-home-grid", {
+export const StudyHomePageBase = ({ continueSurface, progressSurface }: StudyHomePageProps) => <Tree contract="study-home-grid" render={defineContractComponent("study-home-grid", {
     resume: defineContractProjection("study-resume-hero", () => {
         const ContinueSurface = continueSurface
         return <ContinueSurface />

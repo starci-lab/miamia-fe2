@@ -10,7 +10,7 @@ import { DrawerBranch } from "@/components/branches/DrawerBranch"
 import { CartLine } from "@/components/blocks/commerce/CartLine"
 import { type CartLineData } from "@/components/blocks/commerce/CartLine/component"
 import {
-    _OrderSummary as OrderSummaryView,
+    OrderSummaryBase as OrderSummaryView,
     type OrderSummaryLabels,
     type OrderSummaryState,
 } from "@/components/blocks/commerce/OrderSummary/component"
@@ -89,7 +89,7 @@ export type CartDrawerActions = {
     readonly browse?: () => void
 }
 
-/** Props for {@link _CartDrawer}. */
+/** Props for {@link CartDrawerBase}. */
 export type CartDrawerProps = {
     readonly state: CartDrawerState
     readonly props: CartDrawerData
@@ -110,7 +110,7 @@ const resolveOrderSummaryState = (isLoading: boolean, hasPricingFailed: boolean)
  *
  * @param input - {@link CartDrawerProps}
  */
-export const _CartDrawer = (input: CartDrawerProps) => {
+export const CartDrawerBase = (input: CartDrawerProps) => {
     const labels = input.props.labels
     const isLoading = input.state === "pending"
     const showsNotice = input.state === "empty" || input.state === "failed"

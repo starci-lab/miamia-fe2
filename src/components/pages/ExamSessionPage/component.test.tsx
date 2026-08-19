@@ -1,11 +1,11 @@
 import { render, screen } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
-import { _ExamSessionPage } from "./component"
+import { ExamSessionPageBase } from "./component"
 
-describe("_ExamSessionPage", () => {
+describe("ExamSessionPageBase", () => {
     it("mounts the authenticated session surface without a second frame", () => {
         const Surface = () => <div>session surface</div>
-        render(<_ExamSessionPage surface={Surface} />)
+        render(<ExamSessionPageBase surface={Surface} />)
         expect(screen.getByText("session surface")).toBeTruthy()
     })
 })

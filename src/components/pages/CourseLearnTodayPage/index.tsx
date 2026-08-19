@@ -14,7 +14,7 @@ import { useLearnMobileView } from "@/components/layouts/LearnShellLayout"
 import { type InProgressMockInterviewSession } from "@/modules/api/graphql/queries/query-my-in-progress-mock-interview-session"
 import { type MyResumeRefRow } from "@/modules/api/graphql/queries/types/my-resume"
 import { type CourseDetail } from "@/modules/api/graphql/queries/types/course"
-import { _CourseLearnTodayPage, type CourseLearnTodayItem } from "./component"
+import { CourseLearnTodayPageBase, type CourseLearnTodayItem } from "./component"
 
 /** Route identity required by the connected Today page. */
 export type CourseLearnTodayPageProps = { readonly displayId: string }
@@ -149,7 +149,7 @@ export const CourseLearnTodayPage = ({ displayId }: CourseLearnTodayPageProps) =
     }
 
     return (
-        <_CourseLearnTodayPage
+        <CourseLearnTodayPageBase
             state={state}
             mobileView={view}
             props={{

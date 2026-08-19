@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
-import { _LeagueCard } from "./component"
+import { LeagueCardBase } from "./component"
 
 vi.mock("@iconify/react", () => ({
     Icon: (props: Readonly<Record<string, unknown>>) => <span {...props} />,
@@ -15,9 +15,9 @@ const frame = {
     retryLabel: "Retry",
 } as const
 
-describe("_LeagueCard", () => {
+describe("LeagueCardBase", () => {
     it("renders the approved standing, nested cohort and movement verdict", () => {
-        const { container } = render(<_LeagueCard state="ready" props={{
+        const { container } = render(<LeagueCardBase state="ready" props={{
             ...frame,
             rows: [{
                 id: "self",
@@ -39,7 +39,7 @@ describe("_LeagueCard", () => {
     })
 
     it("preserves five ranked rows while loading", () => {
-        const { container } = render(<_LeagueCard state="pending" props={{ ...frame, rows: [] }} />)
+        const { container } = render(<LeagueCardBase state="pending" props={{ ...frame, rows: [] }} />)
         expect(container.querySelectorAll("[data-node^=\"ranked-user-row\"]")).toHaveLength(5)
     })
 })

@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
-import { _CourseMindMapPage, type CourseMindMapPageProps } from "./component"
+import { CourseMindMapPageBase, type CourseMindMapPageProps } from "./component"
 
 const input = (): CourseMindMapPageProps => ({
     state: "ready",
@@ -22,10 +22,10 @@ const input = (): CourseMindMapPageProps => ({
     on: { search: vi.fn(), select: vi.fn(), openContent: vi.fn(), retry: vi.fn() },
 })
 
-describe("_CourseMindMapPage", () => {
+describe("CourseMindMapPageBase", () => {
     it("forwards search, selection and real-content navigation actions", () => {
         const props = input()
-        render(<_CourseMindMapPage {...props} />)
+        render(<CourseMindMapPageBase {...props} />)
 
         fireEvent.change(screen.getByRole("searchbox", { name: "Search concepts" }), { target: { value: "container" } })
         fireEvent.submit(screen.getByRole("search"))
@@ -38,9 +38,9 @@ describe("_CourseMindMapPage", () => {
     })
     it("draws failed, empty and no-result notices with a selected detail", () => {
         const props = { ...input(), state: "ready" as const, props: { ...input().props, nodes: [{ id: "node-1", label: "Containers", detail: "A useful detail", left: 50, top: 50, canOpen: false }] } }
-        render(<_CourseMindMapPage {...props} />); expect(screen.getByText("A useful detail")).toBeInTheDocument()
-        const noResults = { ...input(), props: { ...input().props, nodes: [] } }; render(<_CourseMindMapPage {...noResults} />); expect(screen.getByText("No results")).toBeInTheDocument()
-        const empty = { ...input(), state: "empty" as const, props: { ...input().props, nodes: [] } }; render(<_CourseMindMapPage {...empty} />); expect(screen.getByText("No map")).toBeInTheDocument()
-        const failed = { ...input(), state: "failed" as const, props: { ...input().props, nodes: [] } }; render(<_CourseMindMapPage {...failed} />); fireEvent.click(screen.getByRole("button", { name: "Try again" })); expect(failed.on.retry).toHaveBeenCalledOnce()
+        render(<CourseMindMapPageBase {...props} />); expect(screen.getByText("A useful detail")).toBeInTheDocument()
+        const noResults = { ...input(), props: { ...input().props, nodes: [] } }; render(<CourseMindMapPageBase {...noResults} />); expect(screen.getByText("No results")).toBeInTheDocument()
+        const empty = { ...input(), state: "empty" as const, props: { ...input().props, nodes: [] } }; render(<CourseMindMapPageBase {...empty} />); expect(screen.getByText("No map")).toBeInTheDocument()
+        const failed = { ...input(), state: "failed" as const, props: { ...input().props, nodes: [] } }; render(<CourseMindMapPageBase {...failed} />); fireEvent.click(screen.getByRole("button", { name: "Try again" })); expect(failed.on.retry).toHaveBeenCalledOnce()
     })
 })

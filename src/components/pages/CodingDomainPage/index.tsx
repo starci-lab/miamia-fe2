@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
 import { useQueryCodingProblemsSwr } from "@/hooks/swr/useQueryCodingProblemsSwr"
 import { useQueryMyCodingProgressSwr } from "@/hooks/swr/useQueryMyCodingProgressSwr"
-import { _CodingDomainPage as CodingDomainPageView } from "./component"
+import { CodingDomainPageBase as CodingDomainPageView } from "./component"
 
 /** Props for {@link CodingDomainPage}. */
 export interface CodingDomainPageProps {

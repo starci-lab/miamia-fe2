@@ -12,7 +12,7 @@ import { useSessionToken } from "@/hooks/auth/useSessionToken"
 import { useQueryMiaMiaPricingCatalogSwr } from "@/hooks/swr/useQueryMiaMiaPricingCatalogSwr"
 import { useRouter } from "@/i18n/navigation"
 import type { ExamDownloadPackage, MiaMiaOfferId } from "@/modules/api/graphql/queries/types/miamia-pricing"
-import { _PricingPage as PricingPageView } from "./component"
+import { PricingPageBase as PricingPageView } from "./component"
 
 const OFFERS: ReadonlySet<MiaMiaOfferId> = new Set(["pro", "personal", "commercial", "white-label"])
 const isOffer = (value: string | null): value is MiaMiaOfferId => value !== null && OFFERS.has(value as MiaMiaOfferId)

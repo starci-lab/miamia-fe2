@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
-import { _CourseDetailPage, type CourseDetailPageData } from "./component"
+import { CourseDetailPageBase, type CourseDetailPageData } from "./component"
 
 class ResizeObserverMock {
     observe() {}
@@ -55,10 +55,10 @@ const props: CourseDetailPageData = {
     },
 }
 
-describe("_CourseDetailPage", () => {
+describe("CourseDetailPageBase", () => {
     it("renders direction C hierarchy and reports a real section selection", () => {
         const selectSection = vi.fn()
-        render(<_CourseDetailPage state="ready" props={props} on={{ selectSection }} />)
+        render(<CourseDetailPageBase state="ready" props={props} on={{ selectSection }} />)
 
         expect(screen.getByRole("tab", { name: "Explore the course" })).toBeInTheDocument()
         expect(screen.getByRole("list", { name: "Course path" })).toHaveTextContent("HomeCoursesFullstack Mastery")
@@ -79,7 +79,7 @@ describe("_CourseDetailPage", () => {
     it("reports breadcrumb navigation and disables the current course crumb", () => {
         const navigateHome = vi.fn()
         const navigateCourses = vi.fn()
-        render(<_CourseDetailPage state="ready" props={props} on={{ navigateHome, navigateCourses }} />)
+        render(<CourseDetailPageBase state="ready" props={props} on={{ navigateHome, navigateCourses }} />)
 
         fireEvent.click(screen.getByText("Home"))
         fireEvent.click(screen.getByText("Courses"))
@@ -91,27 +91,27 @@ describe("_CourseDetailPage", () => {
     })
 
     it("keeps five signal cells while course data is pending", () => {
-        render(<_CourseDetailPage state="pending" props={{ labels, selectedSection: "overview" }} />)
+        render(<CourseDetailPageBase state="pending" props={{ labels, selectedSection: "overview" }} />)
         expect(document.querySelectorAll("[data-node^=\"course-signal-card-\"]")).toHaveLength(5)
         expect(screen.getByRole("tab", { name: "Learner outcomes" })).toBeInTheDocument()
     })
 
     it("does not turn an unrated course into a zero-score verdict", () => {
-        render(<_CourseDetailPage state="ready" props={{ ...props, averageScore: 0, reviewTotal: 0, reviews: [] }} />)
+        render(<CourseDetailPageBase state="ready" props={{ ...props, averageScore: 0, reviewTotal: 0, reviews: [] }} />)
         expect(screen.queryByText("0.0")).toBeNull()
         expect(screen.getByText("No reviews yet")).toBeInTheDocument()
     })
 
     it("keeps the FAQ anchor real when a course has no authored rows", () => {
-        render(<_CourseDetailPage state="ready" props={{ ...props, faqs: [] }} />)
+        render(<CourseDetailPageBase state="ready" props={{ ...props, faqs: [] }} />)
         expect(screen.getByRole("tab", { name: "FAQ" })).toBeInTheDocument()
         expect(screen.getByText("No FAQs yet")).toBeInTheDocument()
     })
     it("renders a final not-found notice and a retryable failure notice", () => {
         const retry = vi.fn()
-        render(<_CourseDetailPage state="not-found" props={{ labels, noticeMessage: "Missing course" }} on={{ retry }} />)
+        render(<CourseDetailPageBase state="not-found" props={{ labels, noticeMessage: "Missing course" }} on={{ retry }} />)
         expect(screen.getByText("Missing course")).toBeInTheDocument()
-        render(<_CourseDetailPage state="failed" props={{ labels, noticeMessage: "Offline", noticeActionLabel: "Retry" }} on={{ retry }} />)
+        render(<CourseDetailPageBase state="failed" props={{ labels, noticeMessage: "Offline", noticeActionLabel: "Retry" }} on={{ retry }} />)
         fireEvent.click(screen.getByRole("button", { name: "Retry" })); expect(retry).toHaveBeenCalledOnce()
     })
 })

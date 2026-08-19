@@ -11,7 +11,7 @@ export type ProfileWrappedPageProps = {
 }
 
 /** Pure full-page Wrapped period explorer. */
-export const _ProfileWrappedPage = (input: ProfileWrappedPageProps) => <Tree contract="learner-wrapped-page" render={defineContractComponent("learner-wrapped-page", {
+export const ProfileWrappedPageBase = (input: ProfileWrappedPageProps) => <Tree contract="learner-wrapped-page" render={defineContractComponent("learner-wrapped-page", {
     period: defineLeafComponent("choice-tabs", {}, () => <ChoiceTabs props={{ label: input.props.periodLabel, selectedKey: input.props.period, variant: "primary", tabs: input.props.periods }} on={{ select: (key) => input.on?.selectPeriod?.(key as WrappedPeriod) }} />),
     summary: defineContractProjection("learner-wrapped-summary", () => <LearnerWrappedSummary {...input.props.summary} />),
 })} />

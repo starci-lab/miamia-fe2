@@ -3,7 +3,7 @@ import { useParams } from "next/navigation"
 import { useRouter } from "@/i18n/navigation"
 import { useQueryProfileEvidenceSwr } from "@/hooks/swr/useQueryProfileEvidenceSwr"
 import { useQueryUserProfileSwr } from "@/hooks/swr/useQueryUserProfileSwr"
-import { _ProfileChallengeSubmissionPage as ProfileChallengeSubmissionPageView, type ChallengeDetail } from "./component"
+import { ProfileChallengeSubmissionPageBase as ProfileChallengeSubmissionPageView, type ChallengeDetail } from "./component"
 
 const resolveSubmissionState = (hasError: boolean, isLoading: boolean): "error" | "pending" | "ready" => {
     if (hasError) return "error"

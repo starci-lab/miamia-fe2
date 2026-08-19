@@ -3,7 +3,7 @@
 import { useLocale } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
 import { useQueryCoursePersonalProjectSwr } from "@/hooks/swr/useQueryCoursePersonalProjectSwr"
-import { _CoursePersonalProjectPage as CoursePersonalProjectPageView } from "./component"
+import { CoursePersonalProjectPageBase as CoursePersonalProjectPageView } from "./component"
 
 /** Course route identity required by the personal-project dashboard. */
 export type CoursePersonalProjectPageProps = { readonly displayId: string }

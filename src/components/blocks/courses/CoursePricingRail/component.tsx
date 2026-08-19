@@ -84,7 +84,7 @@ export type CoursePricingRailActions = {
 /** The situations the rail can be in. */
 export type CoursePricingRailState = "ready" | "price-pending"
 
-/** Props for {@link _CoursePricingRail}. */
+/** Props for {@link CoursePricingRailBase}. */
 export type CoursePricingRailProps = {
     /** The business situation, which picks the tree. */
     readonly state: CoursePricingRailState
@@ -99,7 +99,7 @@ export type CoursePricingRailProps = {
  *
  * @param input - {@link CoursePricingRailProps}
  */
-export const _CoursePricingRail = (input: CoursePricingRailProps) => {
+export const CoursePricingRailBase = (input: CoursePricingRailProps) => {
     const isPricePending = input.state === "price-pending"
     const phases = input.props.phases ?? []
     const activePhase = phases.find((phase) => phase.isActive === true)
@@ -180,7 +180,7 @@ export const _CoursePricingRail = (input: CoursePricingRailProps) => {
  * here instead would inset the rail twice.
  */
 export const CoursePricingRail = (input: CoursePricingRailProps) =>
-    defineContractProjection("course-pricing-rail", () => <_CoursePricingRail {...input} />)
+    defineContractProjection("course-pricing-rail", () => <CoursePricingRailBase {...input} />)
 
 /** Source-level ownership marker. */
 export const meta = { world: "pure", domain: "courses" } as const

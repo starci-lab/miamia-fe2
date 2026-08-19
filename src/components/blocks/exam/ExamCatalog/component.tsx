@@ -25,7 +25,7 @@ export type ExamCatalogActions = { readonly search?: (query: string) => void; re
 export type ExamCatalogProps = BlockProps<"loading" | "failed" | "empty" | "ready", ExamCatalogData> & { readonly on?: ExamCatalogActions }
 
 /** Render one settled catalogue state. */
-export const _ExamCatalog = (input: ExamCatalogProps) => {
+export const ExamCatalogBase = (input: ExamCatalogProps) => {
     const isLoading = input.state === "loading"
     const notice = input.state === "failed" || input.state === "empty"
     return <Tree contract="exam-catalog-page" render={defineContractComponent("exam-catalog-page", {

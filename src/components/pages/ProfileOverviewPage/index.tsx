@@ -5,7 +5,7 @@ import { useParams } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
 import { useQueryMeSwr, useQueryProgressSummarySwr, useQueryUserProfileSwr, useQueryWrappedSwr } from "@/hooks"
-import { _ProfileOverviewPage as ProfileOverviewPageView } from "./component"
+import { ProfileOverviewPageBase as ProfileOverviewPageView } from "./component"
 import type { ProfileView } from "@/components/blocks/profile/learner/ProfileViewSwitch/component"
 
 /** "failed" beats "pending" - a stale error stays reported even if a caller mistakenly re-fetches. */

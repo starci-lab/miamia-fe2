@@ -19,7 +19,7 @@ const resolveNoticeMessage = (state: StudyTopicOverviewState, props: StudyTopicO
 }
 
 /** Renders one public topic and its ordered phrase evidence. */
-export const _StudyTopicOverview = (input: StudyTopicOverviewProps) => {
+export const StudyTopicOverviewBase = (input: StudyTopicOverviewProps) => {
     const notice = input.state !== "ready"
     return <Tree contract="study-topic-overview" render={defineContractComponent("study-topic-overview", {
         back: defineLeafComponent("button", {}, () => <Button props={{ label: input.props.backLabel, variant: "ghost" }} on={{ press: input.on?.back }} />),

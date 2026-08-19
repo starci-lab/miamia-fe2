@@ -7,7 +7,7 @@ import { useQueryMeSwr } from "@/hooks/swr/useQueryMeSwr"
 import { useQueryPublicUserCvSwr } from "@/hooks/swr/useQueryPublicUserCvSwr"
 import { useQueryUserProfileSwr } from "@/hooks/swr/useQueryUserProfileSwr"
 import type { PublicUserCvData } from "@/modules/api/graphql/queries/types/user-profile"
-import { _ProfilePublicCvPage as ProfilePublicCvPageView } from "./component"
+import { ProfilePublicCvPageBase as ProfilePublicCvPageView } from "./component"
 
 type PublicCvState = "error" | "pending" | "empty" | "ready" | "uncompiled"
 

@@ -4,7 +4,7 @@ import { useParams } from "next/navigation"
 import { useRouter } from "@/i18n/navigation"
 import { useQueryProfileEvidenceSwr } from "@/hooks/swr/useQueryProfileEvidenceSwr"
 import { useQueryUserProfileSwr } from "@/hooks/swr/useQueryUserProfileSwr"
-import { _ProfileCodingProblemPage as ProfileCodingProblemPageView, type CodingDetail } from "./component"
+import { ProfileCodingProblemPageBase as ProfileCodingProblemPageView, type CodingDetail } from "./component"
 
 /** Which tree the coding-proof route draws for the profile and evidence reads that feed it. */
 const resolveCodingProblemState = (hasError: boolean, isLoading: boolean) => {

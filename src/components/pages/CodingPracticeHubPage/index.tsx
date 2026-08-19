@@ -6,7 +6,7 @@ import { useRouter } from "@/i18n/navigation"
 import { useQueryCodingDomainSummarySwr } from "@/hooks/swr/useQueryCodingDomainSummarySwr"
 import { useQueryMyCodingProgressSwr } from "@/hooks/swr/useQueryMyCodingProgressSwr"
 import { useSessionToken } from "@/hooks/auth/useSessionToken"
-import { _CodingPracticeHubPage as CodingPracticeHubPageView } from "./component"
+import { CodingPracticeHubPageBase as CodingPracticeHubPageView } from "./component"
 
 type HubState = "pending" | "guest" | "catalog-failed" | "empty" | "progress-failed" | "ready"
 

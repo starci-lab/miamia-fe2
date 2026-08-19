@@ -103,7 +103,7 @@ const resolveChangelogEntries = (input: ChangelogListProps): ReadonlyArray<Chang
 }
 
 /** Draw the product changelog as a joined history without owning fetching or navigation. */
-export const _ChangelogList = (input: ChangelogListProps) => {
+export const ChangelogListBase = (input: ChangelogListProps) => {
     if (input.state === "empty") return null
 
     const isLoading = input.state === "pending"

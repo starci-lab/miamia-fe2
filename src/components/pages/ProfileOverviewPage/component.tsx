@@ -20,7 +20,7 @@ export type ProfileOverviewPageProps = {
 }
 
 /** Pure learner overview with an owner-only evidence branch and truthful public preview. */
-export const _ProfileOverviewPage = (input: ProfileOverviewPageProps) => {
+export const ProfileOverviewPageBase = (input: ProfileOverviewPageProps) => {
     const privateView = input.state === "owner" && input.props.selectedView === "private"
     return (
         <Tree contract="learner-profile-overview" render={defineContractComponent("learner-profile-overview", {

@@ -13,7 +13,7 @@ import { ReactionType } from "@/modules/api/graphql/queries/types/reactions"
 import { useLearnMobileView } from "@/components/layouts/LearnShellLayout"
 import type { LearnMobileView } from "@/components/layouts/LearnShellLayout/component"
 import {
-    _CourseLearnContentPage,
+    CourseLearnContentPageBase,
     type ContentOutlineEntry,
     type CourseLearnContentPageState,
 } from "@/components/pages/CourseLearnContentPage/component"
@@ -219,7 +219,7 @@ export const CourseLearnContentPage = (input: CourseLearnContentPageProps) => {
     }
 
     return (
-        <_CourseLearnContentPage
+        <CourseLearnContentPageBase
             state={state}
             props={{
                 labels: {

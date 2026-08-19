@@ -3,13 +3,13 @@
 import { ExamDownloadCheckoutPanel } from "@/components/blocks/payment/ExamDownloadCheckoutPanel"
 import type { ExamDownloadPackage } from "@/modules/api/graphql/queries/types/miamia-pricing"
 import { defineContractProjection } from "@/components/contracts/props"
-import { _ExamDownloadCheckoutOverlay } from "./component"
+import { ExamDownloadCheckoutOverlayBase } from "./component"
 
 /** Package facts and provider return destinations for the checkout modal. */
 export type ExamDownloadCheckoutOverlayConnectedProps = { readonly isOpen: boolean; readonly packageId: ExamDownloadPackage; readonly amount: number; readonly returnUrl: string; readonly cancelUrl: string; readonly onDismiss: () => void }
 /** Connects the selected package panel to shared modal mechanics. */
 export const ExamDownloadCheckoutOverlay = (input: ExamDownloadCheckoutOverlayConnectedProps) => (
-    <_ExamDownloadCheckoutOverlay
+    <ExamDownloadCheckoutOverlayBase
         isOpen={input.isOpen}
         onDismiss={input.onDismiss}
         render={defineContractProjection("purchase-checkout-panel", () => (

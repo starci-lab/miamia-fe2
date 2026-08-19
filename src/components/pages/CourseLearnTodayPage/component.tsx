@@ -86,7 +86,7 @@ const resumeCard = (
 })
 
 /** Draw the selected Today, course or progress mobile composition. */
-export const _CourseLearnTodayPage = (input: CourseLearnTodayPageProps) => {
+export const CourseLearnTodayPageBase = (input: CourseLearnTodayPageProps) => {
     const isLoading = input.state === "pending"
     const showToday = input.mobileView === "today"
     const showCourse = input.mobileView === "course"

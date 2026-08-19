@@ -1,10 +1,10 @@
 import { render, screen } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
-import { _CourseQaPage } from "./component"
+import { CourseQaPageBase } from "./component"
 
 describe("CourseQaPage", () => {
     it("renders the course question list and the real ask control", () => {
-        render(<_CourseQaPage state="ready" props={{
+        render(<CourseQaPageBase state="ready" props={{
             title: "Course Q&A",
             trail: [{ id: "course", label: "TypeScript" }, { id: "qa", label: "Course Q&A" }],
             searchPlaceholder: "Search questions",

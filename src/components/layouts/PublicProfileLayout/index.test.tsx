@@ -7,6 +7,6 @@ vi.mock("@/i18n/navigation", () => ({ usePathname: () => "/profile/ada", useRout
 vi.mock("@/hooks/swr/useQueryUserProfileSwr", () => ({ useQueryUserProfileSwr: () => profile }))
 vi.mock("@/hooks/swr/useQueryMeSwr", () => ({ useQueryMeSwr: () => ({ data: { id: "viewer" } }) }))
 type ProfileProps = { readonly state: string }
-vi.mock("./component", () => ({ _PublicProfileLayout: ({ state }: ProfileProps) => <output data-testid="state">{state}</output> }))
+vi.mock("./component", () => ({ PublicProfileLayoutBase: ({ state }: ProfileProps) => <output data-testid="state">{state}</output> }))
 import { PublicProfileLayout } from "./index"
 describe("PublicProfileLayout", () => { it("renders loading and failed profile states", () => { const view = render(<PublicProfileLayout content={<div />} />); expect(screen.getByTestId("state")).toHaveTextContent("loading"); profile.error = new Error("offline"); view.rerender(<PublicProfileLayout content={<div />} />); expect(screen.getByTestId("state")).toHaveTextContent("failed") }) })

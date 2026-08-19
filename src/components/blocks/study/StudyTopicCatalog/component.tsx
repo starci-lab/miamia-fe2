@@ -26,7 +26,7 @@ const emptyNoticeMessage = (state: StudyTopicCatalogProps["state"], props: Study
 }
 
 /** Renders the searchable topic catalogue and all settled list outcomes. */
-export const _StudyTopicCatalog = (input: StudyTopicCatalogProps) => {
+export const StudyTopicCatalogBase = (input: StudyTopicCatalogProps) => {
     const loading = input.state === "pending"
     const notice = input.state === "failed" || input.state === "empty" || input.state === "filtered-empty"
     return <Tree contract="study-catalog-stack" render={defineContractComponent("study-catalog-stack", {

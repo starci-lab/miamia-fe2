@@ -9,7 +9,7 @@ import { useQueryMeSwr } from "@/hooks/swr/useQueryMeSwr"
 import { useQueryCourseLeaderboardSwr } from "@/hooks/swr/useQueryCourseLeaderboardSwr"
 import type { CourseLeaderboardEntry } from "@/modules/api/graphql/queries/query-course-leaderboard"
 import {
-    _CourseLeaderboardPage,
+    CourseLeaderboardPageBase,
     type CourseLeaderboardCategory,
     type CourseLeaderboardPageData,
 } from "./component"
@@ -139,7 +139,7 @@ export const CourseLeaderboardPage = ({ displayId }: CourseLeaderboardPageProps)
     const state = deriveState()
 
     return (
-        <_CourseLeaderboardPage
+        <CourseLeaderboardPageBase
             state={state}
             props={data}
             on={{

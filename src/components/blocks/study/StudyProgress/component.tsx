@@ -10,7 +10,7 @@ type StudyProgressActions = { readonly browse?: () => void; readonly requireSign
 type StudyProgressProps = BlockProps<"guest" | "pending" | "failed" | "ready", StudyProgressData> & { readonly on?: StudyProgressActions }
 
 /** Renders guest, loading, failure and verified progress as independent evidence. */
-export const _StudyProgress = (input: StudyProgressProps) => {
+export const StudyProgressBase = (input: StudyProgressProps) => {
     const loading = input.state === "pending"
     const notice = input.state === "guest" || input.state === "failed"
     return <SurfaceCard contract="study-progress-card" render={defineContractComponent("study-progress-card", {

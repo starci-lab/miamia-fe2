@@ -10,7 +10,7 @@ import { CartDrawer } from "@/components/overlays/commerce/CartDrawer"
 import { LOCALE_COOKIE, LOCALE_COOKIE_MAX_AGE } from "@/i18n/config"
 import { useSessionToken } from "@/hooks/auth/useSessionToken"
 import { useSessionRefresh } from "@/hooks/auth/useSessionRefresh"
-import { _ShellNav as ShellNavView, type ShellNavRoute, type ShellNavTab } from "./component"
+import { ShellNavBase as ShellNavView, type ShellNavRoute, type ShellNavTab } from "./component"
 import type { IconName } from "@/components/leaves/Icon"
 import type { AuthMode } from "@/components/blocks/auth/AuthenticationPanel/component"
 

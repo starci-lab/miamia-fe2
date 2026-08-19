@@ -6,7 +6,7 @@ import { useQueryCourseSwr } from "@/hooks/swr/useQueryCourseSwr"
 import { useQueryHeadhuntingCompanySwr } from "@/hooks/swr/useQueryHeadhuntingCompanySwr"
 import { useQueryConsultantsSwr } from "@/hooks/swr/useQueryConsultantsSwr"
 import type { Consultant } from "@/modules/api/graphql/queries/query-consultants"
-import { _CourseHeadhuntingCompanyPage as CourseHeadhuntingCompanyPageView } from "./component"
+import { CourseHeadhuntingCompanyPageBase as CourseHeadhuntingCompanyPageView } from "./component"
 
 interface CourseHeadhuntingCompanyPageProps {
     readonly displayId: string

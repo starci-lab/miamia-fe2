@@ -1,10 +1,10 @@
 import { render, screen } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
-import { _CourseHeadhuntingCompanyPage } from "./component"
+import { CourseHeadhuntingCompanyPageBase } from "./component"
 
 describe("CourseHeadhuntingCompanyPage", () => {
     it("offers contact without inventing a company application", () => {
-        render(<_CourseHeadhuntingCompanyPage state="ready" props={{
+        render(<CourseHeadhuntingCompanyPageBase state="ready" props={{
             title: "Acme Talent",
             trail: [{ id: "course", label: "TypeScript" }, { id: "directory", label: "Partners" }, { id: "company", label: "Acme Talent" }],
             description: "Technology hiring",

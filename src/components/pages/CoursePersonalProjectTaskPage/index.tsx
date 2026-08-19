@@ -5,7 +5,7 @@ import { useRouter } from "@/i18n/navigation"
 import { useMutateSubmitPersonalTaskAttemptSwr } from "@/hooks/swr/useMutateSubmitPersonalTaskAttemptSwr"
 import { useQueryCoursePersonalProjectSwr } from "@/hooks/swr/useQueryCoursePersonalProjectSwr"
 import { useQueryPersonalTaskAttemptsSwr } from "@/hooks/swr/useQueryPersonalTaskAttemptsSwr"
-import { _CoursePersonalProjectTaskPage as CoursePersonalProjectTaskPageView } from "./component"
+import { CoursePersonalProjectTaskPageBase as CoursePersonalProjectTaskPageView } from "./component"
 
 /** Route identity needed to resolve and submit one personal-project task. */
 export type CoursePersonalProjectTaskPageProps = {

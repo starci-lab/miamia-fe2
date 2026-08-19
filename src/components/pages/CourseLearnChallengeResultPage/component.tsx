@@ -36,7 +36,7 @@ export type CourseLearnChallengeResultPageProps = {
 }
 
 /** Draws pending, graded and failed challenge-result states without querying. */
-export const _CourseLearnChallengeResultPage = (input: CourseLearnChallengeResultPageProps) => {
+export const CourseLearnChallengeResultPageBase = (input: CourseLearnChallengeResultPageProps) => {
     const loading = input.state === "pending"
     const deriveControls = () => {
         if (input.state === "failed") {

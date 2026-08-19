@@ -12,7 +12,7 @@ import {
 } from "@/hooks"
 import { useSessionToken } from "@/hooks/auth/useSessionToken"
 import { QUERY_MY_CART_SWR_KEY } from "@/hooks/swr/useQueryMyCartSwr"
-import { _CartPage, type CartPageState } from "./component"
+import { CartPageBase, type CartPageState } from "./component"
 import { type CartLineData } from "@/components/blocks/commerce/CartLine/component"
 
 /** The cart tree the viewer is shown, resolved from the two independent reads that feed it. */
@@ -110,7 +110,7 @@ export const CartPage = () => {
     )
 
     return (
-        <_CartPage
+        <CartPageBase
             state={state}
             props={{
                 labels: {

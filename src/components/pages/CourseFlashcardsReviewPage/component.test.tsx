@@ -1,7 +1,7 @@
 /** @vitest-environment jsdom */
 import { cleanup, fireEvent, render, screen } from "@testing-library/react"
 import { afterEach, describe, expect, it, vi } from "vitest"
-import { _CourseFlashcardsReviewPage, type CourseFlashcardsReviewPageProps } from "./component"
+import { CourseFlashcardsReviewPageBase, type CourseFlashcardsReviewPageProps } from "./component"
 
 const makeInput = (): CourseFlashcardsReviewPageProps => ({
     state: "ready",
@@ -32,10 +32,10 @@ const makeInput = (): CourseFlashcardsReviewPageProps => ({
 
 afterEach(cleanup)
 
-describe("_CourseFlashcardsReviewPage", () => {
+describe("CourseFlashcardsReviewPageBase", () => {
     it("starts the cross-deck due session and a selected deck", () => {
         const input = makeInput()
-        const { container } = render(<_CourseFlashcardsReviewPage {...input} />)
+        const { container } = render(<CourseFlashcardsReviewPageBase {...input} />)
 
         expect(container.querySelector("[data-node=course-flashcards-review-page]")).toBeTruthy()
         expect(container.querySelectorAll("[data-node=flashcard-review-deck-card]")).toHaveLength(1)
@@ -46,11 +46,11 @@ describe("_CourseFlashcardsReviewPage", () => {
         expect(input.on.startDeck).toHaveBeenCalledWith("deck-1")
     })
     it("renders pending skeletons and retryable failure or empty notices", () => {
-        const pending = { ...makeInput(), state: "pending" as const }; const { container } = render(<_CourseFlashcardsReviewPage {...pending} />); expect(container.querySelectorAll("[data-node=flashcard-review-deck-card]")).toHaveLength(4)
-        const failed = { ...makeInput(), state: "failed" as const }; render(<_CourseFlashcardsReviewPage {...failed} />); fireEvent.click(screen.getByRole("button", { name: "Retry" })); expect(failed.on.retry).toHaveBeenCalledOnce()
-        const empty = { ...makeInput(), state: "empty" as const }; render(<_CourseFlashcardsReviewPage {...empty} />); expect(screen.getByText("Empty")).toBeInTheDocument()
+        const pending = { ...makeInput(), state: "pending" as const }; const { container } = render(<CourseFlashcardsReviewPageBase {...pending} />); expect(container.querySelectorAll("[data-node=flashcard-review-deck-card]")).toHaveLength(4)
+        const failed = { ...makeInput(), state: "failed" as const }; render(<CourseFlashcardsReviewPageBase {...failed} />); fireEvent.click(screen.getByRole("button", { name: "Retry" })); expect(failed.on.retry).toHaveBeenCalledOnce()
+        const empty = { ...makeInput(), state: "empty" as const }; render(<CourseFlashcardsReviewPageBase {...empty} />); expect(screen.getByText("Empty")).toBeInTheDocument()
     })
     it("resumes a due session instead of starting a new queue", () => {
-        const input = { ...makeInput(), props: { ...makeInput().props, resumeSessionId: "session-1" } }; render(<_CourseFlashcardsReviewPage {...input} />); fireEvent.click(screen.getByRole("button", { name: "Resume session" })); expect(input.on.resume).toHaveBeenCalledWith("session-1")
+        const input = { ...makeInput(), props: { ...makeInput().props, resumeSessionId: "session-1" } }; render(<CourseFlashcardsReviewPageBase {...input} />); fireEvent.click(screen.getByRole("button", { name: "Resume session" })); expect(input.on.resume).toHaveBeenCalledWith("session-1")
     })
 })

@@ -17,7 +17,7 @@ export type MiaMiaAppLayoutActions = LearnSpineActions & { readonly openDestinat
 export type MiaMiaAppLayoutProps = { readonly props: MiaMiaAppLayoutData; readonly on?: MiaMiaAppLayoutActions; readonly surface: ComponentType }
 
 /** Renders the desktop sidebar or mobile footbar around the active surface. */
-export const _MiaMiaAppLayout = (input: MiaMiaAppLayoutProps) => {
+export const MiaMiaAppLayoutBase = (input: MiaMiaAppLayoutProps) => {
     const Surface = input.surface
     return (
         <Tree contract="learn-shell-frame" render={defineContractComponent("learn-shell-frame", {

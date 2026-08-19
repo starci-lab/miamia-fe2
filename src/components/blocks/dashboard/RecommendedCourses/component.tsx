@@ -15,7 +15,7 @@ const COUNT = CONTRACTS["recommended-course-list"].children.course.restingCount
 const View = ({ props, on, isLoading = false }: LeafProps<RecommendedCoursesData, RecommendedCoursesActions>) => { const rows = isLoading ? Array.from({ length: COUNT }, (_, i) => ({ id: `resting-${i}` })) : props.rows; return <Tree contract="recommended-course-list" render={defineContractComponent("recommended-course-list", { course: rows.map((row) => defineCompositeComponent("recommended-course-row", {}, () => <RecommendedCourseRow props={row} on={{ open: on?.[`open:${row.id}`], openPriceDetail: on?.[`priceDetail:${row.id}`] }} isLoading={isLoading} />)) })} /> }
 const List = defineContractComponent("recommended-course-list", View)
 /** Draw recommendations and their local request outcomes. */
-export const _RecommendedCourses = (input: RecommendedCoursesProps) => {
+export const RecommendedCoursesBase = (input: RecommendedCoursesProps) => {
     if (input.state === "hidden") return null
     if (input.state === "failed") {
         return (

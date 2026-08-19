@@ -8,7 +8,7 @@ vi.mock("@/hooks/swr/useQueryFlashcardDecksByCourseSwr", () => ({ useQueryFlashc
 vi.mock("@/hooks/swr/useQueryMyInProgressFlashcardSessionSwr", () => ({ useQueryMyInProgressFlashcardSessionSwr: () => m.session }))
 vi.mock("@/hooks/swr/useMutateStartFlashcardSessionSwr", () => ({ useMutateStartFlashcardSessionSwr: () => ({ trigger: m.start, error: undefined }) }))
 type QuizProps = { readonly state: string; readonly on: Record<string, () => void> }
-vi.mock("./component", () => ({ _CourseFlashcardsQuizPage: ({ state, on }: QuizProps) => <><output data-testid="state">{state}</output><button onClick={on.start}>start</button><button onClick={on.resume}>resume</button><button onClick={on.retry}>retry</button></> }))
+vi.mock("./component", () => ({ CourseFlashcardsQuizPageBase: ({ state, on }: QuizProps) => <><output data-testid="state">{state}</output><button onClick={on.start}>start</button><button onClick={on.resume}>resume</button><button onClick={on.retry}>retry</button></> }))
 import { CourseFlashcardsQuizPage } from "./index"
 beforeEach(() => { vi.clearAllMocks(); m.course.data = undefined; m.course.error = undefined; m.decks.data = undefined; m.decks.error = undefined; m.session.data = undefined })
 describe("CourseFlashcardsQuizPage", () => {

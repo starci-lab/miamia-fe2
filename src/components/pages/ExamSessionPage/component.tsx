@@ -5,7 +5,7 @@ import { defineContractComponent, defineLeafComponent } from "@/components/contr
 /** Surface mounted by the session page owner. */
 export type ExamSessionPageProps = { readonly surface: ComponentType }
 /** Own the document main landmark around the exam runner. */
-export const _ExamSessionPage = ({ surface: Surface }: ExamSessionPageProps) => <Tree contract="routed-page-main" render={defineContractComponent("routed-page-main", {
+export const ExamSessionPageBase = ({ surface: Surface }: ExamSessionPageProps) => <Tree contract="routed-page-main" render={defineContractComponent("routed-page-main", {
     page: defineLeafComponent("page", {}, () => <Surface />),
 })} />
 /** Source-level page marker. */

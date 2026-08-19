@@ -5,7 +5,7 @@ import { useRouter } from "@/i18n/navigation"
 import { useQueryProfileEvidenceSwr } from "@/hooks/swr/useQueryProfileEvidenceSwr"
 import { useQueryUserProfileSwr } from "@/hooks/swr/useQueryUserProfileSwr"
 import type { ProfileCapstone, ProfilePinnedProject } from "@/modules/api/graphql/queries/types/profile-evidence"
-import { _ProfileProjectsPage as ProfileProjectsPageView, type EvidenceState } from "./component"
+import { ProfileProjectsPageBase as ProfileProjectsPageView, type EvidenceState } from "./component"
 
 /** The three things this page reads off any evidence query, whatever it fetched. */
 type EvidenceQuery<T> = {

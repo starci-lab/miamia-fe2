@@ -7,7 +7,7 @@ vi.mock("@/i18n/navigation", () => ({ useRouter: () => ({ push: m.push }) }))
 vi.mock("@/hooks/auth/useSessionToken", () => ({ useSessionToken: () => m.token }))
 vi.mock("swr", () => ({ useSWRConfig: () => ({ mutate: m.mutate }) }))
 vi.mock("@/hooks", () => ({ useQueryMyCartSwr: () => m.cart, useQueryCoursesCheckoutPreviewSwr: () => m.preview, useMutateClearCartSwr: () => m.clearing, useMutateCoursesCheckoutSwr: () => m.checkout }))
-vi.mock("./component", () => ({ _CartPage: ({ state, on }: TestPageInput) => <><output data-testid="state">{state}</output><button onClick={on.checkout}>checkout</button><button onClick={on.clearAll}>clear</button><button onClick={on.goHome}>home</button><button onClick={on.browse}>browse</button></> }))
+vi.mock("./component", () => ({ CartPageBase: ({ state, on }: TestPageInput) => <><output data-testid="state">{state}</output><button onClick={on.checkout}>checkout</button><button onClick={on.clearAll}>clear</button><button onClick={on.goHome}>home</button><button onClick={on.browse}>browse</button></> }))
 import { CartPage } from "./index"
 beforeEach(() => { vi.clearAllMocks(); m.token = "token"; m.cart.data = undefined; m.cart.error = undefined; m.cart.isLoading = false; m.preview.data = undefined; m.preview.error = undefined; m.clearing.trigger.mockResolvedValue({ data: { clearCart: { success: true } } }); m.checkout.trigger.mockResolvedValue({ data: { coursesCheckout: { data: null } } }) })
 describe("CartPage route", () => {

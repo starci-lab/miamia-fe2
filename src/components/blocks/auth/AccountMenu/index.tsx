@@ -1,4 +1,4 @@
-import { _AccountMenu, type AccountMenuProps } from "./component"
+import { AccountMenuBase, type AccountMenuProps } from "./component"
 
 /**
  * Composition-facing account-menu block.
@@ -7,7 +7,7 @@ import { _AccountMenu, type AccountMenuProps } from "./component"
  * this half receives those resolved values and delegates the complete product sentence to its
  * pure twin.
  */
-export const AccountMenu = (input: AccountMenuProps) => <_AccountMenu {...input} />
+export const AccountMenu = (input: AccountMenuProps) => <AccountMenuBase {...input} />
 
 /** Source-level tier marker for the account-menu block. */
 export const meta = { shape: "block", world: "pure", domain: "auth" } as const

@@ -9,7 +9,7 @@ export type MembershipCheckoutOverlayProps<K extends ContractKey> = {
     readonly onDismiss: () => void
 }
 /** Renders the pure membership checkout dialog shell. */
-export const _MembershipCheckoutOverlay = <const K extends ContractKey>(input: MembershipCheckoutOverlayProps<K>) => (
+export const MembershipCheckoutOverlayBase = <const K extends ContractKey>(input: MembershipCheckoutOverlayProps<K>) => (
     <ModalBranch
         isOpen={input.isOpen}
         size="sm"

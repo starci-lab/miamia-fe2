@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation"
 import { useRouter } from "@/i18n/navigation"
 import { useSessionRefresh } from "@/hooks/auth/useSessionRefresh"
 import { useSessionToken } from "@/hooks/auth/useSessionToken"
-import { _DashboardPage as DashboardPageView } from "./component"
+import { DashboardPageBase as DashboardPageView } from "./component"
 
 /**
  * PAGE - `DashboardPage`, connected half.

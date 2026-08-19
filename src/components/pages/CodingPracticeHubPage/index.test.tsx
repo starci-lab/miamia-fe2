@@ -7,7 +7,7 @@ vi.mock("@/hooks/auth/useSessionToken", () => ({ useSessionToken: () => m.token 
 vi.mock("@/hooks/swr/useQueryCodingDomainSummarySwr", () => ({ useQueryCodingDomainSummarySwr: () => m.summary }))
 vi.mock("@/hooks/swr/useQueryMyCodingProgressSwr", () => ({ useQueryMyCodingProgressSwr: () => m.progress }))
 type HubProps = { readonly on: Record<string, () => void> }
-vi.mock("./component", () => ({ _CodingPracticeHubPage: ({ on }: HubProps) => <><output data-testid="state">rendered</output><button onClick={on.goHome}>home</button><button onClick={() => on.openDomain("arrays")}>domain</button><button onClick={on.recoverDomains}>recover</button></> }))
+vi.mock("./component", () => ({ CodingPracticeHubPageBase: ({ on }: HubProps) => <><output data-testid="state">rendered</output><button onClick={on.goHome}>home</button><button onClick={() => on.openDomain("arrays")}>domain</button><button onClick={on.recoverDomains}>recover</button></> }))
 import { CodingPracticeHubPage } from "./index"
 beforeEach(() => { vi.clearAllMocks(); m.token = "token"; m.summary.data = undefined; m.summary.error = undefined; m.progress.data = undefined; m.progress.error = undefined })
 describe("CodingPracticeHubPage", () => {

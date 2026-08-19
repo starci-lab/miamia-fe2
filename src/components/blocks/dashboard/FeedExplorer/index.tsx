@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl"
 import { useMutateReactActivitySwr, useQueryMyFeedSwr, useQueryResolveRouteSwr } from "@/hooks"
 import { MyFeedCategory, MyFeedTab } from "@/modules/api/graphql/queries/types/my-feed"
 import { ReactionType } from "@/modules/api/graphql/queries/types/reactions"
-import { _FeedExplorer } from "./component"
+import { FeedExplorerBase } from "./component"
 
 type FeedState = "pending" | "failed" | "filteredEmpty" | "platformEmpty" | "ready"
 
@@ -72,7 +72,7 @@ export const FeedExplorer = () => {
         }],
     ]))
 
-    return <_FeedExplorer props={{
+    return <FeedExplorerBase props={{
         filters: {
             leading: {
                 label: t("scopeLabel"),

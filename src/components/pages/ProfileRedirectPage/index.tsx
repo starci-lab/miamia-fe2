@@ -4,7 +4,7 @@ import { useRouter } from "@/i18n/navigation"
 import { useSessionRefresh } from "@/hooks/auth/useSessionRefresh"
 import { useSessionToken } from "@/hooks/auth/useSessionToken"
 import { queryMe } from "@/modules/api/graphql/queries/query-me"
-import { _ProfileRedirectPage } from "./component"
+import { ProfileRedirectPageBase } from "./component"
 
 /** Match the backend's first-access username rule using public JWT identity claims. */
 export const profileHandleFromToken = (token?: string): string | undefined => {
@@ -45,7 +45,7 @@ export const ProfileRedirectPage = () => {
             else router.replace("/authentication?returnTo=/profile")
         }).catch(() => router.replace("/authentication?returnTo=/profile"))
     }, [router, session.isRestoring, token])
-    return <_ProfileRedirectPage />
+    return <ProfileRedirectPageBase />
 }
 export * from "./component"
 /** Source-level tier marker. */

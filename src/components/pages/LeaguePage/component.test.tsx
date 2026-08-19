@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
-import { _LeaguePage, type LeaguePageProps } from "./component"
+import { LeaguePageBase, type LeaguePageProps } from "./component"
 
 const board = {
     standing: { rank: 4, rankLabel: "Rank 4", title: "Rank 4", subtitle: "70 points" },
@@ -21,10 +21,10 @@ const props = (): LeaguePageProps => ({
     on: { selectScope: vi.fn(), goHome: vi.fn(), climb: vi.fn(), retry: vi.fn(), [`open:${board.rows[0].id}`]: vi.fn(), [`follow:${board.rows[0].id}`]: vi.fn() },
 })
 
-describe("_LeaguePage", () => {
+describe("LeaguePageBase", () => {
     it("draws the ready board and forwards scope, climb and row actions", () => {
         const input = props()
-        render(<_LeaguePage {...input} />)
+        render(<LeaguePageBase {...input} />)
         fireEvent.click(screen.getByRole("tab", { name: "Global" }))
         fireEvent.click(screen.getByRole("button", { name: "Climb" }))
         fireEvent.click(screen.getByRole("button", { name: "Follow" }))
@@ -35,11 +35,11 @@ describe("_LeaguePage", () => {
 
     it("uses climb for empty and retry for failed boards", () => {
         const input = { ...props(), state: "empty" as const }
-        render(<_LeaguePage {...input} />)
+        render(<LeaguePageBase {...input} />)
         fireEvent.click(screen.getByRole("button", { name: "Climb" }))
         expect(input.on?.climb).toHaveBeenCalledOnce()
         const failed = { ...props(), state: "failed" as const }
-        render(<_LeaguePage {...failed} />)
+        render(<LeaguePageBase {...failed} />)
         fireEvent.click(screen.getByRole("button", { name: "Retry" }))
         expect(failed.on?.retry).toHaveBeenCalledOnce()
     })

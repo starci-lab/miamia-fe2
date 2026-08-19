@@ -4,7 +4,7 @@ import { useRouter } from "@/i18n/navigation"
 import { useQueryProfileEvidenceSwr } from "@/hooks/swr/useQueryProfileEvidenceSwr"
 import { useQueryUserProfileSwr } from "@/hooks/swr/useQueryUserProfileSwr"
 import type { ProfileCapstone } from "@/modules/api/graphql/queries/types/profile-evidence"
-import { _ProfileProjectRoadmapPage as ProfileProjectRoadmapPageView } from "./component"
+import { ProfileProjectRoadmapPageBase as ProfileProjectRoadmapPageView } from "./component"
 
 /** Roadmap load lifecycle: an evidence error wins, either query still loading is pending, otherwise ready. */
 const resolveRoadmapState = (hasError: boolean, isLoading: boolean) => {

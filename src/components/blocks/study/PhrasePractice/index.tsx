@@ -8,7 +8,7 @@ import { useSessionToken } from "@/hooks/auth/useSessionToken"
 import { mutationRecordPractice } from "@/modules/api/graphql/mutations/mutation-record-practice"
 import type { RecordPracticeData, RecordPracticeRequest } from "@/modules/api/graphql/mutations/types/record-practice"
 import type { PhrasePracticeItem } from "@/modules/api/graphql/queries/types/study"
-import { _PhrasePractice } from "./component"
+import { PhrasePracticeBase } from "./component"
 
 type PhrasePracticeConnectedProps = { readonly slug: string; readonly onRequireSignIn: () => void; readonly onExit: () => void }
 type RecordPracticeMutationOptions = { readonly arg: RecordPracticeRequest }
@@ -89,7 +89,7 @@ export const PhrasePractice = ({ slug, onRequireSignIn, onExit }: PhrasePractice
     )
 
     return (
-        <_PhrasePractice
+        <PhrasePracticeBase
             state={state}
             props={{
                 title: t("title"),

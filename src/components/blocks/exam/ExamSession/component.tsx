@@ -32,7 +32,7 @@ const factRow = (label: string, value: string) => defineContractComponent("label
 })
 
 /** Renders the pure exam runner and graded-result states. */
-export const _ExamSession = (input: ExamSessionProps) => {
+export const ExamSessionBase = (input: ExamSessionProps) => {
     const header = defineContractComponent("exam-session-header", {
         title: defineContractComponent("title-with-baseline-fact", {
             title: defineLeafComponent("heading", {}, () => <Heading props={{ content: input.props.title, level: 1 }} />),

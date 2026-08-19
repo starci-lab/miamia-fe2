@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl"
 import { useQueryMeSwr } from "@/hooks/swr/useQueryMeSwr"
 import { useQueryUserProfileSwr } from "@/hooks/swr/useQueryUserProfileSwr"
 import { useMutateSetFollowSwr } from "@/hooks/swr/useMutateSetFollowSwr"
-import { _ProfileHero } from "./component"
+import { ProfileHeroBase } from "./component"
 
 /** The primary CTA label: edit on your own profile, else the follow state of the one you're viewing. */
 const resolvePrimaryLabel = (
@@ -55,7 +55,7 @@ export const ProfileHero = () => {
     }
 
     return (
-        <_ProfileHero
+        <ProfileHeroBase
             state={profile.data === undefined ? "pending" : "ready"}
             props={{
                 name: user?.displayName?.trim() || user?.username || "",

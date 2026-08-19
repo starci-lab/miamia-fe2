@@ -3,7 +3,7 @@ import { useState } from "react"
 import { useLocale, useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
 import { useQueryCourseReviewsSwr, useQueryCourseSwr } from "@/hooks"
-import { _CourseDetailPage, type CourseDetailSection } from "./component"
+import { CourseDetailPageBase, type CourseDetailSection } from "./component"
 import type { CourseDetail, CourseModule } from "@/modules/api/graphql/queries/types/course"
 
 /**
@@ -87,15 +87,15 @@ export const CourseDetailPage = (input: CourseDetailPageProps) => {
 
     if (query.error !== undefined && query.data === undefined) {
         return (
-            <_CourseDetailPage
+            <CourseDetailPageBase
                 state="failed"
                 props={{ labels, noticeMessage: t("failed"), noticeActionLabel: t("retry") }}
                 on={{ retry: () => { void query.mutate() } }}
             />
         )
     }
-    if (query.data === undefined) return <_CourseDetailPage state="pending" props={{ labels }} />
-    if (query.data === null) return <_CourseDetailPage state="not-found" props={{ labels, noticeMessage: t("notFound") }} />
+    if (query.data === undefined) return <CourseDetailPageBase state="pending" props={{ labels }} />
+    if (query.data === null) return <CourseDetailPageBase state="not-found" props={{ labels, noticeMessage: t("notFound") }} />
 
     const course: CourseDetail = query.data
     const modules = byOrder(course.modules ?? [])
@@ -117,7 +117,7 @@ export const CourseDetailPage = (input: CourseDetailPageProps) => {
     }
 
     return (
-        <_CourseDetailPage
+        <CourseDetailPageBase
             state="ready"
             props={{
                 labels,

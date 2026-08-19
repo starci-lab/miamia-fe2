@@ -12,7 +12,7 @@ export type ExamDownloadCheckoutPanelActions = { readonly checkout?: () => void;
 /** Finite presentation states for download checkout. */
 export type ExamDownloadCheckoutPanelProps = BlockProps<"idle" | "submitting" | "failed", ExamDownloadCheckoutPanelData> & { readonly on?: ExamDownloadCheckoutPanelActions }
 /** Renders one package-specific checkout without provider logic. */
-export const _ExamDownloadCheckoutPanel = (input: ExamDownloadCheckoutPanelProps) => <Tree contract="purchase-checkout-panel" render={defineContractComponent("purchase-checkout-panel", {
+export const ExamDownloadCheckoutPanelBase = (input: ExamDownloadCheckoutPanelProps) => <Tree contract="purchase-checkout-panel" render={defineContractComponent("purchase-checkout-panel", {
     title: defineLeafComponent("heading", {}, () => <Heading props={{ content: input.props.title, level: 2 }} />),
     body: defineLeafComponent("text", {}, () => <Text props={{ content: input.props.body, tone: "muted" }} />),
     price: defineLeafComponent("text", {}, () => <Text props={{ content: input.props.price, weight: "semibold" }} />),

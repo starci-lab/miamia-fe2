@@ -13,7 +13,7 @@ export type MembershipCheckoutPanelActions = { readonly checkout?: () => void; r
 export type MembershipCheckoutPanelProps = BlockProps<"loading" | "idle" | "submitting" | "failed", MembershipCheckoutPanelData> & { readonly on?: MembershipCheckoutPanelActions }
 
 /** Renders the pure membership checkout panel states. */
-export const _MembershipCheckoutPanel = (input: MembershipCheckoutPanelProps) => (
+export const MembershipCheckoutPanelBase = (input: MembershipCheckoutPanelProps) => (
     <Tree contract="purchase-checkout-panel" render={defineContractComponent("purchase-checkout-panel", {
         title: defineLeafComponent("heading", {}, () => <Heading props={{ content: input.props.title, level: 2 }} />),
         body: defineLeafComponent("text", {}, () => <Text props={{ content: input.props.body, tone: "muted" }} />),

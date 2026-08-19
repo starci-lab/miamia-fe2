@@ -6,7 +6,7 @@ import { useRouter } from "@/i18n/navigation"
 import { useQueryProfileEvidenceSwr } from "@/hooks/swr/useQueryProfileEvidenceSwr"
 import { useQueryUserProfileSwr } from "@/hooks/swr/useQueryUserProfileSwr"
 import type { ProfileCodingHistory, ProfileCodingProgress, ProfileCodingRank, ProfileCodingSkills, ProfileCodingXp } from "@/modules/api/graphql/queries/types/profile-evidence"
-import { _ProfileSkillsPage } from "./component"
+import { ProfileSkillsPageBase } from "./component"
 
 const FILTERS = ["all", "easy", "medium", "hard"] as const
 
@@ -38,7 +38,7 @@ export const ProfileSkillsPage = () => {
         queries.some((query) => Boolean(query.error)),
         profile.isLoading || queries.some((query) => query.isLoading),
     )
-    return <_ProfileSkillsPage state={state} props={{
+    return <ProfileSkillsPageBase state={state} props={{
         metrics: [
             { id: "solved", value: String(progress.data?.solvedProblemIds.length ?? 0), label: "solved" },
             { id: "xp", value: String(xp.data?.codingXp ?? 0), label: "coding XP" },

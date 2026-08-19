@@ -10,7 +10,7 @@ import {
 import { useQueryMyFlashcardStatsSwr } from "@/hooks/swr/useQueryMyFlashcardStatsSwr"
 import { useQueryMyInProgressFlashcardSessionSwr } from "@/hooks/swr/useQueryMyInProgressFlashcardSessionSwr"
 import { useMutateStartFlashcardSessionSwr } from "@/hooks/swr/useMutateStartFlashcardSessionSwr"
-import { _CourseFlashcardsReviewPage as CourseFlashcardsReviewPageView } from "./component"
+import { CourseFlashcardsReviewPageBase as CourseFlashcardsReviewPageView } from "./component"
 
 /** Route identity required by the connected flashcard review overview. */
 export type CourseFlashcardsReviewPageProps = { readonly displayId: string }

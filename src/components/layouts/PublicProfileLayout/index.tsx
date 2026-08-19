@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl"
 import { useQueryMeSwr } from "@/hooks/swr/useQueryMeSwr"
 import { useQueryUserProfileSwr } from "@/hooks/swr/useQueryUserProfileSwr"
 import type { ExtendedTab } from "@/components/leaves/ExtendedTabs"
-import { _PublicProfileLayout as PublicProfileLayoutView } from "./component"
+import { PublicProfileLayoutBase as PublicProfileLayoutView } from "./component"
 
 /** Framework-layout boundary input. */
 export type PublicProfileLayoutBoundaryProps = { readonly content: ReactNode }

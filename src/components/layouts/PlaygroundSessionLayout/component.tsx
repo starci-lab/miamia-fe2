@@ -16,7 +16,7 @@ export type PlaygroundSessionLayoutProps = {
 }
 
 /** Keep the routed setup or session surface mounted inside one persistent data/socket owner. */
-export const _PlaygroundSessionLayout = (input: PlaygroundSessionLayoutProps) => {
+export const PlaygroundSessionLayoutBase = (input: PlaygroundSessionLayoutProps) => {
     const Surface = input.surface
     return (
         <Tree contract="playground-session-frame" render={defineContractComponent("playground-session-frame", {

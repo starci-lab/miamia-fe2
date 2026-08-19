@@ -1,7 +1,7 @@
 /** @vitest-environment jsdom */
 import { cleanup, fireEvent, render, screen } from "@testing-library/react"
 import { afterEach, describe, expect, it, vi } from "vitest"
-import { _CourseFlashcardSessionPage, type CourseFlashcardSessionPageProps } from "./component"
+import { CourseFlashcardSessionPageBase, type CourseFlashcardSessionPageProps } from "./component"
 
 const makeInput = (mode: "review" | "quiz"): CourseFlashcardSessionPageProps => ({
     state: "active",
@@ -38,10 +38,10 @@ const makeInput = (mode: "review" | "quiz"): CourseFlashcardSessionPageProps => 
 
 afterEach(cleanup)
 
-describe("_CourseFlashcardSessionPage", () => {
+describe("CourseFlashcardSessionPageBase", () => {
     it("sends the selected SM-2 grade in review mode", () => {
         const input = makeInput("review")
-        const { container } = render(<_CourseFlashcardSessionPage {...input} />)
+        const { container } = render(<CourseFlashcardSessionPageBase {...input} />)
 
         expect(container.querySelector("[data-node=course-flashcard-session-page]")).toBeTruthy()
         expect(container.querySelector("[data-node=flashcard-session-card]")).toBeTruthy()
@@ -51,7 +51,7 @@ describe("_CourseFlashcardSessionPage", () => {
 
     it("records the finite quiz outcome in quiz mode", () => {
         const input = makeInput("quiz")
-        render(<_CourseFlashcardSessionPage {...input} />)
+        render(<CourseFlashcardSessionPageBase {...input} />)
 
         fireEvent.click(screen.getByRole("button", { name: "Needs review" }))
         fireEvent.click(screen.getByRole("button", { name: "I got it" }))
@@ -61,19 +61,19 @@ describe("_CourseFlashcardSessionPage", () => {
 
     it("offers retry instead of card controls for an expired session", () => {
         const input = { ...makeInput("review"), state: "expired" as const }
-        render(<_CourseFlashcardSessionPage {...input} />)
+        render(<CourseFlashcardSessionPageBase {...input} />)
 
         fireEvent.click(screen.getByRole("button", { name: "Try again" }))
         expect(input.on.retry).toHaveBeenCalledOnce()
     })
     it("reveals a hidden answer and shows live sync/completion status", () => {
         const input = { ...makeInput("review"), data: { ...makeInput("review").data, answerVisible: false } }
-        render(<_CourseFlashcardSessionPage {...input} />)
+        render(<CourseFlashcardSessionPageBase {...input} />)
         fireEvent.click(screen.getByRole("button", { name: "Reveal answer" }))
         expect(input.on.reveal).toHaveBeenCalledOnce()
         const syncing = { ...makeInput("review"), state: "syncing" as const }
-        render(<_CourseFlashcardSessionPage {...syncing} />); expect(screen.getByText("Saving progress")).toBeInTheDocument()
+        render(<CourseFlashcardSessionPageBase {...syncing} />); expect(screen.getByText("Saving progress")).toBeInTheDocument()
         const completing = { ...makeInput("review"), state: "completing" as const }
-        render(<_CourseFlashcardSessionPage {...completing} />); expect(screen.getByText("Completing session")).toBeInTheDocument()
+        render(<CourseFlashcardSessionPageBase {...completing} />); expect(screen.getByText("Completing session")).toBeInTheDocument()
     })
 })

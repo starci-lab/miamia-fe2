@@ -8,7 +8,7 @@ vi.mock("@/hooks/swr/useQueryCourseSwr", () => ({ useQueryCourseSwr: () => ({ da
 vi.mock("@/hooks/swr/useQueryHeadhuntingCompaniesSwr", () => ({ useQueryHeadhuntingCompaniesSwr: () => m.companies }))
 vi.mock("@/hooks/swr/useQueryHeadhuntingCompanySuggestionsSwr", () => ({ useQueryHeadhuntingCompanySuggestionsSwr: () => m.suggestions }))
 vi.mock("@/hooks/swr/useQueryConsultantsSwr", () => ({ useQueryConsultantsSwr: () => m.consultants }))
-vi.mock("./component", () => ({ _CourseHeadhuntingsPage: ({ state, on }: TestPageInput) => <><output data-testid="state">{state}</output><button onClick={on.course}>course</button><button onClick={() => on.search("alpha")}>search</button><button onClick={on.retry}>retry</button><button onClick={on["open:c1"]}>open-c1</button><button onClick={on["contact:consult-linkedin"]}>contact-linkedin</button></> }))
+vi.mock("./component", () => ({ CourseHeadhuntingsPageBase: ({ state, on }: TestPageInput) => <><output data-testid="state">{state}</output><button onClick={on.course}>course</button><button onClick={() => on.search("alpha")}>search</button><button onClick={on.retry}>retry</button><button onClick={on["open:c1"]}>open-c1</button><button onClick={on["contact:consult-linkedin"]}>contact-linkedin</button></> }))
 import { CourseHeadhuntingsPage } from "./index"
 beforeEach(() => { vi.clearAllMocks(); window.open = vi.fn(); m.locale = "en"; m.data = undefined; m.error = undefined; m.companies.data = undefined; m.companies.error = undefined; m.suggestions.data = []; m.suggestions.error = undefined; m.consultants.data = undefined; m.consultants.error = undefined })
 describe("CourseHeadhuntingsPage route", () => {

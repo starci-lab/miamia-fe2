@@ -31,7 +31,7 @@ const resolveProofMetricRows = (
 }
 
 /** Challenges parity: headline standing and a flat, recruiter-scannable list of passed proof. */
-export const _ProfileChallengesPage = ({ strength, submissions, on }: ProfileChallengesPageProps) => {
+export const ProfileChallengesPageBase = ({ strength, submissions, on }: ProfileChallengesPageProps) => {
     const rows = submissions.state === "pending"
         ? Array.from({ length: 3 }, (_, index): ProfileSolvedChallenge => ({ id: `pending-${index}`, title: "", passedAt: "" }))
         : submissions.data

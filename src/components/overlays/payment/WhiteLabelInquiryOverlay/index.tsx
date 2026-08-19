@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react"
 import { WhiteLabelInquiryPanel } from "@/components/blocks/payment/WhiteLabelInquiryPanel"
 import { defineContractProjection } from "@/components/contracts/props"
-import { _WhiteLabelInquiryOverlay as WhiteLabelInquiryOverlayView } from "./component"
+import { WhiteLabelInquiryOverlayBase as WhiteLabelInquiryOverlayView } from "./component"
 
 /** Visibility and dismissal behavior for the White-label inquiry. */
 export type WhiteLabelInquiryOverlayConnectedProps = { readonly isOpen: boolean; readonly onDismiss: () => void }

@@ -5,7 +5,7 @@ import { useParams } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { useQueryMeSwr, useQueryUserProfileSwr, useQueryWrappedSwr } from "@/hooks"
 import type { WrappedPeriod, WrappedSummary } from "@/modules/api/graphql/queries/types/profile-learning"
-import { _ProfileWrappedPage } from "./component"
+import { ProfileWrappedPageBase } from "./component"
 
 type WrappedTreeState = "failed" | "pending" | "unlocked" | "locked"
 
@@ -45,7 +45,7 @@ export const ProfileWrappedPage = () => {
     const wrapped = useQueryWrappedSwr(period, isSelf)
     const data = wrapped.data
     const state = resolveWrappedState(isSelf, wrapped.error !== undefined, data)
-    return <_ProfileWrappedPage props={{
+    return <ProfileWrappedPageBase props={{
         period, periodLabel: t("wrapped.periodLabel"), periods: [{ id: "weekly", label: t("wrapped.weekly") }, { id: "monthly", label: t("wrapped.monthly") }, { id: "yearly", label: t("wrapped.yearly") }],
         summary: { state, props: { title: t(`wrapped.${period}Title`), metricLabels: [t("wrapped.xp"), t("wrapped.phrases"), t("wrapped.papers"), t("wrapped.streak")], metricValues: data?.stats ? [String(data.stats.xpEarned), String(data.stats.phrasesLearned), String(data.stats.papersCompleted), t("values.days", { count: data.stats.longestStreak })] : undefined, notice: resolveWrappedNotice(t, isSelf, state, data?.daysUntilUnlock) } },
     }} on={{ selectPeriod: setPeriod }} />

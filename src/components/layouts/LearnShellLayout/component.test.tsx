@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
-import { _LearnShellLayout, type LearnShellLayoutData } from "./component"
+import { LearnShellLayoutBase, type LearnShellLayoutData } from "./component"
 
 const Surface = () => <div>Reader surface</div>
 
@@ -13,10 +13,10 @@ const spine: LearnShellLayoutData["spine"] = {
     }],
 }
 
-describe("_LearnShellLayout", () => {
+describe("LearnShellLayoutBase", () => {
     it("keeps the course spine beside an ordinary routed surface", () => {
         const { container } = render(
-            <_LearnShellLayout props={{ spine, isFullBleed: false }} surface={Surface} />,
+            <LearnShellLayoutBase props={{ spine, isFullBleed: false }} surface={Surface} />,
         )
 
         expect(screen.getByText("Reader surface")).toBeTruthy()
@@ -25,7 +25,7 @@ describe("_LearnShellLayout", () => {
 
     it("removes course furniture for a focused full-bleed session", () => {
         const { container } = render(
-            <_LearnShellLayout props={{ spine, isFullBleed: true }} surface={Surface} />,
+            <LearnShellLayoutBase props={{ spine, isFullBleed: true }} surface={Surface} />,
         )
 
         expect(screen.getByText("Reader surface")).toBeTruthy()
@@ -35,7 +35,7 @@ describe("_LearnShellLayout", () => {
     it("reports mobile view changes through the dedicated action", () => {
         const openMobileTab = vi.fn()
         render(
-            <_LearnShellLayout
+            <LearnShellLayoutBase
                 props={{
                     spine,
                     isFullBleed: false,

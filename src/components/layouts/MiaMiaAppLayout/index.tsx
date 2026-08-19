@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl"
 import { usePathname, useRouter } from "@/i18n/navigation"
 import { ComingSoonOverlay } from "@/components/overlays/app/ComingSoonOverlay"
 import { useSessionRefresh } from "@/hooks/auth/useSessionRefresh"
-import { _MiaMiaAppLayout as MiaMiaAppLayoutView, type MiaMiaDestination, type MiaMiaNavItem } from "./component"
+import { MiaMiaAppLayoutBase as MiaMiaAppLayoutView, type MiaMiaDestination, type MiaMiaNavItem } from "./component"
 
 const MOBILE_ITEMS: ReadonlyArray<{ readonly id: MiaMiaDestination; readonly icon: MiaMiaNavItem["icon"] }> = [
     { id: "home", icon: "home" },

@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation"
 import { useRouter } from "@/i18n/navigation"
-import { _AuthenticationPage } from "./component"
+import { AuthenticationPageBase } from "./component"
 
 /** Keep post-auth navigation inside this app and reject protocol-relative redirects. */
 export const resolveAuthenticationReturnTo = (requested: string | null): string =>
@@ -13,7 +13,7 @@ export const AuthenticationPage = () => {
     const router = useRouter()
     const searchParams = useSearchParams()
     const returnTo = resolveAuthenticationReturnTo(searchParams.get("returnTo"))
-    return <_AuthenticationPage on={{ signedIn: () => router.replace(returnTo) }} />
+    return <AuthenticationPageBase on={{ signedIn: () => router.replace(returnTo) }} />
 }
 
 /** Source-level tier marker for the connected authentication page. */

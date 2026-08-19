@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
 import { useQueryCoursesCheckoutPreviewSwr, useQueryMyCartSwr } from "@/hooks"
 import { useSessionToken } from "@/hooks/auth/useSessionToken"
-import { _CartDrawer as CartDrawerView, type CartDrawerState } from "./component"
+import { CartDrawerBase as CartDrawerView, type CartDrawerState } from "./component"
 import { type CartLineData } from "@/components/blocks/commerce/CartLine/component"
 
 /**

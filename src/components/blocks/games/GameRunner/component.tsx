@@ -7,7 +7,7 @@ export type GameRunnerActions = { readonly copyCode?: () => void; readonly resta
 /** Pure block contract for the finite game runner states. */
 export type GameRunnerProps = BlockProps<"connecting" | "waiting" | "playing" | "finished" | "failed" | "disconnected", GameRunnerData> & { readonly on?: GameRunnerActions }
 /** Render connection, lobby, canvas, result and recovery chrome by server state. */
-export const _GameRunner = (input: GameRunnerProps) => {
+export const GameRunnerBase = (input: GameRunnerProps) => {
     const snapshot = input.props.snapshot; const ranked = [...(snapshot?.players ?? [])].sort((a, b) => b.score - a.score)
     // vn-ok: This pure block formats localized Vietnamese runtime copy for each game state.
     const content = defineContractComponent("game-runner-stack", {

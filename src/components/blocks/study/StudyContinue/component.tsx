@@ -10,7 +10,7 @@ type StudyContinueActions = { readonly resume?: () => void; readonly browse?: ()
 type StudyContinueProps = BlockProps<"pending" | "failed" | "empty" | "ready", StudyContinueData> & { readonly on?: StudyContinueActions }
 
 /** Renders the response-backed resume promise without inventing local progress. */
-export const _StudyContinue = (input: StudyContinueProps) => {
+export const StudyContinueBase = (input: StudyContinueProps) => {
     const loading = input.state === "pending"
     const primary = input.state === "ready" ? input.on?.resume : input.on?.browse
     return <SurfaceCard contract="study-resume-hero" render={defineContractComponent("study-resume-hero", {

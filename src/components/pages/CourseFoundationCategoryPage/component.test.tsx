@@ -1,12 +1,12 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
-import { _CourseFoundationCategoryPage } from "./component"
+import { CourseFoundationCategoryPageBase } from "./component"
 
-describe("_CourseFoundationCategoryPage", () => {
+describe("CourseFoundationCategoryPageBase", () => {
     it("keeps backend resource titles and forwards the selected display identity", () => {
         const openResource = vi.fn()
         const { container } = render(
-            <_CourseFoundationCategoryPage
+            <CourseFoundationCategoryPageBase
                 state="ready"
                 props={{
                     title: "Foundation resources",

@@ -4,7 +4,7 @@ import { useMemo, useState } from "react"
 import { useLocale, useTranslations } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
 import { useMutateClaimWeeklyChallengeRewardSwr, useQueryWeeklyChallengeSwr } from "@/hooks"
-import { _WeeklyChallengeCard } from "./component"
+import { WeeklyChallengeCardBase } from "./component"
 
 /** A fetch error with nothing cached beats still-loading beats no active challenge; ready is what's left. */
 const resolveChallengeState = (hasFailed: boolean, hasData: boolean, isEmpty: boolean): "failed" | "pending" | "empty" | "ready" => {
@@ -53,7 +53,7 @@ export const WeeklyChallengeCard = () => {
     }
 
     return (
-        <_WeeklyChallengeCard
+        <WeeklyChallengeCardBase
             state={state}
             props={{
                 label: t("title"),

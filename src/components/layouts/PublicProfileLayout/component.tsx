@@ -3,7 +3,7 @@ import { SurfaceCard } from "@/components/branches/SurfaceCard"
 import { Tree } from "@/components/branches/Tree"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { ProfileHero } from "@/components/blocks/profile/ProfileHero"
-import { _ProfileTabs as ProfileTabsView, type ProfileTabsData } from "@/components/blocks/profile/ProfileTabs"
+import { ProfileTabsBase as ProfileTabsView, type ProfileTabsData } from "@/components/blocks/profile/ProfileTabs"
 import {
     defineCompositeComponent,
     defineContractComponent,
@@ -33,7 +33,7 @@ export type PublicProfileLayoutProps = {
 }
 
 /** Draw persistent profile chrome and its screen-level alternatives. */
-export const _PublicProfileLayout = (input: PublicProfileLayoutProps) => {
+export const PublicProfileLayoutBase = (input: PublicProfileLayoutProps) => {
     const Body = input.body
     if (input.state === "failed") {
         return (

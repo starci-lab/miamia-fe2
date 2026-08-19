@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl"
 import { useQueryTopicDetailSwr } from "@/hooks"
-import { _StudyTopicOverview } from "./component"
+import { StudyTopicOverviewBase } from "./component"
 
 type StudyTopicOverviewConnectedProps = { readonly slug: string; readonly onStartPractice: () => void; readonly onBack: () => void }
 
@@ -27,7 +27,7 @@ export const StudyTopicOverview = ({ slug, onStartPractice, onBack }: StudyTopic
         (query.data?.phrases.length ?? 0) > 0,
     )
     return (
-        <_StudyTopicOverview
+        <StudyTopicOverviewBase
             state={state}
             props={{
                 title: detail ? localized(detail.nameVi, detail.nameEn) : t("fallbackTitle"),

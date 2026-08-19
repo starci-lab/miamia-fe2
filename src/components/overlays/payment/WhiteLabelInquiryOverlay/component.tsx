@@ -9,7 +9,7 @@ export type WhiteLabelInquiryOverlayProps<K extends ContractKey> = {
     readonly onDismiss: () => void
 }
 /** Mounts the inquiry form inside shared modal mechanics. */
-export const _WhiteLabelInquiryOverlay = <const K extends ContractKey>(input: WhiteLabelInquiryOverlayProps<K>) => (
+export const WhiteLabelInquiryOverlayBase = <const K extends ContractKey>(input: WhiteLabelInquiryOverlayProps<K>) => (
     <ModalBranch
         isOpen={input.isOpen}
         size="sm"

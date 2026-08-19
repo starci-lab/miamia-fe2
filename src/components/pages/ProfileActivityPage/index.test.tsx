@@ -6,7 +6,7 @@ const m = vi.hoisted(() => ({ profile: { data: undefined as unknown, error: unde
 vi.mock("next/navigation", () => ({ useParams: () => ({ username: "ada" }) }))
 vi.mock("@/hooks/swr/useQueryUserProfileSwr", () => ({ useQueryUserProfileSwr: () => m.profile }))
 vi.mock("@/hooks/swr/useQueryProfileEvidenceSwr", () => ({ useQueryProfileEvidenceSwr: (kind: string) => kind === "achievements" ? m.achievements : m.activity }))
-vi.mock("./component", () => ({ _ProfileActivityPage: (input: unknown) => { m.view = input; const page = input as { feed: { on?: { resultAction?: () => void } } }; return <><output data-testid="achievement-state">{(input as { achievementState: string }).achievementState}</output><output data-testid="feed-state">{(input as { feed: { state: string } }).feed.state}</output><button onClick={page.feed.on?.resultAction}>retry-feed</button></> } }))
+vi.mock("./component", () => ({ ProfileActivityPageBase: (input: unknown) => { m.view = input; const page = input as { feed: { on?: { resultAction?: () => void } } }; return <><output data-testid="achievement-state">{(input as { achievementState: string }).achievementState}</output><output data-testid="feed-state">{(input as { feed: { state: string } }).feed.state}</output><button onClick={page.feed.on?.resultAction}>retry-feed</button></> } }))
 
 beforeEach(() => { vi.clearAllMocks(); m.profile.data = undefined; m.profile.error = undefined; m.profile.isLoading = true; m.achievements.data = undefined; m.achievements.error = undefined; m.achievements.isLoading = true; m.activity.data = undefined; m.activity.error = undefined; m.activity.isLoading = true })
 
