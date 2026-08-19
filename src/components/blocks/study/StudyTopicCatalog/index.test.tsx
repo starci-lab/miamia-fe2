@@ -1,0 +1,10 @@
+import { fireEvent, render, screen } from "@testing-library/react"
+import { beforeEach, describe, expect, it, vi } from "vitest"
+const m = vi.hoisted(() => ({ query: { data: undefined as unknown, error: undefined as unknown, mutate: vi.fn() }, open: vi.fn() }))
+vi.mock("next-intl", () => ({ useLocale: () => "en", useTranslations: () => (key: string) => key }))
+vi.mock("@/hooks", () => ({ useQueryLearnTopicsSwr: () => m.query }))
+type CatalogProps = { readonly state: string; readonly on: Record<string, (...args: ReadonlyArray<unknown>) => void> }
+vi.mock("./component", () => ({ _StudyTopicCatalog: ({ state, on }: CatalogProps) => <><output data-testid="state">{state}</output><button onClick={() => on.search("grammar")}>search</button><button onClick={() => on.retry()}>retry</button><button onClick={() => on["open:t"]?.()}>open</button></> }))
+import { StudyTopicCatalog } from "./index"
+beforeEach(() => { vi.clearAllMocks(); m.query.data = undefined; m.query.error = undefined })
+describe("StudyTopicCatalog", () => { it("settles pending, failed and empty", () => { const view = render(<StudyTopicCatalog onOpenTopic={m.open} />); expect(screen.getByTestId("state")).toHaveTextContent("pending"); m.query.error = new Error("offline"); view.rerender(<StudyTopicCatalog onOpenTopic={m.open} />); expect(screen.getByTestId("state")).toHaveTextContent("failed"); m.query.error = undefined; m.query.data = []; view.rerender(<StudyTopicCatalog onOpenTopic={m.open} />); expect(screen.getByTestId("state")).toHaveTextContent("empty") }); it("filters, retries and opens a topic", () => { m.query.data = [{ id: "t", slug: "grammar", level: "B1", nameEn: "Grammar", nameVi: "", blurbEn: "Grammar", blurbVi: "", phraseCount: 10 }]; render(<StudyTopicCatalog onOpenTopic={m.open} />); fireEvent.click(screen.getByText("search")); fireEvent.click(screen.getByText("retry")); fireEvent.click(screen.getByText("open")); expect(m.query.mutate).toHaveBeenCalled(); expect(m.open).toHaveBeenCalledWith("grammar") }) })

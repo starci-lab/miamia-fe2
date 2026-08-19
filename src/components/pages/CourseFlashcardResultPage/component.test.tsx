@@ -54,4 +54,5 @@ describe("_CourseFlashcardResultPage", () => {
         fireEvent.click(screen.getByRole("button", { name: "Try again" }))
         expect(input.on.retryLoad).toHaveBeenCalledOnce()
     })
+    it("keeps pending results free of settled breakdown actions and supports quiz mode", () => { const input = { ...makeInput(), state: "pending" as const, data: { ...makeInput().data, mode: "quiz" as const, scoreText: undefined, reviewedText: undefined, xpText: undefined, durationText: undefined } }; render(<_CourseFlashcardResultPage {...input} />); expect(screen.getByText("Quiz")).toBeInTheDocument(); expect(screen.queryByRole("button", { name: "Practice again" })).toBeNull() })
 })

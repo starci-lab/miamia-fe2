@@ -45,4 +45,12 @@ describe("_CourseFlashcardsReviewPage", () => {
         expect(input.on.startDue).toHaveBeenCalledOnce()
         expect(input.on.startDeck).toHaveBeenCalledWith("deck-1")
     })
+    it("renders pending skeletons and retryable failure or empty notices", () => {
+        const pending = { ...makeInput(), state: "pending" as const }; const { container } = render(<_CourseFlashcardsReviewPage {...pending} />); expect(container.querySelectorAll("[data-node=flashcard-review-deck-card]")).toHaveLength(4)
+        const failed = { ...makeInput(), state: "failed" as const }; render(<_CourseFlashcardsReviewPage {...failed} />); fireEvent.click(screen.getByRole("button", { name: "Retry" })); expect(failed.on.retry).toHaveBeenCalledOnce()
+        const empty = { ...makeInput(), state: "empty" as const }; render(<_CourseFlashcardsReviewPage {...empty} />); expect(screen.getByText("Empty")).toBeInTheDocument()
+    })
+    it("resumes a due session instead of starting a new queue", () => {
+        const input = { ...makeInput(), props: { ...makeInput().props, resumeSessionId: "session-1" } }; render(<_CourseFlashcardsReviewPage {...input} />); fireEvent.click(screen.getByRole("button", { name: "Resume session" })); expect(input.on.resume).toHaveBeenCalledWith("session-1")
+    })
 })

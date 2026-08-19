@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react"
+import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 import { _ProfileSkillsPage } from "./component"
 
@@ -17,4 +17,5 @@ describe("_ProfileSkillsPage", () => {
         expect(screen.getByText("Shortest path")).toBeInTheDocument()
         expect(container.querySelector("[data-component='ProfileEvidenceSection']")).toBeNull()
     })
+    it("renders pending skeleton branches and reports toolbar actions", () => { const search = vi.fn(); const filter = vi.fn(); const select = vi.fn(); render(<_ProfileSkillsPage state="pending" props={{ metrics: [], byDifficulty: [], byDomain: [], byLanguage: [], history: [], filterLabel: "Filters" }} on={{ search, filter, select }} />); fireEvent.change(screen.getByPlaceholderText("Search solved problems"), { target: { value: "graphs" } }); fireEvent.click(screen.getByRole("button", { name: "Filters" })); expect(search).toHaveBeenCalledWith("graphs"); expect(filter).toHaveBeenCalledOnce(); expect(select).not.toHaveBeenCalled() })
 })

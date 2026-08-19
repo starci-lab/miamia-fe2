@@ -148,4 +148,10 @@ describe("_CourseLearnContentPage", () => {
         fireEvent.click(screen.getByRole("button", { name: "Post comment" }))
         expect(submitDiscussion).toHaveBeenCalledTimes(1)
     })
+
+    it("keeps a locked preview inside its paper and omits reading actions", () => {
+        const { container } = render(<_CourseLearnContentPage state="locked" props={{ labels, title: "Locked lesson", body: "Preview", noticeMessage: "Unlock this lesson" }} />)
+        expect(screen.getByText("Unlock this lesson")).toBeInTheDocument()
+        expect(container.querySelector("[data-node=content-reader-footer]")).toBeNull()
+    })
 })

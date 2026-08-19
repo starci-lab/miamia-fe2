@@ -53,7 +53,9 @@ describe("_CourseFlashcardSessionPage", () => {
         const input = makeInput("quiz")
         render(<_CourseFlashcardSessionPage {...input} />)
 
+        fireEvent.click(screen.getByRole("button", { name: "Needs review" }))
         fireEvent.click(screen.getByRole("button", { name: "I got it" }))
+        expect(input.on.answerQuiz).toHaveBeenCalledWith(false)
         expect(input.on.answerQuiz).toHaveBeenCalledWith(true)
     })
 
@@ -63,5 +65,15 @@ describe("_CourseFlashcardSessionPage", () => {
 
         fireEvent.click(screen.getByRole("button", { name: "Try again" }))
         expect(input.on.retry).toHaveBeenCalledOnce()
+    })
+    it("reveals a hidden answer and shows live sync/completion status", () => {
+        const input = { ...makeInput("review"), data: { ...makeInput("review").data, answerVisible: false } }
+        render(<_CourseFlashcardSessionPage {...input} />)
+        fireEvent.click(screen.getByRole("button", { name: "Reveal answer" }))
+        expect(input.on.reveal).toHaveBeenCalledOnce()
+        const syncing = { ...makeInput("review"), state: "syncing" as const }
+        render(<_CourseFlashcardSessionPage {...syncing} />); expect(screen.getByText("Saving progress")).toBeInTheDocument()
+        const completing = { ...makeInput("review"), state: "completing" as const }
+        render(<_CourseFlashcardSessionPage {...completing} />); expect(screen.getByText("Completing session")).toBeInTheDocument()
     })
 })

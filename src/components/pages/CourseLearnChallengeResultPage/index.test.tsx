@@ -1,0 +1,16 @@
+import { fireEvent, render, screen } from "@testing-library/react"
+import { beforeEach, describe, expect, it, vi } from "vitest"
+const m = vi.hoisted(() => ({ content: { data: undefined as unknown, error: undefined as unknown, mutate: vi.fn() }, course: { data: undefined as unknown, error: undefined as unknown, mutate: vi.fn() }, module: { data: undefined as unknown, error: undefined as unknown, mutate: vi.fn() }, attempts: { data: undefined as unknown, error: undefined as unknown, mutate: vi.fn() }, feedbacks: { data: undefined as unknown, error: undefined as unknown, mutate: vi.fn() }, push: vi.fn() }))
+vi.mock("next/navigation", () => ({ useSearchParams: () => new URLSearchParams("submission=sub&attempt=att") }))
+vi.mock("next-intl", () => ({ useTranslations: () => (key: string) => key }))
+vi.mock("@/i18n/navigation", () => ({ useRouter: () => ({ push: m.push }) }))
+vi.mock("@/hooks/swr/useQueryContentSwr", () => ({ useQueryContentSwr: () => m.content }))
+vi.mock("@/hooks/swr/useQueryCourseSwr", () => ({ useQueryCourseSwr: () => m.course }))
+vi.mock("@/hooks/swr/useQueryModuleSwr", () => ({ useQueryModuleSwr: () => m.module }))
+vi.mock("@/hooks/swr/useQueryContentChallengeAttemptsSwr", () => ({ useQueryContentChallengeAttemptsSwr: () => m.attempts }))
+vi.mock("@/hooks/swr/useQueryContentChallengeFeedbacksSwr", () => ({ useQueryContentChallengeFeedbacksSwr: () => m.feedbacks }))
+type ResultProps = { readonly state: string; readonly on: Record<string, () => void> }
+vi.mock("./component", () => ({ _CourseLearnChallengeResultPage: ({ state, on }: ResultProps) => <><output data-testid="state">{state}</output><button onClick={on.reload}>reload</button><button onClick={on.retry}>retry</button><button onClick={on.next}>next</button></> }))
+import { CourseLearnChallengeResultPage } from "./index"
+beforeEach(() => { vi.clearAllMocks(); m.content.data = undefined; m.course.data = undefined; m.module.data = undefined; m.attempts.data = undefined; m.feedbacks.data = undefined })
+describe("challenge result page", () => { it("reports pending and failed states", () => { const view = render(<CourseLearnChallengeResultPage displayId="course" moduleId="module" contentId="content" challengeId="challenge" />); expect(screen.getByTestId("state")).toHaveTextContent("pending"); m.content.error = new Error("offline"); view.rerender(<CourseLearnChallengeResultPage displayId="course" moduleId="module" contentId="content" challengeId="challenge" />); expect(screen.getByTestId("state")).toHaveTextContent("failed") }); it("reloads and navigates retry/next", () => { m.content.data = { challenges: [{ id: "challenge", submissions: [{ id: "sub", title: "Result", score: 10 }] }] }; m.course.data = { id: "course" }; m.module.data = { contents: [{ id: "content", orderIndex: 0 }, { id: "next", orderIndex: 1 }] }; m.attempts.data = [{ id: "att", processedAt: "now", score: 8, answers: [] }]; m.feedbacks.data = []; render(<CourseLearnChallengeResultPage displayId="course" moduleId="module" contentId="content" challengeId="challenge" />); fireEvent.click(screen.getByText("reload")); fireEvent.click(screen.getByText("retry")); fireEvent.click(screen.getByText("next")); expect(m.content.mutate).toHaveBeenCalled(); expect(m.push).toHaveBeenCalled() }) })

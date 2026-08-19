@@ -1,0 +1,23 @@
+type TestPageInput = { state: string; on: Record<string, (...args: ReadonlyArray<unknown>) => unknown> }
+import { fireEvent, render, screen, waitFor } from "@testing-library/react"
+import { beforeEach, describe, expect, it, vi } from "vitest"
+const m = vi.hoisted(() => ({ content: { data: undefined as unknown, error: undefined as unknown, mutate: vi.fn() }, course: { data: undefined as unknown, error: undefined as unknown, mutate: vi.fn() }, progress: { data: undefined as unknown, error: undefined as unknown, mutate: vi.fn() }, submission: { isMutating: false, trigger: vi.fn() }, push: vi.fn(), replace: vi.fn() }))
+vi.mock("next-intl", () => ({ useTranslations: () => (key: string) => key }))
+vi.mock("@/i18n/navigation", () => ({ useRouter: () => ({ push: m.push, replace: m.replace }) }))
+vi.mock("@/hooks/swr/useQueryContentSwr", () => ({ useQueryContentSwr: () => m.content }))
+vi.mock("@/hooks/swr/useQueryCourseSwr", () => ({ useQueryCourseSwr: () => m.course }))
+vi.mock("@/hooks/swr/useQueryContentChallengeProgressSwr", () => ({ useQueryContentChallengeProgressSwr: () => m.progress }))
+vi.mock("@/hooks/swr/useMutateSubmitContentChallengeSwr", () => ({ useMutateSubmitContentChallengeSwr: () => m.submission }))
+vi.mock("./component", () => ({ _CourseLearnChallengePage: ({ state, on }: TestPageInput) => <><output data-testid="state">{state}</output><button onClick={() => on.changeUrl("submission", "https://github.com/example/repo")}>url</button><button onClick={() => on.submit("submission")}>submit</button><button onClick={() => on.openResult("submission")}>result</button><button onClick={on.retry}>retry</button></> }))
+import { CourseLearnChallengePage } from "./index"
+beforeEach(() => { vi.clearAllMocks(); m.content.data = undefined; m.content.error = undefined; m.course.data = undefined; m.course.error = undefined; m.progress.data = undefined; m.progress.error = undefined; m.submission.isMutating = false; m.submission.trigger.mockResolvedValue({}) })
+describe("CourseLearnChallengePage route", () => {
+    it("renders pending, failed and ready challenge states with real actions", async () => { const view = render(<CourseLearnChallengePage displayId="course" contentId="content" moduleId="module" challengeId="challenge" />); expect(screen.getByTestId("state")).toHaveTextContent("pending"); m.course.data = { id: "course-id" }; m.content.data = { challenges: [{ id: "challenge", displayId: "challenge-slug", title: "Challenge", description: "Build", difficulty: "easy", hint: "Hint", score: 10, orderIndex: 1, submissions: [{ id: "submission", title: "GitHub", description: "Repo", score: 10, sortIndex: 1 }] }] }; m.progress.data = [{ id: "challenge", completed: false, lastScore: 4, maxScore: 10 }]; view.rerender(<CourseLearnChallengePage displayId="course" contentId="content" moduleId="module" challengeId="challenge" />); expect(screen.getByTestId("state")).toHaveTextContent("ready"); fireEvent.click(screen.getByText("url")); fireEvent.click(screen.getByText("submit")); await waitFor(() => expect(m.submission.trigger).toHaveBeenCalledWith({ courseId: "course-id", request: { challengeSubmissionId: "submission", githubUrl: "https://github.com/example/repo" } })); expect(m.push).toHaveBeenCalledWith("/courses/course/learn/content/modules/module/contents/content/challenges/challenge/result?submission=submission"); fireEvent.click(screen.getByText("result")); fireEvent.click(screen.getByText("retry")); expect(m.content.mutate).toHaveBeenCalledOnce(); m.content.error = new Error("offline"); view.rerender(<CourseLearnChallengePage displayId="course" contentId="content" moduleId="module" challengeId="challenge" />); expect(screen.getByTestId("state")).toHaveTextContent("failed") })
+    it("reports passed and submission failure outcomes", async () => { m.course.data = { id: "course-id" }; m.content.data = { challenges: [{ id: "challenge", displayId: "challenge", title: "Challenge", description: "Build", difficulty: "hard", hint: null, score: 20, orderIndex: 2, submissions: [{ id: "submission", title: "Repo", description: null, score: 20, sortIndex: 1 }] }] }; m.progress.data = [{ id: "challenge", completed: true, lastScore: 20, maxScore: 20 }]; m.submission.trigger.mockRejectedValue(new Error("Nope")); render(<CourseLearnChallengePage displayId="course" contentId="content" moduleId="module" challengeId="challenge" />); expect(screen.getByTestId("state")).toHaveTextContent("passed"); fireEvent.click(screen.getByText("url")); fireEvent.click(screen.getByText("submit")); await waitFor(() => expect(screen.getByTestId("state")).toHaveTextContent("failed")) })
+})
+
+
+
+
+
+

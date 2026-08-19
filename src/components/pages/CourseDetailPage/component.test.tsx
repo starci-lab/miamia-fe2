@@ -107,4 +107,11 @@ describe("_CourseDetailPage", () => {
         expect(screen.getByRole("tab", { name: "FAQ" })).toBeInTheDocument()
         expect(screen.getByText("No FAQs yet")).toBeInTheDocument()
     })
+    it("renders a final not-found notice and a retryable failure notice", () => {
+        const retry = vi.fn()
+        render(<_CourseDetailPage state="not-found" props={{ labels, noticeMessage: "Missing course" }} on={{ retry }} />)
+        expect(screen.getByText("Missing course")).toBeInTheDocument()
+        render(<_CourseDetailPage state="failed" props={{ labels, noticeMessage: "Offline", noticeActionLabel: "Retry" }} on={{ retry }} />)
+        fireEvent.click(screen.getByRole("button", { name: "Retry" })); expect(retry).toHaveBeenCalledOnce()
+    })
 })

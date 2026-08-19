@@ -37,4 +37,10 @@ describe("_CourseMockInterviewSessionPage", () => {
         expect(screen.getByText("How would you invalidate stale entries?")).toBeTruthy()
         expect(container.querySelector("[data-node=\"course-mock-interview-session-page\"]")).toBeTruthy()
     })
+    it("renders streaming abort and failed retry actions with a code workspace", () => {
+        const abort = vi.fn(); const retry = vi.fn()
+        const { container } = render(<_CourseMockInterviewSessionPage state="failed" props={{ ...props, streamingText: "Thinking…", workspaceCode: "const answer = 1" }} on={{ abort, retry }} />)
+        fireEvent.click(screen.getByText("Try again")); fireEvent.click(screen.getByText("Stop response"))
+        expect(retry).toHaveBeenCalledOnce(); expect(abort).toHaveBeenCalledOnce(); expect(container.textContent).toContain("const answer = 1")
+    })
 })

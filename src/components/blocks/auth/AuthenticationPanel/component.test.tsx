@@ -96,4 +96,15 @@ describe("_AuthenticationPanel", () => {
         expect(credentials?.className).not.toContain("gap-2")
         expect(container.querySelector("[data-node='label-field-hint']")?.className).toContain("gap-3")
     })
+    it("submits a code, resends and returns to another email", () => {
+        const submitCode = vi.fn(); const resend = vi.fn(); const changeMode = vi.fn()
+        const props: AuthenticationPanelProps = { state: "code", props: { title: "Verify", subtitle: "Enter the code", statusMessage: "Code sent", isError: false, isPending: false, codeLabel: "Code", codePlaceholder: "123456", codeHint: "Expires soon", submitLabel: "Verify", resendLabel: "Resend", useAnotherEmailLabel: "Use another email" } }
+        render(<_AuthenticationPanel {...props} on={{ submitCode, resend, changeMode }} />)
+        fireEvent.change(screen.getByLabelText("Code"), { target: { value: "654321" } }); fireEvent.click(screen.getByRole("button", { name: "Verify" })); fireEvent.click(screen.getByRole("link", { name: "Resend" })); fireEvent.click(screen.getByRole("link", { name: "Use another email" })); expect(submitCode).toHaveBeenCalledWith({ otp: "654321" }); expect(resend).toHaveBeenCalledOnce(); expect(changeMode).toHaveBeenCalledWith("signIn")
+    })
+    it("renders done status and sign-in shortcuts", () => {
+        const oauthPress = vi.fn(); const props: AuthenticationPanelProps = { state: "done", props: { title: "Done", subtitle: "Welcome", statusMessage: "Signed in", isError: false, isPending: false, doneTitle: "Welcome back", doneHint: "Continue learning" } }
+        render(<_AuthenticationPanel {...props} />); expect(screen.getByText("Welcome back")).toBeInTheDocument(); expect(screen.getByText("Signed in")).toBeInTheDocument()
+        const signIn = { ...signUpProps, props: { ...signUpProps.props, mode: "signIn" as const, hasAgreedToTerms: false } }; render(<_AuthenticationPanel {...signIn} on={{ oauthPress }} />); fireEvent.click(screen.getByRole("button", { name: "Sign In With GitHub" })); expect(oauthPress).toHaveBeenCalledWith("github")
+    })
 })

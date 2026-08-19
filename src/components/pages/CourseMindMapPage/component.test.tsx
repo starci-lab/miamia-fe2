@@ -36,4 +36,11 @@ describe("_CourseMindMapPage", () => {
         expect(props.on.select).toHaveBeenCalledWith("node-1")
         expect(props.on.openContent).toHaveBeenCalledWith("node-1")
     })
+    it("draws failed, empty and no-result notices with a selected detail", () => {
+        const props = { ...input(), state: "ready" as const, props: { ...input().props, nodes: [{ id: "node-1", label: "Containers", detail: "A useful detail", left: 50, top: 50, canOpen: false }] } }
+        render(<_CourseMindMapPage {...props} />); expect(screen.getByText("A useful detail")).toBeInTheDocument()
+        const noResults = { ...input(), props: { ...input().props, nodes: [] } }; render(<_CourseMindMapPage {...noResults} />); expect(screen.getByText("No results")).toBeInTheDocument()
+        const empty = { ...input(), state: "empty" as const, props: { ...input().props, nodes: [] } }; render(<_CourseMindMapPage {...empty} />); expect(screen.getByText("No map")).toBeInTheDocument()
+        const failed = { ...input(), state: "failed" as const, props: { ...input().props, nodes: [] } }; render(<_CourseMindMapPage {...failed} />); fireEvent.click(screen.getByRole("button", { name: "Try again" })); expect(failed.on.retry).toHaveBeenCalledOnce()
+    })
 })

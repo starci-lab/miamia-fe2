@@ -1,0 +1,14 @@
+import { fireEvent, render, screen } from "@testing-library/react"
+import { beforeEach, describe, expect, it, vi } from "vitest"
+const m = vi.hoisted(() => ({ project: { data: undefined as unknown, error: undefined as unknown }, attempts: { data: undefined as unknown, error: undefined as unknown }, feedbacks: { data: undefined as unknown, error: undefined as unknown }, push: vi.fn() }))
+vi.mock("next-intl", () => ({ useLocale: () => "en" }))
+vi.mock("@/i18n/navigation", () => ({ useRouter: () => ({ push: m.push }) }))
+vi.mock("@/hooks/swr/useQueryCoursePersonalProjectSwr", () => ({ useQueryCoursePersonalProjectSwr: () => m.project }))
+vi.mock("@/hooks/swr/useQueryPersonalTaskAttemptsSwr", () => ({ useQueryPersonalTaskAttemptsSwr: () => m.attempts }))
+vi.mock("@/hooks/swr/useQueryPersonalTaskAttemptFeedbacksSwr", () => ({ useQueryPersonalTaskAttemptFeedbacksSwr: () => m.feedbacks }))
+type ResultProps = { readonly state: string; readonly on: { readonly retryTask: () => void } }
+vi.mock("./component", () => ({ _CoursePersonalProjectResultPage: ({ state, on }: ResultProps) => <><output data-testid="state">{state}</output><button onClick={on.retryTask}>retry</button></> }))
+import { CoursePersonalProjectResultPage } from "./index"
+const project = { course: { id: "course" }, milestones: [{ tasks: [{ id: "task", title: "Task" }] }] }
+beforeEach(() => { vi.clearAllMocks(); m.project.data = undefined; m.project.error = undefined; m.attempts.data = undefined; m.attempts.error = undefined; m.feedbacks.data = undefined; m.feedbacks.error = undefined })
+describe("CoursePersonalProjectResultPage", () => { it("settles pending, failed and empty states", () => { const view = render(<CoursePersonalProjectResultPage displayId="course" taskId="task" />); expect(screen.getByTestId("state")).toHaveTextContent("pending"); m.project.error = new Error("offline"); view.rerender(<CoursePersonalProjectResultPage displayId="course" taskId="task" />); expect(screen.getByTestId("state")).toHaveTextContent("failed"); m.project.error = undefined; m.project.data = project; m.attempts.data = []; m.feedbacks.data = []; view.rerender(<CoursePersonalProjectResultPage displayId="course" taskId="task" />); expect(screen.getByTestId("state")).toHaveTextContent("empty") }); it("renders ready attempt and routes back to task", () => { m.project.data = project; m.attempts.data = [{ id: "attempt", attemptNumber: 1, score: 8, passed: true }]; m.feedbacks.data = [{ id: "feedback", message: "Good", location: null, suggestion: null }]; render(<CoursePersonalProjectResultPage displayId="course" taskId="task" />); expect(screen.getByTestId("state")).toHaveTextContent("ready"); fireEvent.click(screen.getByText("retry")); expect(m.push).toHaveBeenCalledWith("/courses/course/learn/personal-project/tasks/task") }) })
