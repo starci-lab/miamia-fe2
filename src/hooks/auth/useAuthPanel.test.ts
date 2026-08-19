@@ -119,8 +119,8 @@ const stubLocation = ({ search }: LocationParams) => {
         configurable: true,
         writable: true,
         value: {
-            origin: "http://localhost:3070",
-            href: `http://localhost:3070/authentication${search}`,
+            origin: "http://localhost:3071",
+            href: `http://localhost:3071/authentication${search}`,
             search,
             assign,
         },

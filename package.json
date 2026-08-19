@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "node scripts/run-dev.mjs",
     "build": "next build",
-    "start": "next start --hostname localhost --port 3070",
+    "start": "next start --hostname localhost --port 3071",
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",

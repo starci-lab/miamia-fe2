@@ -21,8 +21,8 @@ npm install
 npm run dev
 ```
 
-The dev server listens on **http://localhost:3070**. Open it by that exact hostname and port: the
-generated CORS and session origin is `http://localhost:3070`, so reaching the app through
+The dev server listens on **http://localhost:3071**. Open it by that exact hostname and port: the
+generated CORS and session origin is `http://localhost:3071`, so reaching the app through
 `127.0.0.1` or another port produces CORS, cookie or `Invalid parameter: redirect_uri` failures.
 That redirect-URI whitelist lives in the running Keycloak and is not seeded from this repository.
 
