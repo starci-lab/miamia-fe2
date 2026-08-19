@@ -1,10 +1,10 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type OperationVariables, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { QueryParams } from "../types"
 import type { QueryMeResponse } from "./types/me"
 
 /** The signed-in person's identity anchor. */
-const query1 = gql`
+const query1: TypedDocumentNode<QueryMeResponse, OperationVariables> = gql`
     query Me {
         me {
             success
@@ -26,7 +26,7 @@ export enum QueryMe {
 }
 
 /** Query variants available to the authenticated identity reader. */
-export const queryMeMap: Record<QueryMe, DocumentNode> = {
+export const queryMeMap: Record<QueryMe, TypedDocumentNode<QueryMeResponse, OperationVariables>> = {
     [QueryMe.Query1]: query1,
 }
 
@@ -38,5 +38,5 @@ export const queryMe = async ({
     debug,
 }: QueryParams<QueryMe> = {}) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryMeResponse>({ query: queryMeMap[query] })
+    return apollo.query({ query: queryMeMap[query] })
 }

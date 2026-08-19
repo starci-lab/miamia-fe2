@@ -7,7 +7,7 @@ import { useMutateStartPlaygroundSessionSwr } from "@/hooks/swr/useMutateStartPl
 import { usePlaygroundSocketIo } from "@/hooks/socketio/usePlaygroundSocketIo"
 import type { Playground } from "@/modules/api/graphql/queries/query-playground"
 import type { PlaygroundSession } from "@/modules/api/graphql/mutations/mutation-start-playground-session"
-import { _PlaygroundSessionLayout } from "./component"
+import { _PlaygroundSessionLayout, type PlaygroundSessionFrameState } from "./component"
 
 /** Persistent playground data and live actions shared by setup and session routes. */
 export type PlaygroundSessionContextValue = {
@@ -42,6 +42,12 @@ export type PlaygroundSessionLayoutProps = {
     readonly displayId: string
     readonly slug: string
     readonly surface: ComponentType
+}
+
+/** The frame's own state: a hard error beats loading, otherwise it is ready. */
+const resolveFrameState = (failed: boolean, isLoading: boolean): PlaygroundSessionFrameState => {
+    if (failed) return "failed"
+    return isLoading ? "pending" : "ready"
 }
 
 /** Resolve the playground once and preserve its server session and relay socket across navigation. */
@@ -96,7 +102,7 @@ export const PlaygroundSessionLayout = (input: PlaygroundSessionLayoutProps) => 
     return (
         <PlaygroundSessionContext.Provider value={value}>
             <_PlaygroundSessionLayout
-                state={value.failed ? "failed" : value.isLoading ? "pending" : "ready"}
+                state={resolveFrameState(value.failed, value.isLoading)}
                 surface={input.surface}
                 failedLabel={t("layoutFailed")}
                 retryLabel={t("retry")}

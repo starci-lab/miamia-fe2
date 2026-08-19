@@ -19,6 +19,13 @@ export type CourseLearnChallengeResultPageProps = {
     readonly challengeId: string
 }
 
+/** Page load lifecycle: a hard failure beats an unsettled grade beats a ready result. */
+const resolveResultPageState = (failed: boolean, pending: boolean) => {
+    if (failed) return "failed" as const
+    if (pending) return "pending" as const
+    return "ready" as const
+}
+
 /** Resolves the selected attempt and ordered feedback, polling until grading has settled. */
 export const CourseLearnChallengeResultPage = (input: CourseLearnChallengeResultPageProps) => {
     const practice = useTranslations("practice")
@@ -62,13 +69,13 @@ export const CourseLearnChallengeResultPage = (input: CourseLearnChallengeResult
         || course.data === undefined
         || module.data === undefined
         || attempts.data === undefined
-        || selectedAttempt === undefined
-        || selectedAttempt.processedAt === null
+        || selectedAttempt?.processedAt == null
         || feedbacks.data === undefined
     )
     const readerPath = nextContent === undefined
         ? `/courses/${input.displayId}/learn/content/modules/${input.moduleId}/contents/${input.contentId}`
         : `/courses/${input.displayId}/learn/content/modules/${input.moduleId}/contents/${nextContent.id}`
+    const state = resolveResultPageState(failed, pending)
     const challengePath = (
         `/courses/${input.displayId}/learn/content/modules/${input.moduleId}/contents/${input.contentId}`
         + `/challenges/${input.challengeId}`
@@ -76,7 +83,7 @@ export const CourseLearnChallengeResultPage = (input: CourseLearnChallengeResult
 
     return (
         <_CourseLearnChallengeResultPage
-            state={failed ? "failed" : pending ? "pending" : "ready"}
+            state={state}
             props={{
                 title: deliverable?.title ?? challenge?.title ?? contentText("failedMessage"),
                 description: deliverable?.description ?? challenge?.description ?? "",

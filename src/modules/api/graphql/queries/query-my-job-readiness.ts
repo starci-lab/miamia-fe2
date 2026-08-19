@@ -1,9 +1,9 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type QueryParams } from "../types"
 import { type QueryMyJobReadinessResponse } from "./types/job-readiness"
 
-const query1 = gql`
+const query1: TypedDocumentNode<QueryMyJobReadinessResponse> = gql`
     query MyJobReadiness {
         myJobReadiness {
             success
@@ -29,7 +29,7 @@ const query1 = gql`
 
 export enum QueryMyJobReadiness { Query1 = "query1" }
 /** Every supported job-readiness document keyed by its public variant. */
-export const queryMyJobReadinessMap: Record<QueryMyJobReadiness, DocumentNode> = {
+export const queryMyJobReadinessMap: Record<QueryMyJobReadiness, TypedDocumentNode<QueryMyJobReadinessResponse>> = {
     [QueryMyJobReadiness.Query1]: query1,
 }
 
@@ -41,5 +41,5 @@ export const queryMyJobReadiness = async ({
     debug,
 }: QueryParams<QueryMyJobReadiness> = {}) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryMyJobReadinessResponse>({ query: queryMyJobReadinessMap[query] })
+    return apollo.query({ query: queryMyJobReadinessMap[query] })
 }

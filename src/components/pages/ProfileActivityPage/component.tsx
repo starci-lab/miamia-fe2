@@ -12,14 +12,14 @@ export type ProfileActivityPageProps = {
     readonly feed: ActivityFeedProps
 }
 
-const Achievements = ({ achievementState, achievements }: ProfileActivityPageProps) => {
+const Achievements = ({ achievementState, achievements }: Pick<ProfileActivityPageProps, "achievementState" | "achievements">) => {
     const items = achievementState === "pending" ? Array.from({ length: 3 }, (_, index): ProfileAchievementData => ({ slug: String(index), name: "", earned: true, currentValue: 0, threshold: 0 })) : achievements.filter((item) => item.earned)
     return <SurfaceCard props={{ label: "Earned achievements", isFrameless: true }} contract="profile-achievement-grid" render={defineContractComponent("profile-achievement-grid", {
         achievement: items.map((item) => defineCompositeComponent("profile-achievement", {}, () => <ProfileAchievement props={{ name: item.name, rarity: item.rarityPercent == null ? item.tierReached ?? "Earned" : `${item.tierReached ?? "Earned"} · ${item.rarityPercent}%` }} isLoading={achievementState === "pending"} />)),
     })} />
 }
 
-const Activity = ({ feed }: ProfileActivityPageProps) => <SurfaceCard props={{ label: "Activity", isFrameless: true }} contract="activity-feed-result" render={defineContractProjection("activity-feed-result", () => <_ActivityFeed {...feed} />)} />
+const Activity = ({ feed }: Pick<ProfileActivityPageProps, "feed">) => <SurfaceCard props={{ label: "Activity", isFrameless: true }} contract="activity-feed-result" render={defineContractProjection("activity-feed-result", () => <_ActivityFeed {...feed} />)} />
 
 /** Preserve legacy order: earned achievement proof before day-grouped chronological activity. */
 export const _ProfileActivityPage = (input: ProfileActivityPageProps) => <Tree contract="profile-main" render={defineContractComponent("profile-main", {

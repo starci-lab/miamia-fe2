@@ -1,8 +1,10 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { ProfileEvidenceKind, ProfileEvidenceResponse } from "./types/profile-evidence"
 
-const documents: Record<ProfileEvidenceKind, DocumentNode> = {
+type ProfileEvidenceVariables = Readonly<Record<string, unknown>>
+
+const documents: Record<ProfileEvidenceKind, TypedDocumentNode<ProfileEvidenceResponse, ProfileEvidenceVariables>> = {
     "job-readiness": gql`query ProfileJobReadiness($userId: ID!) { userJobReadiness(userId: $userId) { success message error data { foundation { codingPercentile cvScore } tracks { courseId courseTitle courseSlug capstoneScore interviewScore cvScore depthScore band isQualified } } } }`,
     courses: gql`query ProfileCourses($userId: ID!) { userCourses(userId: $userId) { success message error data { globalId label thumbnailUrl contentCompleted contentTotal challengeCompleted challengeTotal completed total isEnrolled } } }`,
     contributions: gql`query ProfileContributions($userId: ID!, $year: Int) { userContributionCalendar(userId: $userId, year: $year) { success message error data { date contents challenges milestones total } } }`,
@@ -30,10 +32,10 @@ const fieldNames: Record<ProfileEvidenceKind, string> = {
 }
 
 /** Execute one independently cached public-profile evidence request. */
-export const queryProfileEvidence = async (kind: ProfileEvidenceKind, variables: Readonly<Record<string, unknown>>) => {
+export const queryProfileEvidence = async (kind: ProfileEvidenceKind, variables: ProfileEvidenceVariables) => {
     // Every profile evidence resolver in this module is public by design. Keeping the anonymous
     // chain is what lets signed-out visitors inspect an unlocked profile without an auth failure.
     const apollo = createApolloClient({ withAuth: false })
-    const result = await apollo.query<ProfileEvidenceResponse>({ query: documents[kind], variables, fetchPolicy: "no-cache" })
+    const result = await apollo.query({ query: documents[kind], variables, fetchPolicy: "no-cache" })
     return result.data?.[fieldNames[kind]]?.data
 }

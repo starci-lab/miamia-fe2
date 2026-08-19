@@ -1,9 +1,11 @@
-import { gql } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { QueryParams } from "../types"
 import type { CodingProblemsResponse } from "./types/coding"
 
-const document = gql`
+type CodingProblemsVariables = { readonly request: QueryCodingProblemsRequest["filters"] }
+
+const document: TypedDocumentNode<CodingProblemsResponse, CodingProblemsVariables> = gql`
     query CodingProblems($request: CodingProblemsRequest!) {
         codingProblems(request: $request) {
             success
@@ -57,4 +59,4 @@ export const queryCodingProblems = async ({
     debug,
 }: QueryParams<QueryCodingProblems, QueryCodingProblemsRequest> = {}) =>
     createApolloClient({ withAuth: true, headers, signal, debug })
-        .query<CodingProblemsResponse>({ query: document, variables: { request: request.filters } })
+        .query({ query: document, variables: { request: request.filters } })

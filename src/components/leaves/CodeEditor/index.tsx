@@ -72,6 +72,16 @@ export type CodeEditorProps = LeafProps<CodeEditorData, CodeEditorActions>
 /** The editor fills whatever height the column left it. */
 const HOST_CLASSES = "h-full min-h-64 w-full overflow-auto"
 
+/** The CodeMirror grammar for one of the five submittable languages, or none for anything else. */
+const grammarFor = (language: string) => {
+    if (language === "python") return [python()]
+    if (language === "java") return [java()]
+    if (language === "cpp") return [cpp()]
+    if (language === "typescript") return [javascript({ typescript: true })]
+    if (language === "javascript") return [javascript()]
+    return []
+}
+
 /**
  * Draw the editor.
  *
@@ -92,17 +102,7 @@ export const CodeEditor = ({ props, on }: CodeEditorProps) => {
         /** Publish the settled counters. Called after one moves, never on a timer. */
         const report = () => on?.telemetry?.({ ...counters.current })
 
-        const grammar = props.language === "python"
-            ? [python()]
-            : props.language === "java"
-                ? [java()]
-                : props.language === "cpp"
-                    ? [cpp()]
-                    : props.language === "typescript"
-                        ? [javascript({ typescript: true })]
-                        : props.language === "javascript"
-                            ? [javascript()]
-                            : []
+        const grammar = grammarFor(props.language)
 
         return [
             ...grammar,

@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { LookupQueryParams } from "../types"
 import type { QueryUserProfileResponse } from "./types/user-profile"
@@ -6,7 +6,7 @@ import type { QueryUserProfileResponse } from "./types/user-profile"
 /** Public username lookup variables. */
 export type UserProfileRequest = { readonly username: string }
 
-const query1 = gql`
+const query1: TypedDocumentNode<QueryUserProfileResponse, UserProfileRequest> = gql`
     query UserProfile($username: String!) {
         userProfile(username: $username) {
             success
@@ -24,7 +24,7 @@ const query1 = gql`
 export enum QueryUserProfile { Query1 = "query1" }
 
 /** Supported public-profile documents. */
-export const queryUserProfileMap: Record<QueryUserProfile, DocumentNode> = {
+export const queryUserProfileMap: Record<QueryUserProfile, TypedDocumentNode<QueryUserProfileResponse, UserProfileRequest>> = {
     [QueryUserProfile.Query1]: query1,
 }
 
@@ -37,7 +37,7 @@ export const queryUserProfile = async ({
     debug,
 }: LookupQueryParams<QueryUserProfile, UserProfileRequest>) => {
     const apollo = createApolloClient({ withAuth: false, headers, signal, debug })
-    return apollo.query<QueryUserProfileResponse, UserProfileRequest>({
+    return apollo.query({
         query: queryUserProfileMap[query],
         variables: request,
         fetchPolicy: "no-cache",

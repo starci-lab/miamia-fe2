@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { GraphQLResponse } from "../types"
 import type { FlashcardQuizAnswer, FlashcardSessionMode } from "./query-my-in-progress-flashcard-session"
@@ -18,7 +18,33 @@ export type FlashcardSessionResult = {
     readonly results: Array<FlashcardQuizAnswer>
 }
 
-const reviewResultQuery = gql`
+type ReviewResultResponse = {
+    readonly myFlashcardReviewSessionStatsBySessionId: GraphQLResponse<{
+        readonly sessionId: string
+        readonly status: string
+        readonly reviewedCount: number
+        readonly durationSeconds?: number | null
+        readonly xpEarned: number
+        readonly nextDueAt?: string | null
+        readonly gradeCounts: { readonly again: number, readonly hard: number, readonly good: number, readonly easy: number }
+        readonly weakTags: Array<{ readonly tag: string, readonly forgotCount: number }>
+    }>
+}
+
+type QuizResultResponse = {
+    readonly myFlashcardQuizSessionBySessionId: GraphQLResponse<{
+        readonly sessionId: string
+        readonly status: string
+        readonly coverage?: number | null
+        readonly xpEarned: number
+        readonly answeredCount: number
+        readonly durationSeconds?: number | null
+        readonly weakTags: Array<{ readonly tag: string, readonly coverage: number }>
+        readonly results: Array<FlashcardQuizAnswer>
+    }>
+}
+
+const reviewResultQuery: TypedDocumentNode<ReviewResultResponse, { sessionId: string }> = gql`
     query MyFlashcardReviewSessionStatsBySessionId($sessionId: ID!) {
         myFlashcardReviewSessionStatsBySessionId(sessionId: $sessionId) {
             success
@@ -33,7 +59,7 @@ const reviewResultQuery = gql`
     }
 `
 
-const quizResultQuery = gql`
+const quizResultQuery: TypedDocumentNode<QuizResultResponse, { sessionId: string }> = gql`
     query MyFlashcardQuizSessionBySessionId($sessionId: ID!) {
         myFlashcardQuizSessionBySessionId(sessionId: $sessionId) {
             success
@@ -55,18 +81,7 @@ export const queryFlashcardSessionResult = async (
 ): Promise<FlashcardSessionResult | null> => {
     const apollo = createApolloClient({ withAuth: true })
     if (mode === "review") {
-        const response = await apollo.query<{
-            readonly myFlashcardReviewSessionStatsBySessionId: GraphQLResponse<{
-                readonly sessionId: string
-                readonly status: string
-                readonly reviewedCount: number
-                readonly durationSeconds?: number | null
-                readonly xpEarned: number
-                readonly nextDueAt?: string | null
-                readonly gradeCounts: { readonly again: number, readonly hard: number, readonly good: number, readonly easy: number }
-                readonly weakTags: Array<{ readonly tag: string, readonly forgotCount: number }>
-            }>
-        }>({ query: reviewResultQuery, variables: { sessionId } })
+        const response = await apollo.query({ query: reviewResultQuery, variables: { sessionId } })
         const data = response.data?.myFlashcardReviewSessionStatsBySessionId.data
         if (data === undefined) return null
         const successful = data.gradeCounts.good + data.gradeCounts.easy
@@ -79,18 +94,7 @@ export const queryFlashcardSessionResult = async (
             results: [],
         }
     }
-    const response = await apollo.query<{
-        readonly myFlashcardQuizSessionBySessionId: GraphQLResponse<{
-            readonly sessionId: string
-            readonly status: string
-            readonly coverage?: number | null
-            readonly xpEarned: number
-            readonly answeredCount: number
-            readonly durationSeconds?: number | null
-            readonly weakTags: Array<{ readonly tag: string, readonly coverage: number }>
-            readonly results: Array<FlashcardQuizAnswer>
-        }>
-    }>({ query: quizResultQuery, variables: { sessionId } })
+    const response = await apollo.query({ query: quizResultQuery, variables: { sessionId } })
     const data = response.data?.myFlashcardQuizSessionBySessionId.data
     if (data === undefined) return null
     return {

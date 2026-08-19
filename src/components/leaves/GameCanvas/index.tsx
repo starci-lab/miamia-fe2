@@ -26,9 +26,15 @@ export const GameCanvas = ({ props, on }: GameCanvasProps) => {
             import("@/modules/games/phaser/scenes/CoupleQuizScene"), import("@/modules/games/phaser/scenes/VocabDefenseScene"),
         ]).then(([phaser, race, pairs, quiz, defense]) => {
             if (disposed || host.current === null) return
-            const Scene = props.gameType === "VOCAB_RACE" ? race.VocabRaceScene : props.gameType === "MATCH_PAIRS" ? pairs.MatchPairsScene : props.gameType === "COUPLE_QUIZ" ? quiz.CoupleQuizScene : defense.VocabDefenseScene
+            let Scene: new () => import("@/modules/games/phaser/scenes/BaseGameScene").BaseGameScene = defense.VocabDefenseScene
+            if (props.gameType === "VOCAB_RACE") Scene = race.VocabRaceScene
+            else if (props.gameType === "MATCH_PAIRS") Scene = pairs.MatchPairsScene
+            else if (props.gameType === "COUPLE_QUIZ") Scene = quiz.CoupleQuizScene
             const active = new Scene(); active.setAnswer((index) => answer.current?.(index)); scene.current = active
-            active.setReady(() => { if (snapshot.current !== undefined) active.applySnapshot(snapshot.current); if (answerResult.current !== undefined) active.applyAnswerResult(answerResult.current) })
+            active.setReady(() => {
+                if (snapshot.current !== undefined) active.applySnapshot(snapshot.current)
+                if (answerResult.current !== undefined) active.applyAnswerResult(answerResult.current)
+            })
             game = new phaser.Game({ type: phaser.AUTO, width: 1280, height: 720, parent: host.current, backgroundColor: "transparent", scene: active, scale: { mode: phaser.Scale.FIT, autoCenter: phaser.Scale.CENTER_BOTH } })
         })
         return () => { disposed = true; scene.current = undefined; game?.destroy(true) }

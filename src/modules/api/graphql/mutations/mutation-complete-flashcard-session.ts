@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { GraphQLResponse } from "../types"
 import type { FlashcardQuizAnswer, FlashcardReviewKind } from "../queries/query-my-in-progress-flashcard-session"
@@ -29,7 +29,26 @@ export type CompleteFlashcardSessionData = {
     readonly xpEarned: number
 }
 
-const completeReviewDocument = gql`
+type CompleteFlashcardReviewSessionVariables = {
+    readonly request: {
+        readonly sessionId: string
+        readonly reviewedCount: number
+        readonly xpEarned: number
+    }
+}
+
+type CompleteFlashcardQuizSessionVariables = {
+    readonly request: {
+        readonly sessionId: string
+        readonly courseId: string
+        readonly answers: ReadonlyArray<FlashcardQuizAnswer>
+    }
+}
+
+const completeReviewDocument: TypedDocumentNode<
+    { readonly completeFlashcardReviewSession: GraphQLResponse<CompleteFlashcardSessionData> },
+    CompleteFlashcardReviewSessionVariables
+> = gql`
     mutation CompleteFlashcardReviewSession($request: CompleteFlashcardReviewSessionRequest!) {
         completeFlashcardReviewSession(request: $request) {
             success message error
@@ -38,7 +57,10 @@ const completeReviewDocument = gql`
     }
 `
 
-const completeDueDocument = gql`
+const completeDueDocument: TypedDocumentNode<
+    { readonly completeFlashcardDueReviewSession: GraphQLResponse<CompleteFlashcardSessionData> },
+    CompleteFlashcardReviewSessionVariables
+> = gql`
     mutation CompleteFlashcardDueReviewSession($request: CompleteFlashcardDueReviewSessionRequest!) {
         completeFlashcardDueReviewSession(request: $request) {
             success message error
@@ -47,7 +69,10 @@ const completeDueDocument = gql`
     }
 `
 
-const completeQuizDocument = gql`
+const completeQuizDocument: TypedDocumentNode<
+    { readonly completeFlashcardQuizSession: GraphQLResponse<{ readonly xpEarned: number }> },
+    CompleteFlashcardQuizSessionVariables
+> = gql`
     mutation CompleteFlashcardQuizSession($request: CompleteFlashcardQuizSessionRequest!) {
         completeFlashcardQuizSession(request: $request) {
             success message error
@@ -70,19 +95,13 @@ export const mutationCompleteFlashcardSession = async (
             },
         }
         if (request.kind === "due") {
-            const response = await apollo.mutate<{
-                readonly completeFlashcardDueReviewSession: GraphQLResponse<CompleteFlashcardSessionData>
-            }>({ mutation: completeDueDocument, variables })
+            const response = await apollo.mutate({ mutation: completeDueDocument, variables })
             return response.data?.completeFlashcardDueReviewSession.data ?? null
         }
-        const response = await apollo.mutate<{
-            readonly completeFlashcardReviewSession: GraphQLResponse<CompleteFlashcardSessionData>
-        }>({ mutation: completeReviewDocument, variables })
+        const response = await apollo.mutate({ mutation: completeReviewDocument, variables })
         return response.data?.completeFlashcardReviewSession.data ?? null
     }
-    const response = await apollo.mutate<{
-        readonly completeFlashcardQuizSession: GraphQLResponse<{ readonly xpEarned: number }>
-    }>({
+    const response = await apollo.mutate({
         mutation: completeQuizDocument,
         variables: {
             request: {

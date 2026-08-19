@@ -104,6 +104,13 @@ export type CartPageProps = {
 /** How many resting lines the list shows while the first request is in flight. */
 const RESTING_COUNT = 3
 
+/** Whether the order summary is still resting, failed to price, or is ready to total. */
+const deriveSummaryState = (isLoading: boolean, hasPricingFailed: boolean): "pending" | "failed" | "ready" => {
+    if (isLoading) return "pending"
+    if (hasPricingFailed) return "failed"
+    return "ready"
+}
+
 /**
  * Draw the basket.
  *
@@ -146,7 +153,7 @@ export const _CartPage = (input: CartPageProps) => {
 
     const summary = defineContractProjection("order-summary-stack", () => (
         <_OrderSummary
-            state={isLoading ? "pending" : input.props.hasPricingFailed === true ? "failed" : "ready"}
+            state={deriveSummaryState(isLoading, input.props.hasPricingFailed === true)}
             props={{
                 labels: labels.summary,
                 subtotal: input.props.subtotal,

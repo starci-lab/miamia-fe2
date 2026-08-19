@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { GraphQLResponse } from "../types"
 import type { MockInterviewMutationOptions } from "./mutation-start-mock-interview-session"
@@ -18,7 +18,10 @@ export type MutationSyncMockInterviewSessionTurnsResponse = {
 }
 
 /** GraphQL document for best-effort transcript persistence. */
-export const syncMockInterviewSessionTurnsDocument: DocumentNode = gql`
+export const syncMockInterviewSessionTurnsDocument: TypedDocumentNode<
+    MutationSyncMockInterviewSessionTurnsResponse,
+    { request: SyncMockInterviewSessionTurnsRequest }
+> = gql`
     mutation SyncMockInterviewSessionTurns($request: SyncMockInterviewSessionTurnsRequest!) {
         syncMockInterviewSessionTurns(request: $request) {
             success message error data { success }
@@ -32,7 +35,7 @@ export const mutationSyncMockInterviewSessionTurns = async (
     options: MockInterviewMutationOptions = {},
 ) => {
     const apollo = createApolloClient({ withAuth: true, ...options })
-    return apollo.mutate<MutationSyncMockInterviewSessionTurnsResponse>({
+    return apollo.mutate({
         mutation: syncMockInterviewSessionTurnsDocument,
         variables: { request },
     })

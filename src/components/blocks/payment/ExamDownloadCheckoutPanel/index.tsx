@@ -9,6 +9,13 @@ import { _ExamDownloadCheckoutPanel } from "./component"
 
 /** Server-owned package facts and return destinations for checkout. */
 export type ExamDownloadCheckoutPanelConnectedProps = { readonly packageId: ExamDownloadPackage; readonly returnUrl: string; readonly cancelUrl: string; readonly onDismiss: () => void; readonly amount: number }
+
+/** Panel lifecycle: a failed attempt beats an in-flight submission beats the idle default. */
+const resolveCheckoutState = (failed: boolean, isMutating: boolean) => {
+    if (failed) return "failed" as const
+    if (isMutating) return "submitting" as const
+    return "idle" as const
+}
 /** Connects a selected download package to its authenticated checkout mutation. */
 export const ExamDownloadCheckoutPanel = ({ packageId, returnUrl, cancelUrl, onDismiss, amount }: ExamDownloadCheckoutPanelConnectedProps) => {
     const t = useTranslations("miamia.pricing.checkout")
@@ -23,7 +30,8 @@ export const ExamDownloadCheckoutPanel = ({ packageId, returnUrl, cancelUrl, onD
             submitCheckout(envelope.data)
         } catch { setFailed(true) }
     }
-    return <_ExamDownloadCheckoutPanel state={failed ? "failed" : checkout.isMutating ? "submitting" : "idle"} props={{ title: t(`${packageId}.title`), body: t(`${packageId}.body`), price: t("price", { price: new Intl.NumberFormat("vi-VN").format(amount) }), benefits: [t(`${packageId}.benefitOne`), t(`${packageId}.benefitTwo`), t(`${packageId}.benefitThree`)], checkoutLabel: t("pay"), cancelLabel: t("cancel"), errorMessage: t("failed") }} on={{ checkout: run, retry: run, dismiss: onDismiss }} />
+    const state = resolveCheckoutState(failed, checkout.isMutating)
+    return <_ExamDownloadCheckoutPanel state={state} props={{ title: t(`${packageId}.title`), body: t(`${packageId}.body`), price: t("price", { price: new Intl.NumberFormat("vi-VN").format(amount) }), benefits: [t(`${packageId}.benefitOne`), t(`${packageId}.benefitTwo`), t(`${packageId}.benefitThree`)], checkoutLabel: t("pay"), cancelLabel: t("cancel"), errorMessage: t("failed") }} on={{ checkout: run, retry: run, dismiss: onDismiss }} />
 }
 /** Declares the connected payment block boundary. */
 export const meta = { shape: "block", world: "connected", domain: "payment" } as const

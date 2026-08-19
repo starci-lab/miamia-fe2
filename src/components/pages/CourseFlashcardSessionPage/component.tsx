@@ -106,26 +106,29 @@ export const _CourseFlashcardSessionPage = (input: CourseFlashcardSessionPagePro
             />
         ))
         : undefined
-    const actions = state !== "active"
-        ? undefined
-        : !data.answerVisible
-            ? [defineLeafComponent("button", {}, () => (
-                <Button props={{ label: data.revealLabel, variant: "primary" }} on={{ press: on.reveal }} />
-            ))]
-            : data.mode === "review"
-                ? ([data.againLabel, data.hardLabel, data.goodLabel, data.easyLabel] as const).map((label, grade) => (
-                    defineLeafComponent("button", {}, () => (
-                        <Button props={{ label, variant: grade === 2 ? "primary" : "outline" }} on={{ press: () => on.rate(grade as 0 | 1 | 2 | 3) }} />
-                    ))
-                ))
-                : [
-                    defineLeafComponent("button", {}, () => (
-                        <Button props={{ label: data.incorrectLabel, variant: "outline" }} on={{ press: () => on.answerQuiz(false) }} />
-                    )),
-                    defineLeafComponent("button", {}, () => (
-                        <Button props={{ label: data.correctLabel, variant: "primary" }} on={{ press: () => on.answerQuiz(true) }} />
-                    )),
-                ]
+    let actions
+    if (state !== "active") {
+        actions = undefined
+    } else if (!data.answerVisible) {
+        actions = [defineLeafComponent("button", {}, () => (
+            <Button props={{ label: data.revealLabel, variant: "primary" }} on={{ press: on.reveal }} />
+        ))]
+    } else if (data.mode === "review") {
+        actions = ([data.againLabel, data.hardLabel, data.goodLabel, data.easyLabel] as const).map((label, grade) => (
+            defineLeafComponent("button", {}, () => (
+                <Button props={{ label, variant: grade === 2 ? "primary" : "outline" }} on={{ press: () => on.rate(grade as 0 | 1 | 2 | 3) }} />
+            ))
+        ))
+    } else {
+        actions = [
+            defineLeafComponent("button", {}, () => (
+                <Button props={{ label: data.incorrectLabel, variant: "outline" }} on={{ press: () => on.answerQuiz(false) }} />
+            )),
+            defineLeafComponent("button", {}, () => (
+                <Button props={{ label: data.correctLabel, variant: "primary" }} on={{ press: () => on.answerQuiz(true) }} />
+            )),
+        ]
+    }
     const notice = settledFailure
         ? defineCompositeComponent("empty-notice", {}, () => (
             <EmptyNotice

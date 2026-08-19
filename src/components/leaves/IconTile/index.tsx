@@ -63,6 +63,24 @@ const IMAGE_CLASSES = "size-full object-cover"
 /** The resting shape - the plate at its real size, no glyph. */
 const RESTING_CLASSES = skeletonVariants({ animationType: "shimmer" }).base()
 
+/** The plate's fill: resting shimmer while loading, no fill behind artwork, else the tone. */
+const fillClassName = (isLoading: boolean, showsImage: boolean, tone: IconTileTone): string => {
+    if (isLoading) return RESTING_CLASSES
+    if (showsImage) return ""
+    return TONE_CLASSES[tone]
+}
+
+/** The plate's content: nothing while loading, the artwork when it has one, else the glyph. */
+const renderGlyph = (isLoading: boolean, showsImage: boolean, image: string | null | undefined, icon: IconName) => {
+    if (isLoading) return null
+    if (showsImage) {
+        // Decorative: the row states the course by name on the very next line, so a reader who
+        // cannot see the artwork gains nothing from hearing its file described.
+        return <img src={image ?? ""} alt="" className={IMAGE_CLASSES} />
+    }
+    return <Icon props={{ name: icon, role: "leading" }} />
+}
+
 /**
  * Draw a glyph on a plate.
  *
@@ -86,14 +104,10 @@ export const IconTile = ({ props, isLoading = false }: IconTileProps) => {
             className={[
                 BASE_CLASSES,
                 SIZE_CLASSES[size],
-                isLoading ? RESTING_CLASSES : showsImage ? "" : TONE_CLASSES[tone],
+                fillClassName(isLoading, showsImage, tone),
             ].join(" ")}
         >
-            {isLoading ? null : showsImage
-                // Decorative: the row states the course by name on the very next line, so a reader
-                // who cannot see the artwork gains nothing from hearing its file described.
-                ? <img src={props.image ?? ""} alt="" className={IMAGE_CLASSES} />
-                : <Icon props={{ name: props.icon, role: "leading" }} />}
+            {renderGlyph(isLoading, showsImage, props.image, props.icon)}
         </span>
     )
 }

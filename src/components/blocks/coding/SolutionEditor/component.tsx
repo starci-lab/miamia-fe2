@@ -41,6 +41,12 @@ export type TestcaseOutcome = {
     readonly passed?: boolean
 }
 
+/** Resolves the badge tone for one testcase outcome. */
+const toneOfTestcase = (passed: boolean | undefined): "neutral" | "success" | "danger" => {
+    if (passed === undefined) return "neutral"
+    return passed ? "success" : "danger"
+}
+
 /** What the block draws. */
 export type SolutionEditorData = {
     /** The languages the server accepts, already worded. */
@@ -159,9 +165,7 @@ export const _SolutionEditor = (input: SolutionEditorProps) => {
                                 <Badge
                                     props={{
                                         content: testcase.label,
-                                        tone: testcase.passed === undefined
-                                            ? "neutral"
-                                            : testcase.passed ? "success" : "danger",
+                                        tone: toneOfTestcase(testcase.passed),
                                     }}
                                 />
                             ))),

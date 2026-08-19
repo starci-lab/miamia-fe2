@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type OperationVariables, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { GraphQLResponse } from "../types"
 import type { MutationParams } from "./types/params"
@@ -14,7 +14,7 @@ interface MutationCreateCourseQuestionResponse {
     readonly createComment: GraphQLResponse<CourseQaComment>
 }
 
-const mutation1 = gql`
+const mutation1: TypedDocumentNode<MutationCreateCourseQuestionResponse, OperationVariables> = gql`
     mutation CreateCourseQuestion($request: CreateCommentRequest!) {
         createComment(request: $request) {
             success
@@ -37,7 +37,7 @@ const mutation1 = gql`
 
 export enum MutationCreateCourseQuestion { Mutation1 = "mutation1" }
 
-const mutationCreateCourseQuestionMap: Record<MutationCreateCourseQuestion, DocumentNode> = {
+const mutationCreateCourseQuestionMap: Record<MutationCreateCourseQuestion, TypedDocumentNode<MutationCreateCourseQuestionResponse, OperationVariables>> = {
     [MutationCreateCourseQuestion.Mutation1]: mutation1,
 }
 
@@ -50,7 +50,7 @@ export const mutationCreateCourseQuestion = async ({
     debug,
 }: MutationParams<MutationCreateCourseQuestion, CreateCourseQuestionRequest>) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.mutate<MutationCreateCourseQuestionResponse>({
+    return apollo.mutate({
         mutation: mutationCreateCourseQuestionMap[mutation],
         variables: { request },
     })

@@ -20,6 +20,19 @@ export type CourseLearnChallengePageProps = {
     readonly challengeId: string
 }
 
+/** The page's own state: loading beats mutating beats a hard error, then whether it is already passed. */
+const resolveChallengeState = (
+    pending: boolean,
+    isSubmitting: boolean,
+    failed: boolean,
+    completed: boolean,
+): CourseLearnChallengePageState => {
+    if (pending) return "pending"
+    if (isSubmitting) return "submitting"
+    if (failed) return "failed"
+    return completed ? "passed" : "ready"
+}
+
 /** Resolves a challenge, submits one authored deliverable and opens its polling result route. */
 export const CourseLearnChallengePage = (input: CourseLearnChallengePageProps) => {
     const practice = useTranslations("practice")
@@ -48,16 +61,8 @@ export const CourseLearnChallengePage = (input: CourseLearnChallengePageProps) =
         || submitError !== undefined
         || (content.data !== undefined && (content.data === null || challenge === undefined))
         || (course.data !== undefined && course.data === null)
-        || (challenge !== undefined && challenge.submissions.length === 0)
-    const state: CourseLearnChallengePageState = pending
-        ? "pending"
-        : submission.isMutating
-            ? "submitting"
-            : failed
-                ? "failed"
-                : challengeProgress?.completed === true
-                    ? "passed"
-                    : "ready"
+        || challenge?.submissions.length === 0
+    const state = resolveChallengeState(pending, submission.isMutating, failed, challengeProgress?.completed === true)
     const resultPath = (submissionId: string) => (
         `/courses/${input.displayId}/learn/content/modules/${input.moduleId}/contents/${input.contentId}`
         + `/challenges/${input.challengeId}/result?submission=${encodeURIComponent(submissionId)}`

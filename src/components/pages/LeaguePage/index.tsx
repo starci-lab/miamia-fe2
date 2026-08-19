@@ -9,7 +9,8 @@ import { useSessionToken } from "@/hooks/auth/useSessionToken"
 import { useMutateSetFollowSwr, useQueryGlobalLeaderboardSwr, useQueryMeSwr, useQueryMyLeagueSwr } from "@/hooks"
 import { fromGlobalId } from "@/modules/utils/global-id"
 import type { RankedUserRowData, RankedUserVerdict } from "@/components/composites/RankedUserRow"
-import { _LeaguePage, type LeagueScope } from "./component"
+import type { GlobalLeaderboard, GlobalLeaderboardEntry, LeagueEntry } from "@/modules/api/graphql/queries/types/dashboard-learning-community"
+import { _LeaguePage, type LeagueBoardData, type LeagueScope } from "./component"
 
 /**
  * PAGE - `LeaguePage`, connected half.
@@ -32,6 +33,194 @@ const PODIUM_SIZE = 3
  */
 const SCOPES = ["weekly", "global"] as const
 
+/** Shorthand for the shape `next-intl` hands every helper below. */
+type Translate = ReturnType<typeof useTranslations>
+
+/** Time left until the weekly board resets, already split for the "resetIn" sentence. */
+type WeeklyCountdown = { readonly days: number; readonly hours: number }
+
+/** success when climbing, danger when falling, unstyled when unranked or unchanged. */
+const rankVerdict = (rankDelta: number | null): RankedUserVerdict | undefined => {
+    if (rankDelta === null || rankDelta === 0) return undefined
+    return rankDelta > 0 ? "success" : "danger"
+}
+
+/** Human sentence for a rank delta: flat, up N, or down N. */
+const rankMovementLabel = (rankDelta: number | null, t: Translate): string => {
+    if (rankDelta === null || rankDelta === 0) return t("noMovement")
+    if (rankDelta > 0) return t("up", { count: rankDelta })
+    return t("down", { count: Math.abs(rankDelta) })
+}
+
+/** Rows below the podium for the weekly board. */
+const buildWeeklyRows = (
+    weeklyEntries: ReadonlyArray<LeagueEntry>,
+    mine: LeagueEntry | undefined,
+    percent: number | undefined,
+    overrides: ReadonlyMap<string, boolean>,
+    pending: string | undefined,
+    t: Translate,
+): ReadonlyArray<RankedUserRowData> => weeklyEntries.slice(PODIUM_SIZE).map((entry) => {
+    const isMe = entry.userGlobalId === mine?.userGlobalId
+    const username = entry.username ?? t("anonymous")
+    return {
+        id: entry.userGlobalId,
+        rank: entry.rank,
+        rankLabel: t("league.rankLine", { rank: entry.rank, percent: percent ?? 100 }),
+        name: isMe ? `${username} · ${t("you")}` : username,
+        avatar: entry.avatar,
+        points: t("points", { count: entry.weekPoints }),
+        rankDelta: entry.rankDelta,
+        movementLabel: rankMovementLabel(entry.rankDelta, t),
+        verdict: rankVerdict(entry.rankDelta),
+        isMe,
+        // The weekly board is followable too. `myLeague` carries no follow state, so the
+        // control starts at "not following" for everyone and only this session's own toggles
+        // move it - a real gap, recorded rather than papered over with a guess.
+        isFollowing: overrides.get(entry.userGlobalId) ?? false,
+        isPending: pending === entry.userGlobalId,
+        followLabel: t("follow"),
+        followingLabel: t("following"),
+    }
+})
+
+/** Rows below the podium for the global board. */
+const buildGlobalRows = (
+    globalShown: ReadonlyArray<GlobalLeaderboardEntry>,
+    meUsername: string | null | undefined,
+    overrides: ReadonlyMap<string, boolean>,
+    pending: string | undefined,
+    t: Translate,
+): ReadonlyArray<RankedUserRowData> => globalShown.slice(PODIUM_SIZE).map((entry) => {
+    const isMe = entry.username !== null && entry.username === meUsername
+    const username = entry.username ?? t("anonymous")
+    return {
+        id: entry.userGlobalId,
+        rank: entry.rank,
+        rankLabel: t("top.rankLine", { rank: entry.rank }),
+        name: isMe ? `${username} · ${t("you")}` : username,
+        avatar: entry.avatar,
+        points: t("points", { count: entry.points }),
+        isFollowing: overrides.get(entry.userGlobalId) ?? entry.isFollowing,
+        isPending: pending === entry.userGlobalId,
+        isMe,
+        followLabel: t("follow"),
+        followingLabel: t("following"),
+    }
+})
+
+/** Assemble the weekly board: standing, podium and rows already resolved by the caller. */
+const buildWeeklyBoard = (
+    weeklyEntries: ReadonlyArray<LeagueEntry>,
+    mine: LeagueEntry | undefined,
+    percent: number | undefined,
+    hasWeeklyData: boolean,
+    countdown: WeeklyCountdown,
+    weeklyRows: ReadonlyArray<RankedUserRowData>,
+    t: Translate,
+): LeagueBoardData => ({
+    standing: {
+        rank: mine?.rank,
+        rankLabel: mine && percent !== undefined ? t("league.rankLine", { rank: mine.rank, percent }) : undefined,
+        title: mine && percent !== undefined ? t("league.rankLine", { rank: mine.rank, percent }) : t("league.unplaced"),
+        subtitle: mine && hasWeeklyData
+            ? `${t("points", { count: mine.weekPoints })} · ${t("resetIn", countdown)}`
+            : t("league.empty"),
+    },
+    ctaLabel: t("climbCta"),
+    progressAccessibleLabel: t("pageTitle"),
+    podium: weeklyEntries.slice(0, PODIUM_SIZE).map((entry) => ({
+        rank: entry.rank,
+        username: entry.username,
+        avatar: entry.avatar,
+        rankLabel: t("league.rankLine", { rank: entry.rank, percent: percent ?? 100 }),
+        pointsLabel: t("points", { count: entry.weekPoints }),
+        isMe: entry.userGlobalId === mine?.userGlobalId,
+    })),
+    meLabel: t("you"),
+    anonymousLabel: t("anonymous"),
+    rows: weeklyRows,
+    listLabel: t("league.heading"),
+})
+
+/**
+ * Everything the global board is assembled from.
+ *
+ * Declared as one named input rather than ten positional parameters: at that length the call site
+ * is a column of bare identifiers whose meaning depends entirely on their order, and swapping two
+ * of the same type is a silent bug.
+ */
+interface GlobalBoardInput {
+    globalData: GlobalLeaderboard | undefined
+    globalShown: ReadonlyArray<GlobalLeaderboardEntry>
+    above: GlobalLeaderboardEntry | undefined
+    pointsToNext: number
+    globalRows: ReadonlyArray<RankedUserRowData>
+    viewerInGlobal: boolean
+    hiddenBetween: number
+    meUsername: string | null | undefined
+    meAvatar: string | null | undefined
+    t: Translate
+}
+
+/** Assemble the global board: standing, podium, rows and the viewer's pinned row if it fell off screen. */
+const buildGlobalBoard = ({
+    globalData,
+    globalShown,
+    above,
+    pointsToNext,
+    globalRows,
+    viewerInGlobal,
+    hiddenBetween,
+    meUsername,
+    meAvatar,
+    t,
+}: GlobalBoardInput
+): LeagueBoardData => ({
+    standing: {
+        rank: globalData?.myRank,
+        rankLabel: globalData ? t("top.rankLine", { rank: globalData.myRank }) : undefined,
+        title: t("top.rankLine", { rank: globalData?.myRank ?? 0 }),
+        subtitle: t("points", { count: globalData?.myPoints ?? 0 }),
+    },
+    ...(globalData && above && globalData.myRank > 1
+        ? {
+            progress: {
+                ratio: globalData.myPoints / Math.max(1, above.points),
+                label: t("pointsToNext", { points: pointsToNext, rank: globalData.myRank - 1 }),
+            },
+        }
+        : {}),
+    ctaLabel: t("climbCta"),
+    progressAccessibleLabel: t("pageTitle"),
+    podium: globalShown.slice(0, PODIUM_SIZE).map((entry) => ({
+        rank: entry.rank,
+        username: entry.username,
+        avatar: entry.avatar,
+        rankLabel: t("top.rankLine", { rank: entry.rank }),
+        pointsLabel: t("points", { count: entry.points }),
+        isMe: entry.username !== null && entry.username === meUsername,
+    })),
+    meLabel: t("you"),
+    anonymousLabel: t("anonymous"),
+    rows: globalRows,
+    ...(globalData && !viewerInGlobal
+        ? {
+            selfRow: {
+                id: "self",
+                rank: globalData.myRank,
+                rankLabel: t("top.rankLine", { rank: globalData.myRank }),
+                name: `${meUsername ?? t("anonymous")} · ${t("you")}`,
+                avatar: meAvatar ?? null,
+                points: t("points", { count: globalData.myPoints }),
+                isMe: true,
+            },
+            ...(hiddenBetween > 0 ? { ellipsisLabel: `⋯ ${t("othersCount", { count: hiddenBetween })}` } : {}),
+        }
+        : {}),
+    listLabel: t("top.heading"),
+})
+
 /** Resolve the viewer standing and the ranked board for whichever scope is selected. */
 export const LeaguePage = () => {
     const t = useTranslations("community")
@@ -41,7 +230,9 @@ export const LeaguePage = () => {
     // An unknown or missing scope resolves to the weekly board rather than an error: a hand-typed
     // or truncated link should land somewhere real, and weekly is the board reached from the
     // dashboard card most learners arrive through.
-    const scope: LeagueScope = SCOPES.some((id) => id === requested) ? requested as LeagueScope : "weekly"
+    const scope: LeagueScope = requested !== null && SCOPES.includes(requested as LeagueScope)
+        ? requested as LeagueScope
+        : "weekly"
     // Both boards are viewer-relative - they carry "your rank" and "you follow this person" - so
     // without a session there is nothing to render and the requests answer 403 forever. The first
     // build of this page had no guard and shimmered indefinitely for a signed-out reader.
@@ -80,7 +271,7 @@ export const LeaguePage = () => {
 
     const weeklyEntries = weekly.data?.entries ?? []
     const mine = weeklyEntries.find((entry) => entry.username !== null && entry.username === me.data?.username)
-    const globalData = global.data
+    const globalData = global.data ?? undefined
 
     // The cohort is the denominator, so the percentile means "of the people I am actually racing".
     const percent = mine && weeklyEntries.length > 0
@@ -97,127 +288,27 @@ export const LeaguePage = () => {
     const above = globalData?.entries.find((entry) => entry.rank === globalData.myRank - 1)
     const pointsToNext = above ? Math.max(0, above.points - (globalData?.myPoints ?? 0) + 1) : 0
 
-    const weeklyRows: ReadonlyArray<RankedUserRowData> = weeklyEntries.slice(PODIUM_SIZE).map((entry) => {
-        const isMe = entry.userGlobalId === mine?.userGlobalId
-        const username = entry.username ?? t("anonymous")
-        const verdict: RankedUserVerdict | undefined = entry.rankDelta === null || entry.rankDelta === 0
-            ? undefined
-            : entry.rankDelta > 0 ? "success" : "danger"
-        return {
-            id: entry.userGlobalId,
-            rank: entry.rank,
-            rankLabel: t("league.rankLine", { rank: entry.rank, percent: percent ?? 100 }),
-            name: isMe ? `${username} · ${t("you")}` : username,
-            avatar: entry.avatar,
-            points: t("points", { count: entry.weekPoints }),
-            rankDelta: entry.rankDelta,
-            movementLabel: entry.rankDelta === null || entry.rankDelta === 0
-                ? t("noMovement")
-                : entry.rankDelta > 0
-                    ? t("up", { count: entry.rankDelta })
-                    : t("down", { count: Math.abs(entry.rankDelta) }),
-            verdict,
-            isMe,
-            // The weekly board is followable too. `myLeague` carries no follow state, so the
-            // control starts at "not following" for everyone and only this session's own toggles
-            // move it - a real gap, recorded rather than papered over with a guess.
-            isFollowing: overrides.get(entry.userGlobalId) ?? false,
-            isPending: pending === entry.userGlobalId,
-            followLabel: t("follow"),
-            followingLabel: t("following"),
-        }
-    })
+    const weeklyRows = buildWeeklyRows(weeklyEntries, mine, percent, overrides, pending, t)
 
     const globalShown = globalData?.entries ?? []
     const viewerInGlobal = globalShown.some((entry) => entry.username !== null && entry.username === me.data?.username)
     const hiddenBetween = globalData ? Math.max(0, globalData.myRank - globalShown.length - 1) : 0
-    const globalRows: ReadonlyArray<RankedUserRowData> = globalShown.slice(PODIUM_SIZE).map((entry) => {
-        const isMe = entry.username !== null && entry.username === me.data?.username
-        const username = entry.username ?? t("anonymous")
-        return {
-            id: entry.userGlobalId,
-            rank: entry.rank,
-            rankLabel: t("top.rankLine", { rank: entry.rank }),
-            name: isMe ? `${username} · ${t("you")}` : username,
-            avatar: entry.avatar,
-            points: t("points", { count: entry.points }),
-            isFollowing: overrides.get(entry.userGlobalId) ?? entry.isFollowing,
-            isPending: pending === entry.userGlobalId,
-            isMe,
-            followLabel: t("follow"),
-            followingLabel: t("following"),
-        }
-    })
+    const globalRows = buildGlobalRows(globalShown, me.data?.username, overrides, pending, t)
 
     const board = scope === "weekly"
-        ? {
-            standing: {
-                rank: mine?.rank,
-                rankLabel: mine && percent !== undefined ? t("league.rankLine", { rank: mine.rank, percent }) : undefined,
-                title: mine && percent !== undefined ? t("league.rankLine", { rank: mine.rank, percent }) : t("league.unplaced"),
-                subtitle: mine && weekly.data
-                    ? `${t("points", { count: mine.weekPoints })} · ${t("resetIn", countdown)}`
-                    : t("league.empty"),
-            },
-            ctaLabel: t("climbCta"),
-            progressAccessibleLabel: t("pageTitle"),
-            podium: weeklyEntries.slice(0, PODIUM_SIZE).map((entry) => ({
-                rank: entry.rank,
-                username: entry.username,
-                avatar: entry.avatar,
-                rankLabel: t("league.rankLine", { rank: entry.rank, percent: percent ?? 100 }),
-                pointsLabel: t("points", { count: entry.weekPoints }),
-                isMe: entry.userGlobalId === mine?.userGlobalId,
-            })),
-            meLabel: t("you"),
-            anonymousLabel: t("anonymous"),
-            rows: weeklyRows,
-            listLabel: t("league.heading"),
-        }
-        : {
-            standing: {
-                rank: globalData?.myRank,
-                rankLabel: globalData ? t("top.rankLine", { rank: globalData.myRank }) : undefined,
-                title: t("top.rankLine", { rank: globalData?.myRank ?? 0 }),
-                subtitle: t("points", { count: globalData?.myPoints ?? 0 }),
-            },
-            ...(globalData && above && globalData.myRank > 1
-                ? {
-                    progress: {
-                        ratio: globalData.myPoints / Math.max(1, above.points),
-                        label: t("pointsToNext", { points: pointsToNext, rank: globalData.myRank - 1 }),
-                    },
-                }
-                : {}),
-            ctaLabel: t("climbCta"),
-            progressAccessibleLabel: t("pageTitle"),
-            podium: globalShown.slice(0, PODIUM_SIZE).map((entry) => ({
-                rank: entry.rank,
-                username: entry.username,
-                avatar: entry.avatar,
-                rankLabel: t("top.rankLine", { rank: entry.rank }),
-                pointsLabel: t("points", { count: entry.points }),
-                isMe: entry.username !== null && entry.username === me.data?.username,
-            })),
-            meLabel: t("you"),
-            anonymousLabel: t("anonymous"),
-            rows: globalRows,
-            ...(globalData && !viewerInGlobal
-                ? {
-                    selfRow: {
-                        id: "self",
-                        rank: globalData.myRank,
-                        rankLabel: t("top.rankLine", { rank: globalData.myRank }),
-                        name: `${me.data?.username ?? t("anonymous")} · ${t("you")}`,
-                        avatar: me.data?.avatar ?? null,
-                        points: t("points", { count: globalData.myPoints }),
-                        isMe: true,
-                    },
-                    ...(hiddenBetween > 0 ? { ellipsisLabel: `⋯ ${t("othersCount", { count: hiddenBetween })}` } : {}),
-                }
-                : {}),
-            listLabel: t("top.heading"),
-        }
+        ? buildWeeklyBoard(weeklyEntries, mine, percent, weekly.data !== undefined, countdown, weeklyRows, t)
+        : buildGlobalBoard({
+            globalData,
+            globalShown,
+            above,
+            pointsToNext,
+            globalRows,
+            viewerInGlobal,
+            hiddenBetween,
+            meUsername: me.data?.username,
+            meAvatar: me.data?.avatar,
+            t,
+        })
 
     const props = {
         title: t("pageTitle"),

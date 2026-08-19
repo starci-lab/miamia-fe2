@@ -11,14 +11,17 @@ export type GameConnection = {
     readonly answer: (index: number) => void; readonly restart: () => void; readonly leave: () => Promise<void>
 }
 
+const classifyErrorKind = (lower: string): GameTransportError["kind"] => {
+    if (lower.includes("membership") || lower.includes("entitlement")) return "membership"
+    if (lower.includes("token") || lower.includes("auth")) return "auth"
+    if (lower.includes("room") && (lower.includes("not") || lower.includes("404"))) return "room-not-found"
+    if (lower.includes("network") || lower.includes("websocket") || lower.includes("connect")) return "network"
+    return "unknown"
+}
+
 const classifyError = (error: unknown): GameTransportError => {
     const message = error instanceof Error ? error.message : String(error)
-    const lower = message.toLowerCase()
-    const kind = lower.includes("membership") || lower.includes("entitlement") ? "membership"
-        : lower.includes("token") || lower.includes("auth") ? "auth"
-            : lower.includes("room") && (lower.includes("not") || lower.includes("404")) ? "room-not-found"
-                : lower.includes("network") || lower.includes("websocket") || lower.includes("connect") ? "network" : "unknown"
-    return { kind, message }
+    return { kind: classifyErrorKind(message.toLowerCase()), message }
 }
 
 const wrapRoom = (room: Room): GameConnection => {
@@ -55,7 +58,7 @@ export class GameClient {
         } finally { await lobby.leave(true) }
     }
 
-    static classifyError = classifyError
+    static readonly classifyError = classifyError
 }
 
 type TeamMatchOptions = { readonly token: string; readonly mode: "TEAM2V2"; readonly character: "MIA" | "MAX" }

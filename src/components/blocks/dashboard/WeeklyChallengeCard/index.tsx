@@ -6,6 +6,14 @@ import { useRouter } from "@/i18n/navigation"
 import { useMutateClaimWeeklyChallengeRewardSwr, useQueryWeeklyChallengeSwr } from "@/hooks"
 import { _WeeklyChallengeCard } from "./component"
 
+/** A fetch error with nothing cached beats still-loading beats no active challenge; ready is what's left. */
+const resolveChallengeState = (hasFailed: boolean, hasData: boolean, isEmpty: boolean): "failed" | "pending" | "empty" | "ready" => {
+    if (hasFailed) return "failed"
+    if (!hasData) return "pending"
+    if (isEmpty) return "empty"
+    return "ready"
+}
+
 const relativeLabel = (locale: string, iso: string) => {
     const formatter = new Intl.RelativeTimeFormat(locale, { numeric: "auto" })
     const minutes = Math.round((new Date(iso).getTime() - Date.now()) / 60_000)
@@ -28,13 +36,7 @@ export const WeeklyChallengeCard = () => {
         const remaining = Math.max(0, new Date(data.weekEndAt).getTime() - Date.now())
         return { days: Math.floor(remaining / 86_400_000), hours: Math.floor((remaining % 86_400_000) / 3_600_000) }
     }, [data])
-    const state = challenge.error !== undefined && data === undefined
-        ? "failed"
-        : data === undefined
-            ? "pending"
-            : data === null
-                ? "empty"
-                : "ready"
+    const state = resolveChallengeState(challenge.error !== undefined && data === undefined, data !== undefined, data === null)
     const act = async () => {
         if (data === null || data === undefined) return
         if (!data.viewerPassed || data.claimed) {

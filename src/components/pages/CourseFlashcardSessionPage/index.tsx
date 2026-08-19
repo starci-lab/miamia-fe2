@@ -13,7 +13,7 @@ import type {
     FlashcardReviewKind,
     FlashcardSessionMode,
 } from "@/modules/api/graphql/queries/query-my-in-progress-flashcard-session"
-import { _CourseFlashcardSessionPage, type CourseFlashcardSessionState } from "./component"
+import { _CourseFlashcardSessionPage as CourseFlashcardSessionPageView, type CourseFlashcardSessionState } from "./component"
 
 /** Route identity required to resume one persisted flashcard session. */
 export type CourseFlashcardSessionPageProps = {
@@ -198,20 +198,18 @@ export const CourseFlashcardSessionPage = ({ displayId, sessionId, mode }: Cours
         || complete.error !== undefined
         || localFailed
     const expired = !pending && session.data === null && persistedResult.data?.status === "in_progress"
-    const state: CourseFlashcardSessionState = transportFailed || course.data === null || currentCard === undefined && session.data !== undefined && session.data !== null
-        ? "failed"
-        : pending
-            ? "pending"
-            : expired || session.data === null
-                ? "expired"
-                : complete.isMutating
-                    ? "completing"
-                    : sync.isMutating || rate.isMutating
-                        ? "syncing"
-                        : "active"
+    const resolveState = (): CourseFlashcardSessionState => {
+        if (transportFailed || course.data === null || (currentCard === undefined && session.data !== undefined && session.data !== null)) return "failed"
+        if (pending) return "pending"
+        if (expired || session.data === null) return "expired"
+        if (complete.isMutating) return "completing"
+        if (sync.isMutating || rate.isMutating) return "syncing"
+        return "active"
+    }
+    const state = resolveState()
 
     return (
-        <_CourseFlashcardSessionPage
+        <CourseFlashcardSessionPageView
             state={state}
             data={{
                 mode,

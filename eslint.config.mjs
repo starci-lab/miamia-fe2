@@ -67,6 +67,18 @@ export default defineConfig([
     tseslint.configs.recommended,
     pluginReact.configs.flat.recommended,
     {
+        /*
+         * eslint-plugin-react reads the React version to decide which rules apply. Left unset it
+         * prints "React version not specified" on every run - a line that costs nothing to silence
+         * honestly and, left in place, teaches readers that warnings from this config are normal.
+         */
+        settings: {
+            react: {
+                version: "detect",
+            },
+        },
+    },
+    {
         plugins: { "react-hooks": pluginReactHooks },
         rules: {
             "react/display-name": "off",

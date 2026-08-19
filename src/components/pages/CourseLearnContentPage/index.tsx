@@ -11,6 +11,7 @@ import { useQueryContentCommentsSwr } from "@/hooks/swr/useQueryContentCommentsS
 import { useMutateSubmitContentCommentSwr } from "@/hooks/swr/useMutateSubmitContentCommentSwr"
 import { ReactionType } from "@/modules/api/graphql/queries/types/reactions"
 import { useLearnMobileView } from "@/components/layouts/LearnShellLayout"
+import type { LearnMobileView } from "@/components/layouts/LearnShellLayout/component"
 import {
     _CourseLearnContentPage,
     type ContentOutlineEntry,
@@ -51,20 +52,79 @@ export interface CourseLearnContentPageProps {
     contentId: string
 }
 
+/** Clamp a heading's `#` count minus one into the three levels the outline rail draws. */
+const clampOutlineDepth = (depth: number): 1 | 2 | 3 => {
+    if (depth <= 1) return 1
+    if (depth === 2) return 2
+    return 3
+}
+
 /** Markdown headings, in order, with the depth the outline indents by. */
 const outlineOf = (body: string): Array<ContentOutlineEntry> => {
     const entries: Array<ContentOutlineEntry> = []
     for (const line of body.split(/\r?\n/)) {
-        const heading = /^(#{2,4})\s+(.*\S)\s*$/.exec(line)
+        const heading = /^(#{2,4})\s(.*)$/.exec(line)
         if (heading === null) continue
-        const depth = heading[1].length - 1
+        const label = heading[2].trim()
+        if (label === "") continue
         entries.push({
             id: `${entries.length + 1}`,
-            label: heading[2],
-            depth: depth <= 1 ? 1 : depth === 2 ? 2 : 3,
+            label,
+            depth: clampOutlineDepth(heading[1].length - 1),
         })
     }
     return entries
+}
+
+/** Which of the four page states the reader is in. */
+const deriveContentState = (
+    isPending: boolean,
+    hasFailed: boolean,
+    isLocked: boolean,
+): CourseLearnContentPageState => {
+    if (isPending) return "pending"
+    if (hasFailed) return "failed"
+    if (isLocked) return "locked"
+    return "ready"
+}
+
+type DiscussionPanelState = "failed" | "pending" | "submitting" | "empty" | "ready"
+
+/** Which of the five discussion states the panel is in. */
+const deriveDiscussionState = (
+    failed: boolean,
+    pending: boolean,
+    submitting: boolean,
+    isEmpty: boolean,
+): DiscussionPanelState => {
+    if (failed) return "failed"
+    if (pending) return "pending"
+    if (submitting) return "submitting"
+    if (isEmpty) return "empty"
+    return "ready"
+}
+
+type ReaderMobileView = Extract<LearnMobileView, "contents" | "lesson" | "outline">
+
+/** Which single mobile panel to show, or undefined for the desktop three-column frame. */
+const deriveMobileView = (isMobile: boolean, view: LearnMobileView): ReaderMobileView | undefined => {
+    if (!isMobile) return undefined
+    if (view === "contents" || view === "outline") return view
+    return "lesson"
+}
+
+/** The notice shown instead of - or under - the article, when locked or failed. */
+const deriveNotice = (
+    isLocked: boolean,
+    hasFailed: boolean,
+    lockedMessage: string,
+    lockedAction: string,
+    failedMessage: string,
+    failedAction: string,
+): { readonly message?: string, readonly actionLabel?: string } => {
+    if (isLocked) return { message: lockedMessage, actionLabel: lockedAction }
+    if (hasFailed) return { message: failedMessage, actionLabel: failedAction }
+    return {}
 }
 
 /**
@@ -100,9 +160,7 @@ export const CourseLearnContentPage = (input: CourseLearnContentPageProps) => {
     const isPending = content.data === undefined && content.error === undefined
     const hasFailed = content.error !== undefined || (content.data === null && !isPending)
     const isLocked = content.data?.isPremium === true
-    const state: CourseLearnContentPageState = isPending
-        ? "pending"
-        : hasFailed ? "failed" : isLocked ? "locked" : "ready"
+    const state = deriveContentState(isPending, hasFailed, isLocked)
 
     const body = content.data?.body
     const outline = useMemo(() => body === undefined ? [] : outlineOf(body), [body])
@@ -129,18 +187,35 @@ export const CourseLearnContentPage = (input: CourseLearnContentPageProps) => {
     })), [comments.data?.comments, locale, t])
     const discussionFailed = discussionError || comments.error !== undefined || comments.data === null
     const discussionPending = comments.data === undefined && comments.error === undefined
-    const discussionState = discussionFailed
-        ? "failed"
-        : discussionPending
-            ? "pending"
-            : submitComment.isMutating
-                ? "submitting"
-                : discussionComments.length === 0
-                    ? "empty"
-                    : "ready"
+    const discussionState = deriveDiscussionState(
+        discussionFailed,
+        discussionPending,
+        submitComment.isMutating,
+        discussionComments.length === 0,
+    )
 
     const openContent = (id: string) => {
         router.push(`/courses/${input.displayId}/learn/content/modules/${input.moduleId}/contents/${id}`)
+    }
+
+    const notice = deriveNotice(
+        isLocked,
+        hasFailed,
+        t("lockedMessage"),
+        t("lockedAction"),
+        t("failedMessage"),
+        t("failedAction"),
+    )
+
+    const goToCourse = () => router.push(`/courses/${input.displayId}`)
+    const refreshContent = () => {
+        void Promise.all([content.mutate(), module.mutate(), reactions.mutate()])
+    }
+    let act: (() => void) | undefined
+    if (isLocked) {
+        act = goToCourse
+    } else if (hasFailed) {
+        act = refreshContent
     }
 
     return (
@@ -162,9 +237,7 @@ export const CourseLearnContentPage = (input: CourseLearnContentPageProps) => {
                     reactionPrompt: t("reactionPrompt"),
                     nextTitle: t("nextTitle"),
                 },
-                mobileView: isMobile
-                    ? view === "contents" || view === "outline" ? view : "lesson"
-                    : undefined,
+                mobileView: deriveMobileView(isMobile, view),
                 title: content.data?.title,
                 faces: [
                     { id: "reading", label: t("pageLabel"), icon: "course" },
@@ -182,8 +255,8 @@ export const CourseLearnContentPage = (input: CourseLearnContentPageProps) => {
                 selectionHint: t("selectionHint"),
                 // A premium content and a failed request are told apart by which sentence they get,
                 // in the same place, with the same one way out.
-                noticeMessage: isLocked ? t("lockedMessage") : hasFailed ? t("failedMessage") : undefined,
-                noticeActionLabel: isLocked ? t("lockedAction") : hasFailed ? t("failedAction") : undefined,
+                noticeMessage: notice.message,
+                noticeActionLabel: notice.actionLabel,
                 outline,
                 nextSteps: [
                     ...challenges.map((challenge) => ({ id: challenge.id, label: challenge.title })),
@@ -244,19 +317,9 @@ export const CourseLearnContentPage = (input: CourseLearnContentPageProps) => {
                     openContent(target.id)
                 },
                 openContent,
-                goCourse: () => router.push(`/courses/${input.displayId}`),
+                goCourse: goToCourse,
                 goModule: () => router.push(`/courses/${input.displayId}/learn/content/modules/${input.moduleId}`),
-                act: isLocked
-                    ? () => router.push(`/courses/${input.displayId}`)
-                    : hasFailed
-                        ? () => {
-                            void Promise.all([
-                                content.mutate(),
-                                module.mutate(),
-                                reactions.mutate(),
-                            ])
-                        }
-                        : undefined,
+                act,
                 selectReading: () => undefined,
                 selectChallenge: () => {
                     const challenge = challenges[0]

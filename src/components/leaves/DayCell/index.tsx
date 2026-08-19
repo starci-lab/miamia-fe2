@@ -35,6 +35,12 @@ const RESTING_CLASSES = skeletonVariants({ animationType: "shimmer" }).base({
     className: "select-none text-transparent",
 })
 
+/** The dot's fill: resting shimmer while loading, else the active/inactive tone. */
+const dotClassName = (isLoading: boolean, active: boolean | undefined): string => {
+    if (isLoading) return `size-6 shrink-0 rounded-full ${RESTING_CLASSES}`
+    return `size-6 shrink-0 rounded-full ${active === true ? "bg-accent/80" : "bg-muted/20"}`
+}
+
 /**
  * Draw one day.
  *
@@ -51,9 +57,7 @@ export const DayCell = ({ props, isLoading = false }: DayCellProps) => (
     >
         <span
             aria-hidden="true"
-            className={isLoading
-                ? `size-6 shrink-0 rounded-full ${RESTING_CLASSES}`
-                : `size-6 shrink-0 rounded-full ${props.active === true ? "bg-accent/80" : "bg-muted/20"}`}
+            className={dotClassName(isLoading, props.active)}
         />
         <span data-part="weekday" className="text-xs text-muted">
             {props.weekday ?? ""}

@@ -9,8 +9,8 @@ import { useQueryMyInProgressMockInterviewSessionSwr } from "@/hooks/swr/useQuer
 import { useMutateGradeMockInterviewSessionSwr } from "@/hooks/swr/useMutateGradeMockInterviewSessionSwr"
 import { useMutateSyncMockInterviewSessionTurnsSwr } from "@/hooks/swr/useMutateSyncMockInterviewSessionTurnsSwr"
 import { useMockInterviewSocketIo } from "@/hooks/socketio/useMockInterviewSocketIo"
-import type { MockInterviewTurn } from "@/modules/api/graphql/queries/query-my-in-progress-mock-interview-session"
-import { _CourseMockInterviewSessionPage, type CourseMockInterviewSessionState } from "./component"
+import type { InProgressMockInterviewSession, MockInterviewTurn } from "@/modules/api/graphql/queries/query-my-in-progress-mock-interview-session"
+import { _CourseMockInterviewSessionPage as CourseMockInterviewSessionPageView, type CourseMockInterviewSessionState } from "./component"
 
 /** Route identity required to restore one durable interview room. */
 export type CourseMockInterviewSessionPageProps = {
@@ -68,6 +68,82 @@ const COPY = {
         counter: (current: number, total: number) => `${current}/${total}`,
     },
 } as const
+
+/** Decides the top-level lifecycle state driving which surface the page renders. */
+const resolveSessionState = (
+    loadFailed: boolean,
+    isConnecting: boolean,
+    isExpired: boolean,
+    isSyncing: boolean,
+): CourseMockInterviewSessionState => {
+    if (loadFailed) return "failed"
+    if (isConnecting) return "connecting"
+    if (isExpired) return "expired"
+    if (isSyncing) return "syncing"
+    return "live"
+}
+
+/** The subset of {@link COPY} needed to label the current lifecycle state. */
+type StateLabelCopy = {
+    readonly grading: string
+    readonly syncing: string
+    readonly reconnecting: string
+    readonly connecting: string
+    readonly expired: string
+    readonly failed: string
+}
+
+/** Input to {@link resolveStateLabel}. */
+type ResolveStateLabelParams = {
+    readonly state: CourseMockInterviewSessionState
+    readonly isGrading: boolean
+    readonly isSyncing: boolean
+    readonly isReconnecting: boolean
+    readonly promptTitle?: string
+    readonly copy: StateLabelCopy
+}
+
+/** Picks the one line of status copy that matches every overlapping in-flight condition. */
+const resolveStateLabel = (params: ResolveStateLabelParams): string => {
+    const { state, isGrading, isSyncing, isReconnecting, promptTitle, copy } = params
+    if (isGrading) return copy.grading
+    if (isSyncing) return copy.syncing
+    if (isReconnecting) return copy.reconnecting
+    if (state === "connecting") return copy.connecting
+    if (state === "expired") return copy.expired
+    if (state === "failed") return copy.failed
+    return promptTitle ?? copy.connecting
+}
+
+/** Outcome of one completed (or interrupted) socket turn, classified before it is acted on. */
+type AskOutcome =
+    | { readonly kind: "aborted" }
+    | { readonly kind: "expired" }
+    | { readonly kind: "error"; readonly error: string }
+    | { readonly kind: "completed"; readonly content: string }
+    | { readonly kind: "empty" }
+
+/** Classifies one `onDone` callback so the caller can act without re-deriving the branches. */
+const classifyAskOutcome = (error: string | undefined, completed: string): AskOutcome => {
+    if (error === "ABORTED") return { kind: "aborted" }
+    if (error === "SESSION_EXPIRED") return { kind: "expired" }
+    if (error !== undefined) return { kind: "error", error }
+    if (completed.length > 0) return { kind: "completed", content: completed }
+    return { kind: "empty" }
+}
+
+/** The immediate interviewer turn for a bank-sourced question, or null when one must be streamed. */
+const resolveBankTurn = (
+    session: InProgressMockInterviewSession,
+    isDesign: boolean,
+    nextIndex: number,
+    nextPhase: (typeof PHASES)[number],
+): MockInterviewTurn | null => {
+    if (isDesign || session.source !== "interview-bank") return null
+    const seed = session.seedQuestions[nextIndex]
+    if (seed === undefined) return null
+    return { role: "interviewer", phase: nextPhase, content: seed.title, questionIndex: nextIndex }
+}
 
 /** Rehydrate, persist and grade one durable mock-interview session. */
 export const CourseMockInterviewSessionPage = ({ displayId, sessionId }: CourseMockInterviewSessionPageProps) => {
@@ -132,9 +208,9 @@ export const CourseMockInterviewSessionPage = ({ displayId, sessionId }: CourseM
         if (session === null || courseId === undefined) return
         const seed = isDesign ? undefined : session.seedQuestions[nextIndex]
         const nextPhase = isDesign ? PHASES[Math.min(nextIndex, PHASES.length - 1)] : phase
-        if (!isDesign && session.source === "interview-bank") {
-            if (seed === undefined) return
-            setTurns([...history, { role: "interviewer", phase: nextPhase, content: seed.title, questionIndex: nextIndex }])
+        const bankTurn = resolveBankTurn(session, isDesign, nextIndex, nextPhase)
+        if (bankTurn !== null) {
+            setTurns([...history, bankTurn])
             return
         }
         streamingRef.current = ""
@@ -159,20 +235,20 @@ export const CourseMockInterviewSessionPage = ({ displayId, sessionId }: CourseM
             onDone: (error) => {
                 const completed = streamingRef.current.trim()
                 setStreamingText(undefined)
-                if (error === "ABORTED") return
-                if (error === "SESSION_EXPIRED") {
+                const outcome = classifyAskOutcome(error, completed)
+                if (outcome.kind === "expired") {
                     setNow(deadlineMs)
                     return
                 }
-                if (error !== undefined) {
-                    setRuntimeError(error)
+                if (outcome.kind === "error") {
+                    setRuntimeError(outcome.error)
                     return
                 }
-                if (completed.length > 0) {
+                if (outcome.kind === "completed") {
                     setTurns((previous) => [...previous, {
                         role: "interviewer",
                         phase: nextPhase,
-                        content: completed,
+                        content: outcome.content,
                         questionIndex: isDesign ? undefined : nextIndex,
                     }])
                 }
@@ -262,32 +338,24 @@ export const CourseMockInterviewSessionPage = ({ displayId, sessionId }: CourseM
     const loadFailed = course.error !== undefined || inProgress.error !== undefined || attempt.error !== undefined || course.data === null
     const pending = !loadFailed && (course.data === undefined || inProgress.data === undefined || attempt.data === undefined)
     const missing = !pending && session === null && attempt.data === null
-    const state: CourseMockInterviewSessionState = loadFailed
-        ? "failed"
-        : pending || (session !== null && hydratedSessionId !== sessionId)
-            ? "connecting"
-            : expired || missing
-                ? "expired"
-                : sync.isMutating || grade.isMutating
-                    ? "syncing"
-                    : "live"
-    const stateLabel = grade.isMutating
-        ? copy.grading
-        : sync.isMutating
-            ? copy.syncing
-            : socket.state === "reconnecting" || socket.state === "failed"
-                ? copy.reconnecting
-                : state === "connecting"
-                    ? copy.connecting
-                    : state === "expired"
-                        ? copy.expired
-                        : state === "failed"
-                            ? copy.failed
-                            : session?.promptTitle ?? copy.connecting
+    const state = resolveSessionState(
+        loadFailed,
+        pending || (session !== null && hydratedSessionId !== sessionId),
+        expired || missing,
+        sync.isMutating || grade.isMutating,
+    )
+    const stateLabel = resolveStateLabel({
+        state,
+        isGrading: grade.isMutating,
+        isSyncing: sync.isMutating,
+        isReconnecting: socket.state === "reconnecting" || socket.state === "failed",
+        promptTitle: session?.promptTitle,
+        copy,
+    })
     const activeSeed = isDesign ? undefined : session?.seedQuestions[questionIndex]
 
     return (
-        <_CourseMockInterviewSessionPage
+        <CourseMockInterviewSessionPageView
             state={state}
             props={{
                 title: copy.title,

@@ -10,6 +10,17 @@ import { _MembershipCheckoutPanel } from "./component"
 /** Defines dismissal behavior for the connected checkout panel. */
 export type MembershipCheckoutPanelConnectedProps = { readonly onDismiss: () => void; readonly returnUrl?: string; readonly cancelUrl?: string }
 
+/** Which tree the checkout panel draws for the mutation, the failure flag and the pricing read. */
+const resolveMembershipCheckoutState = (
+    failed: boolean,
+    isMutating: boolean,
+    isCatalogLoading: boolean,
+) => {
+    if (failed) return "failed"
+    if (isMutating) return "submitting"
+    return isCatalogLoading ? "loading" : "idle"
+}
+
 /** Connects membership purchase state to the pure checkout panel. */
 export const MembershipCheckoutPanel = ({ onDismiss, returnUrl, cancelUrl }: MembershipCheckoutPanelConnectedProps) => {
     const t = useTranslations("miamia.membership")
@@ -29,7 +40,7 @@ export const MembershipCheckoutPanel = ({ onDismiss, returnUrl, cancelUrl }: Mem
         }
     }
     const amount = catalog.data?.membership.monthlyPriceVnd
-    const state = failed ? "failed" : checkout.isMutating ? "submitting" : catalog.isLoading ? "loading" : "idle"
+    const state = resolveMembershipCheckoutState(failed, checkout.isMutating, catalog.isLoading)
     return <_MembershipCheckoutPanel state={state} props={{ title: t("title"), body: t("body"), price: amount === undefined ? "" : t("price", { price: new Intl.NumberFormat("vi-VN").format(amount) }), benefits: [t("benefitLibrary"), t("benefitResult"), t("benefitFuture")], checkoutLabel: t("checkout"), cancelLabel: t("cancel"), errorMessage: t("failed") }} on={{ checkout: run, retry: run, dismiss: onDismiss }} />
 }
 

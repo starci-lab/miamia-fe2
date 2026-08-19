@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { GraphQLResponse, LookupQueryParams } from "../types"
 import type { HeadhuntingCompany } from "./query-headhunting-companies"
@@ -12,7 +12,9 @@ interface QueryHeadhuntingCompanyResponse {
     readonly headhuntingCompany: GraphQLResponse<HeadhuntingCompany>
 }
 
-const query1 = gql`
+type QueryHeadhuntingCompanyVariables = { readonly request: QueryHeadhuntingCompanyRequest }
+
+const query1: TypedDocumentNode<QueryHeadhuntingCompanyResponse, QueryHeadhuntingCompanyVariables> = gql`
     query HeadhuntingCompany($request: HeadhuntingCompanyRequest!) {
         headhuntingCompany(request: $request) {
             success
@@ -38,7 +40,7 @@ const query1 = gql`
 
 export enum QueryHeadhuntingCompany { Query1 = "query1" }
 
-const queryHeadhuntingCompanyMap: Record<QueryHeadhuntingCompany, DocumentNode> = {
+const queryHeadhuntingCompanyMap: Record<QueryHeadhuntingCompany, TypedDocumentNode<QueryHeadhuntingCompanyResponse, QueryHeadhuntingCompanyVariables>> = {
     [QueryHeadhuntingCompany.Query1]: query1,
 }
 
@@ -51,7 +53,7 @@ export const queryHeadhuntingCompany = async ({
     debug,
 }: LookupQueryParams<QueryHeadhuntingCompany, QueryHeadhuntingCompanyRequest>) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryHeadhuntingCompanyResponse>({
+    return apollo.query({
         query: queryHeadhuntingCompanyMap[query],
         variables: { request },
     })

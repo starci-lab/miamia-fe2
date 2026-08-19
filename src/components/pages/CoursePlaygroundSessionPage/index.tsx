@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useTranslations } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
 import { usePlaygroundSession } from "@/components/layouts/PlaygroundSessionLayout"
-import { _CoursePlaygroundSessionPage, type CoursePlaygroundSessionState } from "./component"
+import { _CoursePlaygroundSessionPage as CoursePlaygroundSessionPageView, type CoursePlaygroundSessionState } from "./component"
 
 /** Course and playground route identities consumed by the live session. */
 export type CoursePlaygroundSessionPageProps = { readonly displayId: string; readonly slug: string }
@@ -19,21 +19,25 @@ export const CoursePlaygroundSessionPage = ({ displayId, slug }: CoursePlaygroun
     const currentStepIndex = Math.min(session.passedStepIndexes.length, Math.max(0, steps.length - 1))
     const selectedStepIndex = selectedOverride ?? currentStepIndex
     const completed = steps.length > 0 && session.passedStepIndexes.includes(steps.length - 1)
-    const state: CoursePlaygroundSessionState = session.failed || session.startFailed || session.session === null || session.socketState === "failed"
-        ? "failed"
-        : completed ? "completed"
-            : session.socketState === "reconnecting" ? "reconnecting"
-                : session.socketState !== "connected" || !session.agentConnected ? "connecting" : "live"
-    const connectionText = state === "live"
-        ? t("session.agentConnected")
-        : state === "reconnecting"
-            ? t("session.reconnecting")
-            : state === "completed"
-                ? t("session.completed")
-                : t("session.waiting")
+    const resolveState = (): CoursePlaygroundSessionState => {
+        if (session.failed || session.startFailed || session.session === null || session.socketState === "failed") return "failed"
+        if (completed) return "completed"
+        if (session.socketState === "reconnecting") return "reconnecting"
+        if (session.socketState !== "connected" || !session.agentConnected) return "connecting"
+        return "live"
+    }
+    const state = resolveState()
+    const connectionTextByState: Record<CoursePlaygroundSessionState, string> = {
+        live: t("session.agentConnected"),
+        reconnecting: t("session.reconnecting"),
+        completed: t("session.completed"),
+        failed: t("session.waiting"),
+        connecting: t("session.waiting"),
+    }
+    const connectionText = connectionTextByState[state]
 
     return (
-        <_CoursePlaygroundSessionPage
+        <CoursePlaygroundSessionPageView
             state={state}
             props={{
                 title: session.playground?.title ?? t("title"),

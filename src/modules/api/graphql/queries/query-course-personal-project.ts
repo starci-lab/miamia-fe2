@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client"
+import { gql, type OperationVariables, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { queryCourse } from "./query-course"
 import type { GraphQLHeaders } from "../types"
@@ -12,7 +12,7 @@ import type {
     SubmitPersonalTaskAttemptResponse,
 } from "./types/course-personal-project"
 
-const coursePersonalProjectQuery = gql`
+const coursePersonalProjectQuery: TypedDocumentNode<QueryCoursePersonalProjectResponse, OperationVariables> = gql`
     query CoursePersonalProject($request: MyCourseOutlineRequest!) {
         myCourseOutline(request: $request) {
             success
@@ -33,7 +33,7 @@ const coursePersonalProjectQuery = gql`
     }
 `
 
-const personalTaskAttemptsQuery = gql`
+const personalTaskAttemptsQuery: TypedDocumentNode<QueryPersonalTaskAttemptsResponse, OperationVariables> = gql`
     query PersonalTaskAttempts($request: UserPersonalTaskAttemptsRequest!) {
         userPersonalTaskAttempts(request: $request) {
             success
@@ -56,7 +56,7 @@ const personalTaskAttemptsQuery = gql`
     }
 `
 
-const personalTaskAttemptFeedbacksQuery = gql`
+const personalTaskAttemptFeedbacksQuery: TypedDocumentNode<QueryPersonalTaskAttemptFeedbacksResponse, OperationVariables> = gql`
     query PersonalTaskAttemptFeedbacks($request: UserPersonalTaskAttemptFeedbacksRequest!) {
         userPersonalTaskAttemptFeedbacks(request: $request) {
             success
@@ -70,7 +70,7 @@ const personalTaskAttemptFeedbacksQuery = gql`
     }
 `
 
-const submitPersonalTaskAttemptMutation = gql`
+const submitPersonalTaskAttemptMutation: TypedDocumentNode<SubmitPersonalTaskAttemptResponse, OperationVariables> = gql`
     mutation SubmitPersonalTaskAttempt($request: ReviewPersonalProjectTaskRequest!) {
         reviewPersonalProjectTask(request: $request) {
             success
@@ -97,7 +97,7 @@ export const queryCoursePersonalProject = async (
     const courseId = course.data?.course?.data?.id
     if (courseId === undefined) return null
     const apollo = createApolloClient({ withAuth: true, ...options })
-    const result = await apollo.query<QueryCoursePersonalProjectResponse>({
+    const result = await apollo.query({
         query: coursePersonalProjectQuery,
         variables: { request: { courseId } },
     })
@@ -110,7 +110,7 @@ export const queryPersonalTaskAttempts = async (
     options: PersonalProjectTransportOptions = {},
 ) => {
     const apollo = createApolloClient({ withAuth: true, ...options })
-    return apollo.query<QueryPersonalTaskAttemptsResponse>({
+    return apollo.query({
         query: personalTaskAttemptsQuery,
         variables: { request },
     })
@@ -122,7 +122,7 @@ export const queryPersonalTaskAttemptFeedbacks = async (
     options: PersonalProjectTransportOptions = {},
 ) => {
     const apollo = createApolloClient({ withAuth: true, ...options })
-    return apollo.query<QueryPersonalTaskAttemptFeedbacksResponse>({
+    return apollo.query({
         query: personalTaskAttemptFeedbacksQuery,
         variables: { request },
     })
@@ -134,7 +134,7 @@ export const mutateSubmitPersonalTaskAttempt = async (
     options: PersonalProjectTransportOptions = {},
 ) => {
     const apollo = createApolloClient({ withAuth: true, ...options })
-    return apollo.mutate<SubmitPersonalTaskAttemptResponse>({
+    return apollo.mutate({
         mutation: submitPersonalTaskAttemptMutation,
         variables: { request },
     })

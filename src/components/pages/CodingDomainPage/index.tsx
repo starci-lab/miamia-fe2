@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
 import { useQueryCodingProblemsSwr } from "@/hooks/swr/useQueryCodingProblemsSwr"
 import { useQueryMyCodingProgressSwr } from "@/hooks/swr/useQueryMyCodingProgressSwr"
-import { _CodingDomainPage } from "./component"
+import { _CodingDomainPage as CodingDomainPageView } from "./component"
 
 /** Props for {@link CodingDomainPage}. */
 export interface CodingDomainPageProps {
@@ -50,16 +50,16 @@ export const CodingDomainPage = ({ domain }: CodingDomainPageProps) => {
     const solvedHere = rows.filter((row) => row.isSolved).length
     const name = t(`domains.${domain}`)
 
-    const state = problems.data === undefined && !failed
-        ? "pending" as const
-        : rows.length === 0
-            ? "empty" as const
-            : solvedHere === rows.length
-                ? "all-solved" as const
-                : "ready" as const
+    const resolveState = (): "pending" | "empty" | "all-solved" | "ready" => {
+        if (problems.data === undefined && !failed) return "pending"
+        if (rows.length === 0) return "empty"
+        if (solvedHere === rows.length) return "all-solved"
+        return "ready"
+    }
+    const state = resolveState()
 
     return (
-        <_CodingDomainPage
+        <CodingDomainPageView
             props={{
                 labels: {
                     navHome: t("navHome"),

@@ -15,6 +15,19 @@ import { QUERY_MY_CART_SWR_KEY } from "@/hooks/swr/useQueryMyCartSwr"
 import { _CartPage, type CartPageState } from "./component"
 import { type CartLineData } from "@/components/blocks/commerce/CartLine/component"
 
+/** The cart tree the viewer is shown, resolved from the two independent reads that feed it. */
+const resolveCartPageState = (
+    isSignedOut: boolean,
+    isCartLoading: boolean,
+    hasCartFailed: boolean,
+    lineCount: number,
+): CartPageState => {
+    if (isSignedOut) return "failed"
+    if (isCartLoading) return "pending"
+    if (hasCartFailed) return "failed"
+    return lineCount === 0 ? "empty" : "ready"
+}
+
 /**
  * The cart, resolved for the asking viewer.
  *
@@ -89,14 +102,12 @@ export const CartPage = () => {
 
     const instalment = preview.data?.installmentOptions?.[0]
 
-    const state: CartPageState =
-        isSignedOut
-            ? "failed"
-            : cart.isLoading
-                ? "pending"
-                : cart.error !== undefined
-                    ? "failed"
-                    : lines.length === 0 ? "empty" : "ready"
+    const state: CartPageState = resolveCartPageState(
+        isSignedOut,
+        cart.isLoading,
+        cart.error !== undefined,
+        lines.length,
+    )
 
     return (
         <_CartPage

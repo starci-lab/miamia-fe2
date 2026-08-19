@@ -6,7 +6,7 @@ import { useQueryCourseSwr } from "@/hooks/swr/useQueryCourseSwr"
 import { useQueryHeadhuntingCompanySwr } from "@/hooks/swr/useQueryHeadhuntingCompanySwr"
 import { useQueryConsultantsSwr } from "@/hooks/swr/useQueryConsultantsSwr"
 import type { Consultant } from "@/modules/api/graphql/queries/query-consultants"
-import { _CourseHeadhuntingCompanyPage } from "./component"
+import { _CourseHeadhuntingCompanyPage as CourseHeadhuntingCompanyPageView } from "./component"
 
 interface CourseHeadhuntingCompanyPageProps {
     readonly displayId: string
@@ -42,6 +42,19 @@ const openExternal = (href: string) => {
     else window.location.assign(href)
 }
 
+type CourseHeadhuntingCompanyPageState = "failed" | "not-found" | "pending" | "ready"
+
+const resolveCompanyPageState = (
+    failed: boolean,
+    company: unknown,
+    consultants: unknown,
+): CourseHeadhuntingCompanyPageState => {
+    if (failed) return "failed"
+    if (company === null) return "not-found"
+    if (company === undefined || consultants === undefined) return "pending"
+    return "ready"
+}
+
 /** Connected company detail; contact is proven and no company-level application is exposed. */
 export const CourseHeadhuntingCompanyPage = ({ displayId, companyId }: CourseHeadhuntingCompanyPageProps) => {
     const locale = useLocale() === "vi" ? "vi" : "en"
@@ -58,14 +71,14 @@ export const CourseHeadhuntingCompanyPage = ({ displayId, companyId }: CourseHea
         return contact === undefined ? [] : [[consultant.id, contact] as const]
     }))
     const failed = course.error !== undefined || company.error !== undefined || consultants.error !== undefined || course.data === null
-    const state = failed ? "failed" : company.data === null ? "not-found" : company.data === undefined || consultants.data === undefined ? "pending" : "ready"
+    const state = resolveCompanyPageState(failed, company.data, consultants.data)
     const actions = Object.fromEntries((consultants.data?.data ?? []).flatMap((consultant) => {
         const contact = contactById.get(consultant.id)
         return contact === undefined ? [] : [[`contact:${consultant.id}`, () => openExternal(contact)] as const]
     }))
 
     return (
-        <_CourseHeadhuntingCompanyPage
+        <CourseHeadhuntingCompanyPageView
             state={state}
             props={{
                 title: company.data?.title ?? copy.fallback,

@@ -93,9 +93,11 @@ export const _CourseMobileEnrollBar = (input: CourseMobileEnrollBarProps) => {
     )
 }
 
+const CourseMobileEnrollBarView = _CourseMobileEnrollBar
+
 /** The bar, branded for the slot that holds it. See the rail for why this is a projection. */
 export const CourseMobileEnrollBar = (input: CourseMobileEnrollBarProps) =>
-    defineContractProjection("course-mobile-action-bar", () => <_CourseMobileEnrollBar {...input} />)
+    defineContractProjection("course-mobile-action-bar", () => <CourseMobileEnrollBarView {...input} />)
 
 /** Source-level ownership marker. */
 export const meta = { world: "pure", domain: "courses" } as const

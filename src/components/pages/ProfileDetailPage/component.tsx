@@ -29,10 +29,15 @@ export const _ProfileCodingProblemPage = ({ state, detail, on }: ProfileCodingPr
         statement: defineLeafComponent("text", {}, () => <Text props={{ content: state === "error" ? "This proof couldn't be loaded." : problem?.statement ?? "No public coding proof was found." }} isLoading={loading} />),
         ...(problem?.tags.length ? { tags: defineContractComponent("profile-topic-chip-run", { topic: problem.tags.map((tag) => defineLeafComponent("badge", {}, () => <Badge props={{ content: tag }} />)) }) } : {}),
     })} />
-    const evidenceRows = loading ? Array.from({ length: 2 }, (_, index) => ({ id: String(index), title: "", subtitle: "", fact: "" })) : submission ? [
-        { id: "verdict", title: submission.languages.join(" · "), subtitle: submission.firstSolvedAt ?? undefined, fact: submission.verdict },
-        { id: "tests", title: "Test cases", subtitle: "Accepted submission", fact: `${submission.passedCount}/${submission.totalCount}` },
-    ] : [{ id: "empty", title: "No accepted submission", subtitle: "This learner has not published solved evidence for this problem.", fact: undefined }]
+    const resolveEvidenceRows = () => {
+        if (loading) return Array.from({ length: 2 }, (_, index) => ({ id: String(index), title: "", subtitle: "", fact: "" }))
+        if (submission) return [
+            { id: "verdict", title: submission.languages.join(" · "), subtitle: submission.firstSolvedAt ?? undefined, fact: submission.verdict },
+            { id: "tests", title: "Test cases", subtitle: "Accepted submission", fact: `${submission.passedCount}/${submission.totalCount}` },
+        ]
+        return [{ id: "empty", title: "No accepted submission", subtitle: "This learner has not published solved evidence for this problem.", fact: undefined }]
+    }
+    const evidenceRows = resolveEvidenceRows()
     const evidence = <SurfaceCard props={{ label: "Submission" }} contract="profile-evidence-list" render={defineContractComponent("profile-evidence-list", {
         evidence: evidenceRows.map((row) => defineCompositeComponent("evidence-row", {}, () => <EvidenceRow props={{ title: row.title, subtitle: row.subtitle, fact: row.fact, factTone: row.id === "verdict" ? "success" : "neutral" }} isLoading={loading} />)),
     })} />

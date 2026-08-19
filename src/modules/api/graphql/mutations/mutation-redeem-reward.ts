@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type OperationVariables, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type MutationParams } from "./types/params"
 import {
@@ -6,7 +6,7 @@ import {
     type RedeemRewardRequest,
 } from "./types/redeem-reward"
 
-const mutation1 = gql`
+const mutation1: TypedDocumentNode<MutationRedeemRewardResponse, OperationVariables> = gql`
     mutation RedeemReward($request: RedeemRewardRequest!) {
         redeemReward(request: $request) {
             success
@@ -26,7 +26,7 @@ const mutation1 = gql`
 export enum MutationRedeemReward { Mutation1 = "mutation1" }
 
 /** Every supported reward-redemption document keyed by its public variant. */
-export const mutationRedeemRewardMap: Record<MutationRedeemReward, DocumentNode> = {
+export const mutationRedeemRewardMap: Record<MutationRedeemReward, TypedDocumentNode<MutationRedeemRewardResponse, OperationVariables>> = {
     [MutationRedeemReward.Mutation1]: mutation1,
 }
 
@@ -39,7 +39,7 @@ export const mutationRedeemReward = async ({
     debug,
 }: MutationParams<MutationRedeemReward, RedeemRewardRequest>) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.mutate<MutationRedeemRewardResponse>({
+    return apollo.mutate({
         mutation: mutationRedeemRewardMap[mutation],
         variables: { request },
     })

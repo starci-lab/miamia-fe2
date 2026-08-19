@@ -1,7 +1,11 @@
 import type { GraphQLResponse } from "../../types"
 
 /** Identifies the pricing rule applied to a recommended course. */
-export type DiscountReason = "none" | "new_learner" | "returning_learner" | "loyal_learner" | string
+// The trailing `string & {}` keeps the named reasons as editor-visible literals: a bare trailing
+// `string` collapses the whole union to `string` and silently drops them, which is what S6571 flags.
+// `string & {}` is not a real type change - the server can send any string - it only stops the
+// literal members from being absorbed away.
+export type DiscountReason = "none" | "new_learner" | "returning_learner" | "loyal_learner" | (string & {})
 /** Describes one personalized course recommendation. */
 export type RecommendedCourse = { readonly displayId: string; readonly title: string; readonly description: string | null; readonly thumbnailUrl: string | null; readonly originalPriceVnd: number; readonly discountedPriceVnd: number; readonly discountPercent: number; readonly discountReason: DiscountReason; readonly enrolledCount: number }
 /** Models the recommended-courses GraphQL response. */

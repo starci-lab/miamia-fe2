@@ -63,6 +63,47 @@ export type ContinueLearningNotice = ContinueLearningFrame & {
     readonly actionLabel: string
 }
 
+/**
+ * One resume card, resting or loaded.
+ *
+ * Pulled out to module scope so the grid's `.map` callback stays flat - nesting this closure
+ * inside both `_ContinueLearning` and its `run` helper pushed the press handler five closures
+ * deep, which is exactly the depth the rule below draws the line at.
+ */
+const renderResumeCard = (
+    item: ResumeItem | undefined,
+    resumeLabel: string | undefined,
+    isLoading: boolean,
+    onResume: ((id: string) => void) | undefined,
+) => defineContractProjection("resume-item-card", () => (
+    // THE CARD'S GROUND IS THE BRANCH'S, NOT THE ENTRY'S. The item is one surface inside a
+    // frameless section, so the surface branch draws it here and the entry keeps only the way
+    // its three lines stand together.
+    <SurfaceCard contract="resume-item-card" render={defineContractComponent("resume-item-card", {
+        kind: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+            <Text
+                props={{ content: item?.kindLabel, size: "sm", tone: "muted" }}
+                isLoading={isLoading}
+            />
+        )),
+        title: defineLeafComponent("text", { size: "md", weight: "medium" }, () => (
+            <Text
+                props={{ content: item?.title, size: "md", weight: "medium" }}
+                isLoading={isLoading}
+            />
+        )),
+        // A resting card has no destination yet, so it has no dead way out.
+        ...(item === undefined || resumeLabel === undefined ? {} : {
+            resume: defineLeafComponent("see-more-link", {}, () => (
+                <SeeMoreLink
+                    props={{ label: resumeLabel }}
+                    on={{ press: () => onResume?.(item.id) }}
+                />
+            )),
+        }),
+    })} />
+))
+
 /** Props for {@link _ContinueLearning}, discriminated by the situation. */
 export type ContinueLearningProps =
     | { readonly state: "pending"; readonly props: ContinueLearningFrame }
@@ -125,34 +166,7 @@ export const _ContinueLearning = (input: ContinueLearningInput) => {
         resumeLabel: string | undefined,
         isLoading: boolean,
     ) => defineContractComponent("resume-card-grid", {
-        // THE CARD'S GROUND IS THE BRANCH'S, NOT THE ENTRY'S. The item is one surface inside a
-        // frameless section, so the surface branch draws it here and the entry keeps only the way
-        // its three lines stand together.
-        card: items.map((item) => defineContractProjection("resume-item-card", () => (
-            <SurfaceCard contract="resume-item-card" render={defineContractComponent("resume-item-card", {
-                kind: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
-                    <Text
-                        props={{ content: item?.kindLabel, size: "sm", tone: "muted" }}
-                        isLoading={isLoading}
-                    />
-                )),
-                title: defineLeafComponent("text", { size: "md", weight: "medium" }, () => (
-                    <Text
-                        props={{ content: item?.title, size: "md", weight: "medium" }}
-                        isLoading={isLoading}
-                    />
-                )),
-                // A resting card has no destination yet, so it has no dead way out.
-                ...(item === undefined || resumeLabel === undefined ? {} : {
-                    resume: defineLeafComponent("see-more-link", {}, () => (
-                        <SeeMoreLink
-                            props={{ label: resumeLabel }}
-                            on={{ press: () => input.on?.resume?.(item.id) }}
-                        />
-                    )),
-                }),
-            })} />
-        ))),
+        card: items.map((item) => renderResumeCard(item, resumeLabel, isLoading, input.on?.resume)),
     })
 
     if (input.state === "pending") {

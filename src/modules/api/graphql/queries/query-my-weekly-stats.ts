@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type QueryParams } from "../types"
 import { type QueryMyWeeklyStatsResponse } from "./types/my-weekly-stats"
@@ -11,7 +11,7 @@ import { type QueryMyWeeklyStatsResponse } from "./types/my-weekly-stats"
  * which day an activity belongs to, and two clients in two time zones then draw the same
  * strip. Required-auth, so the client always carries the token.
  */
-const query1 = gql`
+const query1: TypedDocumentNode<QueryMyWeeklyStatsResponse> = gql`
     query MyWeeklyStats {
         myWeeklyStats {
             success
@@ -40,7 +40,7 @@ export enum QueryMyWeeklyStats {
 }
 
 /** Every document this query can send, keyed by variant. */
-export const queryMyWeeklyStatsMap: Record<QueryMyWeeklyStats, DocumentNode> = {
+export const queryMyWeeklyStatsMap: Record<QueryMyWeeklyStats, TypedDocumentNode<QueryMyWeeklyStatsResponse>> = {
     [QueryMyWeeklyStats.Query1]: query1,
 }
 
@@ -52,7 +52,7 @@ export const queryMyWeeklyStats = async ({
     debug,
 }: QueryParams<QueryMyWeeklyStats> = {}) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryMyWeeklyStatsResponse>({
+    return apollo.query({
         query: queryMyWeeklyStatsMap[query],
     })
 }

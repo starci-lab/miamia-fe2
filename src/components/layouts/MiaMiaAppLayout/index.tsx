@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl"
 import { usePathname, useRouter } from "@/i18n/navigation"
 import { ComingSoonOverlay } from "@/components/overlays/app/ComingSoonOverlay"
 import { useSessionRefresh } from "@/hooks/auth/useSessionRefresh"
-import { _MiaMiaAppLayout, type MiaMiaDestination, type MiaMiaNavItem } from "./component"
+import { _MiaMiaAppLayout as MiaMiaAppLayoutView, type MiaMiaDestination, type MiaMiaNavItem } from "./component"
 
 const MOBILE_ITEMS: ReadonlyArray<{ readonly id: MiaMiaDestination; readonly icon: MiaMiaNavItem["icon"] }> = [
     { id: "home", icon: "home" },
@@ -26,13 +26,12 @@ export const MiaMiaAppLayout = ({ surface }: MiaMiaAppLayoutProps) => {
     const pathname = usePathname()
     const router = useRouter()
     const [coming, setComing] = useState<MiaMiaDestination | undefined>()
-    const isCurrent = (id: MiaMiaDestination) => id === "profile"
-        ? pathname.includes("/profile")
-        : id === "exam"
-            ? pathname.includes("/exam")
-            : id === "study"
-                ? pathname.endsWith("/study") || pathname.includes("/study/")
-                : id === "game" && (pathname.endsWith("/game") || pathname.includes("/game/"))
+    const isCurrent = (id: MiaMiaDestination) => {
+        if (id === "profile") return pathname.includes("/profile")
+        if (id === "exam") return pathname.includes("/exam")
+        if (id === "study") return pathname.endsWith("/study") || pathname.includes("/study/")
+        return id === "game" && (pathname.endsWith("/game") || pathname.includes("/game/"))
+    }
     const mobileItems = useMemo(() => MOBILE_ITEMS.map((item) => ({ ...item, label: t(item.id), isCurrent: isCurrent(item.id) })), [pathname, t])
     const spineItems = useMemo(() => SPINE_ITEMS.map((item) => ({ ...item, label: t(item.id), isCurrent: isCurrent(item.id) })), [pathname, t])
     const open = (id: string) => {
@@ -44,7 +43,7 @@ export const MiaMiaAppLayout = ({ surface }: MiaMiaAppLayoutProps) => {
     }
     return (
         <>
-            <_MiaMiaAppLayout
+            <MiaMiaAppLayoutView
                 props={{ spine: { lockedLabel: t("comingSoon"), groups: [{ id: "learn", label: t("group"), rows: spineItems.map((item) => ({ ...item, isLocked: item.id !== "exam" && item.id !== "study" && item.id !== "game" && item.id !== "profile" })) }] }, mobileTabs: mobileItems }}
                 on={{ openDestination: open }}
                 surface={surface}

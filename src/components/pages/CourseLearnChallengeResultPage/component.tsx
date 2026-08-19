@@ -38,17 +38,19 @@ export type CourseLearnChallengeResultPageProps = {
 /** Draws pending, graded and failed challenge-result states without querying. */
 export const _CourseLearnChallengeResultPage = (input: CourseLearnChallengeResultPageProps) => {
     const loading = input.state === "pending"
-    const controls = input.state === "failed"
-        ? [
-            defineLeafComponent("text", {}, () => (
-                <Text props={{ content: input.props.notice, live: "assertive" }} />
-            )),
-            defineLeafComponent("button", {}, () => (
-                <Button props={{ label: input.props.reloadLabel }} on={{ press: input.on?.reload }} />
-            )),
-        ]
-        : input.state === "pending"
-            ? [
+    const deriveControls = () => {
+        if (input.state === "failed") {
+            return [
+                defineLeafComponent("text", {}, () => (
+                    <Text props={{ content: input.props.notice, live: "assertive" }} />
+                )),
+                defineLeafComponent("button", {}, () => (
+                    <Button props={{ label: input.props.reloadLabel }} on={{ press: input.on?.reload }} />
+                )),
+            ]
+        }
+        if (input.state === "pending") {
+            return [
                 defineLeafComponent("button", {}, () => (
                     <Button props={{ label: input.props.retryLabel }} isLoading />
                 )),
@@ -56,42 +58,45 @@ export const _CourseLearnChallengeResultPage = (input: CourseLearnChallengeResul
                     <Button props={{ label: input.props.nextLabel, variant: "primary" }} isLoading />
                 )),
             ]
-            : [
-                ...(input.props.shortFeedback === undefined ? [] : [
-                    defineLeafComponent("text", {}, () => (
-                        <Text props={{ content: input.props.shortFeedback }} isLoading={loading} />
+        }
+        return [
+            ...(input.props.shortFeedback === undefined ? [] : [
+                defineLeafComponent("text", {}, () => (
+                    <Text props={{ content: input.props.shortFeedback }} isLoading={loading} />
+                )),
+            ]),
+            ...input.props.feedbacks.flatMap((feedback) => [
+                defineLeafComponent("text", { weight: "semibold" }, () => (
+                    <Text props={{ content: feedback.message, weight: "semibold" }} />
+                )),
+                defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+                    <Text props={{ content: feedback.severity, size: "sm", tone: "muted" }} />
+                )),
+                ...(feedback.detail === undefined ? [] : [
+                    defineLeafComponent("text", {}, () => <Text props={{ content: feedback.detail }} />),
+                ]),
+                ...(feedback.location === undefined ? [] : [
+                    defineLeafComponent("text", { size: "sm" }, () => (
+                        <Text props={{ content: feedback.location, size: "sm" }} />
                     )),
                 ]),
-                ...input.props.feedbacks.flatMap((feedback) => [
-                    defineLeafComponent("text", { weight: "semibold" }, () => (
-                        <Text props={{ content: feedback.message, weight: "semibold" }} />
-                    )),
-                    defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
-                        <Text props={{ content: feedback.severity, size: "sm", tone: "muted" }} />
-                    )),
-                    ...(feedback.detail === undefined ? [] : [
-                        defineLeafComponent("text", {}, () => <Text props={{ content: feedback.detail }} />),
-                    ]),
-                    ...(feedback.location === undefined ? [] : [
-                        defineLeafComponent("text", { size: "sm" }, () => (
-                            <Text props={{ content: feedback.location, size: "sm" }} />
-                        )),
-                    ]),
-                    ...(feedback.suggestion === undefined ? [] : [
-                        defineLeafComponent("text", {}, () => <Text props={{ content: feedback.suggestion }} />),
-                    ]),
+                ...(feedback.suggestion === undefined ? [] : [
+                    defineLeafComponent("text", {}, () => <Text props={{ content: feedback.suggestion }} />),
                 ]),
-                defineLeafComponent("button", {}, () => (
-                    <Button props={{ label: input.props.retryLabel }} on={{ press: input.on?.retry }} isLoading={loading} />
-                )),
-                defineLeafComponent("button", {}, () => (
-                    <Button
-                        props={{ label: input.props.nextLabel, variant: "primary" }}
-                        on={{ press: input.on?.next }}
-                        isLoading={loading}
-                    />
-                )),
-            ]
+            ]),
+            defineLeafComponent("button", {}, () => (
+                <Button props={{ label: input.props.retryLabel }} on={{ press: input.on?.retry }} isLoading={loading} />
+            )),
+            defineLeafComponent("button", {}, () => (
+                <Button
+                    props={{ label: input.props.nextLabel, variant: "primary" }}
+                    on={{ press: input.on?.next }}
+                    isLoading={loading}
+                />
+            )),
+        ]
+    }
+    const controls = deriveControls()
 
     return (
         <Tree

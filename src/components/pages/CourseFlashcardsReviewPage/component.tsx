@@ -56,6 +56,78 @@ export type CourseFlashcardsReviewPageProps = {
     }
 }
 
+/** The due card's action: resume a session in progress, start the due queue, or nothing left to do. */
+const resolveDueAction = (
+    data: CourseFlashcardsReviewPageProps["props"],
+    on: CourseFlashcardsReviewPageProps["on"],
+) => {
+    const { resumeSessionId } = data
+    if (resumeSessionId !== undefined) {
+        return defineLeafComponent("button", {}, () => (
+            <Button props={{ label: data.resumeLabel, variant: "primary" }} on={{ press: () => on.resume(resumeSessionId) }} />
+        ))
+    }
+    if (data.dueCount === 0) return undefined
+    return defineLeafComponent("button", {}, () => (
+        <Button props={{ label: data.startLabel, variant: "primary" }} on={{ press: on.startDue }} />
+    ))
+}
+
+/** Skeleton deck cards shown while the review overview is loading. */
+const pendingDeckCards = (data: CourseFlashcardsReviewPageProps["props"]) => (
+    Array.from({ length: 4 }, (_, index) => defineContractComponent("flashcard-review-deck-card", {
+        title: defineLeafComponent("heading", {}, () => (
+            <Heading props={{ content: data.decksTitle, level: 3 }} isLoading />
+        )),
+        description: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+            <Text props={{ size: "sm", tone: "muted" }} isLoading />
+        )),
+        facts: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+            <Text props={{ size: "xs" }} isLoading />
+        )),
+        action: defineLeafComponent("button", {}, () => (
+            <Button props={{ label: `${data.startLabel} ${index + 1}` }} isLoading />
+        )),
+    }))
+)
+
+/** Settled deck cards, one per deck the course has. */
+const readyDeckCards = (
+    data: CourseFlashcardsReviewPageProps["props"],
+    on: CourseFlashcardsReviewPageProps["on"],
+) => (
+    data.decks.map((deck) => defineContractComponent("flashcard-review-deck-card", {
+        title: defineLeafComponent("heading", {}, () => (
+            <Heading props={{ content: deck.title, level: 3 }} />
+        )),
+        description: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+            <Text props={{ content: deck.description, size: "sm", tone: "muted" }} />
+        )),
+        facts: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+            <Text
+                props={{
+                    content: `${deck.cardCount} ${data.cardsLabel} · ${deck.dueCount} ${data.dueLabel} · ${deck.masteredCount} ${data.masteredLabel}`,
+                    size: "xs",
+                }}
+            />
+        )),
+        action: defineLeafComponent("button", {}, () => (
+            <Button props={{ label: data.startLabel, variant: "primary" }} on={{ press: () => on.startDeck(deck.id) }} />
+        )),
+    }))
+)
+
+/** Which deck cards to render, by overview state. */
+const resolveDeckCards = (
+    state: CourseFlashcardsReviewPageProps["state"],
+    data: CourseFlashcardsReviewPageProps["props"],
+    on: CourseFlashcardsReviewPageProps["on"],
+) => {
+    if (state === "pending") return pendingDeckCards(data)
+    if (state === "ready") return readyDeckCards(data, on)
+    return undefined
+}
+
 /** Renders the legacy review hierarchy without fetching or routing internally. */
 export const _CourseFlashcardsReviewPage = (input: CourseFlashcardsReviewPageProps) => {
     const state = input.state
@@ -102,15 +174,7 @@ export const _CourseFlashcardsReviewPage = (input: CourseFlashcardsReviewPagePro
             fact: defineLeafComponent("text", { size: "sm", weight: "medium" }, () => (
                 <Text props={{ content: `${data.dueCount} ${data.dueLabel}`, size: "sm", weight: "medium" }} />
             )),
-            action: data.resumeSessionId !== undefined
-                ? defineLeafComponent("button", {}, () => (
-                    <Button props={{ label: data.resumeLabel, variant: "primary" }} on={{ press: () => on.resume(data.resumeSessionId ?? "") }} />
-                ))
-                : data.dueCount === 0
-                    ? undefined
-                    : defineLeafComponent("button", {}, () => (
-                        <Button props={{ label: data.startLabel, variant: "primary" }} on={{ press: on.startDue }} />
-                    )),
+            action: resolveDueAction(data, on),
         })
         : undefined
     const stats = state === "ready"
@@ -123,42 +187,7 @@ export const _CourseFlashcardsReviewPage = (input: CourseFlashcardsReviewPagePro
             )),
         })
         : undefined
-    const decks = state === "pending"
-        ? Array.from({ length: 4 }, (_, index) => defineContractComponent("flashcard-review-deck-card", {
-            title: defineLeafComponent("heading", {}, () => (
-                <Heading props={{ content: data.decksTitle, level: 3 }} isLoading />
-            )),
-            description: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
-                <Text props={{ size: "sm", tone: "muted" }} isLoading />
-            )),
-            facts: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
-                <Text props={{ size: "xs" }} isLoading />
-            )),
-            action: defineLeafComponent("button", {}, () => (
-                <Button props={{ label: `${data.startLabel} ${index + 1}` }} isLoading />
-            )),
-        }))
-        : state === "ready"
-            ? data.decks.map((deck) => defineContractComponent("flashcard-review-deck-card", {
-                title: defineLeafComponent("heading", {}, () => (
-                    <Heading props={{ content: deck.title, level: 3 }} />
-                )),
-                description: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
-                    <Text props={{ content: deck.description, size: "sm", tone: "muted" }} />
-                )),
-                facts: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
-                    <Text
-                        props={{
-                            content: `${deck.cardCount} ${data.cardsLabel} · ${deck.dueCount} ${data.dueLabel} · ${deck.masteredCount} ${data.masteredLabel}`,
-                            size: "xs",
-                        }}
-                    />
-                )),
-                action: defineLeafComponent("button", {}, () => (
-                    <Button props={{ label: data.startLabel, variant: "primary" }} on={{ press: () => on.startDeck(deck.id) }} />
-                )),
-            }))
-            : undefined
+    const decks = resolveDeckCards(state, data, on)
 
     return (
         <Tree contract="course-flashcards-review-page" render={defineContractComponent("course-flashcards-review-page", {

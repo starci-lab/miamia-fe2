@@ -18,6 +18,10 @@ interface CourseLeaderboardPageProps { readonly displayId: string }
 
 const CATEGORIES: ReadonlyArray<CourseLeaderboardCategory> = ["total", "challenge", "reading", "milestone"]
 
+/** Whether a raw route value names one of the leaderboard's own ranking categories. */
+const isCourseLeaderboardCategory = (value: string | null): value is CourseLeaderboardCategory =>
+    (CATEGORIES as ReadonlyArray<string>).includes(value ?? "")
+
 const valueOf = (entry: Pick<CourseLeaderboardEntry, "totalXp" | "totalScore" | "lessonsRead" | "milestoneProgress">, category: CourseLeaderboardCategory) => {
     if (category === "challenge") return entry.totalScore
     if (category === "reading") return entry.lessonsRead * 3
@@ -53,9 +57,7 @@ export const CourseLeaderboardPage = ({ displayId }: CourseLeaderboardPageProps)
     const router = useRouter()
     const search = useSearchParams()
     const requested = search.get("category")
-    const category: CourseLeaderboardCategory = CATEGORIES.some((item) => item === requested)
-        ? requested as CourseLeaderboardCategory
-        : "total"
+    const category: CourseLeaderboardCategory = isCourseLeaderboardCategory(requested) ? requested : "total"
     const course = useQueryCourseSwr({ displayId })
     const me = useQueryMeSwr()
     const leaderboard = useQueryCourseLeaderboardSwr(course.data?.id)
@@ -127,11 +129,14 @@ export const CourseLeaderboardPage = ({ displayId }: CourseLeaderboardPageProps)
         errorMessage: copy.failed,
         retryLabel: copy.retry,
     }
-    const state = course.error !== undefined || leaderboard.error !== undefined || course.data === null || leaderboard.data === null
-        ? "failed"
-        : course.data === undefined || leaderboard.data === undefined
-            ? "pending"
-            : entries.length === 0 ? "empty" : "ready"
+    const deriveState = () => {
+        const failed = course.error !== undefined || leaderboard.error !== undefined
+            || course.data === null || leaderboard.data === null
+        if (failed) return "failed"
+        if (course.data === undefined || leaderboard.data === undefined) return "pending"
+        return entries.length === 0 ? "empty" : "ready"
+    }
+    const state = deriveState()
 
     return (
         <_CourseLeaderboardPage
@@ -139,7 +144,7 @@ export const CourseLeaderboardPage = ({ displayId }: CourseLeaderboardPageProps)
             props={data}
             on={{
                 course: () => router.push(`/courses/${displayId}`),
-                selectCategory: (next) => router.push(`/courses/${displayId}/learn/leaderboard?category=${CATEGORIES.some((item) => item === next) ? next : "total"}`),
+                selectCategory: (next) => router.push(`/courses/${displayId}/learn/leaderboard?category=${isCourseLeaderboardCategory(next) ? next : "total"}`),
                 climb: () => router.push(`/courses/${displayId}/learn/content`),
                 retry: () => { void Promise.all([course.mutate(), leaderboard.mutate()]) },
             }}

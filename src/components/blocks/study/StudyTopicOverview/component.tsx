@@ -8,7 +8,15 @@ import { defineCompositeComponent, defineContractComponent, defineLeafComponent,
 type StudyPhraseRowData = { readonly id: string; readonly phrase: string; readonly meaning: string; readonly example?: string }
 type StudyTopicOverviewData = { readonly title: string; readonly description: string; readonly backLabel: string; readonly startLabel: string; readonly loading: string; readonly failed: string; readonly empty: string; readonly retry: string; readonly phrases: ReadonlyArray<StudyPhraseRowData> }
 type StudyTopicOverviewActions = { readonly start?: () => void; readonly back?: () => void; readonly retry?: () => void }
-type StudyTopicOverviewProps = BlockProps<"pending" | "failed" | "empty" | "ready", StudyTopicOverviewData> & { readonly on?: StudyTopicOverviewActions }
+type StudyTopicOverviewState = "pending" | "failed" | "empty" | "ready"
+type StudyTopicOverviewProps = BlockProps<StudyTopicOverviewState, StudyTopicOverviewData> & { readonly on?: StudyTopicOverviewActions }
+
+/** The notice sentence for a non-ready tree: loading, failed, or genuinely empty. */
+const resolveNoticeMessage = (state: StudyTopicOverviewState, props: StudyTopicOverviewData): string => {
+    if (state === "pending") return props.loading
+    if (state === "failed") return props.failed
+    return props.empty
+}
 
 /** Renders one public topic and its ordered phrase evidence. */
 export const _StudyTopicOverview = (input: StudyTopicOverviewProps) => {
@@ -17,7 +25,7 @@ export const _StudyTopicOverview = (input: StudyTopicOverviewProps) => {
         back: defineLeafComponent("button", {}, () => <Button props={{ label: input.props.backLabel, variant: "ghost" }} on={{ press: input.on?.back }} />),
         header: defineContractComponent("page-header-stack", { title: defineLeafComponent("heading", {}, () => <Heading props={{ content: input.props.title, level: 1 }} isLoading={input.state === "pending"} />) }),
         ...(input.props.description ? { description: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: input.props.description, size: "sm", tone: "muted" }} />) } : {}),
-        ...(notice ? { notice: defineCompositeComponent("empty-notice", {}, () => <EmptyNotice props={{ icon: "course", message: input.state === "pending" ? input.props.loading : input.state === "failed" ? input.props.failed : input.props.empty, actionLabel: input.state === "failed" ? input.props.retry : undefined }} on={{ act: input.on?.retry }} />) } : {
+        ...(notice ? { notice: defineCompositeComponent("empty-notice", {}, () => <EmptyNotice props={{ icon: "course", message: resolveNoticeMessage(input.state, input.props), actionLabel: input.state === "failed" ? input.props.retry : undefined }} on={{ act: input.on?.retry }} />) } : {
             phrases: defineContractComponent("study-phrase-list", {
                 phrase: input.props.phrases.map((phrase) => defineContractComponent("study-phrase-row", {
                     phrase: defineLeafComponent("heading", {}, () => <Heading props={{ content: phrase.phrase, level: 3 }} />),

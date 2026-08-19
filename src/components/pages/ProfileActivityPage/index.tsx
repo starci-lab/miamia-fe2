@@ -11,6 +11,25 @@ import { _ProfileActivityPage } from "./component"
 const actionLabel = (type: string) => type.replaceAll("_", " ").toLowerCase()
 const dayLabel = (at: string) => new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(new Date(at))
 
+/** Whether the achievements strip is showing an error, still loading, or resolved. */
+const deriveAchievementState = (hasError: boolean, isLoading: boolean): "error" | "pending" | "ready" => {
+    if (hasError) return "error"
+    if (isLoading) return "pending"
+    return "ready"
+}
+
+/** Whether the activity feed failed, is still loading, is empty, or is resolved. */
+const deriveFeedState = (
+    hasError: boolean,
+    isLoading: boolean,
+    isEmpty: boolean,
+): "failed" | "pending" | "platformEmpty" | "ready" => {
+    if (hasError) return "failed"
+    if (isLoading) return "pending"
+    if (isEmpty) return "platformEmpty"
+    return "ready"
+}
+
 /** Resolve earned achievements before the grouped public timeline. */
 export const ProfileActivityPage = () => {
     const params = useParams<{ username?: string }>()
@@ -27,10 +46,12 @@ export const ProfileActivityPage = () => {
         }
         return Array.from(groups.values())
     }, [activity.data])
+    const achievementState = deriveAchievementState(Boolean(achievements.error), achievements.isLoading || profile.isLoading)
+    const feedState = deriveFeedState(Boolean(activity.error), activity.isLoading || profile.isLoading, days.length === 0)
     return <_ProfileActivityPage
-        achievementState={achievements.error ? "error" : achievements.isLoading || profile.isLoading ? "pending" : "ready"}
+        achievementState={achievementState}
         achievements={achievements.data ?? []}
-        feed={{ state: activity.error ? "failed" : activity.isLoading || profile.isLoading ? "pending" : days.length === 0 ? "platformEmpty" : "ready", props: { days, message: activity.error ? "Activity couldn't be loaded." : "No public activity yet.", description: activity.error ? "Try again to load this timeline." : undefined, actionLabel: activity.error ? "Try again" : undefined }, on: { resultAction: () => { void activity.mutate() } } }}
+        feed={{ state: feedState, props: { days, message: activity.error ? "Activity couldn't be loaded." : "No public activity yet.", description: activity.error ? "Try again to load this timeline." : undefined, actionLabel: activity.error ? "Try again" : undefined }, on: { resultAction: () => { void activity.mutate() } } }}
     />
 }
 

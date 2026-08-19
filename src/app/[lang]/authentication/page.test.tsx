@@ -28,7 +28,7 @@ describe("AuthenticationRoute", () => {
 
     it("adds no markup of its own around it", () => {
         const { container } = render(<AuthenticationRoute />)
-        expect(container.children.length).toBe(1)
+        expect(container.children).toHaveLength(1)
         expect(container.firstElementChild?.tagName).toBe("P")
     })
 })

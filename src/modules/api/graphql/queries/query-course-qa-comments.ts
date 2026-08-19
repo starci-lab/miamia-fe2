@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type OperationVariables, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { GraphQLResponse, LookupQueryParams } from "../types"
 
@@ -38,7 +38,7 @@ interface QueryCourseQaCommentsResponse {
     readonly contentComments: GraphQLResponse<CourseQaCommentsPage>
 }
 
-const query1 = gql`
+const query1: TypedDocumentNode<QueryCourseQaCommentsResponse, OperationVariables> = gql`
     query CourseQaComments($request: ContentCommentsRequest!) {
         contentComments(request: $request) {
             success
@@ -64,7 +64,7 @@ const query1 = gql`
 
 export enum QueryCourseQaComments { Query1 = "query1" }
 
-const queryCourseQaCommentsMap: Record<QueryCourseQaComments, DocumentNode> = {
+const queryCourseQaCommentsMap: Record<QueryCourseQaComments, TypedDocumentNode<QueryCourseQaCommentsResponse, OperationVariables>> = {
     [QueryCourseQaComments.Query1]: query1,
 }
 
@@ -77,7 +77,7 @@ export const queryCourseQaComments = async ({
     debug,
 }: LookupQueryParams<QueryCourseQaComments, QueryCourseQaCommentsRequest>) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryCourseQaCommentsResponse>({
+    return apollo.query({
         query: queryCourseQaCommentsMap[query],
         variables: { request },
     })

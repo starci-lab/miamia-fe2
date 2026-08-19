@@ -57,5 +57,8 @@ export abstract class BaseGameScene extends Phaser.Scene {
     protected style(size: number, color: string): Phaser.Types.GameObjects.Text.TextStyle { return { fontFamily: "system-ui, sans-serif", fontSize: `${size}px`, fontStyle: "bold", color } }
     private buildAnimations(): void { for (const character of ["mia", "max"] as const) for (const action of ACTIONS) { const key = `${character}-${action}`; if (!this.anims.exists(key)) this.anims.create({ key, frames: this.anims.generateFrameNumbers(key, { start: 0, end: 5 }), frameRate: action === "idle" || action === "think" ? 6 : 10, repeat: action === "idle" || action === "run" || action === "think" ? -1 : 0 }) } }
     private sync(sprite: Phaser.GameObjects.Sprite | undefined, action: string | undefined, character: string): void { const key = `${character}-${(action ?? "IDLE").toLowerCase()}`; if (sprite !== undefined && this.anims.exists(key) && sprite.anims.currentAnim?.key !== key) sprite.play(key, true) }
-    private finish(winner: string): void { if (winner === "MIA") this.sync(this.mia, "CELEBRATE", "mia"); if (winner === "MAX") this.sync(this.max, "CELEBRATE", "max") }
+    private finish(winner: string): void {
+        if (winner === "MIA") { this.sync(this.mia, "CELEBRATE", "mia") }
+        if (winner === "MAX") { this.sync(this.max, "CELEBRATE", "max") }
+    }
 }

@@ -1,10 +1,12 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type QueryParams } from "../types"
 import {
     type QueryCoursesCheckoutPreviewRequest,
     type QueryCoursesCheckoutPreviewResponse,
 } from "./types/courses-checkout-preview"
+
+type CoursesCheckoutPreviewVariables = { readonly request: QueryCoursesCheckoutPreviewRequest }
 
 /**
  * What a set of courses costs when bought together.
@@ -16,7 +18,7 @@ import {
  *
  * THE PRICE IS PERSONAL, so this is required-auth: loyalty depends on what the viewer already owns.
  */
-const query1 = gql`
+const query1: TypedDocumentNode<QueryCoursesCheckoutPreviewResponse, CoursesCheckoutPreviewVariables> = gql`
     query CoursesCheckoutPreview($request: CoursesCheckoutPreviewRequest!) {
         coursesCheckoutPreview(request: $request) {
             success
@@ -42,7 +44,7 @@ export enum QueryCoursesCheckoutPreview {
 }
 
 /** Every document this query can send, keyed by variant. */
-export const queryCoursesCheckoutPreviewMap: Record<QueryCoursesCheckoutPreview, DocumentNode> = {
+export const queryCoursesCheckoutPreviewMap: Record<QueryCoursesCheckoutPreview, TypedDocumentNode<QueryCoursesCheckoutPreviewResponse, CoursesCheckoutPreviewVariables>> = {
     [QueryCoursesCheckoutPreview.Query1]: query1,
 }
 
@@ -57,7 +59,7 @@ export const queryCoursesCheckoutPreview = async (
     }: QueryParams<QueryCoursesCheckoutPreview> = {},
 ) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryCoursesCheckoutPreviewResponse>({
+    return apollo.query({
         query: queryCoursesCheckoutPreviewMap[query],
         variables: { request },
         fetchPolicy: "network-only",

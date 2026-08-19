@@ -1,4 +1,5 @@
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
+import type { IconName } from "@/components/leaves/Icon"
 import { Progress } from "@/components/leaves/Progress"
 import { Text } from "@/components/leaves/Text"
 import { PressableSurface } from "@/components/branches/PressableSurface"
@@ -94,6 +95,13 @@ export type DomainMasteryGridProps =
 /** How many cards rest while the two answers are in flight. */
 const RESTING_COUNT = 6
 
+/** The icon naming the empty reason: signed out, catalog failed to load, or genuinely empty. */
+const resolveNoticeIcon = (state: DomainMasteryGridProps["state"]): IconName => {
+    if (state === "guest") return "signIn"
+    if (state === "catalog-failed") return "retry"
+    return "practice"
+}
+
 /**
  * Draw the topic field.
  *
@@ -111,7 +119,7 @@ export const _DomainMasteryGrid = (input: DomainMasteryGridProps) => {
         return (
             <EmptyNotice
                 props={{
-                    icon: input.state === "guest" ? "signIn" : input.state === "catalog-failed" ? "retry" : "practice",
+                    icon: resolveNoticeIcon(input.state),
                     message: input.props.noticeMessage ?? "",
                     description: input.props.noticeDescription,
                     actionLabel: input.props.noticeActionLabel,

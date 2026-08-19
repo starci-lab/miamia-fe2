@@ -7,6 +7,13 @@ import { useQueryUserProfileSwr } from "@/hooks/swr/useQueryUserProfileSwr"
 import type { ProfileSolvedChallenge } from "@/modules/api/graphql/queries/types/profile-evidence"
 import { _ProfileChallengesPage, type ChallengeStrength } from "./component"
 
+/** An errored fetch beats still-loading; ready is what's left. */
+const resolveEvidenceState = (hasError: boolean, isPending: boolean): "error" | "pending" | "ready" => {
+    if (hasError) return "error"
+    if (isPending) return "pending"
+    return "ready"
+}
+
 /** Resolve challenge standing and submissions for the public route. */
 export const ProfileChallengesPage = () => {
     const params = useParams<{ username?: string }>()
@@ -17,8 +24,8 @@ export const ProfileChallengesPage = () => {
     const submissions = useQueryProfileEvidenceSwr<ReadonlyArray<ProfileSolvedChallenge>>("solved-challenges", profile.data?.id)
     const waiting = profile.isLoading
     return <_ProfileChallengesPage
-        strength={{ state: strength.error ? "error" : strength.isLoading || waiting ? "pending" : "ready", data: strength.data }}
-        submissions={{ state: submissions.error ? "error" : submissions.isLoading || waiting ? "pending" : "ready", data: submissions.data ?? [] }}
+        strength={{ state: resolveEvidenceState(Boolean(strength.error), strength.isLoading || waiting), data: strength.data }}
+        submissions={{ state: resolveEvidenceState(Boolean(submissions.error), submissions.isLoading || waiting), data: submissions.data ?? [] }}
         on={{ openCourse: (courseId) => router.push(`/profile/${username}/challenges/${courseId}`) }}
     />
 }

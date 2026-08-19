@@ -36,12 +36,17 @@ export type OverviewContributionsProps = {
     readonly on?: OverviewContributionsActions
 }
 
+/** Pick the headline label for the current load state: error beats empty beats the year total. */
+const resolveTotalLabel = (input: OverviewContributionsProps) => {
+    if (input.state === "failed") return input.props.errorMessage
+    if (input.state === "empty") return input.props.emptyMessage
+    return input.props.yearLabel
+}
+
 /** Draw the complete contribution calendar without owning its query or selected-year state. */
 export const _OverviewContributions = (input: OverviewContributionsProps) => {
     const isLoading = input.state === "pending"
-    const totalLabel = input.state === "failed"
-        ? input.props.errorMessage
-        : input.state === "empty" ? input.props.emptyMessage : input.props.yearLabel
+    const totalLabel = resolveTotalLabel(input)
 
     return (
         <SurfaceCard

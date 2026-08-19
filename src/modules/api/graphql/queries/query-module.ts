@@ -1,8 +1,7 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "@/modules/api/graphql/clients/create-apollo-client"
-import { type QueryParams } from "@/modules/api/graphql/types"
+import { type QueryParams, type GraphQLResponse } from "@/modules/api/graphql/types"
 import { type ContentSibling } from "@/modules/api/graphql/queries/types/content"
-import { type GraphQLResponse } from "@/modules/api/graphql/types"
 
 /**
  * One module and the contents inside it - the reader's map of where it is.
@@ -18,7 +17,7 @@ import { type GraphQLResponse } from "@/modules/api/graphql/types"
  * drawn for a viewer who cannot read half of it, and `isPremium` per content is what lets the rows
  * say which half.
  */
-const query1 = gql`
+const query1: TypedDocumentNode<QueryModuleResponse, { readonly request: QueryModuleRequest }> = gql`
     query Module($request: ModuleRequest!) {
         module(request: $request) {
             success
@@ -93,7 +92,7 @@ export enum QueryModule {
 }
 
 /** Every document this query can send, keyed by variant. */
-export const queryModuleMap: Record<QueryModule, DocumentNode> = {
+export const queryModuleMap: Record<QueryModule, TypedDocumentNode<QueryModuleResponse, { readonly request: QueryModuleRequest }>> = {
     [QueryModule.Query1]: query1,
 }
 
@@ -106,7 +105,7 @@ export const queryModule = async ({
     debug,
 }: QueryParams<QueryModule, QueryModuleRequest> = {}) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryModuleResponse>({
+    return apollo.query({
         query: queryModuleMap[query],
         variables: { request },
     })

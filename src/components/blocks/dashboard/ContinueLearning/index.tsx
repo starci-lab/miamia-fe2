@@ -88,7 +88,7 @@ export const ContinueLearning = () => {
         return <_ContinueLearning state="pending" props={{ label }} />
     }
 
-    const hasNoCourses = courses.data !== undefined && courses.data !== null && courses.data.length === 0
+    const hasNoCourses = courses.data?.length === 0
     return (
         <_ContinueLearning
             state={hasNoCourses ? "onboarding" : "empty"}

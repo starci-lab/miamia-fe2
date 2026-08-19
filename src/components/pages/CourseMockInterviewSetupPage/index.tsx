@@ -6,7 +6,7 @@ import { useRouter } from "@/i18n/navigation"
 import { useQueryCourseSwr } from "@/hooks/swr/useQueryCourseSwr"
 import { useQueryMyInProgressMockInterviewSessionSwr } from "@/hooks/swr/useQueryMyInProgressMockInterviewSessionSwr"
 import { useMutateStartMockInterviewSessionSwr } from "@/hooks/swr/useMutateStartMockInterviewSessionSwr"
-import { _CourseMockInterviewSetupPage } from "./component"
+import { _CourseMockInterviewSetupPage as CourseMockInterviewSetupPageView } from "./component"
 
 /** Route-owned input for the connected setup page. */
 export type CourseMockInterviewSetupPageProps = { readonly displayId: string }
@@ -42,6 +42,46 @@ const COPY = {
     },
 } as const
 
+type SetupState = "failed" | "starting" | "pending" | "ready" | "resumable"
+
+/** Inputs that decide which single situation the setup page is in. */
+type SetupStateInput = {
+    readonly failed: boolean
+    readonly isMutating: boolean
+    readonly pending: boolean
+    readonly hasNoInProgressSession: boolean
+}
+
+/** Resolves the single situation the setup page is in, in the priority order the page decided on. */
+const resolveSetupState = (input: SetupStateInput): SetupState => {
+    if (input.failed) return "failed"
+    if (input.isMutating) return "starting"
+    if (input.pending) return "pending"
+    if (input.hasNoInProgressSession) return "ready"
+    return "resumable"
+}
+
+/** Resolves the status message shown for a non-ready setup state. */
+/**
+ * The three status sentences this page can show.
+ *
+ * Declared structurally rather than as `typeof COPY.en`, because the caller passes whichever
+ * locale is active and the two locales are different literal types - naming one of them made
+ * the other unassignable.
+ */
+interface SetupStatusCopy {
+    resumable: string
+    starting: string
+    failed: string
+}
+
+const resolveSetupStatus = (state: SetupState, copy: SetupStatusCopy) => {
+    if (state === "resumable") return copy.resumable
+    if (state === "starting") return copy.starting
+    if (state === "failed") return copy.failed
+    return undefined
+}
+
 /** Resolve setup data, start or resume a durable mock-interview session, and navigate to its route. */
 export const CourseMockInterviewSetupPage = ({ displayId }: CourseMockInterviewSetupPageProps) => {
     const locale = useLocale()
@@ -56,15 +96,12 @@ export const CourseMockInterviewSetupPage = ({ displayId }: CourseMockInterviewS
     const [startError, setStartError] = useState(false)
     const failed = course.error !== undefined || inProgress.error !== undefined || startError || course.data === null
     const pending = !failed && (course.data === undefined || inProgress.data === undefined)
-    const state = failed
-        ? "failed"
-        : startSession.isMutating
-            ? "starting"
-            : pending
-                ? "pending"
-                : inProgress.data === null
-                    ? "ready"
-                    : "resumable"
+    const state = resolveSetupState({
+        failed,
+        isMutating: startSession.isMutating,
+        pending,
+        hasNoInProgressSession: inProgress.data === null,
+    })
 
     const openSession = (sessionId: string) => {
         router.push(`/courses/${displayId}/learn/mock-interview/interview/${sessionId}`)
@@ -87,12 +124,12 @@ export const CourseMockInterviewSetupPage = ({ displayId }: CourseMockInterviewS
     const resumableSessionId = inProgress.data?.sessionId
 
     return (
-        <_CourseMockInterviewSetupPage
+        <CourseMockInterviewSetupPageView
             state={state}
             props={{
                 title: copy.title,
                 description: copy.description,
-                status: state === "resumable" ? copy.resumable : state === "starting" ? copy.starting : state === "failed" ? copy.failed : undefined,
+                status: resolveSetupStatus(state, copy),
                 levelLabel: copy.level,
                 modeLabel: copy.mode,
                 levels: Object.entries(copy.levels).map(([id, label]) => ({ id, label })),

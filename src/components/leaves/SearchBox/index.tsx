@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useRef, useState, type ReactNode } from "react"
 import { InputGroup } from "@heroui/react"
 import { Icon } from "@/components/leaves/Icon"
 import type { LeafProps } from "@/components/contracts/props"
@@ -85,6 +85,42 @@ export const SearchBox = ({ props, on }: SearchBoxProps) => {
         return found instanceof HTMLInputElement ? found : null
     }
 
+    /*
+     * CLEARING SEARCHES AGAIN, because a box emptied over a filtered list leaves the
+     * reader looking at results for a query that is no longer on screen. The keyboard
+     * hint gives way to it rather than sitting beside it: a shortcut into a field
+     * somebody is already typing in has nothing left to offer.
+     */
+    let suffix: ReactNode = null
+    if (hasText) {
+        suffix = (
+            <InputGroup.Suffix>
+                <button
+                    type="button"
+                    className={CLEAR_CLASSES}
+                    aria-label={props.clearLabel}
+                    onClick={() => {
+                        const input = field()
+                        if (input !== null) {
+                            input.value = ""
+                            input.focus()
+                        }
+                        setHasText(false)
+                        on?.search?.("")
+                    }}
+                >
+                    <Icon props={{ name: "close", role: "chip" }} />
+                </button>
+            </InputGroup.Suffix>
+        )
+    } else if (props.shortcut !== undefined) {
+        suffix = (
+            <InputGroup.Suffix>
+                <kbd className={SHORTCUT_CLASSES}>{props.shortcut}</kbd>
+            </InputGroup.Suffix>
+        )
+    }
+
     return (
         <form
             ref={formRef}
@@ -111,36 +147,7 @@ export const SearchBox = ({ props, on }: SearchBoxProps) => {
                         on?.search?.(event.target.value)
                     }}
                 />
-                {/*
-                 * CLEARING SEARCHES AGAIN, because a box emptied over a filtered list leaves the
-                 * reader looking at results for a query that is no longer on screen. The keyboard
-                 * hint gives way to it rather than sitting beside it: a shortcut into a field
-                 * somebody is already typing in has nothing left to offer.
-                 */}
-                {hasText ? (
-                    <InputGroup.Suffix>
-                        <button
-                            type="button"
-                            className={CLEAR_CLASSES}
-                            aria-label={props.clearLabel}
-                            onClick={() => {
-                                const input = field()
-                                if (input !== null) {
-                                    input.value = ""
-                                    input.focus()
-                                }
-                                setHasText(false)
-                                on?.search?.("")
-                            }}
-                        >
-                            <Icon props={{ name: "close", role: "chip" }} />
-                        </button>
-                    </InputGroup.Suffix>
-                ) : props.shortcut === undefined ? null : (
-                    <InputGroup.Suffix>
-                        <kbd className={SHORTCUT_CLASSES}>{props.shortcut}</kbd>
-                    </InputGroup.Suffix>
-                )}
+                {suffix}
             </InputGroup>
         </form>
     )

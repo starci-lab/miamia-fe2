@@ -3,7 +3,7 @@ import { SurfaceCard } from "@/components/branches/SurfaceCard"
 import { Tree } from "@/components/branches/Tree"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { ProfileHero } from "@/components/blocks/profile/ProfileHero"
-import { _ProfileTabs, type ProfileTabsData } from "@/components/blocks/profile/ProfileTabs"
+import { _ProfileTabs as ProfileTabsView, type ProfileTabsData } from "@/components/blocks/profile/ProfileTabs"
 import {
     defineCompositeComponent,
     defineContractComponent,
@@ -101,7 +101,7 @@ export const _PublicProfileLayout = (input: PublicProfileLayoutProps) => {
     return (
         <Tree contract="profile-tabs-over-body" render={defineContractComponent("profile-tabs-over-body", {
             tabs: defineContractProjection("underlined-tab-strip", () => (
-                <_ProfileTabs props={input.props.tabs} on={{ select: input.on.selectTab }} />
+                <ProfileTabsView props={input.props.tabs} on={{ select: input.on.selectTab }} />
             )),
             body: defineContractComponent("profile-page-measure", {
                 inset: defineContractComponent("profile-page-inset", {

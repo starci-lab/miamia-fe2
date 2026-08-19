@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { GraphQLResponse } from "../types"
 
@@ -42,7 +42,9 @@ export type DueFlashcardsData = {
     readonly cards: ReadonlyArray<DueFlashcard>
 }
 
-const query = gql`
+type FlashcardDecksByCourseVariables = { readonly courseId: string }
+
+const query: TypedDocumentNode<QueryFlashcardDecksByCourseResponse, FlashcardDecksByCourseVariables> = gql`
     query FlashcardDecksByCourse($courseId: ID!) {
         flashcardDecksByCourse(courseId: $courseId) {
             success
@@ -63,7 +65,10 @@ const query = gql`
     }
 `
 
-const dueQuery = gql`
+type MyDueFlashcardsResponse = { readonly myDueFlashcards: GraphQLResponse<DueFlashcardsData> }
+type MyDueFlashcardsVariables = { readonly courseId: string; readonly limit: number }
+
+const dueQuery: TypedDocumentNode<MyDueFlashcardsResponse, MyDueFlashcardsVariables> = gql`
     query MyDueFlashcards($courseId: String!, $limit: Int!) {
         myDueFlashcards(courseId: $courseId, limit: $limit) {
             success message error
@@ -75,7 +80,7 @@ const dueQuery = gql`
 /** Fetches the localized deck inventory and viewer counters for one course. */
 export const queryFlashcardDecksByCourse = async (courseId: string) => {
     const apollo = createApolloClient({ withAuth: true })
-    const response = await apollo.query<QueryFlashcardDecksByCourseResponse>({
+    const response = await apollo.query({
         query,
         variables: { courseId },
     })
@@ -85,8 +90,6 @@ export const queryFlashcardDecksByCourse = async (courseId: string) => {
 /** Fetches the exact cross-deck card draw accepted by the due-session mutation. */
 export const queryMyDueFlashcards = async (courseId: string, limit = 50): Promise<DueFlashcardsData | null> => {
     const apollo = createApolloClient({ withAuth: true })
-    const response = await apollo.query<{
-        readonly myDueFlashcards: GraphQLResponse<DueFlashcardsData>
-    }>({ query: dueQuery, variables: { courseId, limit } })
+    const response = await apollo.query({ query: dueQuery, variables: { courseId, limit } })
     return response.data?.myDueFlashcards.data ?? null
 }

@@ -56,6 +56,19 @@ export type CourseLearnTodayPageProps = {
     readonly on?: CourseLearnTodayActions
 }
 
+/** Notice shape for a non-ready Today page; undefined once there is real work to show. */
+type CourseLearnTodayNotice = { readonly message: string; readonly actionLabel?: string }
+
+/** Which notice the Today route shows: the failed retry, the genuinely empty state, or none. */
+const resolveTodayNotice = (
+    state: CourseLearnTodayState,
+    props: CourseLearnTodayData,
+): CourseLearnTodayNotice | undefined => {
+    if (state === "failed") return { message: props.failedMessage, actionLabel: props.retryLabel }
+    if (state === "empty") return { message: props.emptyMessage }
+    return undefined
+}
+
 const resumeCard = (
     item: CourseLearnTodayItem,
     open: CourseLearnTodayActions["open"],
@@ -84,11 +97,7 @@ export const _CourseLearnTodayPage = (input: CourseLearnTodayPageProps) => {
         kind: "",
         actionLabel: input.props.course.actionLabel,
     }
-    const notice = input.state === "failed"
-        ? { message: input.props.failedMessage, actionLabel: input.props.retryLabel }
-        : input.state === "empty"
-            ? { message: input.props.emptyMessage }
-            : undefined
+    const notice = resolveTodayNotice(input.state, input.props)
 
     return (
         <Tree

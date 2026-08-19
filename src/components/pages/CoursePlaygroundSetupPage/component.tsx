@@ -47,26 +47,29 @@ export const _CoursePlaygroundSetupPage = (input: CoursePlaygroundSetupPageProps
             />
         ))
         : undefined
-    const actions = failed
-        ? undefined
-        : paired
-            ? [defineLeafComponent("button", {}, () => (
+    const resolveActions = () => {
+        if (failed) return undefined
+        if (paired) {
+            return [defineLeafComponent("button", {}, () => (
                 <Button
                     props={{ label: input.props.enterLabel, variant: "primary", disabled: input.state !== "ready" }}
                     on={{ press: input.on.enter }}
                 />
             ))]
-            : [defineLeafComponent("button", {}, () => (
-                <Button
-                    props={{
-                        label: input.state === "starting" ? input.props.startingLabel : input.props.startLabel,
-                        variant: "primary",
-                        isPending: input.state === "starting",
-                    }}
-                    on={{ press: input.on.start }}
-                    isLoading={loading}
-                />
-            ))]
+        }
+        return [defineLeafComponent("button", {}, () => (
+            <Button
+                props={{
+                    label: input.state === "starting" ? input.props.startingLabel : input.props.startLabel,
+                    variant: "primary",
+                    isPending: input.state === "starting",
+                }}
+                on={{ press: input.on.start }}
+                isLoading={loading}
+            />
+        ))]
+    }
+    const actions = resolveActions()
 
     return (
         <Tree contract="course-playground-setup-page" render={defineContractComponent("course-playground-setup-page", {

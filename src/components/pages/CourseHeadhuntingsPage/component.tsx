@@ -58,14 +58,19 @@ const PENDING_DIRECTORY_ROWS: ReadonlyArray<HeadhuntingDirectoryRow> = Array.fro
     (_unused, index) => ({ id: `pending-${index}`, label: "" }),
 )
 
+/** A plain row opens; an actionable row contacts only once that action is actually available. */
+const resolveDirectoryHandler = (row: HeadhuntingDirectoryRow, on?: CourseHeadhuntingsPageActions) => {
+    if (row.actionLabel === undefined) return on?.[`open:${row.id}`]
+    if (row.isActionAvailable === true) return on?.[`contact:${row.id}`]
+    return undefined
+}
+
 const DirectoryList = ({ props, on, isLoading = false }: LeafProps<DirectoryListData, CourseHeadhuntingsPageActions>) => (
     <Tree contract="content-next-list" render={defineContractComponent("content-next-list", {
         step: (isLoading ? PENDING_DIRECTORY_ROWS : props.rows)
             .map((row) => defineContractProjection("content-next-row", () => {
                 const label = [row.label, row.meta, row.actionLabel].filter((part) => part !== undefined).join(" · ")
-                const handler = row.actionLabel === undefined
-                    ? on?.[`open:${row.id}`]
-                    : row.isActionAvailable === true ? on?.[`contact:${row.id}`] : undefined
+                const handler = resolveDirectoryHandler(row, on)
                 return handler === undefined ? (
                     <Text props={{ content: label, size: "md" }} isLoading={isLoading} />
                 ) : (

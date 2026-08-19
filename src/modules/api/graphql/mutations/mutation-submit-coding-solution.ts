@@ -1,9 +1,9 @@
-import { gql } from "@apollo/client"
+import { gql, type OperationVariables, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type GraphQLHeaders } from "../types"
 import type { SubmitCodingSolutionResponse } from "../queries/types/coding"
 
-const mutation = gql`
+const mutation: TypedDocumentNode<SubmitCodingSolutionResponse, OperationVariables> = gql`
     mutation SubmitCodingSolution($request: SubmitCodingSolutionRequest!) {
         submitCodingSolution(request: $request) {
             success
@@ -54,5 +54,5 @@ export const mutationSubmitCodingSolution = async (
     options: SubmitCodingSolutionOptions = {},
 ) => {
     const apollo = createApolloClient({ withAuth: true, ...options })
-    return apollo.mutate<SubmitCodingSolutionResponse>({ mutation, variables: { request } })
+    return apollo.mutate({ mutation, variables: { request } })
 }

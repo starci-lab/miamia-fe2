@@ -1,7 +1,9 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { SortBy, SortOrder, type QueryParams, type SortInput } from "../types"
 import { type QueryCoursesRequest, type QueryCoursesResponse } from "./types/courses"
+
+type CoursesVariables = { readonly request: QueryCoursesRequest }
 
 /**
  * The paginated course list.
@@ -11,7 +13,7 @@ import { type QueryCoursesRequest, type QueryCoursesResponse } from "./types/cou
  * built WITH the auth link - the link attaches nothing when no token exists, so one document
  * and one code path serve both readers.
  */
-const query1 = gql`
+const query1: TypedDocumentNode<QueryCoursesResponse, CoursesVariables> = gql`
     query Courses($request: CoursesRequest!) {
         courses(request: $request) {
             success
@@ -43,7 +45,7 @@ export enum QueryCourses {
 }
 
 /** Every document this query can send, keyed by variant. */
-export const queryCoursesMap: Record<QueryCourses, DocumentNode> = {
+export const queryCoursesMap: Record<QueryCourses, TypedDocumentNode<QueryCoursesResponse, CoursesVariables>> = {
     [QueryCourses.Query1]: query1,
 }
 
@@ -67,7 +69,7 @@ export const queryCourses = async ({
     debug,
 }: QueryParams<QueryCourses, QueryCoursesRequest> = {}) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryCoursesResponse>({
+    return apollo.query({
         query: queryCoursesMap[query],
         variables: { request },
     })

@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { MutationParams } from "./types/params"
 import type { GraphQLResponse } from "../types"
@@ -35,8 +35,10 @@ const mutation1 = gql`
 
 export enum MutationReactContent { Mutation1 = "mutation1" }
 
+type ReactContentVariables = { readonly request: ReactContentRequest }
+
 /** Every supported react-to-content document keyed by its finite variant. */
-export const mutationReactContentMap: Record<MutationReactContent, DocumentNode> = {
+export const mutationReactContentMap: Record<MutationReactContent, TypedDocumentNode<MutationReactContentResponse, ReactContentVariables>> = {
     [MutationReactContent.Mutation1]: mutation1,
 }
 
@@ -49,7 +51,7 @@ export const mutationReactContent = async ({
     debug,
 }: MutationParams<MutationReactContent, ReactContentRequest>) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.mutate<MutationReactContentResponse>({
+    return apollo.mutate({
         mutation: mutationReactContentMap[mutation],
         variables: { request },
     })

@@ -95,16 +95,19 @@ const ChangelogContentView = ({ props, on, isLoading = false }: ChangelogContent
 
 const ChangelogContent = defineContractComponent("changelog-list", ChangelogContentView)
 
+/** The rows to draw: the resolved entries, one synthetic error row, or none while pending. */
+const resolveChangelogEntries = (input: ChangelogListProps): ReadonlyArray<ChangelogEntry> => {
+    if (input.state === "ready") return input.props.entries ?? []
+    if (input.state === "failed") return [{ id: "failed", dateLabel: "", title: input.props.errorMessage }]
+    return []
+}
+
 /** Draw the product changelog as a joined history without owning fetching or navigation. */
 export const _ChangelogList = (input: ChangelogListProps) => {
     if (input.state === "empty") return null
 
     const isLoading = input.state === "pending"
-    const entries: ReadonlyArray<ChangelogEntry> = input.state === "ready"
-        ? input.props.entries ?? []
-        : input.state === "failed"
-            ? [{ id: "failed", dateLabel: "", title: input.props.errorMessage }]
-            : []
+    const entries = resolveChangelogEntries(input)
     const openById: SurfaceListCardActions = Object.fromEntries(entries.map((entry) => [
         entry.id,
         input.on?.open === undefined ? undefined : () => input.on?.open?.(entry.id),

@@ -10,6 +10,13 @@ import { _ProfileSkillsPage } from "./component"
 
 const FILTERS = ["all", "easy", "medium", "hard"] as const
 
+/** Any errored evidence query beats still-loading; ready is what's left. */
+const resolveSkillsState = (hasError: boolean, isPending: boolean): "error" | "pending" | "ready" => {
+    if (hasError) return "error"
+    if (isPending) return "pending"
+    return "ready"
+}
+
 /** Resolve and independently cache every public coding evidence family. */
 export const ProfileSkillsPage = () => {
     const params = useParams<{ username?: string }>()
@@ -27,7 +34,10 @@ export const ProfileSkillsPage = () => {
     const filter = FILTERS[filterIndex]
     const filtered = useMemo(() => (history.data ?? []).filter((item) => (!search || item.problemTitle.toLowerCase().includes(search.toLowerCase())) && (filter === "all" || item.difficulty === filter)), [filter, history.data, search])
     const queries = [progress, rank, xp, skills, history]
-    const state = queries.some((query) => query.error) ? "error" : profile.isLoading || queries.some((query) => query.isLoading) ? "pending" : "ready"
+    const state = resolveSkillsState(
+        queries.some((query) => Boolean(query.error)),
+        profile.isLoading || queries.some((query) => query.isLoading),
+    )
     return <_ProfileSkillsPage state={state} props={{
         metrics: [
             { id: "solved", value: String(progress.data?.solvedProblemIds.length ?? 0), label: "solved" },

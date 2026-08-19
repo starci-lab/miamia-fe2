@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type GraphQLHeaders } from "../types"
 import {
@@ -6,7 +6,9 @@ import {
     type MutationCoursesCheckoutResponse,
 } from "./types/courses-checkout"
 
-const mutation = gql`
+type CoursesCheckoutVariables = { readonly request: MutationCoursesCheckoutRequest }
+
+const mutation: TypedDocumentNode<MutationCoursesCheckoutResponse, CoursesCheckoutVariables> = gql`
     mutation CoursesCheckout($request: CoursesCheckoutRequest!) {
         coursesCheckout(request: $request) {
             success
@@ -45,5 +47,5 @@ export const mutationCoursesCheckout = async (
     options: CoursesCheckoutOptions = {},
 ) => {
     const apollo = createApolloClient({ withAuth: true, ...options })
-    return apollo.mutate<MutationCoursesCheckoutResponse>({ mutation, variables: { request } })
+    return apollo.mutate({ mutation, variables: { request } })
 }

@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type MutationParams } from "./types/params"
 import {
@@ -17,7 +17,7 @@ import {
  * The response carries a challenge payload because the new code has a new expiry, and a
  * reader told only that something was resent has been told half of what changed.
  */
-const mutation1 = gql`
+const mutation1: TypedDocumentNode<MutationSignInResendOtpResponse, { request: SignInResendOtpRequest }> = gql`
     mutation SignInResendOtp($request: SignInResendOtpRequest!) {
         signInResendOtp(request: $request) {
             success
@@ -38,7 +38,7 @@ export enum MutationSignInResendOtp {
 }
 
 /** Every document this mutation can send, keyed by variant. */
-export const mutationSignInResendOtpMap: Record<MutationSignInResendOtp, DocumentNode> = {
+export const mutationSignInResendOtpMap: Record<MutationSignInResendOtp, TypedDocumentNode<MutationSignInResendOtpResponse, { request: SignInResendOtpRequest }>> = {
     [MutationSignInResendOtp.Mutation1]: mutation1,
 }
 
@@ -51,7 +51,7 @@ export const mutationSignInResendOtp = async ({
     debug,
 }: MutationParams<MutationSignInResendOtp, SignInResendOtpRequest>) => {
     const apollo = createApolloClient({ headers, signal, debug })
-    return apollo.mutate<MutationSignInResendOtpResponse>({
+    return apollo.mutate({
         mutation: mutationSignInResendOtpMap[mutation],
         variables: { request },
     })

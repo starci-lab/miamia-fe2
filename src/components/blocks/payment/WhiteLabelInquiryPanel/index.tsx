@@ -24,7 +24,12 @@ export const WhiteLabelInquiryPanel = ({ onDismiss, onPendingChange }: WhiteLabe
     const run = async () => {
         const next: WhiteLabelInquiryErrors = {}
         if (values.name.trim().length < 2) next.name = t("nameInvalid")
-        if (!/^\S+@\S+\.\S+$/.test(values.email.trim())) next.email = t("emailInvalid")
+        // `[^\s@]` rather than `\S` for each segment: `\S` also matches `@` and `.`, so
+        // `\S+@\S+\.\S+` lets the three runs overlap on a non-matching input and backtrack across
+        // every split point (S8786's superlinear case). Excluding `@` and whitespace from each run
+        // keeps the segments disjoint. The dot must also leave the classes: with `.` still inside them,
+        // `[^\s@]+\.[^\s@]+` can split at every dot in the domain, which is the same ambiguity again.
+        if (!/^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/.test(values.email.trim())) next.email = t("emailInvalid")
         if (values.message.trim().length < 10) next.message = t("messageInvalid")
         if (Object.keys(next).length > 0) { setErrors(next); return }
         setOutcome("idle")
@@ -35,7 +40,13 @@ export const WhiteLabelInquiryPanel = ({ onDismiss, onPendingChange }: WhiteLabe
             setOutcome("succeeded")
         } catch { setOutcome("failed") } finally { onPendingChange?.(false) }
     }
-    const state = submit.isMutating ? "submitting" : outcome === "succeeded" ? "succeeded" : outcome === "failed" ? "failed" : Object.keys(errors).length > 0 ? "invalid" : "idle"
+    const deriveState = () => {
+        if (submit.isMutating) return "submitting"
+        if (outcome === "succeeded") return "succeeded"
+        if (outcome === "failed") return "failed"
+        return Object.keys(errors).length > 0 ? "invalid" : "idle"
+    }
+    const state = deriveState()
     return <_WhiteLabelInquiryPanel state={state} values={values} errors={errors} copy={copy} onChange={change} onSubmit={run} onDismiss={onDismiss} />
 }
 /** Declares the connected inquiry block boundary. */

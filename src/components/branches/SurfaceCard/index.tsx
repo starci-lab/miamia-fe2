@@ -87,6 +87,19 @@ export type SurfaceCardProps<K extends ContractKey> = ContractBranchProps<K> & {
     readonly on?: SurfaceCardActions
 }
 
+/** The trailing element on the label row: the way out, the fact, or nothing. */
+const deriveEnd = (
+    hasSeeMore: boolean,
+    seeMoreLabel: string | undefined,
+    onSeeMore: (() => void) | undefined,
+    fact: string | undefined,
+    isLoading: boolean,
+) => {
+    if (hasSeeMore) return <SeeMoreLink props={{ label: seeMoreLabel ?? "" }} on={{ press: onSeeMore }} />
+    if (fact === undefined) return null
+    return <Text props={{ content: fact, size: "sm", tone: "muted" }} isLoading={isLoading} />
+}
+
 /**
  * Draw a named section.
  *
@@ -101,11 +114,7 @@ export const SurfaceCard = <const K extends ContractKey>({
 }: SurfaceCardProps<K>) => {
     // One place at the end of the line: the way out wins it, the fact takes it only if free.
     const hasSeeMore = props.seeMoreLabel !== undefined && on?.seeMore !== undefined
-    const end = hasSeeMore
-        ? <SeeMoreLink props={{ label: props.seeMoreLabel }} on={{ press: on.seeMore }} />
-        : props.fact === undefined
-            ? null
-            : <Text props={{ content: props.fact, size: "sm", tone: "muted" }} isLoading={isLoading} />
+    const end = deriveEnd(hasSeeMore, props.seeMoreLabel, on?.seeMore, props.fact, isLoading)
 
     const labelContract = !hasSeeMore && props.fact !== undefined
         ? "title-with-baseline-fact"

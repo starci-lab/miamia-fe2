@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type OperationVariables, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type QueryParams } from "../types"
 import { type QueryMyKpisResponse } from "./types/my-kpis"
@@ -11,7 +11,7 @@ import { type QueryMyKpisResponse } from "./types/my-kpis"
  * different percentage the moment the server changed what qualifies, and the two would disagree
  * on the same screen. Required-auth, so the client always carries the token.
  */
-const query1 = gql`
+const query1: TypedDocumentNode<QueryMyKpisResponse, OperationVariables> = gql`
     query MyKpis {
         myKpis {
             success
@@ -44,7 +44,7 @@ export enum QueryMyKpis {
 }
 
 /** Every document this query can send, keyed by variant. */
-export const queryMyKpisMap: Record<QueryMyKpis, DocumentNode> = {
+export const queryMyKpisMap: Record<QueryMyKpis, TypedDocumentNode<QueryMyKpisResponse, OperationVariables>> = {
     [QueryMyKpis.Query1]: query1,
 }
 
@@ -56,7 +56,7 @@ export const queryMyKpis = async ({
     debug,
 }: QueryParams<QueryMyKpis> = {}) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryMyKpisResponse>({
+    return apollo.query({
         query: queryMyKpisMap[query],
     })
 }

@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type OperationVariables, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type QueryParams } from "../types"
 import { type QueryMyRewardWalletResponse } from "./types/my-reward-wallet"
@@ -30,7 +30,7 @@ export enum QueryMyRewardWallet {
 }
 
 /** Every document this query can send, keyed by variant. */
-export const queryMyRewardWalletMap: Record<QueryMyRewardWallet, DocumentNode> = {
+export const queryMyRewardWalletMap: Record<QueryMyRewardWallet, TypedDocumentNode<QueryMyRewardWalletResponse, OperationVariables>> = {
     [QueryMyRewardWallet.Query1]: query1,
 }
 
@@ -42,7 +42,7 @@ export const queryMyRewardWallet = async ({
     debug,
 }: QueryParams<QueryMyRewardWallet> = {}) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryMyRewardWalletResponse>({
+    return apollo.query({
         query: queryMyRewardWalletMap[query],
     })
 }

@@ -1,9 +1,9 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type QueryParams } from "../types"
 import { type QueryChangelogEntriesResponse } from "./types/changelog-entries"
 
-const query1 = gql`
+const query1: TypedDocumentNode<QueryChangelogEntriesResponse> = gql`
     query ChangelogEntries {
         changelogEntries(limit: 4) {
             success
@@ -16,7 +16,7 @@ const query1 = gql`
 
 export enum QueryChangelogEntries { Query1 = "query1" }
 /** Every supported changelog document keyed by its public variant. */
-export const queryChangelogEntriesMap: Record<QueryChangelogEntries, DocumentNode> = {
+export const queryChangelogEntriesMap: Record<QueryChangelogEntries, TypedDocumentNode<QueryChangelogEntriesResponse>> = {
     [QueryChangelogEntries.Query1]: query1,
 }
 
@@ -28,5 +28,5 @@ export const queryChangelogEntries = async ({
     debug,
 }: QueryParams<QueryChangelogEntries> = {}) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryChangelogEntriesResponse>({ query: queryChangelogEntriesMap[query] })
+    return apollo.query({ query: queryChangelogEntriesMap[query] })
 }

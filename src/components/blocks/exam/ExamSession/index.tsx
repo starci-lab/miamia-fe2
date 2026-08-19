@@ -45,7 +45,14 @@ export const ExamSession = ({ slug, onExit }: ExamSessionConnectedProps) => {
         return [...rows.entries()].map(([id, row]) => ({ id, title: id, percent: Math.round((row.correct / row.total) * 100), percentText: `${row.correct}/${row.total}` }))
     }, [detail, result])
     const reviews = useMemo<ReadonlyArray<ExamAnswerReviewData>>(() => (result?.answers ?? []).map((answer, index) => ({ id: answer.questionId, number: t("questionNumber", { number: index + 1 }), verdict: answer.isCorrect ? t("correct") : t("incorrect"), stem: answer.stem, selectedLabel: t("selected"), selected: answer.selected ?? t("skipped"), correctLabel: t("correctAnswer"), correct: answer.correct, explanation: localized(answer.explanationVi, answer.explanationEn) || undefined })), [result, t, locale])
-    const state = paper.error || paper.data === null || failedSubmit ? "failed" : paper.data === undefined ? "loading" : result ? "graded" : grade.isMutating ? "submitting" : "ready"
+    const resolveState = (): "failed" | "loading" | "graded" | "submitting" | "ready" => {
+        if (paper.error || paper.data === null || failedSubmit) return "failed"
+        if (paper.data === undefined) return "loading"
+        if (result) return "graded"
+        if (grade.isMutating) return "submitting"
+        return "ready"
+    }
+    const state = resolveState()
     const count = detail?.questions.length ?? 0
     return <_ExamSession state={state} props={{ title: localized(detail?.titleVi, detail?.titleEn, slug), positionLabel: count === 0 ? "" : t("position", { current: position + 1, total: count }), exitLabel: t("exit"), exitConfirmLabel: t("exitConfirm"), passage: question?.passage?.body, questionLabel: t("questionNumber", { number: position + 1 }), stem: question?.stem ?? "", options: question ? [{ id: "a", label: question.optionA }, { id: "b", label: question.optionB }, { id: "c", label: question.optionC }, { id: "d", label: question.optionD }] : [], selectedKey: question ? answers[question.questionId] : undefined, previousLabel: t("previous"), nextLabel: t("next"), submitLabel: t("submit"), isLast: position >= count - 1, loadingMessage: t("loading"), failedMessage: failedSubmit ? t("submitFailed") : t("failed"), retryLabel: t("retry"), resultTitle: t("resultTitle"), scoreText: result ? t("score", { score: result.score, max: result.maxScore }) : "", scoreBody: t("resultBody"), skillTitle: t("skills"), skills, reviews, backLabel: t("back") }} on={{ selectAnswer: (id) => { if (question) setAnswers((current) => ({ ...current, [question.questionId]: id })) }, previous: () => setPosition((current) => Math.max(0, current - 1)), forward: () => setPosition((current) => Math.min(count - 1, current + 1)), submit, exit: onExit, retry: () => { setFailedSubmit(false); void paper.mutate() }, back: onExit }} />
 }

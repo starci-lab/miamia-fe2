@@ -5,12 +5,26 @@ import { useRouter } from "@/i18n/navigation"
 import { useMutateSubmitPersonalTaskAttemptSwr } from "@/hooks/swr/useMutateSubmitPersonalTaskAttemptSwr"
 import { useQueryCoursePersonalProjectSwr } from "@/hooks/swr/useQueryCoursePersonalProjectSwr"
 import { useQueryPersonalTaskAttemptsSwr } from "@/hooks/swr/useQueryPersonalTaskAttemptsSwr"
-import { _CoursePersonalProjectTaskPage } from "./component"
+import { _CoursePersonalProjectTaskPage as CoursePersonalProjectTaskPageView } from "./component"
 
 /** Route identity needed to resolve and submit one personal-project task. */
 export type CoursePersonalProjectTaskPageProps = {
     readonly displayId: string
     readonly taskId: string
+}
+
+/** Resolves this route's settled state: a submission's own outcome outranks a stale load failure. */
+const resolveTaskPageState = (
+    submissionError: unknown,
+    isMutating: boolean,
+    failedToLoad: boolean,
+    projectData: unknown,
+): "failed" | "submitting" | "pending" | "ready" => {
+    if (submissionError !== undefined) return "failed"
+    if (isMutating) return "submitting"
+    if (failedToLoad) return "failed"
+    if (projectData === undefined) return "pending"
+    return "ready"
 }
 
 const COPY = {
@@ -47,15 +61,7 @@ export const CoursePersonalProjectTaskPage = ({ displayId, taskId }: CoursePerso
     const submission = useMutateSubmitPersonalTaskAttemptSwr()
     const failedToLoad = project.error !== undefined
         || (project.data !== undefined && (project.data === null || task === undefined))
-    const state = submission.error !== undefined
-        ? "failed"
-        : submission.isMutating
-            ? "submitting"
-            : failedToLoad
-                ? "failed"
-                : project.data === undefined
-                    ? "pending"
-                    : "ready"
+    const state = resolveTaskPageState(submission.error, submission.isMutating, failedToLoad, project.data)
 
     const submit = async () => {
         const courseId = project.data?.course.id
@@ -70,7 +76,7 @@ export const CoursePersonalProjectTaskPage = ({ displayId, taskId }: CoursePerso
     }
 
     return (
-        <_CoursePersonalProjectTaskPage
+        <CoursePersonalProjectTaskPageView
             state={state}
             props={{
                 title: task?.title ?? copy.fallbackTitle,

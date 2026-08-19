@@ -47,6 +47,13 @@ const REASON_KEYS: Readonly<Record<string, "reasonEnrolled" | "reasonDiligent" |
     both: "reasonBoth",
 }
 
+/** Whether the preview is still in flight, unavailable, or resolved. */
+const derivePriceDetailState = (isLoading: boolean, hasData: boolean): CoursePriceDetailState => {
+    if (isLoading) return "pending"
+    if (!hasData) return "unavailable"
+    return "ready"
+}
+
 /**
  * Resolve the price story and mount it inside the covering surface.
  *
@@ -69,9 +76,7 @@ export const CoursePriceOverlay = ({ courseId, title, isOpen, onDismiss }: Cours
     const data = preview.data ?? undefined
     const isPersonal = isPersonalPrice(data)
 
-    const state: CoursePriceDetailState = preview.isLoading
-        ? "pending"
-        : data === undefined ? "unavailable" : "ready"
+    const state = derivePriceDetailState(preview.isLoading, data !== undefined)
 
     const lines: ReadonlyArray<CoursePriceLine> = data === undefined
         ? []
@@ -95,14 +100,15 @@ export const CoursePriceOverlay = ({ courseId, title, isOpen, onDismiss }: Cours
 
     // Scarcity is only true when there IS a next phase to rise to. Seats without a next price would
     // say "hurry" without saying towards what, so both halves come from the same answer or neither.
-    const forwardLook = data?.nextPhasePriceVnd == null
-        ? undefined
-        : data.seatsRemainingInCurrentPhase == null
+    let forwardLook: string | undefined
+    if (data?.nextPhasePriceVnd != null) {
+        forwardLook = data.seatsRemainingInCurrentPhase == null
             ? t("nextPhase", { price: money.format(data.nextPhasePriceVnd) })
             : t("seatsThenPrice", {
                 seats: data.seatsRemainingInCurrentPhase,
                 price: money.format(data.nextPhasePriceVnd),
             })
+    }
 
     return (
         <_CoursePriceOverlay

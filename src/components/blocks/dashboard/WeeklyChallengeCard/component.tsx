@@ -118,17 +118,22 @@ export const _WeeklyChallengeCard = (input: WeeklyChallengeCardProps) => {
             title: defineLeafComponent("text", {}, () => <Text props={{ content: input.props.title, size: "sm" }} isLoading={isLoading} />),
         })} />
     ))
+    const renderAction = () => {
+        if (isLoading) {
+            return defineLeafComponent("button", {}, () => <Button props={{ label: input.props.actionLabel ?? "", size: "sm", variant: "primary" }} isLoading />)
+        }
+        if (input.props.claimed === true) {
+            return defineLeafComponent("badge", {}, () => <Badge props={{ content: input.props.claimedLabel ?? "", tone: "success" }} />)
+        }
+        return defineLeafComponent("button", {}, () => <Button
+            props={{ label: input.props.actionLabel ?? "", size: "sm", variant: "primary", isPending: input.props.isClaiming === true }}
+            on={{ press: input.on?.act }}
+        />)
+    }
     const status = defineCompositeComponent("weekly-challenge-status", {}, () => (
         <Tree contract="weekly-challenge-status" render={defineContractComponent("weekly-challenge-status", {
             endsIn: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => <Text props={{ content: input.props.endsInLabel, size: "xs", tone: "muted" }} isLoading={isLoading} />),
-            action: isLoading
-                ? defineLeafComponent("button", {}, () => <Button props={{ label: input.props.actionLabel ?? "", size: "sm", variant: "primary" }} isLoading />)
-                : input.props.claimed === true
-                    ? defineLeafComponent("badge", {}, () => <Badge props={{ content: input.props.claimedLabel ?? "", tone: "success" }} />)
-                    : defineLeafComponent("button", {}, () => <Button
-                        props={{ label: input.props.actionLabel ?? "", size: "sm", variant: "primary", isPending: input.props.isClaiming === true }}
-                        on={{ press: input.on?.act }}
-                    />),
+            action: renderAction(),
         })} />
     ))
     const finisherList = finishers.length === 0 ? undefined : defineContractProjection(

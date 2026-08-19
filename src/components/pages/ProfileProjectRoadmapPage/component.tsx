@@ -11,6 +11,29 @@ import type { ProfileCapstone } from "@/modules/api/graphql/queries/types/profil
 /** One resolved capstone plus its projects-return outcome. */
 export type ProfileProjectRoadmapPageProps = { readonly state: "pending" | "ready" | "error"; readonly project?: ProfileCapstone; readonly onBack: () => void }
 
+/** The heading text: an error sentence, the loaded title, or nothing while resting. */
+const deriveRoadmapTitle = (
+    state: ProfileProjectRoadmapPageProps["state"],
+    courseTitle: string | undefined,
+): string | undefined => {
+    if (state === "error") return "Capstone couldn't be loaded"
+    if (courseTitle !== undefined) return courseTitle
+    if (state === "pending") return undefined
+    return "Capstone not found"
+}
+
+/** The meta line under the heading: the resolved counts, a not-public notice, or nothing. */
+const deriveRoadmapMeta = (
+    project: ProfileCapstone | undefined,
+    state: ProfileProjectRoadmapPageProps["state"],
+): string | undefined => {
+    if (project) {
+        return `${project.completedMilestones}/${project.totalMilestones} milestones · ${project.completedTasks}/${project.totalTasks} tasks · Verified by StarCi`
+    }
+    if (state === "ready") return "This capstone is not public."
+    return undefined
+}
+
 /** Dedicated capstone detail: summary/progress remains above an ordered milestone roadmap. */
 export const _ProfileProjectRoadmapPage = ({ state, project, onBack }: ProfileProjectRoadmapPageProps) => {
     const value = Math.round((project?.completedTasks ?? 0) / Math.max(1, project?.totalTasks ?? 0) * 100)
@@ -19,8 +42,8 @@ export const _ProfileProjectRoadmapPage = ({ state, project, onBack }: ProfilePr
         defineContractProjection("label-row-over-card", () => (
             <Tree contract="profile-proof-summary" render={defineContractComponent("profile-proof-summary", {
                 back: defineLeafComponent("button", {}, () => <Button props={{ label: "← Projects", variant: "ghost", size: "sm" }} on={{ press: onBack }} />),
-                title: defineLeafComponent("heading", {}, () => <Heading props={{ content: state === "error" ? "Capstone couldn't be loaded" : project?.courseTitle ?? (state === "pending" ? undefined : "Capstone not found"), level: 2 }} isLoading={state === "pending"} />),
-                meta: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: project ? `${project.completedMilestones}/${project.totalMilestones} milestones · ${project.completedTasks}/${project.totalTasks} tasks · Verified by StarCi` : state === "ready" ? "This capstone is not public." : undefined, size: "sm", tone: "muted" }} isLoading={state === "pending"} />),
+                title: defineLeafComponent("heading", {}, () => <Heading props={{ content: deriveRoadmapTitle(state, project?.courseTitle), level: 2 }} isLoading={state === "pending"} />),
+                meta: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: deriveRoadmapMeta(project, state), size: "sm", tone: "muted" }} isLoading={state === "pending"} />),
                 ...(project || state === "pending" ? { progress: defineLeafComponent("progress", {}, () => <Progress props={{ value, label: "Capstone completion" }} isLoading={state === "pending"} />) } : {}),
             })} />
         )),

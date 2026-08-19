@@ -9,6 +9,16 @@ import { useQueryUserProfileSwr } from "@/hooks/swr/useQueryUserProfileSwr"
 import { useMutateSetFollowSwr } from "@/hooks/swr/useMutateSetFollowSwr"
 import { _ProfileHero } from "./component"
 
+/** The primary CTA label: edit on your own profile, else the follow state of the one you're viewing. */
+const resolvePrimaryLabel = (
+    t: ReturnType<typeof useTranslations>,
+    isSelf: boolean,
+    isFollowedByMe: boolean | undefined,
+): string => {
+    if (isSelf) return t("actions.edit")
+    return isFollowedByMe ? t("actions.following") : t("actions.follow")
+}
+
 /** Connected identity rail: resolves viewer context, CTA precedence and share/follow behavior. */
 export const ProfileHero = () => {
     const t = useTranslations("profile")
@@ -20,9 +30,7 @@ export const ProfileHero = () => {
     const follow = useMutateSetFollowSwr()
     const user = profile.data
     const isSelf = user !== null && user !== undefined && viewer.data?.id === user.id
-    const primaryLabel = isSelf
-        ? t("actions.edit")
-        : user?.isFollowedByMe ? t("actions.following") : t("actions.follow")
+    const primaryLabel = resolvePrimaryLabel(t, isSelf, user?.isFollowedByMe)
     const joinedLabel = useMemo(() => {
         if (!user?.createdAt) return ""
         const date = new Date(user.createdAt)

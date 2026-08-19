@@ -55,9 +55,10 @@ const PENDING_CONSULTANT_ROWS: ReadonlyArray<HeadhuntingDirectoryRow> = Array.fr
 )
 
 const ConsultantList = ({ props, on, isLoading = false }: LeafProps<ConsultantListData, CourseHeadhuntingCompanyPageActions>) => {
+    const rows = isLoading ? PENDING_CONSULTANT_ROWS : props.rows
     const steps = !isLoading && props.rows.length === 0
         ? [defineContractProjection("content-next-row", () => <EmptyNotice props={{ message: props.emptyMessage }} />)]
-        : (isLoading ? PENDING_CONSULTANT_ROWS : props.rows).map((row) => defineContractProjection("content-next-row", () => {
+        : rows.map((row) => defineContractProjection("content-next-row", () => {
             const label = [row.label, row.meta, row.actionLabel].filter((part) => part !== undefined).join(" · ")
             const handler = row.isActionAvailable === true ? on?.[`contact:${row.id}`] : undefined
             return handler === undefined ? (

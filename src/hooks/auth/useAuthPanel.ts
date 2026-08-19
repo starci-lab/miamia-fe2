@@ -373,12 +373,12 @@ export const useAuthPanel = ({ initialMode = "signIn", onSignedIn }: UseAuthPane
         const state = params.get("state")
         const provider = readStoredProvider()
         if (failed) {
-            writeStoredProvider(undefined)
+            writeStoredProvider()
             setRecord((previous) => ({ ...previous, failure: toFailure(undefined, failed) }))
             return
         }
         if (!code || !state || !provider) return
-        writeStoredProvider(undefined)
+        writeStoredProvider()
         const runId = runRef.current + 1
         runRef.current = runId
         setRecord((previous) => ({ ...previous, isPending: true, failure: undefined }))

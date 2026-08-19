@@ -181,24 +181,24 @@ export const CoursesCatalogPage = () => {
     const failed = catalog.error !== undefined || catalog.data === null
     const pending = catalog.data === undefined && !failed
 
-    const state: CoursesCatalogPageState = failed
-        ? "failed"
-        : pending
-            ? "pending"
-            // The owned group is a second, independent answer, so it does not vote here. A catalog
-            // with nothing to discover is empty even when the learner owns courses, because the
-            // notice speaks for the list the toolbar narrows and `myCourses` is not that list.
-            : discover.length === 0
-                ? (isSearching ? "filtered-empty" : "empty")
-                : "ready"
+    const deriveState = (): CoursesCatalogPageState => {
+        if (failed) return "failed"
+        if (pending) return "pending"
+        // The owned group is a second, independent answer, so it does not vote here. A catalog
+        // with nothing to discover is empty even when the learner owns courses, because the
+        // notice speaks for the list the toolbar narrows and `myCourses` is not that list.
+        if (discover.length === 0) return isSearching ? "filtered-empty" : "empty"
+        return "ready"
+    }
+    const state = deriveState()
 
-    const notice = state === "failed"
-        ? { noticeMessage: t("failed"), noticeActionLabel: t("retry") }
-        : state === "filtered-empty"
-            ? { noticeMessage: t("filteredEmpty"), noticeActionLabel: t("clearFilter") }
-            : state === "empty"
-                ? { noticeMessage: t("empty"), noticeActionLabel: t("emptyAction") }
-                : {}
+    const deriveNotice = () => {
+        if (state === "failed") return { noticeMessage: t("failed"), noticeActionLabel: t("retry") }
+        if (state === "filtered-empty") return { noticeMessage: t("filteredEmpty"), noticeActionLabel: t("clearFilter") }
+        if (state === "empty") return { noticeMessage: t("empty"), noticeActionLabel: t("emptyAction") }
+        return {}
+    }
+    const notice = deriveNotice()
 
     return (
         <>

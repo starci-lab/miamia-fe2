@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type OperationVariables, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type QueryParams } from "../types"
 import { type QueryCourseRequest, type QueryCourseResponse } from "./types/course"
@@ -22,7 +22,7 @@ import { type QueryCourseRequest, type QueryCourseResponse } from "./types/cours
  * lessons - the server has no lesson type. They are what the named render shows when a module is
  * opened, and their count is the "N previews" the closed row reports.
  */
-const query1 = gql`
+const query1: TypedDocumentNode<QueryCourseResponse, OperationVariables> = gql`
     query Course($request: CourseRequest!) {
         course(request: $request) {
             success
@@ -88,7 +88,7 @@ export enum QueryCourse {
 }
 
 /** Every document this query can send, keyed by variant. */
-export const queryCourseMap: Record<QueryCourse, DocumentNode> = {
+export const queryCourseMap: Record<QueryCourse, TypedDocumentNode<QueryCourseResponse, OperationVariables>> = {
     [QueryCourse.Query1]: query1,
 }
 
@@ -101,7 +101,7 @@ export const queryCourse = async ({
     debug,
 }: QueryParams<QueryCourse, QueryCourseRequest> = {}) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryCourseResponse>({
+    return apollo.query({
         query: queryCourseMap[query],
         variables: { request },
     })

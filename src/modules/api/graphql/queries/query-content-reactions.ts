@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { GraphQLResponse, LookupQueryParams } from "../types"
 import type { ReactionType } from "./types/reactions"
@@ -28,7 +28,7 @@ export interface QueryContentReactionsResponse {
     readonly contentReactions: GraphQLResponse<ContentReactionSummary>
 }
 
-const query1 = gql`
+const query1: TypedDocumentNode<QueryContentReactionsResponse, { request: QueryContentReactionsRequest }> = gql`
     query ContentReactions($request: ContentReactionsRequest!) {
         contentReactions(request: $request) {
             success
@@ -48,7 +48,7 @@ const query1 = gql`
 export enum QueryContentReactions { Query1 = "query1" }
 
 /** Every supported content-reactions document keyed by its finite variant. */
-export const queryContentReactionsMap: Record<QueryContentReactions, DocumentNode> = {
+export const queryContentReactionsMap: Record<QueryContentReactions, TypedDocumentNode<QueryContentReactionsResponse, { request: QueryContentReactionsRequest }>> = {
     [QueryContentReactions.Query1]: query1,
 }
 
@@ -61,7 +61,7 @@ export const queryContentReactions = async ({
     debug,
 }: LookupQueryParams<QueryContentReactions, QueryContentReactionsRequest>) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryContentReactionsResponse>({
+    return apollo.query({
         query: queryContentReactionsMap[query],
         variables: { request },
     })

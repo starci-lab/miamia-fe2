@@ -71,7 +71,6 @@ export type LayoutClassName =
     | "md:[&>[data-node=learn-spine-column]]:overflow-y-auto"
     | "md:[&>*:first-child]:sticky" | "md:[&>*:first-child]:top-rail"
     | "md:[&>*:first-child]:self-start" | "md:[&>*:first-child]:max-h-rail"
-    | "md:[&>*:first-child]:overflow-y-auto"
     | "[&>*]:px-4" | "[&>*]:py-3" | "[&>*]:p-2" | "[&>*]:p-3" | "[&>*]:border-separator"
     | "[&>*:nth-child(odd)]:border-r" | "[&>*:nth-child(-n+4)]:border-b"
     | "[&>*:first-child]:w-5" | "[&>*:first-child]:shrink-0"
@@ -116,7 +115,7 @@ export type LayoutClassName =
     // repository, which is why these read as gaps rather than omissions: every one is the mirror of a
     // member already present for the opposite child or the opposite edge.
     | "[&>*:nth-child(2)]:shrink-0"
-    | "[&>*:last-child]:min-w-0" | "[&>*:last-child]:grow" | "[&>*:last-child]:shrink-0"
+    | "[&>*:last-child]:min-w-0" | "[&>*:last-child]:grow"
     | "md:[&>*:last-child]:sticky" | "md:[&>*:last-child]:top-rail"
     | "md:[&>*:last-child]:self-start" | "md:[&>*:last-child]:max-h-rail"
     | "md:[&>*:last-child]:overflow-y-auto"

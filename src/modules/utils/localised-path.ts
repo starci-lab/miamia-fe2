@@ -14,9 +14,8 @@
  * @param path - a route path, with or without a leading locale segment.
  * @param locale - the active locale.
  */
-export const withoutLocale = (path: string, locale: string): string =>
-    path === `/${locale}`
-        ? "/"
-        : path.startsWith(`/${locale}/`)
-            ? path.slice(locale.length + 1)
-            : path
+export const withoutLocale = (path: string, locale: string): string => {
+    if (path === `/${locale}`) return "/"
+    if (path.startsWith(`/${locale}/`)) return path.slice(locale.length + 1)
+    return path
+}

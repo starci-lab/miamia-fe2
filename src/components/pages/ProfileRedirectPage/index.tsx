@@ -12,7 +12,7 @@ export const profileHandleFromToken = (token?: string): string | undefined => {
     try {
         const encoded = token.split(".")[1]
         if (encoded === undefined) return undefined
-        const normalized = encoded.replace(/-/g, "+").replace(/_/g, "/")
+        const normalized = encoded.replaceAll("-", "+").replaceAll("_", "/")
         const claims = JSON.parse(window.atob(normalized)) as { email?: unknown; preferred_username?: unknown }
         const email = typeof claims.email === "string" ? claims.email.trim() : ""
         const fallback = typeof claims.preferred_username === "string" ? claims.preferred_username.trim() : ""

@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type OperationVariables, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type QueryParams } from "../types"
 import { type QueryMyCartResponse } from "./types/my-cart"
@@ -14,7 +14,7 @@ import { type QueryMyCartResponse } from "./types/my-cart"
  * plan unlocked an enrolment returns already correct. A client-side filter would be a second copy
  * of that rule, and the copy nobody edits is the one that stops matching.
  */
-const query1 = gql`
+const query1: TypedDocumentNode<QueryMyCartResponse, OperationVariables> = gql`
     query MyCart {
         myCart {
             success
@@ -41,7 +41,7 @@ export enum QueryMyCart {
 }
 
 /** Every document this query can send, keyed by variant. */
-export const queryMyCartMap: Record<QueryMyCart, DocumentNode> = {
+export const queryMyCartMap: Record<QueryMyCart, TypedDocumentNode<QueryMyCartResponse, OperationVariables>> = {
     [QueryMyCart.Query1]: query1,
 }
 
@@ -53,7 +53,7 @@ export const queryMyCart = async ({
     debug,
 }: QueryParams<QueryMyCart> = {}) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryMyCartResponse>({
+    return apollo.query({
         query: queryMyCartMap[query],
         fetchPolicy: "network-only",
     })

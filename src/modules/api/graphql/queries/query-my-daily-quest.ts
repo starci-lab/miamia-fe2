@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type OperationVariables, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type QueryParams } from "../types"
 import { type QueryMyDailyQuestResponse } from "./types/my-daily-quest"
@@ -39,7 +39,7 @@ export enum QueryMyDailyQuest {
 }
 
 /** Every document this query can send, keyed by variant. */
-export const queryMyDailyQuestMap: Record<QueryMyDailyQuest, DocumentNode> = {
+export const queryMyDailyQuestMap: Record<QueryMyDailyQuest, TypedDocumentNode<QueryMyDailyQuestResponse, OperationVariables>> = {
     [QueryMyDailyQuest.Query1]: query1,
 }
 
@@ -51,7 +51,7 @@ export const queryMyDailyQuest = async ({
     debug,
 }: QueryParams<QueryMyDailyQuest> = {}) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryMyDailyQuestResponse>({
+    return apollo.query({
         query: queryMyDailyQuestMap[query],
     })
 }

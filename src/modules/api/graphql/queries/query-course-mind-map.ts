@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client"
+import { gql, type OperationVariables, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { GraphQLResponse, LookupQueryParams } from "../types"
 
@@ -13,9 +13,9 @@ export type CourseMindMap = { readonly nodes: ReadonlyArray<MindMapNode>; readon
 /** Course identity accepted by the mind-map query. */
 export type CourseMindMapRequest = { readonly courseId: string }
 type QueryCourseMindMapResponse = { readonly courseMindMap: GraphQLResponse<CourseMindMap> }
-const document = gql`query CourseMindMap($request: CourseMindMapRequest!) { courseMindMap(request: $request) { success message error data { nodes { id type position { x y } data { label kind entityId moduleId displayId desc popularity links { kind entityId moduleId displayId } } } edges { id source target type animated } } } }`
+const document: TypedDocumentNode<QueryCourseMindMapResponse, OperationVariables> = gql`query CourseMindMap($request: CourseMindMapRequest!) { courseMindMap(request: $request) { success message error data { nodes { id type position { x y } data { label kind entityId moduleId displayId desc popularity links { kind entityId moduleId displayId } } } edges { id source target type animated } } } }`
 export enum QueryCourseMindMap { Query1 = "query1" }
 
 /** Read the server-positioned concept graph for a course id or display slug. */
 export const queryCourseMindMap = async ({ request, headers, signal, debug }: LookupQueryParams<QueryCourseMindMap, CourseMindMapRequest>) =>
-    createApolloClient({ headers, signal, debug }).query<QueryCourseMindMapResponse>({ query: document, variables: { request } })
+    createApolloClient({ headers, signal, debug }).query({ query: document, variables: { request } })

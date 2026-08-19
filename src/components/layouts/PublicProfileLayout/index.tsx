@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl"
 import { useQueryMeSwr } from "@/hooks/swr/useQueryMeSwr"
 import { useQueryUserProfileSwr } from "@/hooks/swr/useQueryUserProfileSwr"
 import type { ExtendedTab } from "@/components/leaves/ExtendedTabs"
-import { _PublicProfileLayout } from "./component"
+import { _PublicProfileLayout as PublicProfileLayoutView } from "./component"
 
 /** Framework-layout boundary input. */
 export type PublicProfileLayoutBoundaryProps = { readonly content: ReactNode }
@@ -33,15 +33,14 @@ export const PublicProfileLayout = ({ content }: PublicProfileLayoutBoundaryProp
         .filter((tab) => tab.id !== "wrapped" || isSelf)
         .map((tab) => ({ ...tab, label: tabsT(tab.id) }))
     const selectedTab = PROFILE_TABS.find((tab) => tab.id !== "overview" && pathname.startsWith(`/profile/${username}/${tab.id}`))?.id ?? "overview"
-    const state = profile.error !== undefined && profile.data === undefined
-        ? "failed"
-        : profile.data === undefined
-            ? "loading"
-            : profile.data === null
-                ? "not-found"
-                : profile.data.profileLocked && !isSelf
-                    ? "locked"
-                    : "ready"
+    const resolveState = (): "loading" | "failed" | "not-found" | "locked" | "ready" => {
+        if (profile.error !== undefined && profile.data === undefined) return "failed"
+        if (profile.data === undefined) return "loading"
+        if (profile.data === null) return "not-found"
+        if (profile.data.profileLocked && !isSelf) return "locked"
+        return "ready"
+    }
+    const state = resolveState()
 
     useEffect(() => {
         if (profile.data?.username && username && profile.data.username !== username) {
@@ -51,7 +50,7 @@ export const PublicProfileLayout = ({ content }: PublicProfileLayoutBoundaryProp
 
     const Body = useCallback(() => <>{content}</>, [content])
     return (
-        <_PublicProfileLayout
+        <PublicProfileLayoutView
             state={state}
             props={{
                 notFoundMessage: t("notFound"),

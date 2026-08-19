@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { GraphQLResponse } from "../types"
 
@@ -16,7 +16,9 @@ type MutationRefreshTokenResponse = {
     readonly refreshToken: GraphQLResponse<RefreshTokenData>
 }
 
-const mutation = gql`
+type RefreshTokenVariables = { readonly request: RefreshTokenRequest }
+
+const mutation: TypedDocumentNode<MutationRefreshTokenResponse, RefreshTokenVariables> = gql`
     mutation RefreshToken($request: RefreshTokenRequest!) {
         refreshToken(request: $request) {
             success
@@ -46,5 +48,5 @@ export const mutationRefreshToken = async (request: RefreshTokenRequest = {}) =>
         withCredentials: true,
         headers: { "x-csrf-token": token },
     })
-    return apollo.mutate<MutationRefreshTokenResponse>({ mutation, variables: { request } })
+    return apollo.mutate({ mutation, variables: { request } })
 }

@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { GraphQLResponse } from "../types"
 import type { MockInterviewMutationOptions } from "./mutation-start-mock-interview-session"
@@ -31,8 +31,13 @@ export type MutationGradeMockInterviewSessionResponse = {
     readonly gradeMockInterviewSession: GraphQLResponse<MockInterviewGrade>
 }
 
+type GradeMockInterviewSessionVariables = { readonly request: GradeMockInterviewSessionRequest }
+
 /** GraphQL document for final interview grading. */
-export const gradeMockInterviewSessionDocument: DocumentNode = gql`
+export const gradeMockInterviewSessionDocument: TypedDocumentNode<
+    MutationGradeMockInterviewSessionResponse,
+    GradeMockInterviewSessionVariables
+> = gql`
     mutation GradeMockInterviewSession($request: GradeMockInterviewSessionRequest!) {
         gradeMockInterviewSession(request: $request) {
             success message error
@@ -55,7 +60,7 @@ export const mutationGradeMockInterviewSession = async (
     options: MockInterviewMutationOptions = {},
 ) => {
     const apollo = createApolloClient({ withAuth: true, ...options })
-    return apollo.mutate<MutationGradeMockInterviewSessionResponse>({
+    return apollo.mutate({
         mutation: gradeMockInterviewSessionDocument,
         variables: { request },
     })

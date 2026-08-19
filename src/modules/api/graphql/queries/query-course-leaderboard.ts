@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { GraphQLResponse, LookupQueryParams } from "../types"
 
@@ -41,7 +41,9 @@ interface QueryCourseLeaderboardResponse {
     readonly courseLeaderboard: GraphQLResponse<CourseLeaderboard>
 }
 
-const query1 = gql`
+type QueryCourseLeaderboardVariables = { readonly request: QueryCourseLeaderboardRequest }
+
+const query1: TypedDocumentNode<QueryCourseLeaderboardResponse, QueryCourseLeaderboardVariables> = gql`
     query CourseLeaderboard($request: LeaderboardRequest!) {
         courseLeaderboard(request: $request) {
             success
@@ -79,7 +81,7 @@ const query1 = gql`
 
 export enum QueryCourseLeaderboard { Query1 = "query1" }
 
-const queryCourseLeaderboardMap: Record<QueryCourseLeaderboard, DocumentNode> = {
+const queryCourseLeaderboardMap: Record<QueryCourseLeaderboard, TypedDocumentNode<QueryCourseLeaderboardResponse, QueryCourseLeaderboardVariables>> = {
     [QueryCourseLeaderboard.Query1]: query1,
 }
 
@@ -92,7 +94,7 @@ export const queryCourseLeaderboard = async ({
     debug,
 }: LookupQueryParams<QueryCourseLeaderboard, QueryCourseLeaderboardRequest>) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryCourseLeaderboardResponse>({
+    return apollo.query({
         query: queryCourseLeaderboardMap[query],
         variables: { request },
     })

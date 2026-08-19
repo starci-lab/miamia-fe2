@@ -2,8 +2,8 @@ import { CONTRACTS } from "@/components/contracts"
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
 import { Tree } from "@/components/branches/Tree"
 import { SurfaceListCard, type SurfaceListCardData } from "@/components/branches/SurfaceListCard"
-import { _CoursePrerequisiteList, type CoursePrerequisite } from "@/components/blocks/courses/CoursePrerequisiteList/component"
-import { _CourseReviewBlock, type CourseReview } from "@/components/blocks/courses/CourseReviewBlock/component"
+import { _CoursePrerequisiteList as CoursePrerequisiteListLeaf, type CoursePrerequisite } from "@/components/blocks/courses/CoursePrerequisiteList/component"
+import { _CourseReviewBlock as CourseReviewBlockView, type CourseReview } from "@/components/blocks/courses/CourseReviewBlock/component"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { ChoiceTabs } from "@/components/leaves/ChoiceTabs"
 import { Breadcrumbs } from "@/components/leaves/Breadcrumbs"
@@ -290,7 +290,7 @@ type CoursePrerequisiteListData = SurfaceListCardData & {
 
 /** The ordered run of requirements, drawn inside the surface branch body. */
 const CoursePrerequisiteListView = ({ props }: LeafProps<CoursePrerequisiteListData>) => (
-    <_CoursePrerequisiteList state="required" props={{ prerequisites: props.prerequisites }} />
+    <CoursePrerequisiteListLeaf state="required" props={{ prerequisites: props.prerequisites }} />
 )
 
 /** Stable component type branded for the exact prerequisite contract it implements. */
@@ -492,7 +492,7 @@ export const _CourseDetailPage = (input: CourseDetailPageProps) => {
                     <Heading props={{ content: input.props.labels.reviewsTitle, level: 2 }} />
                 )),
                 body: defineContractProjection("course-review-block", () => (
-                    <_CourseReviewBlock
+                    <CourseReviewBlockView
                         state={(input.props.reviewTotal ?? 0) === 0 ? "unrated" : "rated"}
                         props={{
                             averageScore: input.props.averageScore ?? 0,

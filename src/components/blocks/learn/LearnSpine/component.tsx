@@ -101,6 +101,25 @@ export type LearnSpineProps = {
  */
 export const learnSpine = ({ props, on, isLoading = false }: LearnSpineProps) => {
     const lockedLabel = props.lockedLabel
+    /*
+     * A lock and a count compete for one place, and the lock wins: a learner reading a due count
+     * on a mode they cannot open has been told the wrong thing twice.
+     */
+    const factSlot = (row: LearnSpineRow) => {
+        if (row.isLocked === true) {
+            return {
+                fact: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+                    <Text props={{ content: lockedLabel, size: "xs" }} />
+                )),
+            }
+        }
+        if (row.fact === undefined) return {}
+        return {
+            fact: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+                <Text props={{ content: row.fact, size: "xs" }} />
+            )),
+        }
+    }
     return (
         defineContractComponent("learn-spine-column", {
             ...(props.resume === undefined ? {} : {
@@ -140,19 +159,7 @@ export const learnSpine = ({ props, on, isLoading = false }: LearnSpineProps) =>
                             on={{ press: () => on?.openRow?.(row.id) }}
                         />
                     )),
-                    /*
-                 * A lock and a count compete for one place, and the lock wins: a learner reading a
-                 * due count on a mode they cannot open has been told the wrong thing twice.
-                 */
-                    ...(row.isLocked === true ? {
-                        fact: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
-                            <Text props={{ content: lockedLabel, size: "xs" }} />
-                        )),
-                    } : row.fact === undefined ? {} : {
-                        fact: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
-                            <Text props={{ content: row.fact, size: "xs" }} />
-                        )),
-                    }),
+                    ...factSlot(row),
                 })),
             })),
         })

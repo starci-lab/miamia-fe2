@@ -28,6 +28,21 @@ export default defineConfig({
         include: [
             "src/**/*.test.{ts,tsx}",
         ],
+        coverage: {
+            provider: "v8",
+            reporter: [
+                "text-summary",
+                "lcov",
+            ],
+            reportsDirectory: "./coverage",
+            include: [
+                "src/**/*.{ts,tsx}",
+            ],
+            exclude: [
+                "src/**/*.test.{ts,tsx}",
+                "src/**/*.d.ts",
+            ],
+        },
         server: {
             deps: {
                 // `next` ships no `exports` map, so Vitest's native resolver — which externalizes

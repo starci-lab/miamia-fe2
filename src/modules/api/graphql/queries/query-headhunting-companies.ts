@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type OperationVariables, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { GraphQLResponse, QueryParams } from "../types"
 
@@ -48,7 +48,7 @@ const query1 = gql`
 
 export enum QueryHeadhuntingCompanies { Query1 = "query1" }
 
-const queryHeadhuntingCompaniesMap: Record<QueryHeadhuntingCompanies, DocumentNode> = {
+const queryHeadhuntingCompaniesMap: Record<QueryHeadhuntingCompanies, TypedDocumentNode<QueryHeadhuntingCompaniesResponse, OperationVariables>> = {
     [QueryHeadhuntingCompanies.Query1]: query1,
 }
 
@@ -60,7 +60,7 @@ export const queryHeadhuntingCompanies = async ({
     debug,
 }: QueryParams<QueryHeadhuntingCompanies> = {}) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryHeadhuntingCompaniesResponse>({
+    return apollo.query({
         query: queryHeadhuntingCompaniesMap[query],
     })
 }

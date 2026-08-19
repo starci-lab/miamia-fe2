@@ -20,5 +20,13 @@ export const config = {
      * Without that last one the middleware would redirect an image request to `/en/logo.svg` and
      * the asset would 404 in one locale and not the other.
      */
+    /*
+     * KEEP THIS A PLAIN STRING LITERAL.
+     *
+     * Next reads `config` statically, without executing the module, so a value produced by a call
+     * - `String.raw` included - is not a value it can see. Swapping the escaped literal for a raw
+     * template here builds clean and then fails the whole build at "Collecting page data" with
+     * "Invalid segment configuration export detected", naming no file.
+     */
     matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"],
 }

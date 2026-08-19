@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type MutationParams } from "./types/params"
 import {
@@ -17,7 +17,7 @@ import {
  *
  * Anonymous client: the viewer has no token yet - earning one is the point of the call.
  */
-const mutation1 = gql`
+const mutation1: TypedDocumentNode<MutationSignInVerifyOtpResponse, { request: SignInVerifyOtpRequest }> = gql`
     mutation SignInVerifyOtp($request: SignInVerifyOtpRequest!) {
         signInVerifyOtp(request: $request) {
             success
@@ -37,7 +37,7 @@ export enum MutationSignInVerifyOtp {
 }
 
 /** Every document this mutation can send, keyed by variant. */
-export const mutationSignInVerifyOtpMap: Record<MutationSignInVerifyOtp, DocumentNode> = {
+export const mutationSignInVerifyOtpMap: Record<MutationSignInVerifyOtp, TypedDocumentNode<MutationSignInVerifyOtpResponse, { request: SignInVerifyOtpRequest }>> = {
     [MutationSignInVerifyOtp.Mutation1]: mutation1,
 }
 
@@ -50,7 +50,7 @@ export const mutationSignInVerifyOtp = async ({
     debug,
 }: MutationParams<MutationSignInVerifyOtp, SignInVerifyOtpRequest>) => {
     const apollo = createApolloClient({ headers, signal, debug, withCredentials: true })
-    return apollo.mutate<MutationSignInVerifyOtpResponse>({
+    return apollo.mutate({
         mutation: mutationSignInVerifyOtpMap[mutation],
         variables: { request },
     })

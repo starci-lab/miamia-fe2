@@ -18,6 +18,13 @@ type StudyTopicCatalogData = {
 type StudyTopicCatalogActions = { readonly search?: (query: string) => void; readonly selectLevel?: (level: string) => void; readonly retry?: () => void; readonly [key: `open:${string}`]: (() => void) | undefined }
 type StudyTopicCatalogProps = BlockProps<"pending" | "failed" | "empty" | "filtered-empty" | "ready", StudyTopicCatalogData> & { readonly on?: StudyTopicCatalogActions }
 
+/** The empty-notice copy: the failure message, the filtered-empty message, or the plain-empty one. */
+const emptyNoticeMessage = (state: StudyTopicCatalogProps["state"], props: StudyTopicCatalogData): string => {
+    if (state === "failed") return props.failed
+    if (state === "filtered-empty") return props.filteredEmpty
+    return props.empty
+}
+
 /** Renders the searchable topic catalogue and all settled list outcomes. */
 export const _StudyTopicCatalog = (input: StudyTopicCatalogProps) => {
     const loading = input.state === "pending"
@@ -29,7 +36,7 @@ export const _StudyTopicCatalog = (input: StudyTopicCatalogProps) => {
         description: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: input.props.description, size: "sm", tone: "muted" }} />),
         query: defineLeafComponent("search-box", {}, () => <SearchBox props={{ label: input.props.searchLabel, placeholder: input.props.searchPlaceholder, clearLabel: input.props.clearLabel }} on={{ search: input.on?.search }} />),
         filter: defineLeafComponent("choice-tabs", {}, () => <ChoiceTabs props={{ label: input.props.filterLabel, selectedKey: input.props.selectedLevel, tabs: input.props.levels, variant: "primary" }} on={{ select: input.on?.selectLevel }} />),
-        ...(notice ? { notice: defineCompositeComponent("empty-notice", {}, () => <EmptyNotice props={{ icon: "course", message: input.state === "failed" ? input.props.failed : input.state === "filtered-empty" ? input.props.filteredEmpty : input.props.empty, actionLabel: input.state === "failed" ? input.props.retry : undefined }} on={{ act: input.on?.retry }} />) } : {
+        ...(notice ? { notice: defineCompositeComponent("empty-notice", {}, () => <EmptyNotice props={{ icon: "course", message: emptyNoticeMessage(input.state, input.props), actionLabel: input.state === "failed" ? input.props.retry : undefined }} on={{ act: input.on?.retry }} />) } : {
             topics: defineContractComponent("study-topic-grid", {
                 topic: input.props.topics.map((topic) => defineContractProjection("study-topic-card", () => <SurfaceCard key={topic.id} contract="study-topic-card" render={defineContractComponent("study-topic-card", {
                     level: defineLeafComponent("badge", {}, () => <Badge props={{ content: topic.level, tone: "accent" }} isLoading={loading} />),

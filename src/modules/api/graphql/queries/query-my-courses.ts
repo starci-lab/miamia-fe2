@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type OperationVariables, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type QueryParams } from "../types"
 import { type QueryMyCoursesResponse } from "./types/my-courses"
@@ -64,7 +64,7 @@ export enum QueryMyCourses {
 }
 
 /** Every document this query can send, keyed by variant. */
-export const queryMyCoursesMap: Record<QueryMyCourses, DocumentNode> = {
+export const queryMyCoursesMap: Record<QueryMyCourses, TypedDocumentNode<QueryMyCoursesResponse, OperationVariables>> = {
     [QueryMyCourses.Query1]: query1,
     [QueryMyCourses.Query2]: query2,
 }
@@ -77,7 +77,7 @@ export const queryMyCourses = async ({
     debug,
 }: QueryParams<QueryMyCourses> = {}) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryMyCoursesResponse>({
+    return apollo.query({
         query: queryMyCoursesMap[query],
     })
 }

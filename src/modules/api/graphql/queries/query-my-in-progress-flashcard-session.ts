@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { GraphQLResponse } from "../types"
 
@@ -96,7 +96,23 @@ type CardsResponse = {
     readonly flashcardCardsByIds: GraphQLResponse<{ readonly cards: Array<FlashcardSessionCard> }>
 }
 
-const reviewBySessionQuery = gql`
+type ReviewBySessionResponse = {
+    readonly myFlashcardReviewSessionBySessionId: GraphQLResponse<ReviewSessionData>
+}
+
+type ReviewByDeckResponse = {
+    readonly myInProgressFlashcardReviewSession: GraphQLResponse<ReviewSessionData>
+}
+
+type DueByCourseResponse = {
+    readonly myInProgressFlashcardDueReviewSession: GraphQLResponse<ReviewSessionData>
+}
+
+type QuizByCourseResponse = {
+    readonly myInProgressFlashcardQuizSession: GraphQLResponse<QuizSessionData>
+}
+
+const reviewBySessionQuery: TypedDocumentNode<ReviewBySessionResponse, { sessionId: string }> = gql`
     query MyFlashcardReviewSessionBySessionId($sessionId: ID!) {
         myFlashcardReviewSessionBySessionId(sessionId: $sessionId) {
             success message error
@@ -108,7 +124,7 @@ const reviewBySessionQuery = gql`
     }
 `
 
-const reviewByDeckQuery = gql`
+const reviewByDeckQuery: TypedDocumentNode<ReviewByDeckResponse, { deckId: string }> = gql`
     query MyInProgressFlashcardReviewSession($deckId: ID!) {
         myInProgressFlashcardReviewSession(deckId: $deckId) {
             success message error
@@ -117,7 +133,7 @@ const reviewByDeckQuery = gql`
     }
 `
 
-const dueByCourseQuery = gql`
+const dueByCourseQuery: TypedDocumentNode<DueByCourseResponse, { courseId: string }> = gql`
     query MyInProgressFlashcardDueReviewSession($courseId: ID!) {
         myInProgressFlashcardDueReviewSession(courseId: $courseId) {
             success message error
@@ -126,7 +142,7 @@ const dueByCourseQuery = gql`
     }
 `
 
-const quizByCourseQuery = gql`
+const quizByCourseQuery: TypedDocumentNode<QuizByCourseResponse, { courseId: string }> = gql`
     query MyInProgressFlashcardQuizSession($courseId: ID!) {
         myInProgressFlashcardQuizSession(courseId: $courseId) {
             success message error
@@ -135,7 +151,7 @@ const quizByCourseQuery = gql`
     }
 `
 
-const cardsQuery = gql`
+const cardsQuery: TypedDocumentNode<CardsResponse, { courseId?: string; cardIds: ReadonlyArray<string> }> = gql`
     query FlashcardCardsByIds($courseId: String, $cardIds: [String!]!) {
         flashcardCardsByIds(courseId: $courseId, cardIds: $cardIds) {
             success message error
@@ -156,7 +172,7 @@ const hydrate = async (
     kind?: FlashcardReviewKind,
 ): Promise<FlashcardSession> => {
     const apollo = createApolloClient({ withAuth: true })
-    const cardsResponse = await apollo.query<CardsResponse>({
+    const cardsResponse = await apollo.query({
         query: cardsQuery,
         variables: { courseId, cardIds: data.cardIds },
     })
@@ -182,42 +198,52 @@ const hydrate = async (
 
 const queryReviewByDeck = async (deckId: string): Promise<ReviewSessionData | null> => {
     const apollo = createApolloClient({ withAuth: true })
-    const response = await apollo.query<{
-        readonly myInProgressFlashcardReviewSession: GraphQLResponse<ReviewSessionData>
-    }>({ query: reviewByDeckQuery, variables: { deckId } })
+    const response = await apollo.query({ query: reviewByDeckQuery, variables: { deckId } })
     return response.data?.myInProgressFlashcardReviewSession.data ?? null
+}
+
+const queryReviewBySession = async (sessionId: string): Promise<ReviewSessionData | null> => {
+    const apollo = createApolloClient({ withAuth: true })
+    const response = await apollo.query({ query: reviewBySessionQuery, variables: { sessionId } })
+    return response.data?.myFlashcardReviewSessionBySessionId.data ?? null
+}
+
+const queryDueByCourse = async (courseId: string): Promise<ReviewSessionData | null> => {
+    const apollo = createApolloClient({ withAuth: true })
+    const response = await apollo.query({ query: dueByCourseQuery, variables: { courseId } })
+    return response.data?.myInProgressFlashcardDueReviewSession.data ?? null
+}
+
+/** Resolves the backend review session named by one review request, without hydrating cards. */
+const resolveReviewSession = async (
+    request: QueryFlashcardReviewSessionRequest,
+): Promise<{ data: ReviewSessionData; kind: FlashcardReviewKind } | null> => {
+    if (request.sessionId !== undefined) {
+        const data = await queryReviewBySession(request.sessionId)
+        return data == null ? null : { data, kind: data.kind ?? "deck" }
+    }
+    if (request.reviewKind === "due") {
+        if (request.courseId === undefined) return null
+        const data = await queryDueByCourse(request.courseId)
+        return data == null ? null : { data, kind: "due" }
+    }
+    const deckIds = request.deckIds ?? (request.deckId === undefined ? [] : [request.deckId])
+    if (deckIds.length === 0) return null
+    const sessions = await Promise.all(deckIds.map(queryReviewByDeck))
+    const data = sessions.find((session) => session !== null)
+    return data == null ? null : { data, kind: "deck" }
 }
 
 /** Resolves and hydrates the backend-proven resumable session for one route or overview. */
 export const queryMyInProgressFlashcardSession = async (
     request: QueryFlashcardSessionRequest,
 ): Promise<FlashcardSession | null> => {
-    const apollo = createApolloClient({ withAuth: true })
     if (request.mode === "review") {
-        if (request.sessionId !== undefined) {
-            const response = await apollo.query<{
-                readonly myFlashcardReviewSessionBySessionId: GraphQLResponse<ReviewSessionData>
-            }>({ query: reviewBySessionQuery, variables: { sessionId: request.sessionId } })
-            const data = response.data?.myFlashcardReviewSessionBySessionId.data
-            return data == null ? null : hydrate(data, "review", request.courseId, data.kind)
-        }
-        if (request.reviewKind === "due") {
-            if (request.courseId === undefined) return null
-            const response = await apollo.query<{
-                readonly myInProgressFlashcardDueReviewSession: GraphQLResponse<ReviewSessionData>
-            }>({ query: dueByCourseQuery, variables: { courseId: request.courseId } })
-            const data = response.data?.myInProgressFlashcardDueReviewSession.data
-            return data == null ? null : hydrate(data, "review", request.courseId, "due")
-        }
-        const deckIds = request.deckIds ?? (request.deckId === undefined ? [] : [request.deckId])
-        if (deckIds.length === 0) return null
-        const sessions = await Promise.all(deckIds.map(queryReviewByDeck))
-        const data = sessions.find((session) => session !== null)
-        return data == null ? null : hydrate(data, "review", request.courseId, "deck")
+        const resolved = await resolveReviewSession(request)
+        return resolved == null ? null : hydrate(resolved.data, "review", request.courseId, resolved.kind)
     }
-    const response = await apollo.query<{
-        readonly myInProgressFlashcardQuizSession: GraphQLResponse<QuizSessionData>
-    }>({ query: quizByCourseQuery, variables: { courseId: request.courseId } })
+    const apollo = createApolloClient({ withAuth: true })
+    const response = await apollo.query({ query: quizByCourseQuery, variables: { courseId: request.courseId } })
     const data = response.data?.myInProgressFlashcardQuizSession.data
     if (data == null || (request.sessionId !== undefined && data.sessionId !== request.sessionId)) return null
     return hydrate(data, "quiz", request.courseId)

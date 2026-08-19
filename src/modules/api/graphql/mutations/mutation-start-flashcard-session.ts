@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client"
+import { gql, type OperationVariables, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { GraphQLResponse } from "../types"
 import type { FlashcardReviewKind, FlashcardSessionMode } from "../queries/query-my-in-progress-flashcard-session"
@@ -44,7 +44,10 @@ export type StartFlashcardSessionData = {
     readonly deadlineAt?: string | null
 }
 
-const startReviewDocument = gql`
+const startReviewDocument: TypedDocumentNode<
+    { readonly startFlashcardReviewSession: GraphQLResponse<{ readonly sessionId: string }> },
+    OperationVariables
+> = gql`
     mutation StartFlashcardReviewSession($request: StartFlashcardReviewSessionRequest!) {
         startFlashcardReviewSession(request: $request) {
             success message error
@@ -53,7 +56,10 @@ const startReviewDocument = gql`
     }
 `
 
-const startDueDocument = gql`
+const startDueDocument: TypedDocumentNode<
+    { readonly startFlashcardDueReviewSession: GraphQLResponse<{ readonly sessionId: string }> },
+    OperationVariables
+> = gql`
     mutation StartFlashcardDueReviewSession($request: StartFlashcardDueReviewSessionRequest!) {
         startFlashcardDueReviewSession(request: $request) {
             success message error
@@ -62,7 +68,15 @@ const startDueDocument = gql`
     }
 `
 
-const startQuizDocument = gql`
+const startQuizDocument: TypedDocumentNode<
+    {
+        readonly startFlashcardQuizSession: GraphQLResponse<{
+            readonly sessionId: string
+            readonly deadlineAt: string
+        }>
+    },
+    OperationVariables
+> = gql`
     mutation StartFlashcardQuizSession($request: StartFlashcardQuizSessionRequest!) {
         startFlashcardQuizSession(request: $request) {
             success message error
@@ -78,18 +92,14 @@ export const mutationStartFlashcardSession = async (
     const apollo = createApolloClient({ withAuth: true })
     if (request.mode === "review") {
         if (request.kind === "due") {
-            const response = await apollo.mutate<{
-                readonly startFlashcardDueReviewSession: GraphQLResponse<{ readonly sessionId: string }>
-            }>({
+            const response = await apollo.mutate({
                 mutation: startDueDocument,
                 variables: { request: { courseId: request.courseId, cardIds: request.cardIds } },
             })
             const data = response.data?.startFlashcardDueReviewSession.data
             return data == null ? null : { ...data, mode: "review", kind: "due" }
         }
-        const response = await apollo.mutate<{
-            readonly startFlashcardReviewSession: GraphQLResponse<{ readonly sessionId: string }>
-        }>({
+        const response = await apollo.mutate({
             mutation: startReviewDocument,
             variables: {
                 request: {
@@ -102,12 +112,7 @@ export const mutationStartFlashcardSession = async (
         const data = response.data?.startFlashcardReviewSession.data
         return data == null ? null : { ...data, mode: "review", kind: "deck" }
     }
-    const response = await apollo.mutate<{
-        readonly startFlashcardQuizSession: GraphQLResponse<{
-            readonly sessionId: string
-            readonly deadlineAt: string
-        }>
-    }>({
+    const response = await apollo.mutate({
         mutation: startQuizDocument,
         variables: {
             request: {

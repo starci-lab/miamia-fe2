@@ -5,6 +5,9 @@ import { usePathname, useRouter } from "@/i18n/navigation"
 import { useQueryCoursePersonalProjectSwr } from "@/hooks/swr/useQueryCoursePersonalProjectSwr"
 import { _PersonalProjectWorkspaceLayout } from "./component"
 
+/** Matches the task id segment of a personal-project task route. */
+const TASK_ID_PATTERN = /\/personal-project\/tasks\/([^/]+)/
+
 /** Course identity and routed surface accepted by the segment shell. */
 export type PersonalProjectWorkspaceLayoutProps = {
     readonly displayId: string
@@ -16,7 +19,7 @@ export const PersonalProjectWorkspaceLayout = (input: PersonalProjectWorkspaceLa
     const pathname = usePathname()
     const router = useRouter()
     const project = useQueryCoursePersonalProjectSwr(input.displayId)
-    const routeTaskId = pathname.match(/\/personal-project\/tasks\/([^/]+)/)?.[1]
+    const routeTaskId = TASK_ID_PATTERN.exec(pathname)?.[1]
     const currentTaskId = routeTaskId
         ?? (project.data?.currentTask?.kind === "milestoneTask" ? project.data.currentTask.id : undefined)
     const milestones = (project.data?.milestones ?? [])

@@ -12,6 +12,13 @@ export type ChallengeDetail = { readonly id?: string; readonly title?: string; r
 /** One settled proof payload and course-return outcome. */
 export type ProfileChallengeSubmissionPageProps = { readonly state: "pending" | "ready" | "error"; readonly detail?: ChallengeDetail | null; readonly onBack: () => void }
 
+/** A load error beats a proof that resolved to nothing beats the real title once one exists. */
+const resolveSummaryTitle = (state: ProfileChallengeSubmissionPageProps["state"], missing: boolean, title: string | undefined) => {
+    if (state === "error") return "Challenge proof couldn't be loaded"
+    if (missing) return "Challenge proof not found"
+    return title
+}
+
 /** One immutable public proof: source URL, every attempt, then structured grading feedback. */
 export const _ProfileChallengeSubmissionPage = ({ state, detail, onBack }: ProfileChallengeSubmissionPageProps) => {
     const attempts: NonNullable<ChallengeDetail["attempts"]> = state === "pending" ? Array.from({ length: 3 }, (_, index) => ({ attemptNumber: index + 1 })) : detail?.attempts ?? []
@@ -20,7 +27,7 @@ export const _ProfileChallengeSubmissionPage = ({ state, detail, onBack }: Profi
     return <Tree contract="profile-main" render={defineContractComponent("profile-main", { section: [
         defineContractProjection("label-row-over-card", () => <Tree contract="profile-proof-summary" render={defineContractComponent("profile-proof-summary", {
             back: defineLeafComponent("button", {}, () => <Button props={{ label: `← ${detail?.courseTitle ?? "Challenges"}`, variant: "ghost", size: "sm" }} on={{ press: onBack }} />),
-            title: defineLeafComponent("heading", {}, () => <Heading props={{ content: state === "error" ? "Challenge proof couldn't be loaded" : missing ? "Challenge proof not found" : detail?.title, level: 2 }} isLoading={state === "pending"} />),
+            title: defineLeafComponent("heading", {}, () => <Heading props={{ content: resolveSummaryTitle(state, missing, detail?.title), level: 2 }} isLoading={state === "pending"} />),
             meta: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: missing ? "This submission is not public." : [detail?.difficulty, detail?.selectedLang, detail?.score == null ? undefined : `score ${detail.score}`, detail?.passedAt].filter(Boolean).join(" · "), size: "sm", tone: "muted" }} isLoading={state === "pending"} />),
         })} />),
         ...(detail?.submissionUrl || state === "pending" ? [defineContractProjection("label-row-over-card", () => <SurfaceCard props={{ label: "Submitted proof" }} contract="profile-meta-list" render={defineContractComponent("profile-meta-list", {

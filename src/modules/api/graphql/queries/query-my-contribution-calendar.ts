@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type QueryParams } from "../types"
 import {
@@ -6,7 +6,9 @@ import {
     type QueryMyContributionCalendarResponse,
 } from "./types/my-contribution-calendar"
 
-const query1 = gql`
+type QueryMyContributionCalendarVariables = { readonly year: number | null }
+
+const query1: TypedDocumentNode<QueryMyContributionCalendarResponse, QueryMyContributionCalendarVariables> = gql`
     query MyContributionCalendar($year: Int) {
         myContributionCalendar(year: $year) {
             success
@@ -19,7 +21,7 @@ const query1 = gql`
 
 export enum QueryMyContributionCalendar { Query1 = "query1" }
 /** Every supported contribution-calendar document keyed by its public variant. */
-export const queryMyContributionCalendarMap: Record<QueryMyContributionCalendar, DocumentNode> = {
+export const queryMyContributionCalendarMap: Record<QueryMyContributionCalendar, TypedDocumentNode<QueryMyContributionCalendarResponse, QueryMyContributionCalendarVariables>> = {
     [QueryMyContributionCalendar.Query1]: query1,
 }
 
@@ -32,7 +34,7 @@ export const queryMyContributionCalendar = async ({
     debug,
 }: QueryParams<QueryMyContributionCalendar, MyContributionCalendarRequest> = {}) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryMyContributionCalendarResponse>({
+    return apollo.query({
         query: queryMyContributionCalendarMap[query],
         variables: { year: request?.year ?? null },
     })

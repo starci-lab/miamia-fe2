@@ -2,7 +2,7 @@ import {
     AcademicCapIcon,
     ArrowPathIcon,
     ArrowRightIcon,
-    ArrowRightOnRectangleIcon,
+    ArrowRightEndOnRectangleIcon as ArrowRightOnRectangleIcon,
     BellIcon,
     BoltIcon,
     BookmarkIcon,

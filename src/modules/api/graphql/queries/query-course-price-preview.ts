@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type QueryParams } from "../types"
 import {
@@ -45,8 +45,10 @@ export enum QueryCoursePricePreview {
     Query1 = "query1",
 }
 
+type CoursePricePreviewVariables = { readonly courseId?: string }
+
 /** Every document this query can send, keyed by variant. */
-export const queryCoursePricePreviewMap: Record<QueryCoursePricePreview, DocumentNode> = {
+export const queryCoursePricePreviewMap: Record<QueryCoursePricePreview, TypedDocumentNode<QueryCoursePricePreviewResponse, CoursePricePreviewVariables>> = {
     [QueryCoursePricePreview.Query1]: query1,
 }
 
@@ -59,7 +61,7 @@ export const queryCoursePricePreview = async ({
     debug,
 }: QueryParams<QueryCoursePricePreview, QueryCoursePricePreviewRequest> = {}) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryCoursePricePreviewResponse>({
+    return apollo.query({
         query: queryCoursePricePreviewMap[query],
         variables: { courseId: request?.courseId },
     })

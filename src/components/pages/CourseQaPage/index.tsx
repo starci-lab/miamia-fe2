@@ -7,7 +7,7 @@ import { useQueryCourseSwr } from "@/hooks/swr/useQueryCourseSwr"
 import { useQueryCourseQaCommentsSwr } from "@/hooks/swr/useQueryCourseQaCommentsSwr"
 import { useMutateCreateCourseQuestionSwr } from "@/hooks/swr/useMutateCreateCourseQuestionSwr"
 import type { CourseQaComment } from "@/modules/api/graphql/queries/query-course-qa-comments"
-import { _CourseQaPage, type CourseQaThreadRow } from "./component"
+import { _CourseQaPage as CourseQaPageView, type CourseQaThreadRow } from "./component"
 
 interface CourseQaPageProps { readonly displayId: string }
 
@@ -28,6 +28,23 @@ const COPY = {
     },
 } as const
 
+type CourseQaState = "failed" | "pending" | "empty" | "ready"
+
+/** Inputs that decide which single situation the Q&A page is in. */
+type CourseQaStateInput = {
+    readonly failed: boolean
+    readonly pending: boolean
+    readonly hasNoQuestions: boolean
+}
+
+/** Resolves the single situation the Q&A page is in, in the priority order the page decided on. */
+const resolveCourseQaState = (input: CourseQaStateInput): CourseQaState => {
+    if (input.failed) return "failed"
+    if (input.pending) return "pending"
+    if (input.hasNoQuestions) return "empty"
+    return "ready"
+}
+
 /** Connected course-general Q&A over contentComments/createComment course scope. */
 export const CourseQaPage = ({ displayId }: CourseQaPageProps) => {
     const locale = useLocale() === "vi" ? "vi" : "en"
@@ -42,12 +59,16 @@ export const CourseQaPage = ({ displayId }: CourseQaPageProps) => {
     const [draft, setDraft] = useState("")
     const [draftKey, setDraftKey] = useState(0)
 
-    const rowOf = (comment: CourseQaComment): CourseQaThreadRow => ({
-        id: comment.id,
-        body: comment.body,
-        meta: `${comment.author.username}${comment.isFounderAuthor ? ` · ${copy.founder}` : ""} · ${new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(comment.createdAt))}`,
-        replyLabel: comment.replyCount > 0 ? copy.repliesCount(comment.replyCount) : undefined,
-    })
+    const rowOf = (comment: CourseQaComment): CourseQaThreadRow => {
+        const founderSuffix = comment.isFounderAuthor ? ` · ${copy.founder}` : ""
+        const dateLabel = new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(comment.createdAt))
+        return {
+            id: comment.id,
+            body: comment.body,
+            meta: `${comment.author.username}${founderSuffix} · ${dateLabel}`,
+            replyLabel: comment.replyCount > 0 ? copy.repliesCount(comment.replyCount) : undefined,
+        }
+    }
     const allQuestions = useMemo(() => (questions.data?.comments ?? []).map(rowOf), [questions.data?.comments, locale])
     const visibleQuestions = useMemo(() => {
         const normalized = query.trim().toLocaleLowerCase(locale)
@@ -58,10 +79,10 @@ export const CourseQaPage = ({ displayId }: CourseQaPageProps) => {
     const failed = course.error !== undefined || questions.error !== undefined || (selectedId !== undefined && replies.error !== undefined)
         || course.data === null || questions.data === null
     const pending = course.data === undefined || questions.data === undefined || (selectedId !== undefined && replies.data === undefined)
-    const state = failed ? "failed" : pending ? "pending" : allQuestions.length === 0 ? "empty" : "ready"
+    const state = resolveCourseQaState({ failed, pending, hasNoQuestions: allQuestions.length === 0 })
 
     return (
-        <_CourseQaPage
+        <CourseQaPageView
             state={state}
             props={{
                 title: copy.title,

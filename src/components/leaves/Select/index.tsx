@@ -71,10 +71,10 @@ export const Select = ({ props, on }: SelectProps) => {
             id={props.id}
             name={props.name}
             aria-label={props.label}
-            selectedKey={props.selectedKey ?? null}
+            value={props.selectedKey ?? null}
             isInvalid={props.isInvalid}
             isDisabled={props.disabled}
-            onSelectionChange={(key) => {
+            onChange={(key) => {
                 if (key !== null) on?.select?.(String(key))
             }}
         >

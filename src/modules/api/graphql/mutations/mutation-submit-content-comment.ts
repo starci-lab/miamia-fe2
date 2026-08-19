@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { MutationParams } from "./types/params"
 import type { GraphQLResponse } from "../types"
@@ -16,7 +16,9 @@ export interface MutationSubmitContentCommentResponse {
     readonly createComment: GraphQLResponse<ContentComment>
 }
 
-const mutation1 = gql`
+type SubmitContentCommentVariables = { readonly request: SubmitContentCommentRequest }
+
+const mutation1: TypedDocumentNode<MutationSubmitContentCommentResponse, SubmitContentCommentVariables> = gql`
     mutation CreateComment($request: CreateCommentRequest!) {
         createComment(request: $request) {
             success
@@ -47,7 +49,7 @@ const mutation1 = gql`
 export enum MutationSubmitContentComment { Mutation1 = "mutation1" }
 
 /** Every supported create-comment document keyed by its finite variant. */
-export const mutationSubmitContentCommentMap: Record<MutationSubmitContentComment, DocumentNode> = {
+export const mutationSubmitContentCommentMap: Record<MutationSubmitContentComment, TypedDocumentNode<MutationSubmitContentCommentResponse, SubmitContentCommentVariables>> = {
     [MutationSubmitContentComment.Mutation1]: mutation1,
 }
 
@@ -60,7 +62,7 @@ export const mutationSubmitContentComment = async ({
     debug,
 }: MutationParams<MutationSubmitContentComment, SubmitContentCommentRequest>) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.mutate<MutationSubmitContentCommentResponse>({
+    return apollo.mutate({
         mutation: mutationSubmitContentCommentMap[mutation],
         variables: { request },
     })

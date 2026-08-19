@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { GraphQLHeaders, GraphQLResponse } from "../types"
 
@@ -12,11 +12,12 @@ export type PlaygroundSummary = {
 }
 
 type QueryPlaygroundsResponse = { readonly playgrounds: GraphQLResponse<ReadonlyArray<PlaygroundSummary>> }
-const document = gql`query Playgrounds($courseId: ID!) { playgrounds(courseId: $courseId) { success message error data { id slug title icon stepCount } } }`
+type PlaygroundsVariables = { readonly courseId: string }
+const document: TypedDocumentNode<QueryPlaygroundsResponse, PlaygroundsVariables> = gql`query Playgrounds($courseId: ID!) { playgrounds(courseId: $courseId) { success message error data { id slug title icon stepCount } } }`
 export enum QueryPlaygrounds { Query1 = "query1" }
 /** Transport inputs for listing a course's playgrounds. */
 export type QueryPlaygroundsParams = { readonly courseId: string; readonly headers?: GraphQLHeaders; readonly signal?: AbortSignal; readonly debug?: boolean }
 
 /** List live playground exercises for the resolved course primary key. */
 export const queryPlaygrounds = async ({ courseId, headers, signal, debug }: QueryPlaygroundsParams) =>
-    createApolloClient({ headers, signal, debug }).query<QueryPlaygroundsResponse>({ query: document, variables: { courseId } })
+    createApolloClient({ headers, signal, debug }).query({ query: document, variables: { courseId } })

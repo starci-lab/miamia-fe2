@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { GraphQLResponse, LookupQueryParams } from "../types"
 
@@ -45,7 +45,9 @@ export type QueryMyInProgressMockInterviewSessionResponse = {
 /** Course scope required by the in-progress lookup. */
 export type MyInProgressMockInterviewSessionRequest = { readonly courseId: string }
 
-const query1 = gql`
+type MyInProgressMockInterviewSessionVariables = { readonly courseId: string }
+
+const query1: TypedDocumentNode<QueryMyInProgressMockInterviewSessionResponse, MyInProgressMockInterviewSessionVariables> = gql`
     query MyInProgressMockInterviewSession($courseId: ID!) {
         myInProgressMockInterviewSession(courseId: $courseId) {
             success
@@ -77,7 +79,7 @@ export enum QueryMyInProgressMockInterviewSession {
 }
 
 /** Document registry for the in-progress lookup family. */
-export const queryMyInProgressMockInterviewSessionMap: Record<QueryMyInProgressMockInterviewSession, DocumentNode> = {
+export const queryMyInProgressMockInterviewSessionMap: Record<QueryMyInProgressMockInterviewSession, TypedDocumentNode<QueryMyInProgressMockInterviewSessionResponse, MyInProgressMockInterviewSessionVariables>> = {
     [QueryMyInProgressMockInterviewSession.Query1]: query1,
 }
 
@@ -90,7 +92,7 @@ export const queryMyInProgressMockInterviewSession = async ({
     debug,
 }: LookupQueryParams<QueryMyInProgressMockInterviewSession, MyInProgressMockInterviewSessionRequest>) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryMyInProgressMockInterviewSessionResponse>({
+    return apollo.query({
         query: queryMyInProgressMockInterviewSessionMap[query],
         variables: { courseId: request.courseId },
     })

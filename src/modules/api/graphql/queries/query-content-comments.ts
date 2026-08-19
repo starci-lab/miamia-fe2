@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { GraphQLResponse, LookupQueryParams } from "../types"
 import type { ContentReactionSummary } from "./query-content-reactions"
@@ -43,7 +43,9 @@ export interface QueryContentCommentsResponse {
     readonly contentComments: GraphQLResponse<ContentCommentsPage>
 }
 
-const query1 = gql`
+type ContentCommentsVariables = { readonly request: QueryContentCommentsRequest }
+
+const query1: TypedDocumentNode<QueryContentCommentsResponse, ContentCommentsVariables> = gql`
     query ContentComments($request: ContentCommentsRequest!) {
         contentComments(request: $request) {
             success
@@ -77,7 +79,7 @@ const query1 = gql`
 export enum QueryContentComments { Query1 = "query1" }
 
 /** Every supported content-comments document keyed by its finite variant. */
-export const queryContentCommentsMap: Record<QueryContentComments, DocumentNode> = {
+export const queryContentCommentsMap: Record<QueryContentComments, TypedDocumentNode<QueryContentCommentsResponse, ContentCommentsVariables>> = {
     [QueryContentComments.Query1]: query1,
 }
 
@@ -90,7 +92,7 @@ export const queryContentComments = async ({
     debug,
 }: LookupQueryParams<QueryContentComments, QueryContentCommentsRequest>) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryContentCommentsResponse>({
+    return apollo.query({
         query: queryContentCommentsMap[query],
         variables: { request },
     })

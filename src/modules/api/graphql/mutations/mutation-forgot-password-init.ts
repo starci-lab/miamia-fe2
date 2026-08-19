@@ -1,10 +1,12 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type MutationParams } from "./types/params"
 import {
     type MutationForgotPasswordInitResponse,
     type ForgotPasswordInitRequest,
 } from "./types/auth"
+
+type ForgotPasswordInitVariables = { readonly request: ForgotPasswordInitRequest }
 
 /**
  * Step one of resetting a password: name the account and the password that should replace the
@@ -19,7 +21,7 @@ import {
  * because they have no token, and attaching a stale one is how it starts failing for a reason
  * nobody can see.
  */
-const mutation1 = gql`
+const mutation1: TypedDocumentNode<MutationForgotPasswordInitResponse, ForgotPasswordInitVariables> = gql`
     mutation ForgotPasswordInit($request: ForgotPasswordInitRequest!) {
         forgotPasswordInit(request: $request) {
             success
@@ -40,7 +42,7 @@ export enum MutationForgotPasswordInit {
 }
 
 /** Every document this mutation can send, keyed by variant. */
-export const mutationForgotPasswordInitMap: Record<MutationForgotPasswordInit, DocumentNode> = {
+export const mutationForgotPasswordInitMap: Record<MutationForgotPasswordInit, TypedDocumentNode<MutationForgotPasswordInitResponse, ForgotPasswordInitVariables>> = {
     [MutationForgotPasswordInit.Mutation1]: mutation1,
 }
 
@@ -53,7 +55,7 @@ export const mutationForgotPasswordInit = async ({
     debug,
 }: MutationParams<MutationForgotPasswordInit, ForgotPasswordInitRequest>) => {
     const apollo = createApolloClient({ headers, signal, debug })
-    return apollo.mutate<MutationForgotPasswordInitResponse>({
+    return apollo.mutate({
         mutation: mutationForgotPasswordInitMap[mutation],
         variables: { request },
     })

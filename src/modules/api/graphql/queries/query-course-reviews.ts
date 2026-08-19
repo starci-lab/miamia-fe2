@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type QueryParams } from "../types"
 import {
@@ -21,7 +21,9 @@ import {
  * about whether the first page is 0 or 1 while both look correct. This repository already carries
  * that disagreement elsewhere; it is not worth reproducing in a new door.
  */
-const query1 = gql`
+type QueryCourseReviewsVariables = { readonly request?: QueryCourseReviewsRequest }
+
+const query1: TypedDocumentNode<QueryCourseReviewsResponse, QueryCourseReviewsVariables> = gql`
     query CourseReviews($request: CourseReviewsRequest!) {
         courseReviews(request: $request) {
             success
@@ -49,7 +51,7 @@ export enum QueryCourseReviews {
 }
 
 /** Every document this query can send, keyed by variant. */
-export const queryCourseReviewsMap: Record<QueryCourseReviews, DocumentNode> = {
+export const queryCourseReviewsMap: Record<QueryCourseReviews, TypedDocumentNode<QueryCourseReviewsResponse, QueryCourseReviewsVariables>> = {
     [QueryCourseReviews.Query1]: query1,
 }
 
@@ -62,7 +64,7 @@ export const queryCourseReviews = async ({
     debug,
 }: QueryParams<QueryCourseReviews, QueryCourseReviewsRequest> = {}) => {
     const apollo = createApolloClient({ withAuth: false, headers, signal, debug })
-    return apollo.query<QueryCourseReviewsResponse>({
+    return apollo.query({
         query: queryCourseReviewsMap[query],
         variables: { request },
     })

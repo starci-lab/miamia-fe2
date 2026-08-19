@@ -9,7 +9,11 @@ import {
 import { DrawerBranch } from "@/components/branches/DrawerBranch"
 import { CartLine } from "@/components/blocks/commerce/CartLine"
 import { type CartLineData } from "@/components/blocks/commerce/CartLine/component"
-import { _OrderSummary, type OrderSummaryLabels } from "@/components/blocks/commerce/OrderSummary/component"
+import {
+    _OrderSummary as OrderSummaryView,
+    type OrderSummaryLabels,
+    type OrderSummaryState,
+} from "@/components/blocks/commerce/OrderSummary/component"
 
 /**
  * OVERLAY - `CartDrawer`: the same basket, reached without leaving the page being read.
@@ -95,6 +99,12 @@ export type CartDrawerProps = {
 /** How many resting lines the panel shows while the first request is in flight. */
 const RESTING_COUNT = 3
 
+/** The summary's own tree: resting while the drawer loads, else pricing's success or failure. */
+const resolveOrderSummaryState = (isLoading: boolean, hasPricingFailed: boolean): OrderSummaryState => {
+    if (isLoading) return "pending"
+    return hasPricingFailed ? "failed" : "ready"
+}
+
 /**
  * Draw the basket over the page.
  *
@@ -126,12 +136,8 @@ export const _CartDrawer = (input: CartDrawerProps) => {
                 }),
                 ...(showsNotice ? {} : {
                     summary: defineContractProjection("order-summary-stack", () => (
-                        <_OrderSummary
-                            state={
-                                isLoading
-                                    ? "pending"
-                                    : input.props.hasPricingFailed === true ? "failed" : "ready"
-                            }
+                        <OrderSummaryView
+                            state={resolveOrderSummaryState(isLoading, input.props.hasPricingFailed === true)}
                             props={{
                                 labels: labels.summary,
                                 subtotal: input.props.subtotal,

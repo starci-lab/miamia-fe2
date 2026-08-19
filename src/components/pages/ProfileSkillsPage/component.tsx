@@ -54,6 +54,13 @@ const ProfileStats = (input: ProfileSkillsPageProps) => <SurfaceCard props={{ la
     ],
 })} />
 
+/** The evidence row's fact tone: harder problems read as a stronger warning colour. */
+const difficultyTone = (difficulty: string | null | undefined): "danger" | "warning" | "success" => {
+    if (difficulty === "hard") return "danger"
+    if (difficulty === "medium") return "warning"
+    return "success"
+}
+
 const ProfileHistory = (input: ProfileSkillsPageProps) => {
     const rows = input.state === "pending" ? Array.from({ length: 3 }, (_, index): ProfileCodingHistory => ({ problemTitle: "", slug: `pending-${index}`, languages: [], firstSolvedAt: "" })) : input.props.history
     return <SurfaceCard props={{ label: "Solve history", fact: input.state === "ready" ? `${rows.length} results` : undefined }} contract="profile-toolbar-over-list" render={defineContractComponent("profile-toolbar-over-list", {
@@ -62,7 +69,7 @@ const ProfileHistory = (input: ProfileSkillsPageProps) => {
             filter: defineLeafComponent("button", {}, () => <Button props={{ label: input.props.filterLabel, size: "sm" }} on={{ press: input.on?.filter }} />),
         }),
         list: defineContractComponent("profile-evidence-list", {
-            evidence: rows.map((row) => defineCompositeComponent("evidence-row", {}, () => <EvidenceRow props={{ title: row.problemTitle, subtitle: [row.firstSolvedAt, row.domain, row.languages.join(" · ")].filter(Boolean).join(" · "), fact: row.difficulty ?? undefined, factTone: row.difficulty === "hard" ? "danger" : row.difficulty === "medium" ? "warning" : "success", isPressable: input.state === "ready" }} on={{ press: () => input.on?.select?.(row.slug) }} isLoading={input.state === "pending"} />)),
+            evidence: rows.map((row) => defineCompositeComponent("evidence-row", {}, () => <EvidenceRow props={{ title: row.problemTitle, subtitle: [row.firstSolvedAt, row.domain, row.languages.join(" · ")].filter(Boolean).join(" · "), fact: row.difficulty ?? undefined, factTone: difficultyTone(row.difficulty), isPressable: input.state === "ready" }} on={{ press: () => input.on?.select?.(row.slug) }} isLoading={input.state === "pending"} />)),
         }),
     })} />
 }

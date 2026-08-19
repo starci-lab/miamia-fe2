@@ -1,10 +1,12 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type MutationParams } from "./types/params"
 import {
     type MutationSignUpInitResponse,
     type SignUpInitRequest,
 } from "./types/auth"
+
+type SignUpInitVariables = { readonly request: SignUpInitRequest }
 
 /**
  * Step one of opening an account: hand over the new credentials, get a challenge back.
@@ -22,7 +24,7 @@ import {
  * because they have no token, and attaching a stale one is how it starts failing for a reason
  * nobody can see.
  */
-const mutation1 = gql`
+const mutation1: TypedDocumentNode<MutationSignUpInitResponse, SignUpInitVariables> = gql`
     mutation SignUpInit($request: SignUpInitRequest!) {
         signUpInit(request: $request) {
             success
@@ -43,7 +45,7 @@ export enum MutationSignUpInit {
 }
 
 /** Every document this mutation can send, keyed by variant. */
-export const mutationSignUpInitMap: Record<MutationSignUpInit, DocumentNode> = {
+export const mutationSignUpInitMap: Record<MutationSignUpInit, TypedDocumentNode<MutationSignUpInitResponse, SignUpInitVariables>> = {
     [MutationSignUpInit.Mutation1]: mutation1,
 }
 
@@ -56,7 +58,7 @@ export const mutationSignUpInit = async ({
     debug,
 }: MutationParams<MutationSignUpInit, SignUpInitRequest>) => {
     const apollo = createApolloClient({ headers, signal, debug })
-    return apollo.mutate<MutationSignUpInitResponse>({
+    return apollo.mutate({
         mutation: mutationSignUpInitMap[mutation],
         variables: { request },
     })

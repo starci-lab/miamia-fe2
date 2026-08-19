@@ -14,6 +14,21 @@ export type WhiteLabelInquiryValues = { readonly name: string; readonly email: s
 export type WhiteLabelInquiryErrors = Partial<Record<keyof WhiteLabelInquiryValues, string>>
 /** Pure inquiry form state, copy and actions. */
 export type WhiteLabelInquiryPanelProps = { readonly state: "idle" | "invalid" | "submitting" | "succeeded" | "failed"; readonly values: WhiteLabelInquiryValues; readonly errors: WhiteLabelInquiryErrors; readonly copy: Readonly<Record<string, string>>; readonly onChange: (field: keyof WhiteLabelInquiryValues, value: string) => void; readonly onSubmit: () => void; readonly onDismiss: () => void }
+/** The result notice for a settled submission, or nothing while the form is still open. */
+const resolveNotice = (input: WhiteLabelInquiryPanelProps) => {
+    if (input.state === "succeeded") {
+        return { notice: defineCompositeComponent("empty-notice", {}, () => <EmptyNotice props={{ message: input.copy.succeeded }} />) }
+    }
+    if (input.state === "failed") {
+        return {
+            notice: defineCompositeComponent("empty-notice", {}, () => (
+                <EmptyNotice props={{ message: input.copy.failed, actionLabel: input.copy.retry }} on={{ act: input.onSubmit }} />
+            )),
+        }
+    }
+    return {}
+}
+
 /** Renders the complete anonymous White-label inquiry form. */
 export const _WhiteLabelInquiryPanel = (input: WhiteLabelInquiryPanelProps) => <SurfaceFormCard contract="white-label-inquiry-panel" render={defineContractComponent("white-label-inquiry-panel", {
     title: defineLeafComponent("heading", {}, () => <Heading props={{ content: input.copy.title, level: 2 }} />),
@@ -23,7 +38,7 @@ export const _WhiteLabelInquiryPanel = (input: WhiteLabelInquiryPanelProps) => <
     messageLabel: defineLeafComponent("label", {}, () => <Label props={{ htmlFor: "white-label-message", content: input.copy.message }} />),
     message: defineLeafComponent("textarea", {}, () => <Textarea props={{ id: "white-label-message", name: "message", label: input.copy.message, placeholder: input.copy.messagePlaceholder, defaultValue: input.values.message, isInvalid: input.errors.message !== undefined, disabled: input.state === "submitting" }} on={{ change: (value) => input.onChange("message", value) }} />),
     ...(input.errors.message === undefined ? {} : { messageHint: defineLeafComponent("text", {}, () => <Text props={{ content: input.errors.message, size: "xs", live: "assertive" }} />) }),
-    ...(input.state === "succeeded" ? { notice: defineCompositeComponent("empty-notice", {}, () => <EmptyNotice props={{ message: input.copy.succeeded }} />) } : input.state === "failed" ? { notice: defineCompositeComponent("empty-notice", {}, () => <EmptyNotice props={{ message: input.copy.failed, actionLabel: input.copy.retry }} on={{ act: input.onSubmit }} />) } : {}),
+    ...resolveNotice(input),
     action: [
         defineLeafComponent("button", {}, () => <Button props={{ label: input.copy.submit, variant: "primary", isPending: input.state === "submitting", disabled: input.state === "succeeded" }} on={{ press: input.onSubmit }} />),
         defineLeafComponent("button", {}, () => <Button props={{ label: input.copy.cancel, variant: "ghost", disabled: input.state === "submitting" }} on={{ press: input.onDismiss }} />),

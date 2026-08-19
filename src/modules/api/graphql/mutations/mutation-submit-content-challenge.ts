@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { MutationParams } from "./types/params"
 import type { GraphQLResponse } from "../types"
@@ -22,7 +22,9 @@ export interface MutationSubmitContentChallengeResponse {
     readonly submitChallengeSubmission: GraphQLResponse<SubmitContentChallengeResult>
 }
 
-const mutation1 = gql`
+type SubmitContentChallengeVariables = { readonly request: SubmitContentChallengeRequest }
+
+const mutation1: TypedDocumentNode<MutationSubmitContentChallengeResponse, SubmitContentChallengeVariables> = gql`
     mutation SubmitChallengeSubmission($request: SubmitChallengeSubmissionRequest!) {
         submitChallengeSubmission(request: $request) {
             success
@@ -36,7 +38,7 @@ const mutation1 = gql`
 export enum MutationSubmitContentChallenge { Mutation1 = "mutation1" }
 
 /** Every supported challenge-submission document keyed by its finite variant. */
-export const mutationSubmitContentChallengeMap: Record<MutationSubmitContentChallenge, DocumentNode> = {
+export const mutationSubmitContentChallengeMap: Record<MutationSubmitContentChallenge, TypedDocumentNode<MutationSubmitContentChallengeResponse, SubmitContentChallengeVariables>> = {
     [MutationSubmitContentChallenge.Mutation1]: mutation1,
 }
 
@@ -49,7 +51,7 @@ export const mutationSubmitContentChallenge = async ({
     debug,
 }: MutationParams<MutationSubmitContentChallenge, SubmitContentChallengeRequest>) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.mutate<MutationSubmitContentChallengeResponse>({
+    return apollo.mutate({
         mutation: mutationSubmitContentChallengeMap[mutation],
         variables: { request },
     })

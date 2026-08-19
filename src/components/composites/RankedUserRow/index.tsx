@@ -53,6 +53,27 @@ const contractFor = (verdict?: RankedUserVerdict): ContractKey => {
 }
 
 /**
+ * A movement caret when the row reports movement, a resting badge while loading with no movement
+ * concept yet, or an empty text cell to hold the column open on a settled row without one.
+ */
+const movementCell = (showsMovement: boolean, isLoading: boolean, props: RankedUserRowData) => {
+    if (showsMovement) {
+        return defineLeafComponent("rank-delta-caret", {}, () => (
+            <RankDeltaCaret
+                props={{ delta: props.rankDelta, accessibleLabel: props.movementLabel }}
+                isLoading={isLoading}
+            />
+        ))
+    }
+    if (isLoading) {
+        return defineLeafComponent("badge", {}, () => (
+            <Badge props={{ content: props.movementLabel, tone: "neutral" }} isLoading />
+        ))
+    }
+    return defineLeafComponent("text", {}, () => <Text props={{ content: undefined, size: "sm" }} />)
+}
+
+/**
  * Draw one ranked identity with one mutually exclusive movement or follow outcome.
  *
  * MOVEMENT IS A CARET, NOT A SENTENCE. An earlier version put the whole localized phrase for
@@ -97,18 +118,7 @@ export const RankedUserRow = ({ props, on, isLoading = false }: CompositeProps<R
      * which has no movement concept at all, would sit where the caret belongs on the weekly one.
      * An empty text holds the column open; it draws nothing and announces nothing.
      */
-    const movement = showsMovement
-        ? defineLeafComponent("rank-delta-caret", {}, () => (
-            <RankDeltaCaret
-                props={{ delta: props.rankDelta, accessibleLabel: props.movementLabel }}
-                isLoading={isLoading}
-            />
-        ))
-        : isLoading
-            ? defineLeafComponent("badge", {}, () => (
-                <Badge props={{ content: props.movementLabel, tone: "neutral" }} isLoading />
-            ))
-            : defineLeafComponent("text", {}, () => <Text props={{ content: undefined, size: "sm" }} />)
+    const movement = movementCell(showsMovement, isLoading, props)
     const follow = showsFollow
         ? defineLeafComponent("button", {}, () => (
             <Button

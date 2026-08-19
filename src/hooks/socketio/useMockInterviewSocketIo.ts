@@ -110,7 +110,7 @@ export const useMockInterviewSocketIo = () => {
 
     const ask = useCallback((params: AskMockInterviewParams) => {
         const socket = socketRef.current
-        if (socket === null || !socket.connected) {
+        if (!socket?.connected) {
             params.onDone("SOCKET_DISCONNECTED")
             return
         }

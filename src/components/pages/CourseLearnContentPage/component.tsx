@@ -19,7 +19,7 @@ import {
     type ContentLanguageTab,
 } from "@/components/blocks/learn/ContentTabRow/component"
 import {
-    _ContentDiscussionPanel,
+    _ContentDiscussionPanel as ContentDiscussionPanelView,
     type ContentDiscussionPanelData,
     type ContentDiscussionPanelState,
 } from "@/components/blocks/learn/ContentDiscussionPanel/component"
@@ -340,7 +340,7 @@ export const _CourseLearnContentPage = (input: CourseLearnContentPageProps) => {
         }),
         ...(discussion === undefined ? {} : {
             discussion: defineContractProjection("content-discussion-panel", () => (
-                <_ContentDiscussionPanel
+                <ContentDiscussionPanelView
                     state={discussion.state}
                     props={discussion.props}
                     on={{

@@ -38,6 +38,17 @@ const sumContents = (modules: ReadonlyArray<CourseModule>, read: (content: { min
 const byOrder = <T extends { orderIndex: number }>(rows: ReadonlyArray<T>) =>
     [...rows].sort((left, right) => left.orderIndex - right.orderIndex)
 
+/** Which element the section nav scrolls to - the overview has its own heading, the rest are indexed sections. */
+const resolveSectionScrollTarget = (
+    section: CourseDetailSection,
+    sections: NodeListOf<HTMLElement>,
+): HTMLElement | null => {
+    if (section === "overview") return document.querySelector<HTMLElement>("[data-node=\"course-hero-heading\"]")
+    if (section === "curriculum") return sections.item(2)
+    if (section === "reviews") return sections.item(3)
+    return sections.item(4)
+}
+
 /**
  * Fetch and resolve one course.
  *
@@ -101,10 +112,7 @@ export const CourseDetailPage = (input: CourseDetailPageProps) => {
     const selectSection = (section: CourseDetailSection) => {
         setSelectedSection(section)
         const sections = document.querySelectorAll<HTMLElement>("[data-node=\"course-section\"]")
-        const target = section === "overview"
-            ? document.querySelector<HTMLElement>("[data-node=\"course-hero-heading\"]")
-            : section === "curriculum" ? sections.item(2)
-                : section === "reviews" ? sections.item(3) : sections.item(4)
+        const target = resolveSectionScrollTarget(section, sections)
         target?.scrollIntoView({ behavior: "smooth", block: "start" })
     }
 

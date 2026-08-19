@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client"
+import { gql, type OperationVariables, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { GraphQLResponse } from "../types"
 
@@ -21,7 +21,7 @@ type QueryMyFlashcardStatsResponse = {
     readonly myFlashcardStats: GraphQLResponse<FlashcardStats>
 }
 
-const query = gql`
+const query: TypedDocumentNode<QueryMyFlashcardStatsResponse, OperationVariables> = gql`
     query MyFlashcardStats {
         myFlashcardStats {
             success
@@ -42,6 +42,6 @@ const query = gql`
 /** Reads the authenticated viewer's aggregate flashcard statistics. */
 export const queryMyFlashcardStats = async (): Promise<FlashcardStats | null> => {
     const apollo = createApolloClient({ withAuth: true })
-    const response = await apollo.query<QueryMyFlashcardStatsResponse>({ query })
+    const response = await apollo.query({ query })
     return response.data?.myFlashcardStats.data ?? null
 }

@@ -1,9 +1,9 @@
-import { gql } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { QueryParams } from "../types"
 import type { MyCodingProgressResponse } from "./types/coding"
 
-const document = gql`
+const document: TypedDocumentNode<MyCodingProgressResponse> = gql`
     query MyCodingProgress {
         myCodingProgress {
             success
@@ -38,4 +38,4 @@ export enum QueryMyCodingProgress {
  */
 export const queryMyCodingProgress = async ({ headers, signal, debug }: QueryParams<QueryMyCodingProgress> = {}) =>
     createApolloClient({ withAuth: true, headers, signal, debug })
-        .query<MyCodingProgressResponse>({ query: document })
+        .query({ query: document })

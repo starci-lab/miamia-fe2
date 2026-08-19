@@ -43,6 +43,13 @@ const COPY = {
     },
 } as const
 
+/** A course/attempt fetch failure wins outright; a not-yet-persisted attempt is still grading. */
+const resolveResultState = (failed: boolean, isGrading: boolean): CourseMockInterviewResultState => {
+    if (failed) return "failed"
+    if (isGrading) return "grading"
+    return "ready"
+}
+
 /** Poll the durable attempt and render the result route independently of live-session state. */
 export const CourseMockInterviewResultPage = ({ displayId, sessionId }: CourseMockInterviewResultPageProps) => {
     const locale = useLocale()
@@ -52,7 +59,7 @@ export const CourseMockInterviewResultPage = ({ displayId, sessionId }: CourseMo
     const courseId = course.data?.id
     const attempt = useQueryMockInterviewAttemptBySessionSwr(courseId, sessionId, 1500)
     const failed = course.error !== undefined || attempt.error !== undefined || course.data === null
-    const state: CourseMockInterviewResultState = failed ? "failed" : attempt.data === null || attempt.data === undefined ? "grading" : "ready"
+    const state: CourseMockInterviewResultState = resolveResultState(failed, attempt.data === null || attempt.data === undefined)
     const result = attempt.data
     const setupPath = `/courses/${displayId}/learn/mock-interview`
 

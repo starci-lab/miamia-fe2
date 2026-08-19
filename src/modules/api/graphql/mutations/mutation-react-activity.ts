@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type OperationVariables, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { MutationParams } from "./types/params"
 import type { MutationReactActivityResponse, ReactActivityRequest } from "./types/react-activity"
@@ -17,7 +17,7 @@ const mutation1 = gql`
 export enum MutationReactActivity { Mutation1 = "mutation1" }
 
 /** Every supported activity-reaction document keyed by its public variant. */
-export const mutationReactActivityMap: Record<MutationReactActivity, DocumentNode> = {
+export const mutationReactActivityMap: Record<MutationReactActivity, TypedDocumentNode<MutationReactActivityResponse, OperationVariables>> = {
     [MutationReactActivity.Mutation1]: mutation1,
 }
 
@@ -30,7 +30,7 @@ export const mutationReactActivity = async ({
     debug,
 }: MutationParams<MutationReactActivity, ReactActivityRequest>) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.mutate<MutationReactActivityResponse>({
+    return apollo.mutate({
         mutation: mutationReactActivityMap[mutation],
         variables: { request },
     })

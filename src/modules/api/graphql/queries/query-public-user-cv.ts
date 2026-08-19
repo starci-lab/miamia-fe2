@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { LookupQueryParams } from "../types"
 import type { QueryPublicUserCvResponse } from "./types/user-profile"
@@ -6,7 +6,7 @@ import type { QueryPublicUserCvResponse } from "./types/user-profile"
 /** Public CV username lookup variables. */
 export type PublicUserCvRequest = { readonly username: string }
 
-const query1 = gql`
+const query1: TypedDocumentNode<QueryPublicUserCvResponse, PublicUserCvRequest> = gql`
     query PublicUserCv($username: String!) {
         publicUserCv(username: $username) {
             success
@@ -20,7 +20,7 @@ const query1 = gql`
 export enum QueryPublicUserCv { Query1 = "query1" }
 
 /** Supported public-CV documents. */
-export const queryPublicUserCvMap: Record<QueryPublicUserCv, DocumentNode> = {
+export const queryPublicUserCvMap: Record<QueryPublicUserCv, TypedDocumentNode<QueryPublicUserCvResponse, PublicUserCvRequest>> = {
     [QueryPublicUserCv.Query1]: query1,
 }
 
@@ -33,7 +33,7 @@ export const queryPublicUserCv = async ({
     debug,
 }: LookupQueryParams<QueryPublicUserCv, PublicUserCvRequest>) => {
     const apollo = createApolloClient({ withAuth: false, headers, signal, debug })
-    return apollo.query<QueryPublicUserCvResponse, PublicUserCvRequest>({
+    return apollo.query({
         query: queryPublicUserCvMap[query],
         variables: request,
         fetchPolicy: "no-cache",

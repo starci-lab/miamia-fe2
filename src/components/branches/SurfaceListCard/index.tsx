@@ -55,6 +55,10 @@ export type SurfaceListCardProps<
     readonly isLoading?: boolean
 }
 
+/** The footer's fallback: the description line, or nothing when there is none. */
+const renderDescriptionFooter = (description: string | undefined, isLoading: boolean) =>
+    description === undefined ? null : <Text props={{ content: description, size: "xs", tone: "muted" }} isLoading={isLoading} />
+
 /**
  * Draw a labelled, joined list. The list contract owns the admitted row identity and count;
  * this branch owns only the label above it and the whole-list outcome below it.
@@ -83,6 +87,10 @@ export const SurfaceListCard = <
         />
     )
 
+    const footer = surfaceProps.actionLabel !== undefined && (isLoading || on?.act !== undefined) ? (
+        <Button props={{ label: surfaceProps.actionLabel, size: "sm", variant: "primary" }} on={{ press: on?.act }} isLoading={isLoading} />
+    ) : renderDescriptionFooter(surfaceProps.description, isLoading)
+
     return (
         <div data-component="SurfaceListCard" className="flex flex-col gap-3">
             {surfaceProps.isLabelHidden === true ? null : label}
@@ -99,11 +107,7 @@ export const SurfaceListCard = <
                     <Content props={props} on={on} isLoading={isLoading} />
                 </Card.Content>
             </Card>
-            {surfaceProps.actionLabel !== undefined && (isLoading || on?.act !== undefined) ? (
-                <Button props={{ label: surfaceProps.actionLabel, size: "sm", variant: "primary" }} on={{ press: on?.act }} isLoading={isLoading} />
-            ) : surfaceProps.description === undefined ? null : (
-                <Text props={{ content: surfaceProps.description, size: "xs", tone: "muted" }} isLoading={isLoading} />
-            )}
+            {footer}
         </div>
     )
 }

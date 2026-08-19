@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type QueryParams } from "../types"
 import { type QueryMyLearnedLessonsResponse } from "./types/my-resume"
@@ -11,7 +11,7 @@ import { type QueryMyLearnedLessonsResponse } from "./types/my-resume"
  * there is nothing else to ask for. Required-auth: the answer is the reader's own history, so the
  * client always carries the token.
  */
-const query1 = gql`
+const query1: TypedDocumentNode<QueryMyLearnedLessonsResponse> = gql`
     query MyLearnedLessons {
         myLearnedLessons {
             success
@@ -32,7 +32,7 @@ export enum QueryMyLearnedLessons {
 }
 
 /** Every document this query can send, keyed by variant. */
-export const queryMyLearnedLessonsMap: Record<QueryMyLearnedLessons, DocumentNode> = {
+export const queryMyLearnedLessonsMap: Record<QueryMyLearnedLessons, TypedDocumentNode<QueryMyLearnedLessonsResponse>> = {
     [QueryMyLearnedLessons.Query1]: query1,
 }
 
@@ -44,7 +44,7 @@ export const queryMyLearnedLessons = async ({
     debug,
 }: QueryParams<QueryMyLearnedLessons> = {}) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryMyLearnedLessonsResponse>({
+    return apollo.query({
         query: queryMyLearnedLessonsMap[query],
     })
 }

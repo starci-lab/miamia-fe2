@@ -7,6 +7,13 @@ import type { GameAnswerResult, GameLaunchConfig, GameSnapshot, GameTransportErr
 /** Product-facing connection states for an active game. */
 export type GameSessionState = "connecting" | "waiting" | "playing" | "finished" | "failed" | "disconnected"
 
+/** Map a server-reported room phase onto the product-facing session state. */
+const phaseToState = (phase: GameSnapshot["phase"]): "waiting" | "playing" | "finished" => {
+    if (phase === "WAITING") return "waiting"
+    if (phase === "PLAYING") return "playing"
+    return "finished"
+}
+
 /** Own one Colyseus connection and expose server snapshots as React state. */
 export const useGameSession = (config: GameLaunchConfig, token: string) => {
     const [state, setState] = useState<GameSessionState>("connecting")
@@ -31,7 +38,7 @@ export const useGameSession = (config: GameLaunchConfig, token: string) => {
             if (owner.current !== run) return
             connection.current = joined
             listeners.current = [
-                joined.onSnapshot((next) => { setSnapshot(next); setState(next.phase === "WAITING" ? "waiting" : next.phase === "PLAYING" ? "playing" : "finished") }),
+                joined.onSnapshot((next) => { setSnapshot(next); setState(phaseToState(next.phase)) }),
                 joined.onAnswerResult(setAnswerResult), joined.onError((next) => { setError(next); setState("failed") }),
                 joined.onLeave(() => { if (owner.current === run) setState("disconnected") }),
             ]

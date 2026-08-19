@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client"
+import { gql, type OperationVariables, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type GraphQLHeaders } from "../types"
 import {
@@ -6,7 +6,7 @@ import {
     type MutationRemoveFromCartResponse,
 } from "./types/remove-from-cart"
 
-const mutation = gql`
+const mutation: TypedDocumentNode<MutationRemoveFromCartResponse, OperationVariables> = gql`
     mutation RemoveFromCart($request: RemoveFromCartRequest!) {
         removeFromCart(request: $request) {
             success
@@ -41,5 +41,5 @@ export const mutationRemoveFromCart = async (
     options: RemoveFromCartOptions = {},
 ) => {
     const apollo = createApolloClient({ withAuth: true, ...options })
-    return apollo.mutate<MutationRemoveFromCartResponse>({ mutation, variables: { request } })
+    return apollo.mutate({ mutation, variables: { request } })
 }

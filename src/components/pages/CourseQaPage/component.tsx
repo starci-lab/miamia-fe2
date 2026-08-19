@@ -78,9 +78,10 @@ const PENDING_QA_ROWS: ReadonlyArray<CourseQaThreadRow> = Array.from(
 )
 
 const CourseQaList = ({ props, on, isLoading = false }: LeafProps<CourseQaListData, CourseQaListActions>) => {
+    const displayedRows = isLoading ? PENDING_QA_ROWS : props.rows
     const steps = !isLoading && props.rows.length === 0
         ? [defineContractProjection("content-next-row", () => <EmptyNotice props={{ message: props.emptyMessage }} />)]
-        : (isLoading ? PENDING_QA_ROWS : props.rows).map((row) => defineContractComponent("content-next-row", {
+        : displayedRows.map((row) => defineContractComponent("content-next-row", {
             label: defineLeafComponent("text", { size: "md" }, () => (
                 <Text
                     props={{

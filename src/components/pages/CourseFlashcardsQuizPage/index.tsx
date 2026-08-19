@@ -56,13 +56,27 @@ const labels = (locale: string) => locale === "vi" ? {
     cards: "cards available",
 }
 
+/** A uniform index in `[0, max)`, drawn from the Web Crypto RNG rather than `Math.random`. */
+const randomIndex = (max: number): number => {
+    const bytes = new Uint32Array(1)
+    crypto.getRandomValues(bytes)
+    return Math.floor((bytes[0] / (0xffffffff + 1)) * max)
+}
+
 const shuffle = <T,>(values: ReadonlyArray<T>): Array<T> => {
     const result = [...values]
     for (let index = result.length - 1; index > 0; index -= 1) {
-        const swapIndex = Math.floor(Math.random() * (index + 1))
+        const swapIndex = randomIndex(index + 1)
         ;[result[index], result[swapIndex]] = [result[swapIndex], result[index]]
     }
     return result
+}
+
+/** The setup screen's own state: a hard error beats loading, then whether there is anything to draw. */
+const resolveQuizState = (failed: boolean, pending: boolean, empty: boolean): "failed" | "pending" | "empty" | "ready" => {
+    if (failed) return "failed"
+    if (pending) return "pending"
+    return empty ? "empty" : "ready"
 }
 
 /** Resolves quiz configuration, card draw, and start/resume actions. */
@@ -84,7 +98,8 @@ export const CourseFlashcardsQuizPage = ({ displayId }: CourseFlashcardsQuizPage
         .slice(0, cardLimit), [cardLimit, decks.data, level])
     const failed = course.error !== undefined || decks.error !== undefined || start.error !== undefined
     const pending = course.data === undefined || decks.data === undefined
-    const state = failed ? "failed" : pending ? "pending" : course.data === null || decks.data === null || cardIds.length === 0 ? "empty" : "ready"
+    const empty = course.data === null || decks.data === null || cardIds.length === 0
+    const state = resolveQuizState(failed, pending, empty)
     const openSession = (sessionId: string) => router.push(`/courses/${displayId}/learn/flashcards/quiz/sessions/${sessionId}`)
     const startQuiz = async () => {
         if (courseId === undefined || cardIds.length === 0) return

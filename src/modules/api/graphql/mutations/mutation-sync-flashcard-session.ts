@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { GraphQLResponse } from "../types"
 import type { FlashcardQuizAnswer, FlashcardReviewKind } from "../queries/query-my-in-progress-flashcard-session"
@@ -35,7 +35,30 @@ export type RateFlashcardRequest = {
 /** Scheduling and XP outcome returned by one SM-2 grade. */
 export type RateFlashcardData = { readonly dueAt: string; readonly xpEarned: number }
 
-const syncReviewDocument = gql`
+type SyncReviewLikeVariables = {
+    readonly request: {
+        readonly sessionId: string
+        readonly currentIndex: number
+        readonly reviewedCount: number
+        readonly gradedIndexes: ReadonlyArray<number>
+        readonly xpEarned: number
+    }
+}
+
+type SyncQuizVariables = {
+    readonly request: {
+        readonly sessionId: string
+        readonly currentIndex: number
+        readonly results: ReadonlyArray<FlashcardQuizAnswer>
+    }
+}
+
+type RateFlashcardVariables = { readonly request: RateFlashcardRequest }
+
+const syncReviewDocument: TypedDocumentNode<
+    { readonly syncFlashcardReviewSessionProgress: GraphQLResponse<{ readonly success: boolean }> },
+    SyncReviewLikeVariables
+> = gql`
     mutation SyncFlashcardReviewSessionProgress($request: SyncFlashcardReviewSessionProgressRequest!) {
         syncFlashcardReviewSessionProgress(request: $request) {
             success message error
@@ -44,7 +67,10 @@ const syncReviewDocument = gql`
     }
 `
 
-const syncDueDocument = gql`
+const syncDueDocument: TypedDocumentNode<
+    { readonly syncFlashcardDueReviewSessionProgress: GraphQLResponse<{ readonly success: boolean }> },
+    SyncReviewLikeVariables
+> = gql`
     mutation SyncFlashcardDueReviewSessionProgress($request: SyncFlashcardDueReviewSessionProgressRequest!) {
         syncFlashcardDueReviewSessionProgress(request: $request) {
             success message error
@@ -53,7 +79,10 @@ const syncDueDocument = gql`
     }
 `
 
-const syncQuizDocument = gql`
+const syncQuizDocument: TypedDocumentNode<
+    { readonly syncFlashcardQuizSessionProgress: GraphQLResponse<{ readonly success: boolean }> },
+    SyncQuizVariables
+> = gql`
     mutation SyncFlashcardQuizSessionProgress($request: SyncFlashcardQuizSessionProgressRequest!) {
         syncFlashcardQuizSessionProgress(request: $request) {
             success message error
@@ -62,7 +91,10 @@ const syncQuizDocument = gql`
     }
 `
 
-const rateDocument = gql`
+const rateDocument: TypedDocumentNode<
+    { readonly reviewFlashcard: GraphQLResponse<RateFlashcardData> },
+    RateFlashcardVariables
+> = gql`
     mutation ReviewFlashcard($request: ReviewFlashcardRequest!) {
         reviewFlashcard(request: $request) {
             success message error
@@ -85,19 +117,13 @@ export const mutationSyncFlashcardSession = async (request: SyncFlashcardSession
             },
         }
         if (request.kind === "due") {
-            const response = await apollo.mutate<{
-                readonly syncFlashcardDueReviewSessionProgress: GraphQLResponse<{ readonly success: boolean }>
-            }>({ mutation: syncDueDocument, variables })
+            const response = await apollo.mutate({ mutation: syncDueDocument, variables })
             return response.data?.syncFlashcardDueReviewSessionProgress.data?.success === true
         }
-        const response = await apollo.mutate<{
-            readonly syncFlashcardReviewSessionProgress: GraphQLResponse<{ readonly success: boolean }>
-        }>({ mutation: syncReviewDocument, variables })
+        const response = await apollo.mutate({ mutation: syncReviewDocument, variables })
         return response.data?.syncFlashcardReviewSessionProgress.data?.success === true
     }
-    const response = await apollo.mutate<{
-        readonly syncFlashcardQuizSessionProgress: GraphQLResponse<{ readonly success: boolean }>
-    }>({
+    const response = await apollo.mutate({
         mutation: syncQuizDocument,
         variables: {
             request: {
@@ -113,8 +139,6 @@ export const mutationSyncFlashcardSession = async (request: SyncFlashcardSession
 /** Grades one review card and returns its backend-computed scheduling outcome. */
 export const mutationRateFlashcard = async (request: RateFlashcardRequest): Promise<RateFlashcardData | null> => {
     const apollo = createApolloClient({ withAuth: true })
-    const response = await apollo.mutate<{
-        readonly reviewFlashcard: GraphQLResponse<RateFlashcardData>
-    }>({ mutation: rateDocument, variables: { request } })
+    const response = await apollo.mutate({ mutation: rateDocument, variables: { request } })
     return response.data?.reviewFlashcard.data ?? null
 }

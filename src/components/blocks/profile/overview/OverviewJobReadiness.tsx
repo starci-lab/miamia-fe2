@@ -1,13 +1,21 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { _JobReadinessWidget, type JobReadinessBand, type JobReadinessMetric } from "@/components/blocks/dashboard/JobReadinessWidget/component"
+import {
+    _JobReadinessWidget,
+    type JobReadinessBand,
+    type JobReadinessMetric,
+} from "@/components/blocks/dashboard/JobReadinessWidget/component"
 import { useOverviewEvidence } from "./useOverviewEvidence"
 import { clamp } from "./shared"
 
 type Readiness = { readonly foundation?: { readonly codingPercentile?: number, readonly cvScore?: number }, readonly tracks?: ReadonlyArray<{ readonly courseId: string, readonly courseTitle: string, readonly capstoneScore: number, readonly interviewScore: number, readonly cvScore: number, readonly depthScore: number, readonly band: string }> }
 
-const band = (value?: string): JobReadinessBand => value === "jobReady" ? "jobReady" : value === "building" ? "building" : "needsWork"
+const band = (value?: string): JobReadinessBand => {
+    if (value === "jobReady") return "jobReady"
+    if (value === "building") return "building"
+    return "needsWork"
+}
 
 /** Public-profile readiness keeps the legacy strongest-track summary and its three scored pillars. */
 export const OverviewJobReadiness = () => {

@@ -46,6 +46,19 @@ export type CourseMindMapPageProps = {
     }
 }
 
+/** The empty-notice message: failed, no results for the search, or truly empty. */
+const deriveNoticeMessage = (
+    hasFailed: boolean,
+    noResults: boolean,
+    failedText: string,
+    noResultsText: string,
+    emptyText: string,
+): string => {
+    if (hasFailed) return failedText
+    if (noResults) return noResultsText
+    return emptyText
+}
+
 /** Draw the server concept graph as a searchable, selectable and mobile-safe node field. */
 export const _CourseMindMapPage = (input: CourseMindMapPageProps) => {
     const loading = input.state === "pending"
@@ -55,9 +68,13 @@ export const _CourseMindMapPage = (input: CourseMindMapPageProps) => {
         ? defineCompositeComponent("empty-notice", {}, () => (
             <EmptyNotice
                 props={{
-                    message: input.state === "failed"
-                        ? input.props.failedText
-                        : noResults ? input.props.noResultsText : input.props.emptyText,
+                    message: deriveNoticeMessage(
+                        input.state === "failed",
+                        noResults,
+                        input.props.failedText,
+                        input.props.noResultsText,
+                        input.props.emptyText,
+                    ),
                     actionLabel: input.state === "failed" ? input.props.retryLabel : undefined,
                 }}
                 on={{ act: input.on.retry }}

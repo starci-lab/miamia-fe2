@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
 import { useQueryCourseMindMapSwr } from "@/hooks/swr/useQueryCourseMindMapSwr"
 import type { MindMapLink, MindMapNode } from "@/modules/api/graphql/queries/query-course-mind-map"
-import { _CourseMindMapPage, type CourseMindMapNodeView, type CourseMindMapPageState } from "./component"
+import { _CourseMindMapPage as CourseMindMapPageView, type CourseMindMapNodeView, type CourseMindMapPageState } from "./component"
 
 /** Course route identity consumed by the connected concept map. */
 export type CourseMindMapPageProps = { readonly displayId: string }
@@ -30,6 +30,21 @@ const targetFor = (displayId: string, node: MindMapNode): string | null => {
         if (linked !== null) return linked
     }
     return null
+}
+
+/** Inputs that decide which single situation the mind map page is in. */
+type MindMapStateInput = {
+    readonly hasFailed: boolean
+    readonly isLoading: boolean
+    readonly hasNoNodes: boolean
+}
+
+/** Resolves the single situation the mind map page is in, in the priority order the page decided on. */
+const resolveMindMapState = (input: MindMapStateInput): CourseMindMapPageState => {
+    if (input.hasFailed) return "failed"
+    if (input.isLoading) return "pending"
+    if (input.hasNoNodes) return "empty"
+    return "ready"
 }
 
 /** Connect search and selection to the backend-computed graph without inventing nodes. */
@@ -60,10 +75,14 @@ export const CourseMindMapPage = ({ displayId }: CourseMindMapPageProps) => {
         canOpen: targetFor(displayId, node) !== null,
     })), [bounds, displayId, visibleNodes])
     const activeId = selectedId !== undefined && nodes.some((node) => node.id === selectedId) ? selectedId : nodes[0]?.id
-    const state: CourseMindMapPageState = graph.error !== undefined ? "failed" : graph.data === undefined ? "pending" : allNodes.length === 0 ? "empty" : "ready"
+    const state: CourseMindMapPageState = resolveMindMapState({
+        hasFailed: graph.error !== undefined,
+        isLoading: graph.data === undefined,
+        hasNoNodes: allNodes.length === 0,
+    })
 
     return (
-        <_CourseMindMapPage
+        <CourseMindMapPageView
             state={state}
             props={{
                 title: t("title"),

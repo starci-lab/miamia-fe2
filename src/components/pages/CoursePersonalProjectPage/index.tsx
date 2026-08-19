@@ -3,10 +3,13 @@
 import { useLocale } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
 import { useQueryCoursePersonalProjectSwr } from "@/hooks/swr/useQueryCoursePersonalProjectSwr"
-import { _CoursePersonalProjectPage } from "./component"
+import { _CoursePersonalProjectPage as CoursePersonalProjectPageView } from "./component"
 
 /** Course route identity required by the personal-project dashboard. */
 export type CoursePersonalProjectPageProps = { readonly displayId: string }
+
+/** The fields `taskStatusLabel` needs to pick this task's status copy. */
+type PersonalProjectTaskStatusInput = { readonly id: string; readonly completed: boolean }
 
 const COPY = {
     en: {
@@ -43,26 +46,34 @@ export const CoursePersonalProjectPage = ({ displayId }: CoursePersonalProjectPa
     const project = useQueryCoursePersonalProjectSwr(displayId)
     const data = project.data ?? undefined
     const hasTasks = data?.milestones.some((milestone) => milestone.tasks.length > 0) === true
-    const state = project.error !== undefined
-        ? "failed"
-        : project.data === undefined
-            ? "pending"
-            : hasTasks
-                ? "ready"
-                : "empty"
+    const resolveState = (): "failed" | "pending" | "ready" | "empty" => {
+        if (project.error !== undefined) return "failed"
+        if (project.data === undefined) return "pending"
+        return hasTasks ? "ready" : "empty"
+    }
+    const state = resolveState()
     const currentTaskId = data?.currentTask?.kind === "milestoneTask"
         ? data.currentTask.id
         : undefined
+    const taskStatusLabel = (task: PersonalProjectTaskStatusInput): string => {
+        if (task.completed) return copy.completed
+        if (task.id === currentTaskId) return copy.current
+        return copy.notStarted
+    }
     const tasks = (data?.milestones ?? [])
         .slice()
         .sort((left, right) => left.orderIndex - right.orderIndex)
         .flatMap((milestone) => milestone.tasks.map((task) => ({
             id: task.id,
-            label: `${milestone.title} · ${task.title} · ${task.completed ? copy.completed : task.id === currentTaskId ? copy.current : copy.notStarted}`,
+            label: `${milestone.title} · ${task.title} · ${taskStatusLabel(task)}`,
             isCurrent: task.id === currentTaskId,
         })))
+    const noticeByState: Partial<Record<"failed" | "pending" | "ready" | "empty", string>> = {
+        empty: copy.empty,
+        failed: copy.failed,
+    }
     return (
-        <_CoursePersonalProjectPage
+        <CoursePersonalProjectPageView
             state={state}
             props={{
                 title: copy.title,
@@ -73,7 +84,7 @@ export const CoursePersonalProjectPage = ({ displayId }: CoursePersonalProjectPa
                     : copy.tasksCompleted(data.progress.tasksCompleted, data.progress.tasksTotal),
                 completionPercent: data?.progress.completionPercent,
                 tasks,
-                notice: state === "empty" ? copy.empty : state === "failed" ? copy.failed : undefined,
+                notice: noticeByState[state],
                 retryLabel: copy.retry,
             }}
             on={{

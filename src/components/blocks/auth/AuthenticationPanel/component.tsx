@@ -1,4 +1,4 @@
-import { useRef, useState, type FormEvent } from "react"
+import { useRef, useState, type SubmitEvent } from "react"
 import { Tree } from "@/components/branches/Tree"
 import { Button } from "@/components/leaves/Button"
 import { Checkbox } from "@/components/leaves/Checkbox"
@@ -203,7 +203,7 @@ export const _AuthenticationPanel = (input: AuthenticationPanelInput) => {
     }
 
     if (input.state === "code") {
-        const submit = (event: FormEvent<HTMLFormElement>) => {
+        const submit = (event: SubmitEvent<HTMLFormElement>) => {
             event.preventDefault()
             input.on?.submitCode?.({ otp: values.current.otp })
         }
@@ -270,7 +270,7 @@ export const _AuthenticationPanel = (input: AuthenticationPanelInput) => {
     // The terms are the ONE thing that can hold a submission back before it is attempted, and only
     // when an account is being opened. Signing in and resetting a password agree to nothing new.
     const isBlockedByTerms = input.props.mode === "signUp" && !input.props.hasAgreedToTerms
-    const submit = (event: FormEvent<HTMLFormElement>) => {
+    const submit = (event: SubmitEvent<HTMLFormElement>) => {
         event.preventDefault()
         if (input.props.mode === "signUp" && values.current.password !== values.current.confirmPassword) {
             setHasConfirmationMismatch(true)

@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { GraphQLResponse, LookupQueryParams } from "../types"
 
@@ -24,7 +24,9 @@ export interface QueryContentChallengeProgressResponse {
     }>
 }
 
-const query1 = gql`
+type ContentChallengeProgressVariables = { readonly request: QueryContentChallengeProgressRequest }
+
+const query1: TypedDocumentNode<QueryContentChallengeProgressResponse, ContentChallengeProgressVariables> = gql`
     query ContentChallengeProgress($request: ChallengeSubmissionProgressRequest!) {
         challengeSubmissionProgress(request: $request) {
             success
@@ -41,7 +43,7 @@ const query1 = gql`
 export enum QueryContentChallengeProgress { Query1 = "query1" }
 
 /** Every supported challenge-progress document keyed by its finite variant. */
-export const queryContentChallengeProgressMap: Record<QueryContentChallengeProgress, DocumentNode> = {
+export const queryContentChallengeProgressMap: Record<QueryContentChallengeProgress, TypedDocumentNode<QueryContentChallengeProgressResponse, ContentChallengeProgressVariables>> = {
     [QueryContentChallengeProgress.Query1]: query1,
 }
 
@@ -54,7 +56,7 @@ export const queryContentChallengeProgress = async ({
     debug,
 }: LookupQueryParams<QueryContentChallengeProgress, QueryContentChallengeProgressRequest>) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryContentChallengeProgressResponse>({
+    return apollo.query({
         query: queryContentChallengeProgressMap[query],
         variables: { request },
     })

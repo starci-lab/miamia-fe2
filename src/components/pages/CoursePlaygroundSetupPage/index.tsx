@@ -13,12 +13,15 @@ export const CoursePlaygroundSetupPage = ({ displayId, slug }: CoursePlaygroundS
     const t = useTranslations("learn.playground")
     const router = useRouter()
     const session = usePlaygroundSession()
-    const state: CoursePlaygroundSetupState = session.failed || session.startFailed
-        ? "failed"
-        : session.isLoading ? "loading"
-            : session.isStarting ? "starting"
-                : session.session === null ? "unpaired"
-                    : session.agentConnected ? "ready" : "paired"
+
+    const deriveState = (): CoursePlaygroundSetupState => {
+        if (session.failed || session.startFailed) return "failed"
+        if (session.isLoading) return "loading"
+        if (session.isStarting) return "starting"
+        if (session.session === null) return "unpaired"
+        return session.agentConnected ? "ready" : "paired"
+    }
+    const state = deriveState()
 
     return (
         <_CoursePlaygroundSetupPage

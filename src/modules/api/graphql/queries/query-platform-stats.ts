@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type OperationVariables, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type QueryParams } from "../types"
 import { type QueryPlatformStatsResponse } from "./types/platform-stats"
@@ -9,7 +9,7 @@ import { type QueryPlatformStatsResponse } from "./types/platform-stats"
  * link chain and the envelope are all correct, and nothing about the result depends on who
  * is asking.
  */
-const query1 = gql`
+const query1: TypedDocumentNode<QueryPlatformStatsResponse, OperationVariables> = gql`
     query PlatformStats {
         platformStats {
             success
@@ -38,7 +38,7 @@ export enum QueryPlatformStats {
 }
 
 /** Every document this query can send, keyed by variant. */
-export const queryPlatformStatsMap: Record<QueryPlatformStats, DocumentNode> = {
+export const queryPlatformStatsMap: Record<QueryPlatformStats, TypedDocumentNode<QueryPlatformStatsResponse, OperationVariables>> = {
     [QueryPlatformStats.Query1]: query1,
 }
 
@@ -50,7 +50,7 @@ export const queryPlatformStats = async ({
     debug,
 }: QueryParams<QueryPlatformStats> = {}) => {
     const apollo = createApolloClient({ headers, signal, debug })
-    return apollo.query<QueryPlatformStatsResponse>({
+    return apollo.query({
         query: queryPlatformStatsMap[query],
     })
 }

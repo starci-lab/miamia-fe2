@@ -162,20 +162,18 @@ export const _CourseLeaderboardPage = (input: CourseLeaderboardPageProps) => {
                     />
                 )),
                 list: defineContractProjection("ranked-user-followable-list", () => (
-                    <>
-                        <SurfaceListCard
-                            contract="ranked-user-list"
-                            render={CourseLeaderboardListContent}
-                            props={{
-                                label: input.props.listLabel,
-                                fact: input.props.updatedAtLabel,
-                                rows: board.rows,
-                                selfRow: board.selfRow,
-                                ellipsisLabel: board.ellipsisLabel,
-                            }}
-                            isLoading={isLoading}
-                        />
-                    </>
+                    <SurfaceListCard
+                        contract="ranked-user-list"
+                        render={CourseLeaderboardListContent}
+                        props={{
+                            label: input.props.listLabel,
+                            fact: input.props.updatedAtLabel,
+                            rows: board.rows,
+                            selfRow: board.selfRow,
+                            ellipsisLabel: board.ellipsisLabel,
+                        }}
+                        isLoading={isLoading}
+                    />
                 )),
             }),
         })} />

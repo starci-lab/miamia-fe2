@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react"
 import { useTranslations } from "next-intl"
 import { usePathname, useRouter } from "@/i18n/navigation"
 import {
-    _LearnShellLayout,
+    _LearnShellLayout as LearnShellLayoutView,
     type LearnMobileTab,
     type LearnMobileView,
 } from "./component"
@@ -103,6 +103,27 @@ const READER_TABS: ReadonlyArray<{ id: LearnMobileView, icon: LearnMobileTab["ic
     { id: "outline", icon: "blog" },
 ]
 
+/** The mobile view a route opens on, before the learner picks a different one. */
+const resolveRouteDefault = (isToday: boolean, isReader: boolean): LearnMobileView => {
+    if (isToday) return "today"
+    if (isReader) return "lesson"
+    return "course"
+}
+
+/** The finite set of mobile views this route's bottom bar can switch between. */
+const resolveValidViews = (isToday: boolean, isReader: boolean, routeDefault: LearnMobileView): ReadonlyArray<LearnMobileView> => {
+    if (isToday) return TODAY_TABS.map((tab) => tab.id)
+    if (isReader) return READER_TABS.map((tab) => tab.id)
+    return [routeDefault]
+}
+
+/** The bottom-bar tab set for this route, or none where the rail is the only navigation. */
+const resolveMobileTabs = (isToday: boolean, isReader: boolean) => {
+    if (isToday) return TODAY_TABS
+    if (isReader) return READER_TABS
+    return undefined
+}
+
 /**
  * Draw the learn frame around a routed surface.
  *
@@ -125,14 +146,11 @@ export const LearnShellLayout = (input: LearnShellLayoutProps) => {
         && pathname.includes("/contents/")
         && !pathname.includes("/challenges/")
     const isToday = pathname === `${base}/learn`
-    const routeDefault: LearnMobileView = isToday ? "today" : isReader ? "lesson" : "course"
-    const validViews = useMemo<ReadonlyArray<LearnMobileView>>(() => (
-        isToday
-            ? TODAY_TABS.map((tab) => tab.id)
-            : isReader
-                ? READER_TABS.map((tab) => tab.id)
-                : [routeDefault]
-    ), [isReader, isToday, routeDefault])
+    const routeDefault = resolveRouteDefault(isToday, isReader)
+    const validViews = useMemo<ReadonlyArray<LearnMobileView>>(
+        () => resolveValidViews(isToday, isReader, routeDefault),
+        [isReader, isToday, routeDefault],
+    )
     const [mobileView, setMobileView] = useState<LearnMobileView>(routeDefault)
     useEffect(() => {
         if (!validViews.includes(mobileView)) setMobileView(routeDefault)
@@ -157,11 +175,12 @@ export const LearnShellLayout = (input: LearnShellLayoutProps) => {
         })),
     })), [t, pathname, base, enrollmentKnown, course.data?.isEnrolled, viewerRank])
 
-    const tabs = isToday ? TODAY_TABS : isReader ? READER_TABS : undefined
+    const tabs = resolveMobileTabs(isToday, isReader)
+    const contextValue = useMemo(() => ({ view: mobileView, openView: setMobileView }), [mobileView])
 
     return (
-        <LearnMobileViewContext.Provider value={{ view: mobileView, openView: setMobileView }}>
-            <_LearnShellLayout
+        <LearnMobileViewContext.Provider value={contextValue}>
+            <LearnShellLayoutView
                 props={{
                     spine: {
                         lockedLabel: t("locked"),

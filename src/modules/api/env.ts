@@ -56,7 +56,7 @@ export const apiEnv = (): ApiEnv => {
             initialRetryDelay: Number(process.env.NEXT_PUBLIC_GRAPHQL_INITIAL_RETRY_DELAY || 300),
             timeout: Number(process.env.NEXT_PUBLIC_GRAPHQL_TIMEOUT || 300000),
         },
-        bearerToken: bearerToken ? bearerToken : undefined,
+        bearerToken: bearerToken || undefined,
         debug: process.env.NEXT_PUBLIC_DEBUG !== "false",
     }
 }

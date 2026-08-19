@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type MutationParams } from "./types/params"
 import {
@@ -16,7 +16,7 @@ import {
  * because they have no token, and attaching a stale one is how it starts failing for a reason
  * nobody can see.
  */
-const mutation1 = gql`
+const mutation1: TypedDocumentNode<MutationForgotPasswordResendOtpResponse, { request: ForgotPasswordResendOtpRequest }> = gql`
     mutation ForgotPasswordResendOtp($request: ForgotPasswordResendOtpRequest!) {
         forgotPasswordResendOtp(request: $request) {
             success
@@ -37,7 +37,7 @@ export enum MutationForgotPasswordResendOtp {
 }
 
 /** Every document this mutation can send, keyed by variant. */
-export const mutationForgotPasswordResendOtpMap: Record<MutationForgotPasswordResendOtp, DocumentNode> = {
+export const mutationForgotPasswordResendOtpMap: Record<MutationForgotPasswordResendOtp, TypedDocumentNode<MutationForgotPasswordResendOtpResponse, { request: ForgotPasswordResendOtpRequest }>> = {
     [MutationForgotPasswordResendOtp.Mutation1]: mutation1,
 }
 
@@ -50,7 +50,7 @@ export const mutationForgotPasswordResendOtp = async ({
     debug,
 }: MutationParams<MutationForgotPasswordResendOtp, ForgotPasswordResendOtpRequest>) => {
     const apollo = createApolloClient({ headers, signal, debug })
-    return apollo.mutate<MutationForgotPasswordResendOtpResponse>({
+    return apollo.mutate({
         mutation: mutationForgotPasswordResendOtpMap[mutation],
         variables: { request },
     })

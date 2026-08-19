@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { GraphQLResponse, QueryParams } from "../types"
 
@@ -31,7 +31,7 @@ type QueryFoundationCategoriesResponse = {
     readonly foundationCategories: GraphQLResponse<FoundationCategoriesPage>
 }
 
-const document = gql`
+const document: TypedDocumentNode<QueryFoundationCategoriesResponse, { request?: FoundationCategoriesRequest }> = gql`
     query FoundationCategories($request: FoundationCategoriesRequest) {
         foundationCategories(request: $request) {
             success
@@ -58,7 +58,7 @@ export enum QueryFoundationCategories { Query1 = "query1" }
 
 /** Read the localized, server-filtered foundation category page. */
 export const queryFoundationCategories = async ({ request, headers, signal, debug }: QueryParams<QueryFoundationCategories, FoundationCategoriesRequest> = {}) =>
-    createApolloClient({ headers, signal, debug }).query<QueryFoundationCategoriesResponse>({
+    createApolloClient({ headers, signal, debug }).query({
         query: document,
         variables: { request },
     })

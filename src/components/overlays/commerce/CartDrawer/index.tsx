@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
 import { useQueryCoursesCheckoutPreviewSwr, useQueryMyCartSwr } from "@/hooks"
 import { useSessionToken } from "@/hooks/auth/useSessionToken"
-import { _CartDrawer, type CartDrawerState } from "./component"
+import { _CartDrawer as CartDrawerView, type CartDrawerState } from "./component"
 import { type CartLineData } from "@/components/blocks/commerce/CartLine/component"
 
 /**
@@ -25,6 +25,19 @@ export type CartDrawerProps = {
     readonly isOpen: boolean
     /** Called on every way out: the close control, Escape, and the backdrop. */
     readonly onDismiss: () => void
+}
+
+/** Decides which of the drawer's four surfaces (auth gate, spinner, error, or the basket) shows. */
+const resolveCartDrawerState = (
+    isSignedOut: boolean,
+    isLoading: boolean,
+    hasError: boolean,
+    isEmpty: boolean,
+): CartDrawerState => {
+    if (isSignedOut) return "failed"
+    if (isLoading) return "pending"
+    if (hasError) return "failed"
+    return isEmpty ? "empty" : "ready"
 }
 
 /**
@@ -75,17 +88,10 @@ export const CartDrawer = ({ isOpen, onDismiss }: CartDrawerProps) => {
         }
     })
 
-    const state: CartDrawerState =
-        isSignedOut
-            ? "failed"
-            : cart.isLoading
-                ? "pending"
-                : cart.error !== undefined
-                    ? "failed"
-                    : lines.length === 0 ? "empty" : "ready"
+    const state = resolveCartDrawerState(isSignedOut, cart.isLoading, cart.error !== undefined, lines.length === 0)
 
     return (
-        <_CartDrawer
+        <CartDrawerView
             state={state}
             props={{
                 labels: {

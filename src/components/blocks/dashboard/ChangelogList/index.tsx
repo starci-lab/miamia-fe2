@@ -8,6 +8,14 @@ import { _ChangelogList, type ChangelogCategory } from "./component"
 const isCategory = (value: string): value is ChangelogCategory =>
     value === "feature" || value === "fix" || value === "announcement"
 
+/** A load failure only counts once there is nothing already cached to show instead. */
+const resolveChangelogState = (hasError: boolean, data: unknown, entryCount: number): "failed" | "pending" | "empty" | "ready" => {
+    if (hasError && data === undefined) return "failed"
+    if (data === undefined) return "pending"
+    if (entryCount === 0) return "empty"
+    return "ready"
+}
+
 /** Connected half: resolves dates/categories and routes an entry action without href ownership. */
 export const ChangelogList = () => {
     const t = useTranslations("changelog")
@@ -15,13 +23,7 @@ export const ChangelogList = () => {
     const router = useRouter()
     const changelog = useQueryChangelogEntriesSwr()
     const entries = changelog.data ?? []
-    const state = changelog.error !== undefined && changelog.data === undefined
-        ? "failed"
-        : changelog.data === undefined
-            ? "pending"
-            : entries.length === 0
-                ? "empty"
-                : "ready"
+    const state = resolveChangelogState(changelog.error !== undefined, changelog.data, entries.length)
     const byId = new Map(entries.map((entry) => [entry.id, entry]))
 
     return (

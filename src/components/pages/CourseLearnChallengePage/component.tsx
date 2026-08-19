@@ -47,82 +47,86 @@ export type CourseLearnChallengePageProps = {
 /** Draws the challenge brief, deliverables and all approved submission states without fetching. */
 export const _CourseLearnChallengePage = (input: CourseLearnChallengePageProps) => {
     const loading = input.state === "pending"
-    const controls = input.state === "failed"
-        ? [
-            defineLeafComponent("text", {}, () => (
-                <Text props={{ content: input.props.notice, live: "assertive" }} />
+    const renderFailedControls = () => [
+        defineLeafComponent("text", {}, () => (
+            <Text props={{ content: input.props.notice, live: "assertive" }} />
+        )),
+        defineLeafComponent("button", {}, () => (
+            <Button props={{ label: input.props.retryLabel }} on={{ press: input.on?.retry }} />
+        )),
+    ]
+    const renderPassedControls = () => [
+        defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+            <Text props={{ content: input.props.metaLine, size: "sm", tone: "muted" }} />
+        )),
+        ...input.props.deliverables.map((deliverable) => defineLeafComponent("button", {}, () => (
+            <Button
+                props={{ label: `${input.props.resultLabel}: ${deliverable.title}` }}
+                on={{ press: () => input.on?.openResult?.(deliverable.id) }}
+            />
+        ))),
+    ]
+    const renderDefaultControls = () => [
+        defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+            <Text
+                props={{ content: input.props.metaLine, size: "sm", tone: "muted" }}
+                isLoading={loading}
+            />
+        )),
+        ...(input.props.hint === undefined ? [] : [
+            defineLeafComponent("text", { size: "sm" }, () => (
+                <Text props={{ content: input.props.hint, size: "sm" }} isLoading={loading} />
             )),
-            defineLeafComponent("button", {}, () => (
-                <Button props={{ label: input.props.retryLabel }} on={{ press: input.on?.retry }} />
-            )),
-        ]
-        : input.state === "passed"
-            ? [
-                defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
-                    <Text props={{ content: input.props.metaLine, size: "sm", tone: "muted" }} />
+        ]),
+        ...input.props.deliverables.flatMap((deliverable) => [
+            ...(deliverable.description === undefined ? [] : [
+                defineLeafComponent("text", {}, () => (
+                    <Text props={{ content: deliverable.description }} isLoading={loading} />
                 )),
-                ...input.props.deliverables.map((deliverable) => defineLeafComponent("button", {}, () => (
-                    <Button
-                        props={{ label: `${input.props.resultLabel}: ${deliverable.title}` }}
-                        on={{ press: () => input.on?.openResult?.(deliverable.id) }}
-                    />
-                ))),
-            ]
-            : [
+            ]),
+            ...(deliverable.scoreLine === undefined ? [] : [
                 defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
                     <Text
-                        props={{ content: input.props.metaLine, size: "sm", tone: "muted" }}
+                        props={{ content: deliverable.scoreLine, size: "sm", tone: "muted" }}
                         isLoading={loading}
                     />
                 )),
-                ...(input.props.hint === undefined ? [] : [
-                    defineLeafComponent("text", { size: "sm" }, () => (
-                        <Text props={{ content: input.props.hint, size: "sm" }} isLoading={loading} />
-                    )),
-                ]),
-                ...input.props.deliverables.flatMap((deliverable) => [
-                    ...(deliverable.description === undefined ? [] : [
-                        defineLeafComponent("text", {}, () => (
-                            <Text props={{ content: deliverable.description }} isLoading={loading} />
-                        )),
-                    ]),
-                    ...(deliverable.scoreLine === undefined ? [] : [
-                        defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
-                            <Text
-                                props={{ content: deliverable.scoreLine, size: "sm", tone: "muted" }}
-                                isLoading={loading}
-                            />
-                        )),
-                    ]),
-                    defineCompositeComponent("field", {}, () => (
-                        <Field
-                            props={{
-                                id: `challenge-submission-${deliverable.id}`,
-                                name: `challenge-submission-${deliverable.id}`,
-                                label: deliverable.title,
-                                kind: "text",
-                                disabled: input.state === "submitting",
-                            }}
-                            on={{ change: (value) => input.on?.changeUrl?.(deliverable.id, value) }}
-                            isLoading={loading}
-                        />
-                    )),
-                    defineLeafComponent("button", {}, () => (
-                        <Button
-                            props={{
-                                label: input.state === "submitting"
-                                    ? input.props.submittingLabel
-                                    : input.props.submitLabel,
-                                variant: "primary",
-                                disabled: deliverable.url?.trim().length === 0,
-                                isPending: input.state === "submitting",
-                            }}
-                            on={{ press: () => input.on?.submit?.(deliverable.id) }}
-                            isLoading={loading}
-                        />
-                    )),
-                ]),
-            ]
+            ]),
+            defineCompositeComponent("field", {}, () => (
+                <Field
+                    props={{
+                        id: `challenge-submission-${deliverable.id}`,
+                        name: `challenge-submission-${deliverable.id}`,
+                        label: deliverable.title,
+                        kind: "text",
+                        disabled: input.state === "submitting",
+                    }}
+                    on={{ change: (value) => input.on?.changeUrl?.(deliverable.id, value) }}
+                    isLoading={loading}
+                />
+            )),
+            defineLeafComponent("button", {}, () => (
+                <Button
+                    props={{
+                        label: input.state === "submitting"
+                            ? input.props.submittingLabel
+                            : input.props.submitLabel,
+                        variant: "primary",
+                        disabled: deliverable.url?.trim().length === 0,
+                        isPending: input.state === "submitting",
+                    }}
+                    on={{ press: () => input.on?.submit?.(deliverable.id) }}
+                    isLoading={loading}
+                />
+            )),
+        ]),
+    ]
+    const resolveControls = () => {
+        if (input.state === "failed") return renderFailedControls()
+        if (input.state === "passed") return renderPassedControls()
+        return renderDefaultControls()
+    }
+    const controls = resolveControls()
 
     return (
         <Tree

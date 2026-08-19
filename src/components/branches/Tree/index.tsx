@@ -33,6 +33,13 @@ export interface ContractContentProps<K extends ContractKey> {
     render: ContractComponent<NoInfer<K>>
 }
 
+/** Normalize one slot's declared value into the list Tree walks: as-is when repeated, empty when absent, one entry otherwise. */
+const toSlotValues = (value: unknown): ReadonlyArray<unknown> => {
+    if (Array.isArray(value)) return value
+    if (value === undefined) return []
+    return [value]
+}
+
 /** Render validated slots without choosing or opening their host. */
 export const ContractContent = <const K extends ContractKey>({ contract, render }: ContractContentProps<K>) => {
     if (render.kind === "projection") return <>{render.project()}</>
@@ -40,9 +47,7 @@ export const ContractContent = <const K extends ContractKey>({ contract, render 
     const slots = render.slots
     return Object.keys(spec.children).flatMap((slot) => {
         const value = slots[slot as keyof typeof slots]
-        const values: ReadonlyArray<unknown> = Array.isArray(value)
-            ? value
-            : value === undefined ? [] : [value]
+        const values = toSlotValues(value)
         return values.map((component: unknown, index: number) => {
             const child = component as ContractComponent<ContractKey> | LeafComponent<string, Readonly<Record<never, never>>>
             if (child.meta.shape === "contract") {

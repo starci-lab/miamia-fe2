@@ -5,8 +5,31 @@ import { useParams } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
 import { useQueryMeSwr, useQueryProgressSummarySwr, useQueryUserProfileSwr, useQueryWrappedSwr } from "@/hooks"
-import { _ProfileOverviewPage } from "./component"
+import { _ProfileOverviewPage as ProfileOverviewPageView } from "./component"
 import type { ProfileView } from "@/components/blocks/profile/learner/ProfileViewSwitch/component"
+
+/** "failed" beats "pending" - a stale error stays reported even if a caller mistakenly re-fetches. */
+const resolveLoadState = (error: unknown, data: unknown): "failed" | "pending" | "ready" => {
+    if (error !== undefined) return "failed"
+    if (data === undefined) return "pending"
+    return "ready"
+}
+
+/** The Wrapped card adds one more settled outcome: unlocked once loaded, otherwise still locked. */
+const resolveWrappedState = (error: unknown, data: unknown, isUnlocked: boolean | undefined): "failed" | "pending" | "unlocked" | "locked" => {
+    if (error !== undefined) return "failed"
+    if (data === undefined) return "pending"
+    return isUnlocked === true ? "unlocked" : "locked"
+}
+
+/** The two figures the level ring's percent is computed from. */
+type LevelProgress = { readonly xpIntoLevel: number, readonly xpForNextLevel: number }
+
+/** The level ring's percent, or undefined while the level has no known ceiling yet. */
+const resolveLevelPercent = (progressData: LevelProgress | null | undefined): number | undefined => {
+    if (progressData === undefined || progressData === null || progressData.xpForNextLevel === 0) return undefined
+    return Math.min(100, Math.round((progressData.xpIntoLevel / progressData.xpForNextLevel) * 100))
+}
 
 /** Connects the selected profile audience to owner-only learning contracts. */
 export const ProfileOverviewPage = () => {
@@ -22,11 +45,11 @@ export const ProfileOverviewPage = () => {
     const wrapped = useQueryWrappedSwr("weekly", isSelf)
     const progressData = progress.data
     const wrappedData = wrapped.data
-    const levelPercent = progressData === undefined || progressData === null || progressData.xpForNextLevel === 0 ? undefined : Math.min(100, Math.round((progressData.xpIntoLevel / progressData.xpForNextLevel) * 100))
-    const progressState = progress.error !== undefined ? "failed" : progress.data === undefined ? "pending" : "ready"
-    const wrappedState = wrapped.error !== undefined ? "failed" : wrapped.data === undefined ? "pending" : wrappedData?.isUnlocked ? "unlocked" : "locked"
+    const levelPercent = resolveLevelPercent(progressData)
+    const progressState = resolveLoadState(progress.error, progress.data)
+    const wrappedState = resolveWrappedState(wrapped.error, wrapped.data, wrappedData?.isUnlocked)
 
-    return <_ProfileOverviewPage
+    return <ProfileOverviewPageView
         state={isSelf ? "owner" : "visitor"}
         props={{
             selectedView,

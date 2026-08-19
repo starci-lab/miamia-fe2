@@ -41,3 +41,9 @@ yarn-error.log*
 
 # agent scratch: git worktrees and session state — a full copy of this repo
 .claude/
+
+# typecheck scratch: a run log, never source of truth
+.artifacts-typecheck.log
+
+# scanner working directory: written by `npm run sonar:check`, never source
+.scannerwork/

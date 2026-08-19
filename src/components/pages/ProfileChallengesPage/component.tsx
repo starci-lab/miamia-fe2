@@ -17,6 +17,19 @@ export type ProfileChallengesPageProps = {
 
 const formatDate = (value: string) => Number.isNaN(Date.parse(value)) ? value : new Intl.DateTimeFormat("en", { month: "short", day: "2-digit" }).format(new Date(value))
 
+/** One strength-metric tile's already-formatted figure and label. */
+type ProofMetricRow = { readonly id: string; readonly figure: string; readonly label: string }
+
+/** Which metric rows to draw: the standing failure notice, real metrics, or resting placeholders. */
+const resolveProofMetricRows = (
+    strengthState: ProfileChallengesPageProps["strength"]["state"],
+    metrics: ReadonlyArray<ProofMetricRow>,
+): ReadonlyArray<ProofMetricRow> => {
+    if (strengthState === "error") return [{ id: "error", figure: "—", label: "Standing unavailable" }]
+    if (metrics.length > 0) return metrics
+    return Array.from({ length: 4 }, (_, index) => ({ id: String(index), figure: "", label: "" }))
+}
+
 /** Challenges parity: headline standing and a flat, recruiter-scannable list of passed proof. */
 export const _ProfileChallengesPage = ({ strength, submissions, on }: ProfileChallengesPageProps) => {
     const rows = submissions.state === "pending"
@@ -33,10 +46,7 @@ export const _ProfileChallengesPage = ({ strength, submissions, on }: ProfileCha
             section: [
                 defineContractProjection("label-row-over-card", () => (
                     <SurfaceCard props={{ label: "Challenge strength" }} contract="profile-proof-metrics" render={defineContractComponent("profile-proof-metrics", {
-                        metric: strength.state === "error" ? [defineContractComponent("profile-proof-metric", {
-                            figure: defineLeafComponent("text", {}, () => <Text props={{ content: "—", weight: "semibold" }} />),
-                            label: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => <Text props={{ content: "Standing unavailable", size: "xs" }} />),
-                        })] : (metrics.length > 0 ? metrics : Array.from({ length: 4 }, (_, index) => ({ id: String(index), figure: "", label: "" }))).map((metric) => defineContractComponent("profile-proof-metric", {
+                        metric: resolveProofMetricRows(strength.state, metrics).map((metric) => defineContractComponent("profile-proof-metric", {
                             figure: defineLeafComponent("text", {}, () => <Text props={{ content: metric.figure, weight: "semibold" }} isLoading={strength.state === "pending"} />),
                             label: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => <Text props={{ content: metric.label, size: "xs" }} isLoading={strength.state === "pending"} />),
                         })),

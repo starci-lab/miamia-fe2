@@ -24,7 +24,7 @@ export const resolveRetryLinkOptions = (): RetryLink.Options => {
              * it arrives as a successful HTTP response carrying an `error` in the envelope,
              * and retrying a rejected mutation would be worse than failing.
              */
-            retryIf: (error) => Boolean(error),
+            retryIf: Boolean,
         },
     }
 }

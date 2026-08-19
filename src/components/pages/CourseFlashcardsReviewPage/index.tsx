@@ -10,7 +10,7 @@ import {
 import { useQueryMyFlashcardStatsSwr } from "@/hooks/swr/useQueryMyFlashcardStatsSwr"
 import { useQueryMyInProgressFlashcardSessionSwr } from "@/hooks/swr/useQueryMyInProgressFlashcardSessionSwr"
 import { useMutateStartFlashcardSessionSwr } from "@/hooks/swr/useMutateStartFlashcardSessionSwr"
-import { _CourseFlashcardsReviewPage } from "./component"
+import { _CourseFlashcardsReviewPage as CourseFlashcardsReviewPageView } from "./component"
 
 /** Route identity required by the connected flashcard review overview. */
 export type CourseFlashcardsReviewPageProps = { readonly displayId: string }
@@ -82,7 +82,13 @@ export const CourseFlashcardsReviewPage = ({ displayId }: CourseFlashcardsReview
         || stats.error !== undefined
         || start.error !== undefined
     const pending = course.data === undefined || decks.data === undefined || due.data === undefined || stats.data === undefined
-    const state = failed ? "failed" : pending ? "pending" : course.data === null || resolvedDecks.length === 0 ? "empty" : "ready"
+    const resolveState = (): "failed" | "pending" | "empty" | "ready" => {
+        if (failed) return "failed"
+        if (pending) return "pending"
+        if (course.data === null || resolvedDecks.length === 0) return "empty"
+        return "ready"
+    }
+    const state = resolveState()
 
     const openSession = (sessionId: string) => router.push(`/courses/${displayId}/learn/flashcards/review/sessions/${sessionId}`)
     const startDeck = async (deckId: string) => {
@@ -109,7 +115,7 @@ export const CourseFlashcardsReviewPage = ({ displayId }: CourseFlashcardsReview
     }
 
     return (
-        <_CourseFlashcardsReviewPage
+        <CourseFlashcardsReviewPageView
             state={state}
             props={{
                 title: copy.title,

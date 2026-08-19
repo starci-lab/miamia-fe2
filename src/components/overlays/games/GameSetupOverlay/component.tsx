@@ -11,27 +11,34 @@ export type GameSetupActions = { readonly back?: () => void; readonly chooseMode
 /** Pure overlay input including controlled covering-surface state. */
 export type GameSetupOverlayProps = { readonly isOpen: boolean; readonly state: GameSetupState; readonly props: GameSetupData; readonly on?: GameSetupActions; readonly onDismiss: () => void }
 
-/** Render exactly one setup decision inside the shared modal shell. */
-export const _GameSetupOverlay = (input: GameSetupOverlayProps) => {
-    const header = defineContractComponent("page-header-stack", { title: defineLeafComponent("heading", {}, () => <Heading props={{ content: `${input.props.title} · ${input.props.gameTitle}`, level: 2 }} />) })
-    // vn-ok: This overlay presents localized Vietnamese game setup copy at runtime.
-    const content = input.state === "mode"
-        ? defineContractComponent("game-mode-grid", { mode: [
+// vn-ok: This overlay presents localized Vietnamese game setup copy at runtime.
+/** Resolve the one setup-step body shown for the overlay's current decision state. */
+const resolveGameSetupContent = (input: GameSetupOverlayProps) => {
+    if (input.state === "mode") {
+        return defineContractComponent("game-mode-grid", { mode: [
             defineLeafComponent("button", {}, () => <Button props={{ label: "Chơi đơn", variant: "secondary" }} on={{ press: () => input.on?.chooseMode?.("SINGLE") }} />), // vn-ok: localized runtime copy
             defineLeafComponent("button", {}, () => <Button props={{ label: "Chơi cùng bạn", variant: "primary" }} on={{ press: () => input.on?.chooseMode?.("COUPLE") }} />), // vn-ok: localized runtime copy
             ...(input.props.supportsTeam ? [defineLeafComponent("button", {}, () => <Button props={{ label: "Đội 2v2", variant: "outline" }} on={{ press: () => input.on?.chooseMode?.("TEAM2V2") }} />)] : []), // vn-ok: localized runtime copy
         ] })
-        : input.state === "room"
-            ? defineContractComponent("game-code-join-row", {
-                create: defineLeafComponent("button", {}, () => <Button props={{ label: "Tạo phòng mới", variant: "primary" }} on={{ press: input.on?.createRoom }} />), // vn-ok: localized runtime copy
-                label: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: "Hoặc nhập mã phòng bạn gửi", size: "sm", tone: "muted" }} />), // vn-ok: localized runtime copy
-                code: defineLeafComponent("input", {}, () => <Input props={{ id: "game-room-code", name: "roomCode", kind: "text", placeholder: "Mã phòng" }} on={{ change: input.on?.changeCode }} />), // vn-ok: localized runtime copy
-                join: defineLeafComponent("button", {}, () => <Button props={{ label: "Vào phòng", variant: "outline", disabled: input.props.roomCode.trim().length === 0 }} on={{ press: input.on?.joinRoom }} />), // vn-ok: localized runtime copy
-            })
-            : defineContractComponent("game-character-grid", { character: [
-                defineLeafComponent("button", {}, () => <Button props={{ label: "Chọn Mia", variant: "primary" }} on={{ press: () => input.on?.chooseCharacter?.("MIA") }} />), // vn-ok: localized runtime copy
-                defineLeafComponent("button", {}, () => <Button props={{ label: "Chọn Max", variant: "secondary" }} on={{ press: () => input.on?.chooseCharacter?.("MAX") }} />), // vn-ok: localized runtime copy
-            ] })
+    }
+    if (input.state === "room") {
+        return defineContractComponent("game-code-join-row", {
+            create: defineLeafComponent("button", {}, () => <Button props={{ label: "Tạo phòng mới", variant: "primary" }} on={{ press: input.on?.createRoom }} />), // vn-ok: localized runtime copy
+            label: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: "Hoặc nhập mã phòng bạn gửi", size: "sm", tone: "muted" }} />), // vn-ok: localized runtime copy
+            code: defineLeafComponent("input", {}, () => <Input props={{ id: "game-room-code", name: "roomCode", kind: "text", placeholder: "Mã phòng" }} on={{ change: input.on?.changeCode }} />), // vn-ok: localized runtime copy
+            join: defineLeafComponent("button", {}, () => <Button props={{ label: "Vào phòng", variant: "outline", disabled: input.props.roomCode.trim().length === 0 }} on={{ press: input.on?.joinRoom }} />), // vn-ok: localized runtime copy
+        })
+    }
+    return defineContractComponent("game-character-grid", { character: [
+        defineLeafComponent("button", {}, () => <Button props={{ label: "Chọn Mia", variant: "primary" }} on={{ press: () => input.on?.chooseCharacter?.("MIA") }} />), // vn-ok: localized runtime copy
+        defineLeafComponent("button", {}, () => <Button props={{ label: "Chọn Max", variant: "secondary" }} on={{ press: () => input.on?.chooseCharacter?.("MAX") }} />), // vn-ok: localized runtime copy
+    ] })
+}
+
+/** Render exactly one setup decision inside the shared modal shell. */
+export const _GameSetupOverlay = (input: GameSetupOverlayProps) => {
+    const header = defineContractComponent("page-header-stack", { title: defineLeafComponent("heading", {}, () => <Heading props={{ content: `${input.props.title} · ${input.props.gameTitle}`, level: 2 }} />) })
+    const content = resolveGameSetupContent(input)
     return <ModalBranch
         isOpen={input.isOpen}
         size="md"

@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type OperationVariables, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { GraphQLHeaders, GraphQLResponse } from "../types"
 import type { MockInterviewSeedQuestion } from "../queries/query-my-in-progress-mock-interview-session"
@@ -35,7 +35,7 @@ export type MutationStartMockInterviewSessionResponse = {
 }
 
 /** GraphQL document for drawing a durable interview session. */
-export const startMockInterviewSessionDocument: DocumentNode = gql`
+export const startMockInterviewSessionDocument: TypedDocumentNode<MutationStartMockInterviewSessionResponse, OperationVariables> = gql`
     mutation StartMockInterviewSession($request: StartMockInterviewSessionRequest!) {
         startMockInterviewSession(request: $request) {
             success message error
@@ -60,7 +60,7 @@ export const mutationStartMockInterviewSession = async (
     options: MockInterviewMutationOptions = {},
 ) => {
     const apollo = createApolloClient({ withAuth: true, ...options })
-    return apollo.mutate<MutationStartMockInterviewSessionResponse>({
+    return apollo.mutate({
         mutation: startMockInterviewSessionDocument,
         variables: { request },
     })

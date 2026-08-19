@@ -8,6 +8,34 @@ import { MyFeedCategory, MyFeedTab } from "@/modules/api/graphql/queries/types/m
 import { ReactionType } from "@/modules/api/graphql/queries/types/reactions"
 import { _FeedExplorer } from "./component"
 
+type FeedState = "pending" | "failed" | "filteredEmpty" | "platformEmpty" | "ready"
+
+/** Feed load lifecycle: an error with no rows fails, no data yet is pending, then filter/platform emptiness. */
+const resolveFeedState = (dataLoaded: boolean, hasError: boolean, hasRows: boolean, isFiltered: boolean): FeedState => {
+    if (!dataLoaded && !hasError) return "pending"
+    if (hasError && !hasRows) return "failed"
+    if (!hasRows && isFiltered) return "filteredEmpty"
+    if (!hasRows) return "platformEmpty"
+    return "ready"
+}
+
+/** Copy shown alongside the feed for non-"ready" states; "ready" needs none. */
+const resolveFeedResultCopy = (state: FeedState, t: ReturnType<typeof useTranslations>) => {
+    if (state === "failed") return { message: t("feedFailed"), actionLabel: t("retry") }
+    if (state === "filteredEmpty") return { message: t("feedEmptyFiltered"), actionLabel: t("resetFilter") }
+    if (state === "platformEmpty") {
+        return { message: t("feedEmptyPlatform"), description: t("feedEmptyPlatformDescription"), actionLabel: t("browseCourses") }
+    }
+    return { message: "" }
+}
+
+/** The empty-state action: reset the filter, go browse courses, or just retry the query. */
+const resolveResultAction = (state: FeedState, resetFilter: () => void, browseCourses: () => void, retry: () => void) => {
+    if (state === "filteredEmpty") return resetFilter
+    if (state === "platformEmpty") return browseCourses
+    return retry
+}
+
 /** Own feed filters, cursor pages, reactions and resolved internal navigation. */
 export const FeedExplorer = () => {
     const t = useTranslations("dashboard.explore")
@@ -22,20 +50,8 @@ export const FeedExplorer = () => {
     const lastPage = query.data?.[query.data.length - 1]
     const hasRows = items.length > 0
     const hasLoadMoreError = query.error !== undefined && hasRows
-    const state = query.data === undefined && query.error === undefined
-        ? "pending"
-        : query.error !== undefined && !hasRows
-            ? "failed"
-            : !hasRows && category !== MyFeedCategory.All
-                ? "filteredEmpty"
-                : !hasRows ? "platformEmpty" : "ready"
-    const resultCopy = state === "failed"
-        ? { message: t("feedFailed"), actionLabel: t("retry") }
-        : state === "filteredEmpty"
-            ? { message: t("feedEmptyFiltered"), actionLabel: t("resetFilter") }
-            : state === "platformEmpty"
-                ? { message: t("feedEmptyPlatform"), description: t("feedEmptyPlatformDescription"), actionLabel: t("browseCourses") }
-                : { message: "" }
+    const state = resolveFeedState(query.data !== undefined, query.error !== undefined, hasRows, category !== MyFeedCategory.All)
+    const resultCopy = resolveFeedResultCopy(state, t)
     const actions = Object.fromEntries(items.flatMap((item) => [
         [`actor:${item.id}`, async () => {
             const result = await route.trigger({ globalId: item.actorGlobalId })
@@ -92,11 +108,7 @@ export const FeedExplorer = () => {
         selectScope: (key) => setScope(key as MyFeedTab),
         selectCategory: (key) => setCategory(key as MyFeedCategory),
         feed: {
-            resultAction: state === "filteredEmpty"
-                ? () => setCategory(MyFeedCategory.All)
-                : state === "platformEmpty"
-                    ? () => router.push("/courses")
-                    : () => { void query.mutate() },
+            resultAction: resolveResultAction(state, () => setCategory(MyFeedCategory.All), () => router.push("/courses"), () => { void query.mutate() }),
             ...actions,
         },
         loadMore: () => { void query.setSize(query.size + 1) },

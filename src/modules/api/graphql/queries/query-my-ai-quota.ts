@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type QueryParams } from "../types"
 import { type QueryMyAiQuotaResponse } from "./types/my-ai-quota"
@@ -12,7 +12,7 @@ import { type QueryMyAiQuotaResponse } from "./types/my-ai-quota"
  * REFUSAL needs a different selection and should ask for it as a second variant.
  * Required-auth, so the client always carries the token.
  */
-const query1 = gql`
+const query1: TypedDocumentNode<QueryMyAiQuotaResponse> = gql`
     query MyAiQuota {
         myAiQuota {
             success
@@ -35,7 +35,7 @@ export enum QueryMyAiQuota {
 }
 
 /** Every document this query can send, keyed by variant. */
-export const queryMyAiQuotaMap: Record<QueryMyAiQuota, DocumentNode> = {
+export const queryMyAiQuotaMap: Record<QueryMyAiQuota, TypedDocumentNode<QueryMyAiQuotaResponse>> = {
     [QueryMyAiQuota.Query1]: query1,
 }
 
@@ -47,7 +47,7 @@ export const queryMyAiQuota = async ({
     debug,
 }: QueryParams<QueryMyAiQuota> = {}) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryMyAiQuotaResponse>({
+    return apollo.query({
         query: queryMyAiQuotaMap[query],
     })
 }

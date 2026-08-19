@@ -11,6 +11,13 @@ import type { ProfileSolvedChallenge } from "@/modules/api/graphql/queries/types
 /** Course-scoped submissions, filtering state and route outcomes. */
 export type ProfileChallengeManagePageProps = { readonly state: "pending" | "ready" | "error"; readonly courseTitle?: string; readonly rows: ReadonlyArray<ProfileSolvedChallenge>; readonly query: string; readonly filterLabel: string; readonly on: { readonly back: () => void; readonly search: (value: string) => void; readonly filter: () => void; readonly select: (id: string) => void } }
 
+/** Resolves the message shown when there is no submission evidence to list. */
+const emptyEvidenceMessage = (state: ProfileChallengeManagePageProps["state"], query: string): string => {
+    if (state === "error") return "Submissions couldn't be loaded."
+    if (query) return "No submissions match this search."
+    return "No passed submissions were found."
+}
+
 /** Draw the course proof header, toolbar and filtered joined submissions. */
 export const _ProfileChallengeManagePage = ({ state, courseTitle, rows, query, filterLabel, on }: ProfileChallengeManagePageProps) => {
     const displayed = state === "pending" ? Array.from({ length: 3 }, (_, index): ProfileSolvedChallenge => ({ id: `pending-${index}`, title: "", passedAt: "" })) : rows
@@ -26,7 +33,7 @@ export const _ProfileChallengeManagePage = ({ state, courseTitle, rows, query, f
             fact: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: `${rows.length} found`, size: "sm", tone: "muted" }} />),
         })} />),
         defineContractProjection("label-row-over-card", () => <SurfaceCard props={{ label: `${rows.length} passed submissions` }} contract="profile-evidence-list" render={defineContractComponent("profile-evidence-list", {
-            evidence: displayed.length > 0 ? displayed.map((submission) => defineCompositeComponent("evidence-row", {}, () => <EvidenceRow props={{ title: submission.title, subtitle: [submission.selectedLang, submission.difficulty, submission.passedAt].filter(Boolean).join(" · "), fact: submission.score == null ? undefined : String(submission.score), factTone: "success", isPressable: true }} on={{ press: () => on.select(submission.id) }} isLoading={state === "pending"} />)) : [defineCompositeComponent("evidence-row", {}, () => <EvidenceRow props={{ title: state === "error" ? "Submissions couldn't be loaded." : query ? "No submissions match this search." : "No passed submissions were found." }} />)],
+            evidence: displayed.length > 0 ? displayed.map((submission) => defineCompositeComponent("evidence-row", {}, () => <EvidenceRow props={{ title: submission.title, subtitle: [submission.selectedLang, submission.difficulty, submission.passedAt].filter(Boolean).join(" · "), fact: submission.score == null ? undefined : String(submission.score), factTone: "success", isPressable: true }} on={{ press: () => on.select(submission.id) }} isLoading={state === "pending"} />)) : [defineCompositeComponent("evidence-row", {}, () => <EvidenceRow props={{ title: emptyEvidenceMessage(state, query) }} />)],
         })} />),
     ] })} />
 }

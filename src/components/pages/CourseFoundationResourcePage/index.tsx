@@ -3,19 +3,27 @@
 import { useTranslations } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
 import { useQueryFoundationSwr } from "@/hooks/swr/useQueryFoundationSwr"
-import { _CourseFoundationResourcePage } from "./component"
+import { _CourseFoundationResourcePage as CourseFoundationResourcePageView } from "./component"
 
 /** Route identities required by the connected foundation resource reader. */
 export type CourseFoundationResourcePageProps = { readonly displayId: string; readonly categoryId: string; readonly foundationId: string }
+
+/** A resolved-but-absent resource is "not-found", distinct from a load failure. */
+const resolveResourceState = (error: unknown, data: unknown): "failed" | "pending" | "not-found" | "ready" => {
+    if (error !== undefined) return "failed"
+    if (data === undefined) return "pending"
+    if (data === null) return "not-found"
+    return "ready"
+}
 
 /** Resolve a route resource identity and connect its follow-on playground action. */
 export const CourseFoundationResourcePage = ({ displayId, categoryId, foundationId }: CourseFoundationResourcePageProps) => {
     const t = useTranslations("learn.foundations")
     const router = useRouter()
     const query = useQueryFoundationSwr({ displayId: foundationId })
-    const state = query.error !== undefined ? "failed" : query.data === undefined ? "pending" : query.data === null ? "not-found" : "ready"
+    const state = resolveResourceState(query.error, query.data)
     return (
-        <_CourseFoundationResourcePage
+        <CourseFoundationResourcePageView
             state={state}
             props={{
                 resource: query.data,

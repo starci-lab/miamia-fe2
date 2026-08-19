@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client"
+import { gql, type OperationVariables, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type GraphQLHeaders } from "../types"
 import {
@@ -6,7 +6,7 @@ import {
     type MutationAddToCartResponse,
 } from "./types/add-to-cart"
 
-const mutation = gql`
+const mutation: TypedDocumentNode<MutationAddToCartResponse, OperationVariables> = gql`
     mutation AddToCart($request: AddToCartRequest!) {
         addToCart(request: $request) {
             success
@@ -39,5 +39,5 @@ export const mutationAddToCart = async (
     options: AddToCartOptions = {},
 ) => {
     const apollo = createApolloClient({ withAuth: true, ...options })
-    return apollo.mutate<MutationAddToCartResponse>({ mutation, variables: { request } })
+    return apollo.mutate({ mutation, variables: { request } })
 }

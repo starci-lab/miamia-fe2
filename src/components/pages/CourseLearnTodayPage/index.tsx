@@ -11,10 +11,61 @@ import { useQueryCoursePersonalProjectSwr } from "@/hooks/swr/useQueryCoursePers
 import { useQueryMyInProgressMockInterviewSessionSwr } from "@/hooks/swr/useQueryMyInProgressMockInterviewSessionSwr"
 import { useQueryResolveRouteSwr } from "@/hooks/swr/useQueryResolveRouteSwr"
 import { useLearnMobileView } from "@/components/layouts/LearnShellLayout"
+import { type InProgressMockInterviewSession } from "@/modules/api/graphql/queries/query-my-in-progress-mock-interview-session"
+import { type MyResumeRefRow } from "@/modules/api/graphql/queries/types/my-resume"
+import { type CourseDetail } from "@/modules/api/graphql/queries/types/course"
 import { _CourseLearnTodayPage, type CourseLearnTodayItem } from "./component"
 
 /** Route identity required by the connected Today page. */
 export type CourseLearnTodayPageProps = { readonly displayId: string }
+
+/** Rank the single most relevant "keep going" fact: an open interview beats an open challenge, which beats an open lesson. */
+const resolvePrimaryItem = (
+    activeInterview: InProgressMockInterviewSession | undefined,
+    challenges: Array<MyResumeRefRow> | undefined,
+    lessons: Array<MyResumeRefRow> | undefined,
+    course: CourseDetail | null | undefined,
+    t: ReturnType<typeof useTranslations>,
+): CourseLearnTodayItem => {
+    if (activeInterview !== undefined) {
+        return {
+            id: "interview-resume",
+            title: activeInterview.promptTitle,
+            kind: t("kinds.interview"),
+            actionLabel: t("resume"),
+        }
+    }
+    if (challenges?.[0] !== undefined) {
+        return {
+            id: "resolve:" + challenges[0].globalId,
+            title: challenges[0].label,
+            kind: t("kinds.challenge"),
+            actionLabel: t("resume"),
+        }
+    }
+    if (lessons?.[0] !== undefined) {
+        return {
+            id: "resolve:" + lessons[0].globalId,
+            title: lessons[0].label,
+            kind: t("kinds.lesson"),
+            actionLabel: t("resume"),
+        }
+    }
+    return {
+        id: "modules",
+        title: course?.title ?? t("modules"),
+        kind: t("kinds.course"),
+        actionLabel: t("open"),
+    }
+}
+
+/** The Today page's own load lifecycle: failed beats pending beats an unresolved course. */
+const resolveTodayState = (failed: boolean, pending: boolean, courseData: CourseDetail | null | undefined) => {
+    if (failed) return "failed" as const
+    if (pending) return "pending" as const
+    if (courseData === null) return "empty" as const
+    return "ready" as const
+}
 
 /** Rank live learning facts into the approved Today composition. */
 export const CourseLearnTodayPage = ({ displayId }: CourseLearnTodayPageProps) => {
@@ -38,33 +89,7 @@ export const CourseLearnTodayPage = ({ displayId }: CourseLearnTodayPageProps) =
         ? interview.data
         : undefined
 
-    const primary: CourseLearnTodayItem = activeInterview !== undefined
-        ? {
-            id: "interview-resume",
-            title: activeInterview.promptTitle,
-            kind: t("kinds.interview"),
-            actionLabel: t("resume"),
-        }
-        : challenges.data?.[0] !== undefined
-            ? {
-                id: "resolve:" + challenges.data[0].globalId,
-                title: challenges.data[0].label,
-                kind: t("kinds.challenge"),
-                actionLabel: t("resume"),
-            }
-            : lessons.data?.[0] !== undefined
-                ? {
-                    id: "resolve:" + lessons.data[0].globalId,
-                    title: lessons.data[0].label,
-                    kind: t("kinds.lesson"),
-                    actionLabel: t("resume"),
-                }
-                : {
-                    id: "modules",
-                    title: course.data?.title ?? t("modules"),
-                    kind: t("kinds.course"),
-                    actionLabel: t("open"),
-                }
+    const primary = resolvePrimaryItem(activeInterview, challenges.data, lessons.data, course.data, t)
 
     const dueCount = decks.data?.reduce((total, deck) => total + (deck.dueCount ?? 0), 0) ?? 0
     const secondary: Array<CourseLearnTodayItem> = []
@@ -96,10 +121,7 @@ export const CourseLearnTodayPage = ({ displayId }: CourseLearnTodayPageProps) =
     const pending = course.data === undefined || myCourses.data === undefined
     const failed = (course.error !== undefined && course.data === undefined)
         || (myCourses.error !== undefined && myCourses.data === undefined)
-    const state = failed ? "failed" as const
-        : pending ? "pending" as const
-            : course.data === null ? "empty" as const
-                : "ready" as const
+    const state = resolveTodayState(failed, pending, course.data)
     const view = mobile.view === "course" || mobile.view === "progress" ? mobile.view : "today"
 
     const open = async (id: string) => {

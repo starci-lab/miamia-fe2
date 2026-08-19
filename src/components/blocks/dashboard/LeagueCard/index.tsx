@@ -6,6 +6,20 @@ import { useQueryMeSwr, useQueryMyLeagueSwr } from "@/hooks"
 import type { RankedUserVerdict } from "@/components/composites/RankedUserRow"
 import { _LeagueCard } from "./component"
 
+type LeagueTranslate = ReturnType<typeof useTranslations>
+
+/** Word for the rank change, or the steady-state notice when nothing moved. */
+const resolveMovementLabel = (t: LeagueTranslate, rankDelta: number | null): string => {
+    if (rankDelta === null || rankDelta === 0) return t("noMovement")
+    return rankDelta > 0 ? t("up", { count: rankDelta }) : t("down", { count: Math.abs(rankDelta) })
+}
+
+/** Visual verdict for a rank change; undefined when nothing moved. */
+const resolveMovementVerdict = (rankDelta: number | null): RankedUserVerdict | undefined => {
+    if (rankDelta === null || rankDelta === 0) return undefined
+    return rankDelta > 0 ? "success" : "danger"
+}
+
 /** Fetch and resolve the viewer's weekly league. */
 export const LeagueCard = () => {
     const t = useTranslations("community")
@@ -21,14 +35,8 @@ export const LeagueCard = () => {
         ...(mine && !top.some((row) => row.userGlobalId === mine.userGlobalId) ? [mine] : []),
     ].map((entry) => {
         const isMe = entry.userGlobalId === mine?.userGlobalId
-        const movementLabel = entry.rankDelta === null || entry.rankDelta === 0
-            ? t("noMovement")
-            : entry.rankDelta > 0
-                ? t("up", { count: entry.rankDelta })
-                : t("down", { count: Math.abs(entry.rankDelta) })
-        const verdict: RankedUserVerdict | undefined = entry.rankDelta === null || entry.rankDelta === 0
-            ? undefined
-            : entry.rankDelta > 0 ? "success" : "danger"
+        const movementLabel = resolveMovementLabel(t, entry.rankDelta)
+        const verdict = resolveMovementVerdict(entry.rankDelta)
         const username = entry.username ?? t("anonymous")
         return {
             id: entry.userGlobalId,

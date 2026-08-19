@@ -7,6 +7,35 @@ import { useSessionToken } from "@/hooks/auth/useSessionToken"
 import { _StudyContinue } from "./component"
 
 type StudyContinueConnectedProps = { readonly onBrowse: () => void; readonly onResumeTopic: (slug: string) => void }
+type StudyContinueState = "pending" | "empty" | "failed" | "ready"
+type Translate = ReturnType<typeof useTranslations>
+
+/** Which of the four states the resume surface is in. */
+const deriveStudyContinueState = (
+    isMounted: boolean,
+    hasToken: boolean,
+    hasFailed: boolean,
+    isPending: boolean,
+    hasTopic: boolean,
+): StudyContinueState => {
+    if (!isMounted) return "pending"
+    if (!hasToken) return "empty"
+    if (hasFailed) return "failed"
+    if (isPending) return "pending"
+    if (hasTopic) return "ready"
+    return "empty"
+}
+
+/** The eyebrow, title and body copy for the given state. */
+const resolveStudyContinueCopy = (
+    state: StudyContinueState,
+    t: Translate,
+): { readonly eyebrow: string, readonly title: string, readonly body: string } => {
+    if (state === "ready") return { eyebrow: t("eyebrowReady"), title: t("titleReady"), body: t("bodyReady") }
+    if (state === "failed") return { eyebrow: t("eyebrow"), title: t("titleFailed"), body: t("bodyFailed") }
+    return { eyebrow: t("eyebrow"), title: t("title"), body: t("body") }
+}
+
 /** Connects private resume data to the Study landing surface. */
 export const StudyContinue = ({ onBrowse, onResumeTopic }: StudyContinueConnectedProps) => {
     const t = useTranslations("miamia.study.continue")
@@ -20,8 +49,27 @@ export const StudyContinue = ({ onBrowse, onResumeTopic }: StudyContinueConnecte
     }, [])
     const query = useQueryContinueLearningSwr(isMounted && token !== undefined)
     const topic = query.data?.topic ?? null
-    const state = !isMounted ? "pending" : !token ? "empty" : query.error || query.data === null ? "failed" : query.data === undefined ? "pending" : topic ? "ready" : "empty"
-    return <_StudyContinue state={state} props={{ eyebrow: state === "ready" ? t("eyebrowReady") : t("eyebrow"), title: state === "ready" ? t("titleReady") : state === "failed" ? t("titleFailed") : t("title"), body: state === "ready" ? t("bodyReady") : state === "failed" ? t("bodyFailed") : t("body"), actionLabel: state === "ready" ? t("resume") : t("browse"), browseLabel: t("browse") }} on={{ resume: topic ? () => onResumeTopic(topic.slug) : undefined, browse: onBrowse }} />
+    const state = deriveStudyContinueState(
+        isMounted,
+        Boolean(token),
+        Boolean(query.error) || query.data === null,
+        query.data === undefined,
+        Boolean(topic),
+    )
+    const copy = resolveStudyContinueCopy(state, t)
+    return (
+        <_StudyContinue
+            state={state}
+            props={{
+                eyebrow: copy.eyebrow,
+                title: copy.title,
+                body: copy.body,
+                actionLabel: state === "ready" ? t("resume") : t("browse"),
+                browseLabel: t("browse"),
+            }}
+            on={{ resume: topic ? () => onResumeTopic(topic.slug) : undefined, browse: onBrowse }}
+        />
+    )
 }
 /** Declares the connected Study resume block. */
 export const meta = { shape: "block", world: "connected", domain: "study" } as const

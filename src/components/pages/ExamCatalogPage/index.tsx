@@ -6,7 +6,7 @@ import { SignInOverlay } from "@/components/overlays/auth/SignInOverlay"
 import { MembershipCheckoutOverlay } from "@/components/overlays/membership/MembershipCheckoutOverlay"
 import { useRouter } from "@/i18n/navigation"
 import { useSessionToken } from "@/hooks/auth/useSessionToken"
-import { _ExamCatalogPage } from "./component"
+import { _ExamCatalogPage as ExamCatalogPageView } from "./component"
 
 type DeferredIntent = { readonly kind: "paper"; readonly slug: string } | { readonly kind: "checkout" } | undefined
 
@@ -34,7 +34,7 @@ export const ExamCatalogPage = () => {
     const Surface = useCallback(() => <ExamCatalog onOpenPaper={openPaper} onRequestPremium={requestPremium} />, [openPaper, requestPremium])
     return (
         <>
-            <_ExamCatalogPage surface={Surface} />
+            <ExamCatalogPageView surface={Surface} />
             <SignInOverlay isOpen={signInOpen} onDismiss={() => setSignInOpen(false)} />
             <MembershipCheckoutOverlay isOpen={checkoutOpen} onDismiss={() => setCheckoutOpen(false)} />
         </>

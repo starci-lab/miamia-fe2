@@ -21,8 +21,13 @@ const ReadyCv = (input: ProfilePublicCvPageProps) => <Tree contract="profile-cv-
     )),
 })} />
 
+const noticeActionLabel = (input: ProfilePublicCvPageProps) => {
+    if (input.state === "error") return input.props.retryLabel
+    return input.props.isSelf ? input.props.editLabel : undefined
+}
+
 const CvNotice = (input: ProfilePublicCvPageProps) => <Tree contract="empty-notice-card" render={defineContractComponent("empty-notice-card", {
-    notice: defineCompositeComponent("empty-notice", {}, () => <EmptyNotice props={{ icon: "review", message: input.props.message, actionLabel: input.state === "error" ? input.props.retryLabel : input.props.isSelf ? input.props.editLabel : undefined }} on={{ act: input.state === "error" ? input.on?.retry : input.on?.edit }} />),
+    notice: defineCompositeComponent("empty-notice", {}, () => <EmptyNotice props={{ icon: "review", message: input.props.message, actionLabel: noticeActionLabel(input) }} on={{ act: input.state === "error" ? input.on?.retry : input.on?.edit }} />),
 })} />
 
 /** Public CV parity: same paper while loading/ready and honest no-file, uncompiled and error outcomes. */

@@ -60,34 +60,41 @@ export const _DashboardPage = (input: DashboardPageProps) => {
         ],
     })
 
-    const main = input.props.selectedTab === "explore"
-        ? defineContractComponent("dashboard-main", {
-            section: [defineContractProjection("explore-main", () => <ExploreTab />)],
-        })
-        : input.props.selectedTab === "courses"
-            ? defineContractProjection("dashboard-tab-main", () => <CoursesTab />)
-            : input.props.selectedTab === "community"
-                ? defineContractProjection("dashboard-tab-main", () => <CommunityTab />)
-                : input.props.selectedTab === "overview"
-                    ? defineContractComponent("dashboard-main", {
-                        section: [
-                            defineContractProjection("label-row-over-card", () => <ContinueLearning />),
-                            defineContractProjection("label-row-over-card", () => <DailyQuest />),
-                            defineContractProjection("label-row-over-card", () => <StreakStrip />),
-                            defineContractProjection("label-row-over-card", () => <WeeklyGoals />),
-                            defineContractProjection("label-row-over-card", () => <JobReadinessWidget />),
-                            defineContractProjection("label-row-over-card", () => <WeeklyChallengeCard />),
-                            defineContractProjection("label-row-over-card", () => <OverviewContributions />),
-                            defineContractProjection("label-row-over-card", () => <ChangelogList />),
-                        ],
-                    })
-                    : defineContractProjection("centred-empty-notice", () => (
-                        <SurfaceCard contract="centred-empty-notice" render={defineContractComponent("centred-empty-notice", {
-                            notice: defineCompositeComponent("empty-notice", {}, () => (
-                                <EmptyNotice props={{ icon: input.props.selectedTab === "community" ? "community" : "explore", message: input.props.unavailableMessage }} />
-                            )),
-                        })} />
-                    ))
+    const resolveMain = () => {
+        if (input.props.selectedTab === "explore") {
+            return defineContractComponent("dashboard-main", {
+                section: [defineContractProjection("explore-main", () => <ExploreTab />)],
+            })
+        }
+        if (input.props.selectedTab === "courses") {
+            return defineContractProjection("dashboard-tab-main", () => <CoursesTab />)
+        }
+        if (input.props.selectedTab === "community") {
+            return defineContractProjection("dashboard-tab-main", () => <CommunityTab />)
+        }
+        if (input.props.selectedTab === "overview") {
+            return defineContractComponent("dashboard-main", {
+                section: [
+                    defineContractProjection("label-row-over-card", () => <ContinueLearning />),
+                    defineContractProjection("label-row-over-card", () => <DailyQuest />),
+                    defineContractProjection("label-row-over-card", () => <StreakStrip />),
+                    defineContractProjection("label-row-over-card", () => <WeeklyGoals />),
+                    defineContractProjection("label-row-over-card", () => <JobReadinessWidget />),
+                    defineContractProjection("label-row-over-card", () => <WeeklyChallengeCard />),
+                    defineContractProjection("label-row-over-card", () => <OverviewContributions />),
+                    defineContractProjection("label-row-over-card", () => <ChangelogList />),
+                ],
+            })
+        }
+        return defineContractProjection("centred-empty-notice", () => (
+            <SurfaceCard contract="centred-empty-notice" render={defineContractComponent("centred-empty-notice", {
+                notice: defineCompositeComponent("empty-notice", {}, () => (
+                    <EmptyNotice props={{ icon: input.props.selectedTab === "community" ? "community" : "explore", message: input.props.unavailableMessage }} />
+                )),
+            })} />
+        ))
+    }
+    const main = resolveMain()
 
     return (
         <Tree

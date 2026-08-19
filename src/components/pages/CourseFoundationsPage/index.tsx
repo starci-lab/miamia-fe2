@@ -4,10 +4,21 @@ import { useState } from "react"
 import { useTranslations } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
 import { useQueryFoundationCategoriesSwr } from "@/hooks/swr/useQueryFoundationCategoriesSwr"
+import type { FoundationCategoriesPage } from "@/modules/api/graphql/queries/query-foundation-categories"
 import { _CourseFoundationsPage } from "./component"
 
 /** Route identity required by the connected foundations hub. */
 export type CourseFoundationsPageProps = { readonly displayId: string }
+
+/** Which tree the foundations hub draws for the one catalog read that feeds it. */
+const resolveFoundationsState = (
+    hasError: boolean,
+    data: FoundationCategoriesPage | null | undefined,
+) => {
+    if (hasError) return "failed"
+    if (data === undefined) return "pending"
+    return (data?.data.length ?? 0) === 0 ? "empty" : "ready"
+}
 
 /** Connect the foundations hub route to the localized server category catalog. */
 export const CourseFoundationsPage = ({ displayId }: CourseFoundationsPageProps) => {
@@ -15,11 +26,7 @@ export const CourseFoundationsPage = ({ displayId }: CourseFoundationsPageProps)
     const router = useRouter()
     const [search, setSearch] = useState("")
     const query = useQueryFoundationCategoriesSwr({ search })
-    const state = query.error !== undefined
-        ? "failed"
-        : query.data === undefined
-            ? "pending"
-            : (query.data?.data.length ?? 0) === 0 ? "empty" : "ready"
+    const state = resolveFoundationsState(query.error !== undefined, query.data)
     return (
         <_CourseFoundationsPage
             state={state}

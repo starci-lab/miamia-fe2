@@ -1,9 +1,9 @@
-import { gql } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type GraphQLHeaders } from "../types"
 import { type MutationClearCartResponse } from "./types/clear-cart"
 
-const mutation = gql`
+const mutation: TypedDocumentNode<MutationClearCartResponse> = gql`
     mutation ClearCart {
         clearCart {
             success
@@ -32,5 +32,5 @@ export type ClearCartOptions = {
  */
 export const mutationClearCart = async (options: ClearCartOptions = {}) => {
     const apollo = createApolloClient({ withAuth: true, ...options })
-    return apollo.mutate<MutationClearCartResponse>({ mutation })
+    return apollo.mutate({ mutation })
 }

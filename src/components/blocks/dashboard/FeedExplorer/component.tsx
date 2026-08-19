@@ -20,7 +20,7 @@ export type FeedExplorerData = {
 export type FeedExplorerActions = {
     readonly selectScope?: (key: string) => void
     readonly selectCategory?: (key: string) => void
-    readonly feed?: ActivityFeedConnectedProps["on"]
+    readonly feed: ActivityFeedConnectedProps["on"]
     readonly loadMore?: () => void
     readonly retryLoadMore?: () => void
 }

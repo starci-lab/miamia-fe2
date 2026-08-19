@@ -3,7 +3,7 @@
 import { useCallback, useRef, useState } from "react"
 import { useTranslations } from "next-intl"
 import { useQueryCodingProblemSwr } from "@/hooks/swr/useQueryCodingProblemSwr"
-import { useJobVerdictSocketIo } from "@/hooks/socketio/useJobVerdictSocketIo"
+import { useJobVerdictSocketIo, type JobVerdict } from "@/hooks/socketio/useJobVerdictSocketIo"
 import { mutationSubmitCodingSolution } from "@/modules/api/graphql/mutations/mutation-submit-coding-solution"
 import { type EditorTelemetry } from "@/components/leaves/CodeEditor"
 import { type JudgeVerdictState } from "@/components/blocks/coding/JudgeStatusStrip/component"
@@ -18,6 +18,42 @@ export interface CodingProblemPageProps {
 
 /** The languages the server accepts, in the order a reader scans them. */
 const LANGUAGES = ["python", "javascript", "typescript", "java", "cpp"] as const
+
+/**
+ * THE STRIP'S SITUATION, derived in one place.
+ *
+ * Order matters: a job that exists with no connection is `socket-lost` BEFORE it is `pending`,
+ * because the honest thing to say is that we stopped hearing rather than that we are waiting.
+ */
+const resolveVerdictState = (
+    jobId: string | undefined,
+    isConnected: boolean,
+    verdict: JobVerdict | undefined,
+): JudgeVerdictState => {
+    if (jobId === undefined) return "idle"
+    if (!isConnected) return "socket-lost"
+    if (verdict?.verdict === undefined) return "pending"
+    if (verdict.verdict === "judging") return "judging"
+    return verdict.verdict as JudgeVerdictState
+}
+
+/** Which copy fills the reading column's body, by active tab. */
+const resolveReadingBody = (
+    tab: ProblemReadingTab,
+    statement: string | undefined,
+    hintPending: string,
+    tabEmpty: string,
+): string | undefined => {
+    if (tab === "statement") return statement
+    if (tab === "hint") return hintPending
+    return tabEmpty
+}
+
+/** The editor's own state: submitting overrides everything, then whether a job exists. */
+const resolveEditorState = (isSubmitting: boolean, jobId: string | undefined): "submitting" | "ready" | "judged" => {
+    if (isSubmitting) return "submitting"
+    return jobId === undefined ? "ready" : "judged"
+}
 
 /**
  * One problem, connected.
@@ -77,27 +113,8 @@ export const CodingProblemPage = ({ slug }: CodingProblemPageProps) => {
         }
     }, [problem.data, slug, language, starter])
 
-    /*
-     * THE STRIP'S SITUATION, derived in one place.
-     *
-     * Order matters: a job that exists with no connection is `socket-lost` BEFORE it is `pending`,
-     * because the honest thing to say is that we stopped hearing rather than that we are waiting.
-     */
-    const verdictState: JudgeVerdictState = jobId === undefined
-        ? "idle"
-        : !isConnected
-            ? "socket-lost"
-            : verdict?.verdict === undefined
-                ? "pending"
-                : verdict.verdict === "judging"
-                    ? "judging"
-                    : (verdict.verdict as JudgeVerdictState)
-
-    const readingBody = tab === "statement"
-        ? problem.data?.statement
-        : tab === "hint"
-            ? t("hintPending")
-            : t("tabEmpty")
+    const verdictState = resolveVerdictState(jobId, isConnected, verdict)
+    const readingBody = resolveReadingBody(tab, problem.data?.statement, t("hintPending"), t("tabEmpty"))
 
     return (
         <_CodingProblemPage
@@ -140,7 +157,7 @@ export const CodingProblemPage = ({ slug }: CodingProblemPageProps) => {
                     },
                 },
                 editor: {
-                    state: isSubmitting ? "submitting" : jobId === undefined ? "ready" : "judged",
+                    state: resolveEditorState(isSubmitting, jobId),
                     props: {
                         languages: LANGUAGES.map((id) => ({ id, label: t(`language.${id}`) })),
                         language,

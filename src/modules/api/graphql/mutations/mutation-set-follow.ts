@@ -1,9 +1,11 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { MutationParams } from "./types/params"
 import type { MutationSetFollowResponse, SetFollowRequest } from "./types/set-follow"
 
-const mutation1 = gql`
+type SetFollowVariables = { readonly request: SetFollowRequest }
+
+const mutation1: TypedDocumentNode<MutationSetFollowResponse, SetFollowVariables> = gql`
     mutation SetFollow($request: SetFollowRequest!) {
         setFollow(request: $request) { success message error }
     }
@@ -12,7 +14,7 @@ const mutation1 = gql`
 export enum MutationSetFollow { Mutation1 = "mutation1" }
 
 /** Every supported follow document keyed by its public variant. */
-export const mutationSetFollowMap: Record<MutationSetFollow, DocumentNode> = {
+export const mutationSetFollowMap: Record<MutationSetFollow, TypedDocumentNode<MutationSetFollowResponse, SetFollowVariables>> = {
     [MutationSetFollow.Mutation1]: mutation1,
 }
 
@@ -25,7 +27,7 @@ export const mutationSetFollow = async ({
     debug,
 }: MutationParams<MutationSetFollow, SetFollowRequest>) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.mutate<MutationSetFollowResponse>({
+    return apollo.mutate({
         mutation: mutationSetFollowMap[mutation],
         variables: { request },
     })

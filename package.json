@@ -12,7 +12,9 @@
     "typecheck": "tsc --noEmit",
     "verify": "npm run typecheck && npm run lint && npm run test",
     "seed:test-account": "node --env-file-if-exists=.env.local scripts/provision-test-account.mjs",
-    "sync:ports": "node scripts/sync-ports.mjs"
+    "sync:ports": "node scripts/sync-ports.mjs",
+    "test:cov": "vitest run --coverage",
+    "sonar:check": "sonar-scanner-npm -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=600"
   },
   "dependencies": {
     "@apollo/client": "^4.1.6",
@@ -55,6 +57,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6",
+    "@vitest/coverage-v8": "^4.1.11",
     "eslint": "^9",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react": "^7",
@@ -64,6 +67,7 @@
     "tailwindcss": "^4",
     "typescript": "^5",
     "typescript-eslint": "^8",
-    "vitest": "^4"
+    "vitest": "^4",
+    "@sonar/scan": "^5.0.0"
   }
 }

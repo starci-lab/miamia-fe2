@@ -4,7 +4,13 @@ import { useParams } from "next/navigation"
 import { useRouter } from "@/i18n/navigation"
 import { useQueryProfileEvidenceSwr } from "@/hooks/swr/useQueryProfileEvidenceSwr"
 import { useQueryUserProfileSwr } from "@/hooks/swr/useQueryUserProfileSwr"
-import { _ProfileCodingProblemPage, type CodingDetail } from "./component"
+import { _ProfileCodingProblemPage as ProfileCodingProblemPageView, type CodingDetail } from "./component"
+
+/** Which tree the coding-proof route draws for the profile and evidence reads that feed it. */
+const resolveCodingProblemState = (hasError: boolean, isLoading: boolean) => {
+    if (hasError) return "error"
+    return isLoading ? "pending" : "ready"
+}
 
 /** Resolve the dedicated coding-proof route; other detail routes own dedicated pages. */
 export const ProfileDetailPage = () => {
@@ -13,7 +19,8 @@ export const ProfileDetailPage = () => {
     const username = String(params.username ?? "")
     const profile = useQueryUserProfileSwr(username)
     const query = useQueryProfileEvidenceSwr<CodingDetail | null>("coding-detail", profile.data?.id, { slug: params.slug })
-    return <_ProfileCodingProblemPage state={query.error ? "error" : query.isLoading || profile.isLoading ? "pending" : "ready"} detail={query.data} on={{ back: () => router.push(`/profile/${username}/skills`), retry: () => { void query.mutate() } }} />
+    const state = resolveCodingProblemState(Boolean(query.error), query.isLoading || profile.isLoading)
+    return <ProfileCodingProblemPageView state={state} detail={query.data} on={{ back: () => router.push(`/profile/${username}/skills`), retry: () => { void query.mutate() } }} />
 }
 
 export * from "./component"

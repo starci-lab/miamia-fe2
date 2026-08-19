@@ -121,6 +121,13 @@ const DailyQuestContent = defineContractComponent("marked-row-list", DailyQuestC
 /** The situation this surface is in, plus the actions it exposes. */
 type DailyQuestInput = DailyQuestProps & { readonly on?: DailyQuestActions }
 
+/** The description line under the quest list: the reward, the claimed line, or nothing. */
+const deriveDescription = (input: DailyQuestInput): string | undefined => {
+    if (input.state === "open") return input.props.rewardLine
+    if (input.state === "claimed") return input.props.claimedLine
+    return undefined
+}
+
 /**
  * Render the day's quest.
  *
@@ -152,9 +159,7 @@ export const _DailyQuest = (input: DailyQuestInput) => {
         <SurfaceListCard
             props={{
                 label: input.props.label,
-                description: input.state === "open"
-                    ? input.props.rewardLine
-                    : input.state === "claimed" ? input.props.claimedLine : undefined,
+                description: deriveDescription(input),
                 actionLabel: input.state === "claimable" ? input.props.claimLabel : undefined,
                 tasks: input.state === "pending" ? [] : input.props.tasks,
             }}

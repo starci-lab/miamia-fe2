@@ -101,15 +101,18 @@ export const Button = ({ props, on, isLoading = false }: ButtonProps) => {
     const size = props.size ?? "md"
     const isPending = props.isPending === true
     const placement = props.iconPlacement ?? "leading"
-    const glyph = isLoading || isPending || props.icon === undefined
-        ? null
-        : placement === "trailing"
-            ? (
+    const renderGlyph = () => {
+        if (isLoading || isPending || props.icon === undefined) return null
+        if (placement === "trailing") {
+            return (
                 <span className={TRAILING_GLYPH_CLASSES}>
                     <Icon props={{ name: props.icon, role: "chip" }} />
                 </span>
             )
-            : <Icon props={{ name: props.icon, role: "chip" }} />
+        }
+        return <Icon props={{ name: props.icon, role: "chip" }} />
+    }
+    const glyph = renderGlyph()
     return (
         <HeroButton
             data-tier="leaf"

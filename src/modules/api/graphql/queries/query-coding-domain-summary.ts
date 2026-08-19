@@ -1,9 +1,9 @@
-import { gql } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { QueryParams } from "../types"
 import type { CodingDomainSummaryResponse } from "./types/coding"
 
-const document = gql`
+const document: TypedDocumentNode<CodingDomainSummaryResponse> = gql`
     query CodingDomainSummary {
         codingDomainSummary {
             success
@@ -33,4 +33,4 @@ export enum QueryCodingDomainSummary {
  */
 export const queryCodingDomainSummary = async ({ headers, signal, debug }: QueryParams<QueryCodingDomainSummary> = {}) =>
     createApolloClient({ withAuth: true, headers, signal, debug })
-        .query<CodingDomainSummaryResponse>({ query: document })
+        .query({ query: document })

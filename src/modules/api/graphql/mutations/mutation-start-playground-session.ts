@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { GraphQLHeaders, GraphQLResponse } from "../types"
 import type { PlaygroundStep } from "../queries/query-playground"
@@ -32,7 +32,9 @@ export type StartPlaygroundSessionParams = {
     readonly debug?: boolean
 }
 
-const document = gql`
+type StartPlaygroundSessionVariables = { readonly request: StartPlaygroundSessionRequest }
+
+const document: TypedDocumentNode<StartPlaygroundSessionResponse, StartPlaygroundSessionVariables> = gql`
     mutation StartPlaygroundSession($request: CreatePlaygroundSessionRequest!) {
         createPlaygroundSession(request: $request) {
             success
@@ -50,7 +52,7 @@ const document = gql`
 
 /** Start the authenticated, enrollment-gated playground session used by setup and live routes. */
 export const mutationStartPlaygroundSession = async ({ request, headers, signal, debug }: StartPlaygroundSessionParams) =>
-    createApolloClient({ withAuth: true, headers, signal, debug }).mutate<StartPlaygroundSessionResponse>({
+    createApolloClient({ withAuth: true, headers, signal, debug }).mutate({
         mutation: document,
         variables: { request },
     })

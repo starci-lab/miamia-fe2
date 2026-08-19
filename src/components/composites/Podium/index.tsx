@@ -52,17 +52,21 @@ export type PodiumProps = CompositeProps<PodiumData>
 /** Places are emitted best-first; the `podium` contract turns this into the 2-1-3 dais. */
 const PLACES: ReadonlyArray<PodiumPlace> = [1, 2, 3]
 
+/** Resolves the displayed name for one finisher, appending the viewer suffix when it is the viewer. */
+const nameFor = (entry: PodiumEntryData | undefined, meLabel: string, anonymousLabel: string): string | undefined => {
+    if (entry === undefined) return undefined
+    const displayName = entry.username ?? anonymousLabel
+    if (entry.isMe) return `${displayName} · ${meLabel}`
+    return displayName
+}
+
 /** Draw the top three as a dais. */
 export const Podium = ({ props, isLoading = false }: PodiumProps) => {
     const byRank = new Map(props.entries.map((entry) => [entry.rank, entry]))
     const place = PLACES.flatMap((rank) => {
         const entry = byRank.get(rank)
         if (entry === undefined && !isLoading) return []
-        const name = entry === undefined
-            ? undefined
-            : entry.isMe
-                ? `${entry.username ?? props.anonymousLabel} · ${props.meLabel}`
-                : entry.username ?? props.anonymousLabel
+        const name = nameFor(entry, props.meLabel, props.anonymousLabel)
         return [defineCompositeComponent("podium-place", {}, () => (
             <Tree contract="podium-place" render={defineContractComponent("podium-place", {
                 mark: defineLeafComponent("rank-mark", { placement: "row" }, () => (

@@ -14,7 +14,7 @@ const expiresAt = (token: string): number | undefined => {
     try {
         const encoded = token.split(".")[1]
         if (encoded === undefined) return undefined
-        const normalized = encoded.replace(/-/g, "+").replace(/_/g, "/")
+        const normalized = encoded.replaceAll("-", "+").replaceAll("_", "/")
         const payload = JSON.parse(window.atob(normalized)) as { exp?: unknown }
         return typeof payload.exp === "number" ? payload.exp * 1000 : undefined
     } catch {
@@ -29,13 +29,13 @@ export const refreshSession = (): Promise<void> => {
         .then((result) => {
             const envelope = result.data?.refreshToken
             if (!envelope?.success || envelope.data === undefined) {
-                setSessionToken(undefined)
+                setSessionToken()
                 return
             }
             setSessionToken(envelope.data.accessToken)
         })
         .catch(() => {
-            setSessionToken(undefined)
+            setSessionToken()
         })
         .finally(() => {
             refreshInFlight = undefined

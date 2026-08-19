@@ -40,7 +40,7 @@ const localeFromPath = (pathname: string): Locale | undefined => {
 
 /** Read the locale out of the cookie next-intl writes. */
 const localeFromCookie = (cookie: string): Locale | undefined => {
-    const match = cookie.match(new RegExp(`(?:^|;\\s*)${LOCALE_COOKIE}=([^;]+)`))
+    const match = new RegExp(String.raw`(?:^|;\s*)${LOCALE_COOKIE}=([^;]+)`).exec(cookie)
     if (match?.[1] === undefined) return undefined
     return toLocale(decodeURIComponent(match[1].trim()))
 }

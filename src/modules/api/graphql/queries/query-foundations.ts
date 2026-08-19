@@ -1,6 +1,6 @@
-import { gql } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
-import type { QueryParams, SortInput } from "../types"
+import type { LookupQueryParams, SortInput } from "../types"
 
 /** One localized technical foundation resource. */
 export type Foundation = {
@@ -33,8 +33,9 @@ export type FoundationsRequest = {
     }
 }
 type QueryFoundationsResponse = { readonly foundations: { readonly data: FoundationsPage } }
+type QueryFoundationsVariables = { readonly request: FoundationsRequest }
 
-const document = gql`
+const document: TypedDocumentNode<QueryFoundationsResponse, QueryFoundationsVariables> = gql`
     query Foundations($request: FoundationsRequest!) {
         foundations(request: $request) {
             data {
@@ -61,8 +62,8 @@ const document = gql`
 export enum QueryFoundations { Query1 = "query1" }
 
 /** Read the localized resources inside one foundation category. */
-export const queryFoundations = async ({ request, headers, signal, debug }: QueryParams<QueryFoundations, FoundationsRequest>) =>
-    createApolloClient({ headers, signal, debug }).query<QueryFoundationsResponse>({
+export const queryFoundations = async ({ request, headers, signal, debug }: LookupQueryParams<QueryFoundations, FoundationsRequest>) =>
+    createApolloClient({ headers, signal, debug }).query({
         query: document,
         variables: { request },
     })

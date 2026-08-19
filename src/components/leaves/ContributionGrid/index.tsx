@@ -33,7 +33,13 @@ const CELL_CLASSES = [
     "size-3 shrink-0 rounded-sm bg-accent",
 ] as const
 
-const levelOf = (count: number) => count <= 0 ? 0 : count <= 2 ? 1 : count <= 5 ? 2 : count <= 9 ? 3 : 4
+const levelOf = (count: number): number => {
+    if (count <= 0) return 0
+    if (count <= 2) return 1
+    if (count <= 5) return 2
+    if (count <= 9) return 3
+    return 4
+}
 
 const makeWeeks = (
     year: number,
@@ -67,6 +73,12 @@ const makeWeeks = (
     return weeks
 }
 
+const cellClassName = (cell: CalendarCell, isLoading: boolean): string => {
+    if (!cell.inYear) return "size-3 shrink-0"
+    if (isLoading) return "size-3 shrink-0 animate-pulse rounded-sm bg-default"
+    return CELL_CLASSES[levelOf(cell.count)]
+}
+
 /** Draw the draggable, accessible contribution grid as one intrinsic visualization. */
 export const ContributionGrid = ({ props, isLoading = false }: ContributionGridProps) => {
     const viewportRef = useRef<HTMLDivElement>(null)
@@ -98,9 +110,7 @@ export const ContributionGrid = ({ props, isLoading = false }: ContributionGridP
                                 data-count={cell.count}
                                 aria-label={cell.inYear ? cell.label : undefined}
                                 aria-hidden={cell.inYear ? undefined : true}
-                                className={cell.inYear
-                                    ? isLoading ? "size-3 shrink-0 animate-pulse rounded-sm bg-default" : CELL_CLASSES[levelOf(cell.count)]
-                                    : "size-3 shrink-0"}
+                                className={cellClassName(cell, isLoading)}
                             />
                         ))}
                     </span>

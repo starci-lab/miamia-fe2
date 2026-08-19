@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type OperationVariables, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { GraphQLResponse, LookupQueryParams } from "../types"
 
@@ -43,7 +43,7 @@ interface QueryConsultantsResponse {
     readonly consultants: GraphQLResponse<ConsultantsPage>
 }
 
-const query1 = gql`
+const query1: TypedDocumentNode<QueryConsultantsResponse, OperationVariables> = gql`
     query Consultants($request: ConsultantsRequest!) {
         consultants(request: $request) {
             success
@@ -74,7 +74,7 @@ const query1 = gql`
 
 export enum QueryConsultants { Query1 = "query1" }
 
-const queryConsultantsMap: Record<QueryConsultants, DocumentNode> = {
+const queryConsultantsMap: Record<QueryConsultants, TypedDocumentNode<QueryConsultantsResponse, OperationVariables>> = {
     [QueryConsultants.Query1]: query1,
 }
 
@@ -87,7 +87,7 @@ export const queryConsultants = async ({
     debug,
 }: LookupQueryParams<QueryConsultants, QueryConsultantsRequest>) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryConsultantsResponse>({
+    return apollo.query({
         query: queryConsultantsMap[query],
         variables: { request },
     })

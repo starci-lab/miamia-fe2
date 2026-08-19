@@ -15,7 +15,12 @@ export const CourseFoundationCategoryPage = ({ displayId, categoryId }: CourseFo
     const router = useRouter()
     const [search, setSearch] = useState("")
     const query = useQueryFoundationsSwr({ categoryId, search })
-    const state = query.error !== undefined ? "failed" : query.data === undefined ? "pending" : (query.data?.data.length ?? 0) === 0 ? "empty" : "ready"
+    const deriveState = () => {
+        if (query.error !== undefined) return "failed"
+        if (query.data === undefined) return "pending"
+        return (query.data?.data.length ?? 0) === 0 ? "empty" : "ready"
+    }
+    const state = deriveState()
     return (
         <_CourseFoundationCategoryPage
             state={state}

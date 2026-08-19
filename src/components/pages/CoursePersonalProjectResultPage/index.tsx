@@ -42,6 +42,25 @@ const COPY = {
     },
 } as const
 
+/** The four states the result view can render. */
+type ResultPageState = "failed" | "pending" | "empty" | "ready"
+
+/** Failed beats pending beats empty; ready is what's left once nothing else applies. */
+const resolveResultState = (failed: boolean, pending: boolean, hasLatestAttempt: boolean): ResultPageState => {
+    if (failed) return "failed"
+    if (pending) return "pending"
+    if (!hasLatestAttempt) return "empty"
+    return "ready"
+}
+
+/** The banner copy for a non-ready state, or nothing once the result is on screen. */
+const resolveNotice = (state: ResultPageState, copy: typeof COPY.en | typeof COPY.vi): string | undefined => {
+    if (state === "pending") return copy.pending
+    if (state === "empty") return copy.empty
+    if (state === "failed") return copy.failed
+    return undefined
+}
+
 /** Resolves task attempts and latest feedback for the dedicated result route. */
 export const CoursePersonalProjectResultPage = ({ displayId, taskId }: CoursePersonalProjectResultPageProps) => {
     const locale = useLocale()
@@ -61,13 +80,7 @@ export const CoursePersonalProjectResultPage = ({ displayId, taskId }: CoursePer
     const pending = project.data === undefined
         || (task !== undefined && attempts.data === undefined)
         || (latest !== undefined && feedbacks.data === undefined)
-    const state = failed
-        ? "failed"
-        : pending
-            ? "pending"
-            : latest === undefined
-                ? "empty"
-                : "ready"
+    const state = resolveResultState(failed, pending, latest !== undefined)
     const feedbackRows = (feedbacks.data ?? []).map((feedback) => ({
         id: feedback.id,
         label: [feedback.message, feedback.location, feedback.suggestion].filter(Boolean).join(" · "),
@@ -88,13 +101,7 @@ export const CoursePersonalProjectResultPage = ({ displayId, taskId }: CoursePer
                 feedbacks: feedbackRows.length === 0 && state === "ready"
                     ? [{ id: "empty-feedback", label: copy.emptyFeedback }]
                     : feedbackRows,
-                notice: state === "pending"
-                    ? copy.pending
-                    : state === "empty"
-                        ? copy.empty
-                        : state === "failed"
-                            ? copy.failed
-                            : undefined,
+                notice: resolveNotice(state, copy),
                 retryTaskLabel: copy.retry,
             }}
             on={{

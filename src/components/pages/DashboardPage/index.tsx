@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation"
 import { useRouter } from "@/i18n/navigation"
 import { useSessionRefresh } from "@/hooks/auth/useSessionRefresh"
 import { useSessionToken } from "@/hooks/auth/useSessionToken"
-import { _DashboardPage } from "./component"
+import { _DashboardPage as DashboardPageView } from "./component"
 
 /**
  * PAGE - `DashboardPage`, connected half.
@@ -28,7 +28,7 @@ export const DashboardPage = () => {
     const router = useRouter()
     const searchParams = useSearchParams()
     const requestedTab = searchParams.get("tab")
-    const selectedTab = TAB_IDS.some((id) => id === requestedTab) ? requestedTab! : "overview"
+    const selectedTab = requestedTab !== null && (TAB_IDS as ReadonlyArray<string>).includes(requestedTab) ? requestedTab : "overview"
 
     useEffect(() => {
         if (!session.isRestoring && token === undefined) router.replace("/authentication")
@@ -37,7 +37,7 @@ export const DashboardPage = () => {
     if (session.isRestoring || token === undefined) return null
 
     return (
-        <_DashboardPage
+        <DashboardPageView
             props={{ selectedTab, unavailableMessage: t("unavailable") }}
         />
     )

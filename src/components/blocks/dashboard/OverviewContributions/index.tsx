@@ -9,7 +9,7 @@ const longestRun = (dates: ReadonlyArray<string>) => {
     const active = new Set(dates)
     let longest = 0
     let current = 0
-    const ordered = [...dates].sort()
+    const ordered = [...dates].sort((a, b) => a.localeCompare(b))
     for (const iso of ordered) {
         const before = new Date(`${iso}T00:00:00Z`)
         before.setUTCDate(before.getUTCDate() - 1)
@@ -17,6 +17,14 @@ const longestRun = (dates: ReadonlyArray<string>) => {
         longest = Math.max(longest, current)
     }
     return longest
+}
+
+/** Calendar load lifecycle: an error with no rows fails, no data yet is pending, zero rows is empty. */
+const resolveContributionsState = (hasError: boolean, dataLoaded: boolean, dayCount: number) => {
+    if (hasError) return "failed" as const
+    if (!dataLoaded) return "pending" as const
+    if (dayCount === 0) return "empty" as const
+    return "ready" as const
 }
 
 /** Connected half: owns the selected calendar year and resolves locale labels. */
@@ -35,13 +43,7 @@ export const OverviewContributions = () => {
         weekdays: Array.from({ length: 7 }, (_unused, day) => new Intl.DateTimeFormat(locale, { weekday: "short" }).format(new Date(Date.UTC(2024, 0, day + 7)))),
     }), [locale, year])
     const total = days.reduce((sum, day) => sum + day.total, 0)
-    const state = calendar.error !== undefined && calendar.data === undefined
-        ? "failed"
-        : calendar.data === undefined
-            ? "pending"
-            : days.length === 0
-                ? "empty"
-                : "ready"
+    const state = resolveContributionsState(calendar.error !== undefined && calendar.data === undefined, calendar.data !== undefined, days.length)
 
     return (
         <_OverviewContributions

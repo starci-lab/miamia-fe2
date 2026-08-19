@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { GraphQLResponse, LookupQueryParams } from "../types"
 
@@ -51,7 +51,9 @@ export type MockInterviewAttemptBySessionRequest = {
     readonly sessionId: string
 }
 
-const query1 = gql`
+type MockInterviewAttemptBySessionVariables = { readonly courseId: string; readonly sessionId: string }
+
+const query1: TypedDocumentNode<QueryMockInterviewAttemptBySessionResponse, MockInterviewAttemptBySessionVariables> = gql`
     query MyMockInterviewAttemptBySessionId($courseId: ID!, $sessionId: ID!) {
         myMockInterviewAttemptBySessionId(courseId: $courseId, sessionId: $sessionId) {
             success
@@ -77,7 +79,7 @@ export enum QueryMockInterviewAttemptBySession {
 }
 
 /** Document registry for the attempt lookup family. */
-export const queryMockInterviewAttemptBySessionMap: Record<QueryMockInterviewAttemptBySession, DocumentNode> = {
+export const queryMockInterviewAttemptBySessionMap: Record<QueryMockInterviewAttemptBySession, TypedDocumentNode<QueryMockInterviewAttemptBySessionResponse, MockInterviewAttemptBySessionVariables>> = {
     [QueryMockInterviewAttemptBySession.Query1]: query1,
 }
 
@@ -90,7 +92,7 @@ export const queryMockInterviewAttemptBySession = async ({
     debug,
 }: LookupQueryParams<QueryMockInterviewAttemptBySession, MockInterviewAttemptBySessionRequest>) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryMockInterviewAttemptBySessionResponse>({
+    return apollo.query({
         query: queryMockInterviewAttemptBySessionMap[query],
         variables: { courseId: request.courseId, sessionId: request.sessionId },
     })

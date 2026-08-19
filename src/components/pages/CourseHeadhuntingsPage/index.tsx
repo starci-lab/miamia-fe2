@@ -41,6 +41,17 @@ const openExternal = (href: string) => {
     else window.location.assign(href)
 }
 
+/** Which tree the headhunting list draws for the four independent reads that feed it. */
+const resolveHeadhuntingsState = (
+    failed: boolean,
+    pending: boolean,
+    visibleCount: number,
+) => {
+    if (failed) return "failed"
+    if (pending) return "pending"
+    return visibleCount === 0 ? "empty" : "ready"
+}
+
 /** Connected headhunting list using companies, suggestions and one company's consultant roster. */
 export const CourseHeadhuntingsPage = ({ displayId }: CourseHeadhuntingsPageProps) => {
     const locale = useLocale() === "vi" ? "vi" : "en"
@@ -63,7 +74,7 @@ export const CourseHeadhuntingsPage = ({ displayId }: CourseHeadhuntingsPageProp
     const failed = course.error !== undefined || companies.error !== undefined || suggestions.error !== undefined || consultants.error !== undefined
         || course.data === null || companies.data === null
     const pending = course.data === undefined || companies.data === undefined || (visible[0] !== undefined && consultants.data === undefined)
-    const state = failed ? "failed" : pending ? "pending" : visible.length === 0 ? "empty" : "ready"
+    const state = resolveHeadhuntingsState(failed, pending, visible.length)
     const actions = Object.fromEntries([
         ...visible.map((company) => [`open:${company.id}`, () => router.push(`/courses/${displayId}/learn/headhunting-companies/${company.id}`)] as const),
         ...(consultants.data?.data ?? []).flatMap((consultant) => {

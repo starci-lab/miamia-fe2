@@ -11,6 +11,21 @@ const PAGE_SIZE = 12
 /** Navigation and entitlement intents owned by the catalogue page. */
 export type ExamCatalogConnectedProps = { readonly onOpenPaper: (slug: string) => void; readonly onRequestPremium: () => void }
 
+/** Failed beats still-loading beats an empty page; ready is what's left. */
+const resolveCatalogState = (failed: boolean, loading: boolean, hasShownPapers: boolean): "failed" | "loading" | "empty" | "ready" => {
+    if (failed) return "failed"
+    if (loading) return "loading"
+    if (!hasShownPapers) return "empty"
+    return "ready"
+}
+
+/** Locked beats demo; a paper that is neither is simply open. */
+const resolveBadgeLabel = (paper: PaperSummary, t: (key: string) => string): string => {
+    if (paper.isLocked) return t("premium")
+    if (paper.isDemo) return t("demo")
+    return t("open")
+}
+
 /** Load real programs and papers into the catalogue presentation. */
 export const ExamCatalog = (input: ExamCatalogConnectedProps) => {
     const t = useTranslations("miamia.exam.catalog")
@@ -39,9 +54,9 @@ export const ExamCatalog = (input: ExamCatalogConnectedProps) => {
     const shown = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
     const failed = isMounted && (programs.error !== undefined || papers.error !== undefined || programData === null || paperData === null)
     const loading = !failed && (programData === undefined || paperData === undefined)
-    const cardOf = (paper: PaperSummary) => ({ id: paper.id, title: localized(paper.titleVi, paper.titleEn, paper.slug), description: localized(paper.descriptionVi, paper.descriptionEn) || undefined, level: paper.level.toUpperCase(), questionCount: paper.questionCount, levelLabel: t("level"), questionCountLabel: t("questionCount"), badgeLabel: paper.isLocked ? t("premium") : paper.isDemo ? t("demo") : t("open"), actionLabel: paper.isLocked ? t("unlock") : t("start"), isLocked: paper.isLocked })
+    const cardOf = (paper: PaperSummary) => ({ id: paper.id, title: localized(paper.titleVi, paper.titleEn, paper.slug), description: localized(paper.descriptionVi, paper.descriptionEn) || undefined, level: paper.level.toUpperCase(), questionCount: paper.questionCount, levelLabel: t("level"), questionCountLabel: t("questionCount"), badgeLabel: resolveBadgeLabel(paper, t), actionLabel: paper.isLocked ? t("unlock") : t("start"), isLocked: paper.isLocked })
     return <_ExamCatalog
-        state={failed ? "failed" : loading ? "loading" : shown.length === 0 ? "empty" : "ready"}
+        state={resolveCatalogState(failed, loading, shown.length > 0)}
         props={{ title: t("title"), description: t("description"), premiumTitle: t("premiumTitle"), premiumBody: t("premiumBody"), premiumAction: t("premiumAction"), searchLabel: t("searchLabel"), searchPlaceholder: t("searchPlaceholder"), searchClearLabel: t("searchClear"), collectionLabel: t("collectionLabel"), selectedCollectionId: selected.id, collections, sectionTitle: selected.label, countLabel: t("count", { count: filtered.length }), papers: shown.map(cardOf), page, totalPages: pageCount, pageLabel: t("pageLabel"), previousLabel: t("previous"), nextLabel: t("next"), emptyMessage: t("empty"), failedMessage: t("failed"), retryLabel: t("retry") }}
         on={{ search: (value) => { setQuery(value); setPage(1) }, selectCollection: (id) => { setCollection(id); setPage(1) }, changePage: setPage, requestPremium: input.onRequestPremium, retry: () => { void programs.mutate(); void papers.mutate() }, ...Object.fromEntries(shown.map((paper) => [`open:${paper.id}`, () => paper.isLocked ? input.onRequestPremium() : input.onOpenPaper(paper.slug)])) }}
     />

@@ -1,9 +1,9 @@
-import { gql } from "@apollo/client"
+import { gql, type OperationVariables, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type GraphQLHeaders } from "../types"
 import { type MutationClaimWeeklyChallengeRewardResponse } from "./types/claim-weekly-challenge-reward"
 
-const mutation = gql`
+const mutation: TypedDocumentNode<MutationClaimWeeklyChallengeRewardResponse, OperationVariables> = gql`
     mutation ClaimWeeklyChallengeReward {
         claimWeeklyChallengeReward {
             success
@@ -26,5 +26,5 @@ export const mutationClaimWeeklyChallengeReward = async (
     options: ClaimWeeklyChallengeRewardOptions = {},
 ) => {
     const apollo = createApolloClient({ withAuth: true, ...options })
-    return apollo.mutate<MutationClaimWeeklyChallengeRewardResponse>({ mutation })
+    return apollo.mutate({ mutation })
 }

@@ -12,10 +12,10 @@ import { useSessionToken } from "@/hooks/auth/useSessionToken"
 import { useQueryMiaMiaPricingCatalogSwr } from "@/hooks/swr/useQueryMiaMiaPricingCatalogSwr"
 import { useRouter } from "@/i18n/navigation"
 import type { ExamDownloadPackage, MiaMiaOfferId } from "@/modules/api/graphql/queries/types/miamia-pricing"
-import { _PricingPage } from "./component"
+import { _PricingPage as PricingPageView } from "./component"
 
-const OFFERS: ReadonlyArray<MiaMiaOfferId> = ["pro", "personal", "commercial", "white-label"]
-const isOffer = (value: string | null): value is MiaMiaOfferId => value !== null && OFFERS.includes(value as MiaMiaOfferId)
+const OFFERS: ReadonlySet<MiaMiaOfferId> = new Set(["pro", "personal", "commercial", "white-label"])
+const isOffer = (value: string | null): value is MiaMiaOfferId => value !== null && OFFERS.has(value as MiaMiaOfferId)
 
 /** Coordinates URL offer state, authentication and the three approved overlays. */
 export const PricingPage = () => {
@@ -58,7 +58,7 @@ export const PricingPage = () => {
     const Catalog = useCallback(() => <PricingOfferCatalog selected={selected} onSelect={choose} />, [choose, selected])
     const Status = useCallback(() => referenceId === undefined ? null : <PaymentReturnStatus referenceId={referenceId} onContinue={() => router.replace("/pricing")} />, [referenceId, router])
     return <>
-        <_PricingPage catalog={Catalog} status={referenceId === undefined ? undefined : Status} />
+        <PricingPageView catalog={Catalog} status={referenceId === undefined ? undefined : Status} />
         <SignInOverlay isOpen={signInOpen} onDismiss={() => setSignInOpen(false)} />
         <MembershipCheckoutOverlay isOpen={membershipOpen} returnUrl={checkoutUrls.returnUrl} cancelUrl={checkoutUrls.cancelUrl} onDismiss={() => setMembershipOpen(false)} />
         <ExamDownloadCheckoutOverlay isOpen={downloadOpen} packageId={packageId} amount={amount} returnUrl={checkoutUrls.returnUrl} cancelUrl={checkoutUrls.cancelUrl} onDismiss={() => setDownloadOpen(false)} />

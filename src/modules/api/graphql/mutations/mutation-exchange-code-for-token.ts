@@ -1,10 +1,12 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type MutationParams } from "./types/params"
 import {
     type MutationExchangeCodeForTokenResponse,
     type ExchangeCodeForTokenRequest,
 } from "./types/auth"
+
+type ExchangeCodeForTokenVariables = { readonly request: ExchangeCodeForTokenRequest }
 
 /**
  * The last leg of an OAuth sign-in: trade the code the identity provider handed back for a
@@ -19,7 +21,7 @@ import {
  * because they have no token, and attaching a stale one is how it starts failing for a reason
  * nobody can see.
  */
-const mutation1 = gql`
+const mutation1: TypedDocumentNode<MutationExchangeCodeForTokenResponse, ExchangeCodeForTokenVariables> = gql`
     mutation ExchangeCodeForToken($request: ExchangeCodeForTokenRequest!) {
         exchangeCodeForToken(request: $request) {
             success
@@ -39,7 +41,7 @@ export enum MutationExchangeCodeForToken {
 }
 
 /** Every document this mutation can send, keyed by variant. */
-export const mutationExchangeCodeForTokenMap: Record<MutationExchangeCodeForToken, DocumentNode> = {
+export const mutationExchangeCodeForTokenMap: Record<MutationExchangeCodeForToken, TypedDocumentNode<MutationExchangeCodeForTokenResponse, ExchangeCodeForTokenVariables>> = {
     [MutationExchangeCodeForToken.Mutation1]: mutation1,
 }
 
@@ -53,7 +55,7 @@ export const mutationExchangeCodeForToken = async ({
 }: MutationParams<MutationExchangeCodeForToken, ExchangeCodeForTokenRequest>) => {
     // The response establishes the HttpOnly refresh session and its readable CSRF twin.
     const apollo = createApolloClient({ headers, signal, debug, withCredentials: true })
-    return apollo.mutate<MutationExchangeCodeForTokenResponse>({
+    return apollo.mutate({
         mutation: mutationExchangeCodeForTokenMap[mutation],
         variables: { request },
     })

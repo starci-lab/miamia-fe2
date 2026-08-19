@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "@/modules/api/graphql/clients/create-apollo-client"
 import { type QueryParams } from "@/modules/api/graphql/types"
 import { type QueryContentRequest, type QueryContentResponse } from "@/modules/api/graphql/queries/types/content"
@@ -18,7 +18,7 @@ import { type QueryContentRequest, type QueryContentResponse } from "@/modules/a
  * place in the module, which is the pager. Nothing else is selected: challenges, flashcards and AI
  * sessions are other surfaces with other cases.
  */
-const query1 = gql`
+const query1: TypedDocumentNode<QueryContentResponse, { request: QueryContentRequest }> = gql`
     query Content($request: ContentRequest!) {
         content(request: $request) {
             success
@@ -67,7 +67,7 @@ export enum QueryContent {
 }
 
 /** Every document this query can send, keyed by variant. */
-export const queryContentMap: Record<QueryContent, DocumentNode> = {
+export const queryContentMap: Record<QueryContent, TypedDocumentNode<QueryContentResponse, { request: QueryContentRequest }>> = {
     [QueryContent.Query1]: query1,
 }
 
@@ -80,7 +80,7 @@ export const queryContent = async ({
     debug,
 }: QueryParams<QueryContent, QueryContentRequest> = {}) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryContentResponse>({
+    return apollo.query({
         query: queryContentMap[query],
         variables: { request },
     })

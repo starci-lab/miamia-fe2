@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type OperationVariables, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type QueryParams } from "../types"
 import { type QueryMyInProgressChallengesResponse } from "./types/my-resume"
@@ -11,7 +11,7 @@ import { type QueryMyInProgressChallengesResponse } from "./types/my-resume"
  * the kind of a resume target be known from which request returned it - the payload itself does
  * not say. Required-auth, so the client always carries the token.
  */
-const query1 = gql`
+const query1: TypedDocumentNode<QueryMyInProgressChallengesResponse, OperationVariables> = gql`
     query MyInProgressChallenges {
         myInProgressChallenges {
             success
@@ -32,7 +32,7 @@ export enum QueryMyInProgressChallenges {
 }
 
 /** Every document this query can send, keyed by variant. */
-export const queryMyInProgressChallengesMap: Record<QueryMyInProgressChallenges, DocumentNode> = {
+export const queryMyInProgressChallengesMap: Record<QueryMyInProgressChallenges, TypedDocumentNode<QueryMyInProgressChallengesResponse, OperationVariables>> = {
     [QueryMyInProgressChallenges.Query1]: query1,
 }
 
@@ -44,7 +44,7 @@ export const queryMyInProgressChallenges = async ({
     debug,
 }: QueryParams<QueryMyInProgressChallenges> = {}) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryMyInProgressChallengesResponse>({
+    return apollo.query({
         query: queryMyInProgressChallengesMap[query],
     })
 }

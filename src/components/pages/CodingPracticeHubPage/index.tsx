@@ -6,7 +6,43 @@ import { useRouter } from "@/i18n/navigation"
 import { useQueryCodingDomainSummarySwr } from "@/hooks/swr/useQueryCodingDomainSummarySwr"
 import { useQueryMyCodingProgressSwr } from "@/hooks/swr/useQueryMyCodingProgressSwr"
 import { useSessionToken } from "@/hooks/auth/useSessionToken"
-import { _CodingPracticeHubPage } from "./component"
+import { _CodingPracticeHubPage as CodingPracticeHubPageView } from "./component"
+
+type HubState = "pending" | "guest" | "catalog-failed" | "empty" | "progress-failed" | "ready"
+
+/** Inputs that decide which single situation the hub is in. */
+type HubStateInput = {
+    readonly pending: boolean
+    readonly isGuest: boolean
+    readonly catalogFailed: boolean
+    readonly hasNoDomains: boolean
+    readonly progressFailed: boolean
+}
+
+/** Resolves the single situation the hub is in, in the priority order the page decided on. */
+const resolveHubState = (input: HubStateInput): HubState => {
+    if (input.pending) return "pending"
+    if (input.isGuest) return "guest"
+    if (input.catalogFailed) return "catalog-failed"
+    if (input.hasNoDomains) return "empty"
+    if (input.progressFailed) return "progress-failed"
+    return "ready"
+}
+
+/** Resolves the copy that accompanies a non-ready hub state. */
+const resolveHubNotice = (state: HubState, t: (key: string) => string) => {
+    if (state === "guest") return {
+        noticeMessage: t("guestMessage"),
+        noticeDescription: t("guestDetail"),
+        noticeActionLabel: t("guestAction"),
+    }
+    if (state === "catalog-failed") return {
+        noticeMessage: t("catalogFailed"),
+        noticeActionLabel: t("retry"),
+    }
+    if (state === "empty") return { noticeMessage: t("noDomains") }
+    return {}
+}
 
 /**
  * The practice hub, connected.
@@ -63,35 +99,18 @@ export const CodingPracticeHubPage = () => {
     const pending = summary.data === undefined && !catalogFailed
     const progressFailed = progress.error !== undefined || progress.data === null
 
-    const state = pending
-        ? "pending" as const
-        : token === undefined
-            ? "guest" as const
-            : catalogFailed
-                ? "catalog-failed" as const
-                : domains.length === 0
-                    ? "empty" as const
-                    : progressFailed
-                        ? "progress-failed" as const
-                        : "ready" as const
+    const state = resolveHubState({
+        pending,
+        isGuest: token === undefined,
+        catalogFailed,
+        hasNoDomains: domains.length === 0,
+        progressFailed,
+    })
 
-    const notice = state === "guest"
-        ? {
-            noticeMessage: t("guestMessage"),
-            noticeDescription: t("guestDetail"),
-            noticeActionLabel: t("guestAction"),
-        }
-        : state === "catalog-failed"
-            ? {
-                noticeMessage: t("catalogFailed"),
-                noticeActionLabel: t("retry"),
-            }
-            : state === "empty"
-                ? { noticeMessage: t("noDomains") }
-                : {}
+    const notice = resolveHubNotice(state, t)
 
     return (
-        <_CodingPracticeHubPage
+        <CodingPracticeHubPageView
             session={token === undefined ? "guest" : "signed-in"}
             props={{
                 labels: {

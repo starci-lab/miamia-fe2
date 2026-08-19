@@ -40,7 +40,7 @@ export type ViewerKey = string | undefined
 const fingerprint = (token: string): string => {
     let hash = 5381
     for (let index = 0; index < token.length; index += 1) {
-        hash = ((hash << 5) + hash + token.charCodeAt(index)) | 0
+        hash = ((hash << 5) + hash + (token.codePointAt(index) ?? 0)) | 0
     }
     return (hash >>> 0).toString(36)
 }

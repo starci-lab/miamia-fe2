@@ -8,12 +8,19 @@ import { _CourseLearnContentHomePage } from "./component"
 /** Course identity required by the connected Modules landing page. */
 export interface CourseLearnContentHomePageProps { readonly displayId: string }
 
+/** Whether the course request failed, is still pending, or is ready to draw. */
+const deriveHomeState = (hasError: boolean, isPending: boolean): "failed" | "pending" | "ready" => {
+    if (hasError) return "failed"
+    if (isPending) return "pending"
+    return "ready"
+}
+
 /** Load one enrolled course and connect its modules to the pure page. */
 export const CourseLearnContentHomePage = ({ displayId }: CourseLearnContentHomePageProps) => {
     const t = useTranslations("learn.contentHome")
     const router = useRouter()
     const course = useQueryCourseSwr({ displayId })
-    const state = course.error ? "failed" : course.data === undefined ? "pending" : "ready"
+    const state = deriveHomeState(Boolean(course.error), course.data === undefined)
     return (
         <_CourseLearnContentHomePage
             state={state}

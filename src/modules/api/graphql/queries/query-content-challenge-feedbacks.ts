@@ -1,4 +1,4 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type OperationVariables, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { GraphQLResponse, LookupQueryParams, PaginationFilters } from "../types"
 
@@ -30,7 +30,7 @@ export interface QueryContentChallengeFeedbacksResponse {
     }>
 }
 
-const query1 = gql`
+const query1: TypedDocumentNode<QueryContentChallengeFeedbacksResponse, OperationVariables> = gql`
     query ContentChallengeFeedbacks($request: UserChallengeSubmissionFeedbacksRequest!) {
         userChallengeSubmissionFeedbacks(request: $request) {
             success
@@ -48,7 +48,7 @@ const query1 = gql`
 export enum QueryContentChallengeFeedbacks { Query1 = "query1" }
 
 /** Every supported challenge-feedback document keyed by its finite variant. */
-export const queryContentChallengeFeedbacksMap: Record<QueryContentChallengeFeedbacks, DocumentNode> = {
+export const queryContentChallengeFeedbacksMap: Record<QueryContentChallengeFeedbacks, TypedDocumentNode<QueryContentChallengeFeedbacksResponse, OperationVariables>> = {
     [QueryContentChallengeFeedbacks.Query1]: query1,
 }
 
@@ -61,7 +61,7 @@ export const queryContentChallengeFeedbacks = async ({
     debug,
 }: LookupQueryParams<QueryContentChallengeFeedbacks, QueryContentChallengeFeedbacksRequest>) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryContentChallengeFeedbacksResponse>({
+    return apollo.query({
         query: queryContentChallengeFeedbacksMap[query],
         variables: { request },
     })

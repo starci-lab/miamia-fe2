@@ -1,9 +1,9 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import type { LookupQueryParams, QueryVariables } from "../types"
 import type { MyFeedRequest, QueryMyFeedResponse } from "./types/my-feed"
 
-const query1 = gql`
+const query1: TypedDocumentNode<QueryMyFeedResponse, QueryVariables<MyFeedRequest>> = gql`
     query MyFeed($request: MyFeedRequest!) {
         myFeed(request: $request) {
             success
@@ -32,7 +32,7 @@ const query1 = gql`
 export enum QueryMyFeed { Query1 = "query1" }
 
 /** Every supported dashboard-feed document keyed by its public variant. */
-export const queryMyFeedMap: Record<QueryMyFeed, DocumentNode> = {
+export const queryMyFeedMap: Record<QueryMyFeed, TypedDocumentNode<QueryMyFeedResponse, QueryVariables<MyFeedRequest>>> = {
     [QueryMyFeed.Query1]: query1,
 }
 
@@ -45,7 +45,7 @@ export const queryMyFeed = async ({
     debug,
 }: LookupQueryParams<QueryMyFeed, MyFeedRequest>) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryMyFeedResponse, QueryVariables<MyFeedRequest>>({
+    return apollo.query({
         query: queryMyFeedMap[query],
         variables: { request },
         fetchPolicy: "no-cache",

@@ -1,9 +1,9 @@
-import { gql, type DocumentNode } from "@apollo/client"
+import { gql, type OperationVariables, type TypedDocumentNode } from "@apollo/client"
 import { createApolloClient } from "../clients/create-apollo-client"
 import { type QueryParams } from "../types"
 import { type QueryWeeklyChallengeResponse } from "./types/weekly-challenge"
 
-const query1 = gql`
+const query1: TypedDocumentNode<QueryWeeklyChallengeResponse, OperationVariables> = gql`
     query WeeklyChallenge {
         weeklyChallenge {
             success
@@ -25,7 +25,7 @@ const query1 = gql`
 
 export enum QueryWeeklyChallenge { Query1 = "query1" }
 /** Every supported weekly-challenge document keyed by its public variant. */
-export const queryWeeklyChallengeMap: Record<QueryWeeklyChallenge, DocumentNode> = {
+export const queryWeeklyChallengeMap: Record<QueryWeeklyChallenge, TypedDocumentNode<QueryWeeklyChallengeResponse, OperationVariables>> = {
     [QueryWeeklyChallenge.Query1]: query1,
 }
 
@@ -37,5 +37,5 @@ export const queryWeeklyChallenge = async ({
     debug,
 }: QueryParams<QueryWeeklyChallenge> = {}) => {
     const apollo = createApolloClient({ withAuth: true, headers, signal, debug })
-    return apollo.query<QueryWeeklyChallengeResponse>({ query: queryWeeklyChallengeMap[query] })
+    return apollo.query({ query: queryWeeklyChallengeMap[query] })
 }

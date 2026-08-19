@@ -4,7 +4,15 @@ import { useLocale } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
 import { useQueryFlashcardSessionResultSwr } from "@/hooks/swr/useQueryFlashcardSessionResultSwr"
 import type { FlashcardSessionMode } from "@/modules/api/graphql/queries/query-my-in-progress-flashcard-session"
-import { _CourseFlashcardResultPage } from "./component"
+import { _CourseFlashcardResultPage as CourseFlashcardResultPageView } from "./component"
+
+/** A missing result is still pending; a resolved-but-absent one is a real load failure. */
+const resolveResultState = (error: unknown, data: unknown): "failed" | "pending" | "ready" => {
+    if (error !== undefined) return "failed"
+    if (data === undefined) return "pending"
+    if (data === null) return "failed"
+    return "ready"
+}
 
 /** Stable result-route identity required by the connected result page. */
 export type CourseFlashcardResultPageProps = {
@@ -63,19 +71,13 @@ export const CourseFlashcardResultPage = ({ displayId, sessionId, mode }: Course
     const copy = useLocale() === "vi" ? COPY.vi : COPY.en
     const router = useRouter()
     const result = useQueryFlashcardSessionResultSwr(mode, sessionId)
-    const state = result.error !== undefined
-        ? "failed"
-        : result.data === undefined
-            ? "pending"
-            : result.data === null
-                ? "failed"
-                : "ready"
+    const state = resolveResultState(result.error, result.data)
     const data = result.data ?? undefined
     const gradeCounts = data?.gradeCounts
     const overviewRoute = `/courses/${displayId}/learn/flashcards/${mode}`
 
     return (
-        <_CourseFlashcardResultPage
+        <CourseFlashcardResultPageView
             state={state}
             data={{
                 mode,
