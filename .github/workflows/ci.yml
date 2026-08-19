@@ -33,7 +33,7 @@ jobs:
         run: npm ci
 
       - name: Lint (check only)
-        run: npm run lint
+        run: npm run lint:check
 
       - name: Typecheck
         run: npm run typecheck
@@ -44,7 +44,12 @@ jobs:
       # ONE coverage run, feeding BOTH consumers below. A second run would let the number
       # Codecov reports and the number the analyzer reads drift apart with nothing to notice.
       - name: Unit tests with coverage
-        run: npm run test:cov
+        env:
+          COVERAGE_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.workflow_run.head_sha || github.sha }}
+        run: npm run test:cov:check
+
+      - name: Built application HTTP E2E
+        run: npm run test:e2e
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5

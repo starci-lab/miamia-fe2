@@ -2,11 +2,13 @@
   "name": "miamia-fe",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "npm@11.6.2",
   "scripts": {
     "dev": "node scripts/run-dev.mjs",
     "build": "next build",
     "start": "next start --hostname localhost --port 3071",
-    "lint": "eslint",
+    "lint": "npm run lint:check",
+    "lint:check": "eslint --max-warnings=0",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
@@ -14,6 +16,8 @@
     "seed:test-account": "node --env-file-if-exists=.env.local scripts/provision-test-account.mjs",
     "sync:ports": "node scripts/sync-ports.mjs",
     "test:cov": "vitest run --coverage",
+    "test:cov:check": "vitest run --coverage && node scripts/check-coverage.mjs",
+    "test:e2e": "npm run build && node scripts/e2e-http.mjs",
     "sonar:check": "sonar-scanner-npm -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=600"
   },
   "dependencies": {

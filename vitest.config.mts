@@ -33,6 +33,8 @@ export default defineConfig({
             reporter: [
                 "text-summary",
                 "lcov",
+                "json",
+                "json-summary",
             ],
             reportsDirectory: "./coverage",
             include: [
@@ -42,6 +44,12 @@ export default defineConfig({
                 "src/**/*.test.{ts,tsx}",
                 "src/**/*.d.ts",
             ],
+            thresholds: {
+                statements: 80,
+                functions: 80,
+                lines: 80,
+                branches: 75,
+            },
         },
         server: {
             deps: {
