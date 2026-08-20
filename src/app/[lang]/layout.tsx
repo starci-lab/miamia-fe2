@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import type { ReactNode } from "react"
 import { notFound } from "next/navigation"
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server"
 import { hasLocale } from "next-intl"
@@ -31,6 +32,14 @@ import "../globals.css"
  */
 export const dynamic = "force-dynamic"
 
+interface LangRouteProps {
+    params: Promise<{ lang: string }>
+}
+
+interface LocaleLayoutProps extends LangRouteProps {
+    children: ReactNode
+}
+
 /**
  * Browser-level metadata for every route in this language.
  *
@@ -38,7 +47,7 @@ export const dynamic = "force-dynamic"
  * are copy like any other. A static object here would have been the one English sentence left in
  * the app, and the one nobody would have noticed.
  */
-export const generateMetadata = async ({ params }: LayoutProps<"/[lang]">): Promise<Metadata> => {
+export const generateMetadata = async ({ params }: LangRouteProps): Promise<Metadata> => {
     const { lang } = await params
     if (!hasLocale(routing.locales, lang)) notFound()
     setRequestLocale(lang)
@@ -49,13 +58,11 @@ export const generateMetadata = async ({ params }: LayoutProps<"/[lang]">): Prom
 /**
  * Mount the shared runtime context for one language and leave composition to nested layouts.
  *
- * The props type is Next's own generated `LayoutProps<"/[lang]">` rather than a hand-written
- * interface: the segment name and the shape of `params` are facts the router already knows, and a
- * second declaration of them is one rename away from disagreeing with the folder it describes.
+ * The props type lives in source so a clean runner can typecheck before Next generates `.next/types`.
  *
  * @param props - The routed children and the language segment.
  */
-const LocaleLayout = async ({ children, params }: LayoutProps<"/[lang]">) => {
+const LocaleLayout = async ({ children, params }: LocaleLayoutProps) => {
     const { lang } = await params
     // A segment is reader-supplied text. An unknown language is a route that does not exist, not a
     // request to fall back silently - falling back would serve English at a Vietnamese-looking URL

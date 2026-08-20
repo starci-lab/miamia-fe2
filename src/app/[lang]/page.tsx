@@ -1,5 +1,9 @@
 import { redirect } from "next/navigation"
 
+interface HomePageProps {
+    params: Promise<{ lang: string }>
+}
+
 /**
  * The site root carries no content of its own in this build - the dashboard is the
  * only surface, so the root hands the reader straight to it rather than rendering a
@@ -13,7 +17,7 @@ import { redirect } from "next/navigation"
  *
  * @param props - The routed segment carrying the language.
  */
-const HomePage = async ({ params }: PageProps<"/[lang]">) => {
+const HomePage = async ({ params }: HomePageProps) => {
     const { lang } = await params
     redirect(`/${lang}/dashboard`)
 }
