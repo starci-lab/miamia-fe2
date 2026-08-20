@@ -1,24 +1,26 @@
-type TestPageInput = { state: string; on: Record<string, (...args: ReadonlyArray<unknown>) => unknown> }
-import { fireEvent, render, screen } from "@testing-library/react"
+import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-const m = vi.hoisted(() => ({ category: "category=challenge", course: { data: undefined as unknown, error: undefined as unknown, mutate: vi.fn() }, me: { data: undefined as unknown }, board: { data: undefined as unknown, error: undefined as unknown, mutate: vi.fn() }, push: vi.fn() }))
-vi.mock("next-intl", () => ({ useLocale: () => "en" }))
-vi.mock("next/navigation", () => ({ useSearchParams: () => new URLSearchParams(m.category) }))
-vi.mock("@/i18n/navigation", () => ({ useRouter: () => ({ push: m.push }) }))
-vi.mock("@/hooks/swr/useQueryCourseSwr", () => ({ useQueryCourseSwr: () => m.course }))
-vi.mock("@/hooks/swr/useQueryMeSwr", () => ({ useQueryMeSwr: () => m.me }))
-vi.mock("@/hooks/swr/useQueryCourseLeaderboardSwr", () => ({ useQueryCourseLeaderboardSwr: () => m.board }))
-vi.mock("./component", () => ({ CourseLeaderboardPageBase: ({ state, on }: TestPageInput) => <><output data-testid="state">{state}</output><button onClick={on.course}>course</button><button onClick={() => on.selectCategory("challenge")}>category</button><button onClick={() => on.selectCategory("reading")}>reading</button><button onClick={() => on.selectCategory("unknown")}>unknown</button><button onClick={on.climb}>climb</button><button onClick={on.retry}>retry</button></> }))
+const mocks = vi.hoisted(() => ({ locale: "en", category: null as string | null, course: { data: undefined as unknown, error: undefined as unknown, mutate: vi.fn() }, me: { data: undefined as unknown }, board: { data: undefined as unknown, error: undefined as unknown, mutate: vi.fn() }, push: vi.fn() }))
+vi.mock("next-intl", () => ({ useLocale: () => mocks.locale }))
+vi.mock("next/navigation", () => ({ useSearchParams: () => ({ get: () => mocks.category }) }))
+vi.mock("@/i18n/navigation", () => ({ useRouter: () => ({ push: mocks.push }) }))
+vi.mock("@/hooks/swr/useQueryCourseSwr", () => ({ useQueryCourseSwr: () => mocks.course }))
+vi.mock("@/hooks/swr/useQueryMeSwr", () => ({ useQueryMeSwr: () => mocks.me }))
+vi.mock("@/hooks/swr/useQueryCourseLeaderboardSwr", () => ({ useQueryCourseLeaderboardSwr: () => mocks.board }))
+type LeaderStubProps = { readonly state: string; readonly props: { readonly selectedCategory: string; readonly board: { readonly podium: ReadonlyArray<{ readonly username?: string }>; readonly rows: ReadonlyArray<{ readonly name: string }>; readonly selfRow?: unknown } }; readonly on: { readonly course: () => void; readonly selectCategory: (category: string) => void; readonly climb: () => void; readonly retry: () => void } }
+vi.mock("./component", () => ({ CourseLeaderboardPageBase: (input: LeaderStubProps) => <><output data-testid="state">{input.state}</output><output data-testid="category">{input.props.selectedCategory}</output><output data-testid="podium">{input.props.board.podium.map((row) => row.username).join("|")}</output><output data-testid="rows">{input.props.board.rows.map((row) => row.name).join("|")}</output><button onClick={input.on.course}>course</button><button onClick={() => input.on.selectCategory("challenge")}>category</button><button onClick={input.on.climb}>climb</button><button onClick={input.on.retry}>retry</button></> }))
+
 import { CourseLeaderboardPage } from "./index"
-beforeEach(() => { vi.clearAllMocks(); m.category = "category=challenge"; m.course.data = { id: "c1", title: "Course", isEnrolled: true }; m.course.error = undefined; m.me.data = { id: "me", username: "me", avatar: null }; m.board.data = undefined; m.board.error = undefined })
-describe("CourseLeaderboardPage route", () => {
-    it("reports pending, empty and ready states", () => { const view = render(<CourseLeaderboardPage displayId="course" />); expect(screen.getByTestId("state")).toHaveTextContent("pending"); m.board.data = { entries: [{ rank: 1, username: "Ada", points: 10, userGlobalId: "u1" }] }; view.rerender(<CourseLeaderboardPage displayId="course" />); expect(screen.getByTestId("state")).toHaveTextContent("ready"); m.board.data = { entries: [] }; view.rerender(<CourseLeaderboardPage displayId="course" />); expect(screen.getByTestId("state")).toHaveTextContent("empty") })
-    it("routes category, course, climb and retry intents", () => { m.board.data = { entries: [{ rank: 1, username: "Ada", points: 10, userGlobalId: "u1" }] }; render(<CourseLeaderboardPage displayId="course" />); fireEvent.click(screen.getByText("course")); fireEvent.click(screen.getByText("category")); fireEvent.click(screen.getByText("climb")); fireEvent.click(screen.getByText("retry")); expect(m.push).toHaveBeenCalledWith("/courses/course"); expect(m.push).toHaveBeenCalledWith("/courses/course/learn/leaderboard?category=challenge"); expect(m.push).toHaveBeenCalledWith("/courses/course/learn/content"); expect(m.board.mutate).toHaveBeenCalled() })
-    it("sorts alternate categories and handles hidden viewer, unranked and failed states", () => { m.category = "category=reading"; m.course.data = { id: "c1", title: "Course", isEnrolled: false }; m.board.data = { computedAt: "2025-01-01T00:00:00Z", myRank: { rank: 8, totalXp: 20, totalScore: 3, lessonsRead: 4, milestoneProgress: 2 }, entries: [{ enrollmentId: "1", userId: "a", username: "Ada", avatar: null, totalXp: 20, totalScore: 5, lessonsRead: 5, milestoneProgress: 1 }, { enrollmentId: "2", userId: "b", username: null, avatar: null, totalXp: 10, totalScore: 8, lessonsRead: 1, milestoneProgress: 4 }, { enrollmentId: "3", userId: "c", username: "Cal", avatar: null, totalXp: 8, totalScore: 2, lessonsRead: 2, milestoneProgress: 3 }, { enrollmentId: "4", userId: "d", username: "Dan", avatar: null, totalXp: 4, totalScore: 1, lessonsRead: 1, milestoneProgress: 1 }] }; const view = render(<CourseLeaderboardPage displayId="course" />); expect(screen.getByTestId("state")).toHaveTextContent("ready"); fireEvent.click(screen.getByText("reading")); fireEvent.click(screen.getByText("unknown")); m.board.error = new Error("offline"); view.rerender(<CourseLeaderboardPage displayId="course" />); expect(screen.getByTestId("state")).toHaveTextContent("failed") })
+
+describe("CourseLeaderboardPage connected ranking", () => {
+    beforeEach(() => { vi.clearAllMocks(); mocks.locale = "en"; mocks.category = null; mocks.course.data = undefined; mocks.course.error = undefined; mocks.me.data = undefined; mocks.board.data = undefined; mocks.board.error = undefined })
+
+    it("resolves pending, failed, empty and ready ranking states", async () => {
+        const view = render(<CourseLeaderboardPage displayId="course-1" />); expect(screen.getByTestId("state")).toHaveTextContent("pending")
+        mocks.course.error = new Error("offline"); view.rerender(<CourseLeaderboardPage displayId="course-1" />); expect(screen.getByTestId("state")).toHaveTextContent("failed")
+        mocks.course.error = undefined; mocks.course.data = { id: "course-1", title: "Algorithms", isEnrolled: false }; mocks.board.data = { entries: [], myRank: null, computedAt: undefined }; view.rerender(<CourseLeaderboardPage displayId="course-1" />); await waitFor(() => expect(screen.getByTestId("state")).toHaveTextContent("empty"))
+        mocks.me.data = { id: "u1", username: "Ada", avatar: null }; mocks.board.data = { entries: [{ userId: "u2", enrollmentId: "e2", username: "Bob", avatar: null, totalXp: 20, totalScore: 4, lessonsRead: 2, milestoneProgress: 1 }, { userId: "u1", enrollmentId: "e1", username: null, avatar: null, totalXp: 10, totalScore: 8, lessonsRead: 3, milestoneProgress: 2 }, { userId: "u3", enrollmentId: "e3", username: "Cy", avatar: null, totalXp: 30, totalScore: 7, lessonsRead: 1, milestoneProgress: 0 }, { userId: "u4", enrollmentId: "e4", username: "Dee", avatar: null, totalXp: 4, totalScore: 1, lessonsRead: 1, milestoneProgress: 1 }], myRank: { rank: 8, totalXp: 10, totalScore: 8, lessonsRead: 3, milestoneProgress: 2 }, computedAt: "2026-01-01T00:00:00.000Z" }; mocks.category = "challenge"; mocks.locale = "vi"; view.rerender(<CourseLeaderboardPage displayId="course-1" />); await waitFor(() => expect(screen.getByTestId("state")).toHaveTextContent("ready")); expect(screen.getByTestId("category")).toHaveTextContent("challenge")
+        fireEvent.click(screen.getByRole("button", { name: "category" })); fireEvent.click(screen.getByRole("button", { name: "course" })); fireEvent.click(screen.getByRole("button", { name: "climb" })); expect(mocks.push).toHaveBeenCalledWith("/courses/course-1/learn/leaderboard?category=challenge"); expect(mocks.push).toHaveBeenCalledWith("/courses/course-1"); expect(mocks.push).toHaveBeenCalledWith("/courses/course-1/learn/content")
+    })
 })
-
-
-
-
-
