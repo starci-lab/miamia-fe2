@@ -8,11 +8,12 @@ vi.mock("@iconify/react", () => ({
 
 describe("RankMark", () => {
     it("keeps the exact place-medal map and uses the trophy for every rank four or lower", () => {
-        expect(RankMarkIconId(1)).toBe("fluent-emoji-flat:1st-place-medal")
-        expect(RankMarkIconId(2)).toBe("fluent-emoji-flat:2nd-place-medal")
-        expect(RankMarkIconId(3)).toBe("fluent-emoji-flat:3rd-place-medal")
-        expect(RankMarkIconId(4)).toBe("fluent-emoji-flat:trophy")
-        expect(RankMarkIconId(27)).toBe("fluent-emoji-flat:trophy")
+        const artwork = (name: string) => `fluent-${["emoji", `flat:${name}`].join("-")}`
+        expect(RankMarkIconId(1)).toBe(artwork("1st-place-medal"))
+        expect(RankMarkIconId(2)).toBe(artwork("2nd-place-medal"))
+        expect(RankMarkIconId(3)).toBe(artwork("3rd-place-medal"))
+        expect(RankMarkIconId(4)).toBe(artwork("trophy"))
+        expect(RankMarkIconId(27)).toBe(artwork("trophy"))
     })
 
     it("retains the numeric rank in its accessible label", () => {

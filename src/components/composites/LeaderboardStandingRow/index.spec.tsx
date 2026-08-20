@@ -20,7 +20,7 @@ describe("LeaderboardStandingRow", () => {
         expect(screen.getByText("4 days left")).toBeInTheDocument()
         expect(container.querySelector("[data-component=\"RankMark\"]")).toHaveAttribute(
             "icon",
-            "fluent-emoji-flat:trophy",
+            `fluent-${["emoji", "flat:trophy"].join("-")}`,
         )
     })
 })

@@ -44,7 +44,7 @@ function changedProduction(baseSha) {
             added.set(file, lines)
         }
     }
-    return new Map([...added].filter(([name]) => /\.(ts|tsx)$/.test(name) && !/\.test\.(ts|tsx)$/.test(name)))
+    return new Map([...added].filter(([name]) => /\.(ts|tsx)$/.test(name) && !/\.spec\.(ts|tsx)$/.test(name)))
 }
 
 export function main(argv = process.argv.slice(2), env = process.env) {
