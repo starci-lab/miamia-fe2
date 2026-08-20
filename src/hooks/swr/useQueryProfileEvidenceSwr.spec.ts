@@ -11,5 +11,5 @@ beforeEach(() => { m.query.mockReset(); m.query.mockResolvedValue({ id: "evidenc
 describe("useQueryProfileEvidenceSwr", () => {
     it("does not fetch without a profile", () => { const { result } = renderHook(() => useQueryProfileEvidenceSwr("activity", null), { wrapper }); expect(result.current.data).toBeUndefined(); expect(m.query).not.toHaveBeenCalled() })
     it("wraps activity requests and returns evidence", async () => { const { result } = renderHook(() => useQueryProfileEvidenceSwr("activity", "profile", { page: 1 }), { wrapper }); await waitFor(() => expect(result.current.data).toEqual({ id: "evidence" })); expect(m.query).toHaveBeenCalledWith("activity", { request: { userId: "profile", page: 1 } }) })
-    it("uses the flat request for non-detail evidence", async () => { const { result } = renderHook(() => useQueryProfileEvidenceSwr("skills", "profile"), { wrapper }); await waitFor(() => expect(result.current.data).toBeTruthy()); expect(m.query).toHaveBeenCalledWith("skills", { userId: "profile" }) })
+    it("uses the flat request for non-detail evidence", async () => { const { result } = renderHook(() => useQueryProfileEvidenceSwr("coding-skills", "profile"), { wrapper }); await waitFor(() => expect(result.current.data).toBeTruthy()); expect(m.query).toHaveBeenCalledWith("coding-skills", { userId: "profile" }) })
 })
