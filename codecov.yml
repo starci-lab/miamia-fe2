@@ -1,22 +1,13 @@
-# Coverage is MEASURED here, and deliberately does not gate.
-#
-# The owner ruled on the sibling product that a coverage percentage may not refuse a merge, and
-# this repository follows that same ruling rather than inventing a second policy. `informational`
-# is what withdraws the power to block; it does not withdraw the measurement. The report is still
-# produced from the same single LCOV the analyzer reads, still uploaded, and still badged, so an
-# ungated number stays a true number.
-#
-# If that ruling is ever reversed, it must be reversed in BOTH places at once - here and in the
-# analysis quality gate. Leaving one blocking while the other stops does not lighten the bar, it
-# moves the gate to a second dashboard and makes the stated policy false.
 coverage:
   status:
     project:
       default:
-        informational: true
+        target: 80%
+        informational: false
     patch:
       default:
-        informational: true
+        target: 90%
+        informational: false
 
 codecov:
   require_ci_to_pass: true

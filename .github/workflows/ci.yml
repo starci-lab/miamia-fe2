@@ -66,7 +66,7 @@ jobs:
 
       # A scan is not a gate: a run that ends at "analysis uploaded" has proved only that the
       # server received a report. This step is what makes the verdict blocking.
-      - name: Enforce SonarQube quality gate
+      - name: Strict sonar-quality-gate proof
         uses: SonarSource/sonarqube-quality-gate-action@v1
         with:
           pollingTimeoutSec: 600

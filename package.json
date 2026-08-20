@@ -3,13 +3,27 @@
   "version": "0.1.0",
   "private": true,
   "packageManager": "npm@11.6.2",
+  "starci": {
+    "deliveryAssurance": {
+      "required": true,
+      "unitCoverage": {
+        "statements": 80,
+        "lines": 80,
+        "functions": 80,
+        "branches": 75,
+        "patch": 90
+      }
+    }
+  },
   "scripts": {
+    "prepare": "husky",
     "dev": "node scripts/run-dev.mjs",
     "build": "next build",
     "start": "next start --hostname localhost --port 3071",
     "lint": "npm run lint:check",
     "lint:check": "eslint --max-warnings=0",
     "test": "vitest run",
+    "test:unit": "npm test",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "verify": "npm run typecheck && npm run lint && npm run test",
@@ -67,6 +81,7 @@
     "eslint-plugin-react": "^7",
     "eslint-plugin-react-hooks": "^7",
     "globals": "^16",
+    "husky": "^9.1.7",
     "jsdom": "^30",
     "tailwindcss": "^4",
     "typescript": "^5",
