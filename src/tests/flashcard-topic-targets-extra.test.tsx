@@ -1,0 +1,29 @@
+import { fireEvent, render, screen, waitFor } from "@testing-library/react"
+import { beforeEach, describe, expect, it, vi } from "vitest"
+
+const mocks = vi.hoisted(() => ({ locale: "en", result: { data: undefined as unknown, error: undefined as unknown, mutate: vi.fn() }, topic: { data: undefined as unknown, error: undefined as unknown, mutate: vi.fn() }, push: vi.fn() }))
+vi.mock("next-intl", () => ({ useLocale: () => mocks.locale, useTranslations: () => (key: string) => key }))
+vi.mock("@/i18n/navigation", () => ({ useRouter: () => ({ push: mocks.push }) }))
+vi.mock("@/hooks/swr/useQueryFlashcardSessionResultSwr", () => ({ useQueryFlashcardSessionResultSwr: () => mocks.result }))
+vi.mock("@/hooks", () => ({ useQueryTopicDetailSwr: () => mocks.topic }))
+type ResultStubProps = { readonly state: string; readonly data: { readonly mode: string; readonly scoreText?: string; readonly weakTopics: ReadonlyArray<{ readonly tag: string }> }; readonly on: { readonly retryLoad: () => void; readonly retrySession: () => void; readonly back: () => void } }
+vi.mock("@/components/pages/CourseFlashcardResultPage/component", () => ({ CourseFlashcardResultPageBase: (input: ResultStubProps) => <><output data-testid="result-state">{input.state}</output><output data-testid="result-score">{input.data.scoreText}</output><output data-testid="result-topics">{input.data.weakTopics.map((topic) => topic.tag).join("|")}</output><button onClick={input.on.retryLoad}>retry-load</button><button onClick={input.on.retrySession}>retry-session</button><button onClick={input.on.back}>back</button></> }))
+type TopicStubProps = { readonly state: string; readonly props: { readonly title: string; readonly phrases: ReadonlyArray<{ readonly phrase: string; readonly meaning: string }> }; readonly on: { readonly start: () => void; readonly back: () => void; readonly retry: () => void } }
+vi.mock("@/components/blocks/study/StudyTopicOverview/component", () => ({ StudyTopicOverviewBase: (input: TopicStubProps) => <><output data-testid="topic-state">{input.state}</output><output data-testid="topic-title">{input.props.title}</output><output data-testid="topic-phrases">{input.props.phrases.map((phrase) => phrase.phrase).join("|")}</output><button onClick={input.on.start}>start</button><button onClick={input.on.back}>back</button><button onClick={input.on.retry}>retry</button></> }))
+import { CourseFlashcardResultPage } from "@/components/pages/CourseFlashcardResultPage/index"
+import { StudyTopicOverview } from "@/components/blocks/study/StudyTopicOverview/index"
+
+describe("measured flashcard and topic target branches", () => {
+    beforeEach(() => { vi.clearAllMocks(); mocks.locale = "en"; mocks.result.data = undefined; mocks.result.error = undefined; mocks.topic.data = undefined; mocks.topic.error = undefined })
+    it("covers flashcard result pending/failed/review/quiz projections", async () => {
+        const view = render(<CourseFlashcardResultPage displayId="course" sessionId="s" mode="review" />); expect(screen.getByTestId("result-state")).toHaveTextContent("pending")
+        mocks.result.error = new Error("offline"); view.rerender(<CourseFlashcardResultPage displayId="course" sessionId="s" mode="review" />); expect(screen.getByTestId("result-state")).toHaveTextContent("failed")
+        mocks.result.error = undefined; mocks.result.data = { scorePercent: 80, reviewedCount: 4, xpEarned: 20, durationSeconds: 30, nextDueAt: "2026-01-01T00:00:00Z", gradeCounts: { again: 1, hard: 1, good: 1, easy: 1 }, weakTags: [{ tag: "verbs", value: 2 }] }; mocks.locale = "vi"; view.rerender(<CourseFlashcardResultPage displayId="course" sessionId="s" mode="quiz" />); await waitFor(() => expect(screen.getByTestId("result-state")).toHaveTextContent("ready")); expect(screen.getByTestId("result-score")).toHaveTextContent("80%"); expect(screen.getByTestId("result-topics")).toHaveTextContent("verbs"); fireEvent.click(screen.getByRole("button", { name: "retry-load" })); fireEvent.click(screen.getByRole("button", { name: "retry-session" })); fireEvent.click(screen.getByRole("button", { name: "back" })); expect(mocks.result.mutate).toHaveBeenCalled(); expect(mocks.push).toHaveBeenCalledWith("/courses/course/learn/flashcards/quiz")
+    })
+    it("covers topic pending/failed/empty/ready and localized phrase fallbacks", async () => {
+        const start = vi.fn(); const back = vi.fn(); const view = render(<StudyTopicOverview slug="topic" onStartPractice={start} onBack={back} />); expect(screen.getByTestId("topic-state")).toHaveTextContent("pending")
+        mocks.topic.error = new Error("offline"); view.rerender(<StudyTopicOverview slug="topic" onStartPractice={start} onBack={back} />); expect(screen.getByTestId("topic-state")).toHaveTextContent("failed")
+        mocks.topic.error = undefined; mocks.topic.data = { nameVi: "", nameEn: "English", level: "a1", phrases: [] }; view.rerender(<StudyTopicOverview slug="topic" onStartPractice={start} onBack={back} />); expect(screen.getByTestId("topic-state")).toHaveTextContent("empty")
+        mocks.locale = "vi"; mocks.topic.data = { nameVi: "Xin chào", nameEn: "Hello", level: "a1", phrases: [{ id: "p", text: "hello", meaningVi: "chào", meaningEn: "greet", example: null }] }; view.rerender(<StudyTopicOverview slug="topic" onStartPractice={start} onBack={back} />); await waitFor(() => expect(screen.getByTestId("topic-state")).toHaveTextContent("ready")); expect(screen.getByTestId("topic-title")).toHaveTextContent("Xin chào"); fireEvent.click(screen.getByRole("button", { name: "start" })); fireEvent.click(screen.getByRole("button", { name: "back" })); fireEvent.click(screen.getByRole("button", { name: "retry" })); expect(start).toHaveBeenCalled(); expect(back).toHaveBeenCalled(); expect(mocks.topic.mutate).toHaveBeenCalled()
+    })
+})
