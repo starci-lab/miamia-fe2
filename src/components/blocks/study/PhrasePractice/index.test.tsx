@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-const m = vi.hoisted(() => ({ token: "token", query: { data: undefined as unknown, error: undefined as unknown, mutate: vi.fn() }, trigger: vi.fn(), requireSignIn: vi.fn(), exit: vi.fn() }))
+const m = vi.hoisted(() => ({ token: "token" as string | undefined, query: { data: undefined as unknown, error: undefined as unknown, mutate: vi.fn() }, trigger: vi.fn(), requireSignIn: vi.fn(), exit: vi.fn() }))
 vi.mock("next-intl", () => ({ useTranslations: () => (key: string) => key }))
 vi.mock("@/hooks/auth/useSessionToken", () => ({ useSessionToken: () => m.token }))
 vi.mock("@/hooks", () => ({ useQueryPhrasePracticeSwr: () => m.query }))

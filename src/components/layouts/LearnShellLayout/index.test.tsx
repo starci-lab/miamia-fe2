@@ -51,23 +51,26 @@ type FrameStub = {
         readonly openMobileTab?: (id: string) => void
         readonly resume?: () => void
     }
-    readonly surface: React.ReactNode
+    readonly surface: React.ComponentType
 }
 
 vi.mock("./component", () => ({
-    LearnShellLayoutBase: (input: FrameStub) => (
-        <>
-            <output data-testid="spine">{JSON.stringify(input.props.spine)}</output>
-            <output data-testid="tabs">{JSON.stringify(input.props.mobileTabs ?? null)}</output>
-            <output data-testid="full-bleed">{String(input.props.isFullBleed)}</output>
-            <button type="button" onClick={() => input.on?.openRow?.("leaderboard")}>row leaderboard</button>
-            <button type="button" onClick={() => input.on?.openRow?.("nonexistent")}>row nonexistent</button>
-            <button type="button" onClick={() => input.on?.openMobileTab?.("progress")}>tab progress</button>
-            <button type="button" onClick={() => input.on?.openMobileTab?.("outline")}>tab outline</button>
-            <button type="button" onClick={input.on?.resume}>resume</button>
-            {input.surface}
-        </>
-    ),
+    LearnShellLayoutBase: (input: FrameStub) => {
+        const SurfaceComponent = input.surface
+        return (
+            <>
+                <output data-testid="spine">{JSON.stringify(input.props.spine)}</output>
+                <output data-testid="tabs">{JSON.stringify(input.props.mobileTabs ?? null)}</output>
+                <output data-testid="full-bleed">{String(input.props.isFullBleed)}</output>
+                <button type="button" onClick={() => input.on?.openRow?.("leaderboard")}>row leaderboard</button>
+                <button type="button" onClick={() => input.on?.openRow?.("nonexistent")}>row nonexistent</button>
+                <button type="button" onClick={() => input.on?.openMobileTab?.("progress")}>tab progress</button>
+                <button type="button" onClick={() => input.on?.openMobileTab?.("outline")}>tab outline</button>
+                <button type="button" onClick={input.on?.resume}>resume</button>
+                <SurfaceComponent />
+            </>
+        )
+    },
 }))
 
 /** The routed surface is the only reader of the frame's mobile panel. */
@@ -97,28 +100,28 @@ describe("LearnShellLayout", () => {
     })
 
     it("draws the reference product's three groups in their published order", () => {
-        render(<LearnShellLayout displayId="system-design" surface={<Surface />} />)
+        render(<LearnShellLayout displayId="system-design" surface={Surface} />)
         expect(spine().groups.map((group) => group.id)).toEqual(["path", "practice", "track"])
         expect(spine().groups[0].rows.map((row) => row.id)).toEqual(["content", "personalProject"])
     })
 
     it("marks the row whose route the learner is standing on", () => {
         mocks.pathname = "/courses/system-design/learn/flashcards"
-        render(<LearnShellLayout displayId="system-design" surface={<Surface />} />)
+        render(<LearnShellLayout displayId="system-design" surface={Surface} />)
 
         expect(rowById("flashcards")?.isCurrent).toBe(true)
         expect(rowById("content")?.isCurrent).toBe(false)
     })
 
     it("leaves the gated rows unlocked until enrolment is actually known", () => {
-        render(<LearnShellLayout displayId="system-design" surface={<Surface />} />)
+        render(<LearnShellLayout displayId="system-design" surface={Surface} />)
         expect(rowById("personalProject")?.isLocked).toBe(false)
         expect(rowById("mockInterview")?.isLocked).toBe(false)
     })
 
     it("locks only the rows that require enrolment once the course says the learner has none", () => {
         mocks.course = { id: "course-1", isEnrolled: false }
-        render(<LearnShellLayout displayId="system-design" surface={<Surface />} />)
+        render(<LearnShellLayout displayId="system-design" surface={Surface} />)
 
         expect(rowById("personalProject")?.isLocked).toBe(true)
         expect(rowById("mockInterview")?.isLocked).toBe(true)
@@ -127,13 +130,13 @@ describe("LearnShellLayout", () => {
 
     it("unlocks the gated rows for an enrolled learner", () => {
         mocks.course = { id: "course-1", isEnrolled: true }
-        render(<LearnShellLayout displayId="system-design" surface={<Surface />} />)
+        render(<LearnShellLayout displayId="system-design" surface={Surface} />)
         expect(rowById("personalProject")?.isLocked).toBe(false)
     })
 
     it("carries the viewer's rank on the leaderboard row and nowhere else", () => {
         mocks.leaderboard = { myRank: 12 }
-        render(<LearnShellLayout displayId="system-design" surface={<Surface />} />)
+        render(<LearnShellLayout displayId="system-design" surface={Surface} />)
 
         expect(rowById("leaderboard")?.fact).toBe("#12")
         expect(rowById("flashcards")?.fact).toBeUndefined()
@@ -141,23 +144,23 @@ describe("LearnShellLayout", () => {
 
     it("leaves the leaderboard row plain while no rank was answered", () => {
         mocks.leaderboard = { myRank: null }
-        render(<LearnShellLayout displayId="system-design" surface={<Surface />} />)
+        render(<LearnShellLayout displayId="system-design" surface={Surface} />)
         expect(rowById("leaderboard")?.fact).toBeUndefined()
     })
 
     it("offers the resume card only for a course the learner already joined", () => {
-        const { unmount } = render(<LearnShellLayout displayId="system-design" surface={<Surface />} />)
+        const { unmount } = render(<LearnShellLayout displayId="system-design" surface={Surface} />)
         expect(spine().resume).toBeUndefined()
         unmount()
 
         mocks.course = { id: "course-1" }
         mocks.myCourses = [{ globalId: "course-1", label: "System Design", completionPercent: 40 }]
-        render(<LearnShellLayout displayId="system-design" surface={<Surface />} />)
+        render(<LearnShellLayout displayId="system-design" surface={Surface} />)
         expect(spine().resume).toMatchObject({ title: "System Design", percent: 40 })
     })
 
     it("routes a pressed spine row and ignores a row this frame does not publish", () => {
-        render(<LearnShellLayout displayId="system-design" surface={<Surface />} />)
+        render(<LearnShellLayout displayId="system-design" surface={Surface} />)
 
         fireEvent.click(screen.getByRole("button", { name: "row leaderboard" }))
         expect(mocks.push).toHaveBeenCalledWith("/courses/system-design/learn/leaderboard")
@@ -168,13 +171,13 @@ describe("LearnShellLayout", () => {
     })
 
     it("sends the resume action back into the reading surface", () => {
-        render(<LearnShellLayout displayId="system-design" surface={<Surface />} />)
+        render(<LearnShellLayout displayId="system-design" surface={Surface} />)
         fireEvent.click(screen.getByRole("button", { name: "resume" }))
         expect(mocks.push).toHaveBeenCalledWith("/courses/system-design/learn/content")
     })
 
     it("offers the three today panels on the course home and opens the one pressed", () => {
-        render(<LearnShellLayout displayId="system-design" surface={<Surface />} />)
+        render(<LearnShellLayout displayId="system-design" surface={Surface} />)
 
         expect(tabs()?.map((tab) => tab.id)).toEqual(["today", "course", "progress"])
         expect(screen.getByTestId("view")).toHaveTextContent("today")
@@ -186,7 +189,7 @@ describe("LearnShellLayout", () => {
 
     it("offers the three reader panels inside one lesson", () => {
         mocks.pathname = readerPath
-        render(<LearnShellLayout displayId="system-design" surface={<Surface />} />)
+        render(<LearnShellLayout displayId="system-design" surface={Surface} />)
 
         expect(tabs()?.map((tab) => tab.id)).toEqual(["contents", "lesson", "outline"])
         expect(screen.getByTestId("view")).toHaveTextContent("lesson")
@@ -195,7 +198,7 @@ describe("LearnShellLayout", () => {
     })
 
     it("refuses a panel this route has no such thing as", () => {
-        render(<LearnShellLayout displayId="system-design" surface={<Surface />} />)
+        render(<LearnShellLayout displayId="system-design" surface={Surface} />)
 
         fireEvent.click(screen.getByRole("button", { name: "tab outline" }))
         expect(screen.getByTestId("view")).toHaveTextContent("today")
@@ -203,7 +206,7 @@ describe("LearnShellLayout", () => {
 
     it("keeps a lesson challenge out of the reader panel set", () => {
         mocks.pathname = `${readerPath}/challenges/challenge-1`
-        render(<LearnShellLayout displayId="system-design" surface={<Surface />} />)
+        render(<LearnShellLayout displayId="system-design" surface={Surface} />)
 
         expect(tabs()).toBeNull()
         expect(screen.getByTestId("view")).toHaveTextContent("course")
@@ -211,24 +214,24 @@ describe("LearnShellLayout", () => {
 
     it("falls back to the route's own panel when navigation invalidates the open one", () => {
         mocks.pathname = readerPath
-        const { rerender } = render(<LearnShellLayout displayId="system-design" surface={<Surface />} />)
+        const { rerender } = render(<LearnShellLayout displayId="system-design" surface={Surface} />)
 
         fireEvent.click(screen.getByRole("button", { name: "surface outline" }))
         expect(screen.getByTestId("view")).toHaveTextContent("outline")
 
         mocks.pathname = "/courses/system-design/learn"
-        rerender(<LearnShellLayout displayId="system-design" surface={<Surface />} />)
+        rerender(<LearnShellLayout displayId="system-design" surface={Surface} />)
         expect(screen.getByTestId("view")).toHaveTextContent("today")
     })
 
     it("gives a live assessment the whole frame without course furniture", () => {
         mocks.pathname = "/courses/system-design/learn/mock-interview/interview/session-1"
-        const { unmount } = render(<LearnShellLayout displayId="system-design" surface={<Surface />} />)
+        const { unmount } = render(<LearnShellLayout displayId="system-design" surface={Surface} />)
         expect(screen.getByTestId("full-bleed").textContent).toBe("true")
         unmount()
 
         mocks.pathname = "/courses/system-design/learn/mock-interview"
-        render(<LearnShellLayout displayId="system-design" surface={<Surface />} />)
+        render(<LearnShellLayout displayId="system-design" surface={Surface} />)
         expect(screen.getByTestId("full-bleed").textContent).toBe("false")
     })
 

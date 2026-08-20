@@ -1,6 +1,6 @@
 import { renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-const mocks = vi.hoisted(() => ({ refresh: vi.fn(), token: vi.fn(() => undefined), setToken: vi.fn() }))
+const mocks = vi.hoisted(() => ({ refresh: vi.fn(), token: vi.fn<() => string | undefined>(() => undefined), setToken: vi.fn() }))
 vi.mock("@/modules/api/graphql/mutations/mutation-refresh-token", () => ({ mutationRefreshToken: mocks.refresh }))
 vi.mock("./useSessionToken", () => ({ useSessionToken: mocks.token, setSessionToken: mocks.setToken }))
 import { mutationRefreshToken } from "@/modules/api/graphql/mutations/mutation-refresh-token"

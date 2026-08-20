@@ -1,8 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { AuthenticationPanel } from "./index"
+import type { AuthPanelState } from "@/hooks/auth/useAuthPanel"
 
-const m = vi.hoisted(() => { const makePanel = () => ({ mode: "signIn", step: "details", sentCount: 0, hasAgreedToTerms: false, rememberMe: false, isPending: false, isResending: false, onSubmitDetails: vi.fn(), onSubmitCode: vi.fn(), onResend: vi.fn(), onChangeMode: vi.fn(), onChangeAgreedToTerms: vi.fn(), onChangeRememberMe: vi.fn(), onOauthPress: vi.fn() }); return { locale: "en", panel: makePanel(), makePanel, args: undefined as unknown, push: vi.fn() } })
+const m = vi.hoisted(() => { const makePanel = (): AuthPanelState => ({ mode: "signIn", step: "details", sentCount: 0, hasAgreedToTerms: false, rememberMe: false, isPending: false, isResending: false, onSubmitDetails: vi.fn(), onSubmitCode: vi.fn(), onResend: vi.fn(), onChangeMode: vi.fn(), onChangeAgreedToTerms: vi.fn(), onChangeRememberMe: vi.fn(), onOauthPress: vi.fn() }); return { locale: "en", panel: makePanel(), makePanel, args: undefined as unknown, push: vi.fn() } })
 vi.mock("next-intl", () => ({ useLocale: () => m.locale, useTranslations: () => (key: string) => key }))
 vi.mock("@/i18n/navigation", () => ({ useRouter: () => ({ push: m.push }) }))
 vi.mock("@/hooks/auth/useAuthPanel", () => ({ useAuthPanel: (args: unknown) => { m.args = args; return m.panel } }))

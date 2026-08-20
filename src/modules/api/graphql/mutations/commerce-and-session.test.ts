@@ -18,7 +18,7 @@ describe("commerce and flashcard mutation boundaries", () => {
 
     it("passes checkout request and options without inventing installment fields", async () => {
         mutate.mockResolvedValue({ data: { coursesCheckout: { data: { checkoutUrl: "https://pay.test" } } } })
-        const request = { courseIds: ["course-1"], provider: "payos" as const, successUrl: "/ok", cancelUrl: "/cancel" }
+        const request = { courseIds: ["course-1"], paymentType: "payos", returnUrl: "/ok", cancelUrl: "/cancel" }
         await mutationCoursesCheckout(request, { debug: true })
         expect(mutate.mock.calls[0][0].variables).toEqual({ request })
     })
