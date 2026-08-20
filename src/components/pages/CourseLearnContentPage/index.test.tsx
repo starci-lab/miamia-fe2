@@ -36,6 +36,7 @@ type MockPageActions = {
     readonly submitDiscussion: () => void
     readonly retryDiscussion: () => void
     readonly selectChallenge: () => void
+    readonly selectReaction: (type: "like") => void
     readonly act?: () => void
 }
 
@@ -57,6 +58,7 @@ vi.mock("./component", () => {
             <button onClick={() => on.submitDiscussion()}>submit</button>
             <button onClick={() => on.retryDiscussion()}>retry</button>
             <button onClick={() => on.selectChallenge()}>challenge</button>
+            <button onClick={() => on.selectReaction("like")}>react</button>
             {props.noticeActionLabel && <button onClick={() => on.act?.()}>{props.noticeActionLabel}</button>}
         </div>
     )
@@ -107,6 +109,7 @@ describe("CourseLearnContentPage route", () => {
         }
         mocks.module.data = {id: "module", title: "Module", numContents: 2, contents: [{id: "content", title: "Lesson", orderIndex: 1}, {id: "next", title: "Next", orderIndex: 2}]}
         mocks.reactions.data = {total: 1, myReaction: null}
+        mocks.react.trigger.mockResolvedValue({data: {reactToContent: {data: {total: 2, myReaction: "like"}}}})
         mocks.comments.data = {comments: []}
         mocks.source.data = {files: {"main.ts": "const x = 1"}}
         const view = render(<CourseLearnContentPage displayId="course" moduleId="module" contentId="content" />)
@@ -122,6 +125,23 @@ describe("CourseLearnContentPage route", () => {
         expect(mocks.submit.trigger).toHaveBeenCalledWith({contentId: "content", parentCommentId: null, body: "hello"})
         fireEvent.click(screen.getByText("retry"))
         expect(mocks.comments.mutate).toHaveBeenCalled()
+        fireEvent.click(screen.getByText("react"))
+        expect(mocks.react.trigger).toHaveBeenCalledWith({contentId: "content", type: "like"})
         view.unmount()
+    })
+
+    it("covers comment mapping, empty submit, failed submit and a content without challenges", async () => {
+        const input = {displayId: "course", moduleId: "module", contentId: "content"}
+        mocks.content.data = {id: "content", title: "Lesson", body: "## Intro", isPremium: false, module: {title: "Module"}, challenges: []}
+        mocks.comments.data = {comments: [{id: "comment", author: {username: "reader"}, createdAt: "2026-01-01T00:00:00.000Z", replyCount: 0, body: "Hello"}]}
+        mocks.submit.trigger.mockResolvedValueOnce({data: {createComment: {success: false}}})
+        render(<CourseLearnContentPage {...input} />)
+        fireEvent.click(screen.getByText("challenge"))
+        fireEvent.click(screen.getByText("submit"))
+        fireEvent.click(screen.getByText("draft"))
+        fireEvent.click(screen.getByText("submit"))
+        expect(mocks.submit.trigger).toHaveBeenCalledWith({contentId: "content", parentCommentId: null, body: "hello"})
+        fireEvent.click(screen.getByText("retry"))
+        expect(mocks.comments.mutate).toHaveBeenCalled()
     })
 })

@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react"
+import { renderToStaticMarkup } from "react-dom/server"
 import { describe, expect, it, vi } from "vitest"
 import { CourseLearnContentPageBase, type CourseLearnContentPageData } from "./component"
 
@@ -153,5 +154,26 @@ describe("CourseLearnContentPageBase", () => {
         const { container } = render(<CourseLearnContentPageBase state="locked" props={{ labels, title: "Locked lesson", body: "Preview", noticeMessage: "Unlock this lesson" }} />)
         expect(screen.getByText("Unlock this lesson")).toBeInTheDocument()
         expect(container.querySelector("[data-node=content-reader-footer]")).toBeNull()
+    })
+})
+
+
+describe("CourseLearnContentPageBase additional states", () => {
+    it("draws a ready reader with tabs, footer, map and outline", () => {
+        const markup = renderToStaticMarkup(<CourseLearnContentPageBase state="ready" props={{ labels, title: "Promises", faces: [{ id: "reading", label: "Read" }, { id: "challenge", label: "Challenge", locked: true }], languages: [{ id: "ts", label: "TypeScript" }, { id: "py", label: "Python" }], selectedFace: "reading", selectedLanguage: "ts", body: "## Hello\n\nRead this.", selectionHint: "Select text to explain", nextSteps: [{ id: "next", label: "Async" }], page: 1, totalPages: 2, courseProgress: { label: "Progress", value: 3, total: 5 }, modules: [{ id: "m1", title: "Module", isOpen: true, contents: [{ id: "c1", title: "Promises", isCurrent: true, isComplete: true }] }], outline: [{ id: "h", label: "Hello", isCurrent: true, depth: 2 }] }} />)
+        expect(markup).toContain("Promises")
+        expect(markup).toContain("Select text to explain")
+        expect(markup).toContain("Async")
+        expect(markup).toContain("Hello")
+    })
+
+    it("keeps locked content inside its paper and uses failure/mobile projections", () => {
+        const locked = renderToStaticMarkup(<CourseLearnContentPageBase state="locked" props={{ labels, title: "Premium", body: "Preview", noticeMessage: "Unlock this lesson", noticeActionLabel: "Buy", nextSteps: [{ id: "n", label: "Next" }] }} />)
+        expect(locked).toContain("Unlock this lesson")
+        expect(locked).not.toContain("content-reader-footer")
+        const failed = renderToStaticMarkup(<CourseLearnContentPageBase state="failed" props={{ labels, title: "Broken", noticeMessage: "Try again", noticeActionLabel: "Retry", outline: [{ id: "x", label: "Hidden" }] }} />)
+        expect(failed).toContain("Try again")
+        expect(renderToStaticMarkup(<CourseLearnContentPageBase state="pending" props={{ labels, title: "Lesson", body: "Text", mobileView: "contents" }} />)).toContain("Search contents")
+        expect(renderToStaticMarkup(<CourseLearnContentPageBase state="ready" props={{ labels, title: "Lesson", body: "Text", mobileView: "outline", outline: [{ id: "o", label: "On page" }] }} />)).toContain("On page")
     })
 })
