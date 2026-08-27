@@ -5,7 +5,7 @@ import { cpp } from "@codemirror/lang-cpp"
 import { java } from "@codemirror/lang-java"
 import { javascript } from "@codemirror/lang-javascript"
 import { python } from "@codemirror/lang-python"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `CodeEditor`: the surface a solution is written on.
@@ -66,8 +66,8 @@ export type CodeEditorActions = {
     readonly telemetry?: (reading: EditorTelemetry) => void
 }
 
-/** Props for {@link CodeEditor}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type CodeEditorProps = LeafProps<CodeEditorData, CodeEditorActions>
+/** Props for {@link CodeEditor}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type CodeEditorProps = ComponentProps<CodeEditorData, CodeEditorActions>
 
 /** The editor fills whatever height the column left it. */
 const HOST_CLASSES = "h-full min-h-64 w-full overflow-auto"

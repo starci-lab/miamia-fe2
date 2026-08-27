@@ -2,14 +2,14 @@ import {
     SurfaceListCard,
     type SurfaceListCardActions,
 } from "@/components/branches/SurfaceListCard"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import {
     ChangelogEntryRow,
     type ChangelogEntryRowData,
 } from "@/components/composites/ChangelogEntryRow"
 import { CONTRACTS } from "@/components/contracts"
-import type { DataValue, LeafProps } from "@/components/contracts/props"
-import { defineCompositeComponent, defineContractComponent } from "@/components/contracts/props"
+import type { SerializableValue, ComponentProps } from "@/components/contracts/props"
+import { createCompositeNode, createGrammarNode } from "@/components/contracts/props"
 
 /** Product category attached to a changelog entry. */
 export type ChangelogCategory = "feature" | "fix" | "announcement"
@@ -46,12 +46,12 @@ export type ChangelogListProps = {
 }
 
 type ChangelogContentData = {
-    readonly [key: string]: DataValue
+    readonly [key: string]: SerializableValue
     readonly label: string
     readonly entries: ReadonlyArray<ChangelogEntry>
 }
 
-type ChangelogContentProps = LeafProps<ChangelogContentData, SurfaceListCardActions>
+type ChangelogContentProps = ComponentProps<ChangelogContentData, SurfaceListCardActions>
 
 const RESTING_COUNT = CONTRACTS["changelog-list"].children.entry.restingCount
 
@@ -73,8 +73,8 @@ const ChangelogContentView = ({ props, on, isLoading = false }: ChangelogContent
         : props.entries
 
     return (
-        <Tree contract="changelog-list" render={defineContractComponent("changelog-list", {
-            entry: entries.map((entry) => defineCompositeComponent("changelog-entry-row", {}, () => (
+        <Grammar contract="changelog-list" render={createGrammarNode("changelog-list", {
+            entry: entries.map((entry) => createCompositeNode("changelog-entry-row", {}, () => (
                 <ChangelogEntryRow
                     props={{
                         id: entry.id,
@@ -93,7 +93,7 @@ const ChangelogContentView = ({ props, on, isLoading = false }: ChangelogContent
     )
 }
 
-const ChangelogContent = defineContractComponent("changelog-list", ChangelogContentView)
+const ChangelogContent = createGrammarNode("changelog-list", ChangelogContentView)
 
 /** The rows to draw: the resolved entries, one synthetic error row, or none while pending. */
 const resolveChangelogEntries = (input: ChangelogListProps): ReadonlyArray<ChangelogEntry> => {

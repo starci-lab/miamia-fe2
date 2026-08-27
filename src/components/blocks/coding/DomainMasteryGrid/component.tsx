@@ -3,11 +3,11 @@ import type { IconName } from "@/components/leaves/Icon"
 import { Progress } from "@/components/leaves/Progress"
 import { Text } from "@/components/leaves/Text"
 import { PressableSurface } from "@/components/branches/PressableSurface"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import {
-    defineContractComponent,
-    defineContractProjection,
-    defineLeafComponent,
+    createGrammarNode,
+    createGrammarProjection,
+    createLeafNode,
     type BlockProps,
 } from "@/components/contracts/props"
 
@@ -144,10 +144,10 @@ export const DomainMasteryGridBase = (input: DomainMasteryGridProps) => {
     const domains = isLoading ? resting : (input.props.domains ?? [])
 
     return (
-        <Tree
+        <Grammar
             contract="domain-mastery-grid"
-            render={defineContractComponent("domain-mastery-grid", {
-                domain: domains.map((domain) => defineContractProjection("domain-mastery-card", () => (
+            render={createGrammarNode("domain-mastery-grid", {
+                domain: domains.map((domain) => createGrammarProjection("domain-mastery-card", () => (
                     <PressableSurface
                         contract="domain-mastery-card"
                         label={domain.label}
@@ -155,14 +155,14 @@ export const DomainMasteryGridBase = (input: DomainMasteryGridProps) => {
                         hover="surface"
                         isRaised
                         disabled={isLoading}
-                        render={defineContractComponent("domain-mastery-card", {
-                            name: defineLeafComponent("text", { size: "sm", weight: "semibold" }, () => (
+                        render={createGrammarNode("domain-mastery-card", {
+                            name: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
                                 <Text
                                     props={{ content: domain.name, size: "sm", weight: "semibold" }}
                                     isLoading={isLoading}
                                 />
                             )),
-                            count: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+                            count: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                                 <Text
                                     props={{ content: domain.countLabel, size: "xs", tone: "muted" }}
                                     isLoading={isLoading}
@@ -171,7 +171,7 @@ export const DomainMasteryGridBase = (input: DomainMasteryGridProps) => {
                             // `Progress` reads 0..100, not a ratio - a bar handed 0.75 draws
                             // three-quarters of one percent and announces nothing, which this
                             // workspace has already shipped once.
-                            meter: defineLeafComponent("progress", {}, () => (
+                            meter: createLeafNode("progress", {}, () => (
                                 <Progress
                                     props={{
                                         label: domain.meterLabel,

@@ -1,5 +1,5 @@
-import { Tree } from "@/components/branches/Tree"
-import { defineContractComponent, defineLeafComponent } from "@/components/contracts/props"
+import { Grammar } from "@/components/branches/Grammar"
+import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
 import { Button } from "@/components/leaves/Button"
 import { Heading } from "@/components/leaves/Heading"
 import { Text } from "@/components/leaves/Text"
@@ -41,53 +41,53 @@ export const CourseLearnChallengeResultPageBase = (input: CourseLearnChallengeRe
     const deriveControls = () => {
         if (input.state === "failed") {
             return [
-                defineLeafComponent("text", {}, () => (
+                createLeafNode("text", {}, () => (
                     <Text props={{ content: input.props.notice, live: "assertive" }} />
                 )),
-                defineLeafComponent("button", {}, () => (
+                createLeafNode("button", {}, () => (
                     <Button props={{ label: input.props.reloadLabel }} on={{ press: input.on?.reload }} />
                 )),
             ]
         }
         if (input.state === "pending") {
             return [
-                defineLeafComponent("button", {}, () => (
+                createLeafNode("button", {}, () => (
                     <Button props={{ label: input.props.retryLabel }} isLoading />
                 )),
-                defineLeafComponent("button", {}, () => (
+                createLeafNode("button", {}, () => (
                     <Button props={{ label: input.props.nextLabel, variant: "primary" }} isLoading />
                 )),
             ]
         }
         return [
             ...(input.props.shortFeedback === undefined ? [] : [
-                defineLeafComponent("text", {}, () => (
+                createLeafNode("text", {}, () => (
                     <Text props={{ content: input.props.shortFeedback }} isLoading={loading} />
                 )),
             ]),
             ...input.props.feedbacks.flatMap((feedback) => [
-                defineLeafComponent("text", { weight: "semibold" }, () => (
+                createLeafNode("text", { weight: "semibold" }, () => (
                     <Text props={{ content: feedback.message, weight: "semibold" }} />
                 )),
-                defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+                createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                     <Text props={{ content: feedback.severity, size: "sm", tone: "muted" }} />
                 )),
                 ...(feedback.detail === undefined ? [] : [
-                    defineLeafComponent("text", {}, () => <Text props={{ content: feedback.detail }} />),
+                    createLeafNode("text", {}, () => <Text props={{ content: feedback.detail }} />),
                 ]),
                 ...(feedback.location === undefined ? [] : [
-                    defineLeafComponent("text", { size: "sm" }, () => (
+                    createLeafNode("text", { size: "sm" }, () => (
                         <Text props={{ content: feedback.location, size: "sm" }} />
                     )),
                 ]),
                 ...(feedback.suggestion === undefined ? [] : [
-                    defineLeafComponent("text", {}, () => <Text props={{ content: feedback.suggestion }} />),
+                    createLeafNode("text", {}, () => <Text props={{ content: feedback.suggestion }} />),
                 ]),
             ]),
-            defineLeafComponent("button", {}, () => (
+            createLeafNode("button", {}, () => (
                 <Button props={{ label: input.props.retryLabel }} on={{ press: input.on?.retry }} isLoading={loading} />
             )),
-            defineLeafComponent("button", {}, () => (
+            createLeafNode("button", {}, () => (
                 <Button
                     props={{ label: input.props.nextLabel, variant: "primary" }}
                     on={{ press: input.on?.next }}
@@ -99,24 +99,24 @@ export const CourseLearnChallengeResultPageBase = (input: CourseLearnChallengeRe
     const controls = deriveControls()
 
     return (
-        <Tree
+        <Grammar
             contract="course-learn-challenge-result-page"
-            render={defineContractComponent("course-learn-challenge-result-page", {
-                header: defineContractComponent("centred-title-pair", {
-                    title: defineLeafComponent("heading", {}, () => (
+            render={createGrammarNode("course-learn-challenge-result-page", {
+                header: createGrammarNode("centred-title-pair", {
+                    title: createLeafNode("heading", {}, () => (
                         <Heading props={{ content: input.props.title, level: 1 }} isLoading={loading} />
                     )),
-                    description: defineLeafComponent("text", { size: "sm" }, () => (
+                    description: createLeafNode("text", { size: "sm" }, () => (
                         <Text props={{ content: input.props.description, size: "sm" }} isLoading={loading} />
                     )),
                 }),
-                score: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+                score: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                     <Text
                         props={{ content: input.props.scoreLine, size: "sm", tone: "muted" }}
                         isLoading={loading}
                     />
                 )),
-                body: defineContractComponent("stacked-peer-controls", { control: controls }),
+                body: createGrammarNode("stacked-peer-controls", { control: controls }),
             })}
         />
     )

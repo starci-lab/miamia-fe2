@@ -1,5 +1,5 @@
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { ContinueLearning } from "@/components/blocks/dashboard/ContinueLearning"
 import { QuickActions } from "@/components/blocks/dashboard/QuickActions"
@@ -14,22 +14,22 @@ import { ChangelogList } from "@/components/blocks/dashboard/ChangelogList"
 import { ExploreTab } from "@/components/blocks/dashboard/ExploreTab"
 import { CoursesTab } from "@/components/blocks/dashboard/CoursesTab"
 import { CommunityTab } from "@/components/blocks/dashboard/CommunityTab"
-import { defineCompositeComponent, defineContractComponent, defineContractProjection } from "@/components/contracts/props"
+import { createCompositeNode, createGrammarNode, createGrammarProjection } from "@/components/contracts/props"
 
 /**
  * PAGE - `DashboardPage`, presentational half.
  *
  * IT OWNS NO REQUEST. Every figure on screen belongs to a block that fetches it. What it owns is
- * its block reading order. Session access is settled by the connected half before this tree is
+ * its block reading order. Session access is settled by the connected half before this Grammar is
  * mounted, so no signed-out dashboard arrangement exists here.
  *
  * THE LEGACY OVERVIEW IS THE PRODUCT CONTRACT. Refactoring may change who fetches, who assembles,
- * and how the tree is type-checked; it may not silently remove a product section. Each overview
+ * and how the Grammar is type-checked; it may not silently remove a product section. Each overview
  * block therefore keeps the legacy reading order and owns its own settled loading, empty, failed,
  * and ready shapes.
  */
 
-/** Data required by the dashboard tree. */
+/** Data required by the dashboard Grammar. */
 export type DashboardPageData = {
     /** The panel selected by the navbar's original `?tab=` contract. */
     readonly selectedTab: string
@@ -53,42 +53,42 @@ export const DashboardPageBase = (input: DashboardPageProps) => {
      * they reach for once they have decided to move. Putting the destinations above the standing
      * makes the column answer a question nobody asked yet.
      */
-    const rail = defineContractComponent("dashboard-rail", {
+    const rail = createGrammarNode("dashboard-rail", {
         section: [
-            defineContractProjection("stacked-stat-rows", () => <IdentityRail />),
-            defineContractProjection("label-row-over-card", () => <QuickActions />),
+            createGrammarProjection("stacked-stat-rows", () => <IdentityRail />),
+            createGrammarProjection("label-row-over-card", () => <QuickActions />),
         ],
     })
 
     const resolveMain = () => {
         if (input.props.selectedTab === "explore") {
-            return defineContractComponent("dashboard-main", {
-                section: [defineContractProjection("explore-main", () => <ExploreTab />)],
+            return createGrammarNode("dashboard-main", {
+                section: [createGrammarProjection("explore-main", () => <ExploreTab />)],
             })
         }
         if (input.props.selectedTab === "courses") {
-            return defineContractProjection("dashboard-tab-main", () => <CoursesTab />)
+            return createGrammarProjection("dashboard-tab-main", () => <CoursesTab />)
         }
         if (input.props.selectedTab === "community") {
-            return defineContractProjection("dashboard-tab-main", () => <CommunityTab />)
+            return createGrammarProjection("dashboard-tab-main", () => <CommunityTab />)
         }
         if (input.props.selectedTab === "overview") {
-            return defineContractComponent("dashboard-main", {
+            return createGrammarNode("dashboard-main", {
                 section: [
-                    defineContractProjection("label-row-over-card", () => <ContinueLearning />),
-                    defineContractProjection("label-row-over-card", () => <DailyQuest />),
-                    defineContractProjection("label-row-over-card", () => <StreakStrip />),
-                    defineContractProjection("label-row-over-card", () => <WeeklyGoals />),
-                    defineContractProjection("label-row-over-card", () => <JobReadinessWidget />),
-                    defineContractProjection("label-row-over-card", () => <WeeklyChallengeCard />),
-                    defineContractProjection("label-row-over-card", () => <OverviewContributions />),
-                    defineContractProjection("label-row-over-card", () => <ChangelogList />),
+                    createGrammarProjection("label-row-over-card", () => <ContinueLearning />),
+                    createGrammarProjection("label-row-over-card", () => <DailyQuest />),
+                    createGrammarProjection("label-row-over-card", () => <StreakStrip />),
+                    createGrammarProjection("label-row-over-card", () => <WeeklyGoals />),
+                    createGrammarProjection("label-row-over-card", () => <JobReadinessWidget />),
+                    createGrammarProjection("label-row-over-card", () => <WeeklyChallengeCard />),
+                    createGrammarProjection("label-row-over-card", () => <OverviewContributions />),
+                    createGrammarProjection("label-row-over-card", () => <ChangelogList />),
                 ],
             })
         }
-        return defineContractProjection("centred-empty-notice", () => (
-            <SurfaceCard contract="centred-empty-notice" render={defineContractComponent("centred-empty-notice", {
-                notice: defineCompositeComponent("empty-notice", {}, () => (
+        return createGrammarProjection("centred-empty-notice", () => (
+            <SurfaceCard contract="centred-empty-notice" render={createGrammarNode("centred-empty-notice", {
+                notice: createCompositeNode("empty-notice", {}, () => (
                     <EmptyNotice props={{ icon: input.props.selectedTab === "community" ? "community" : "explore", message: input.props.unavailableMessage }} />
                 )),
             })} />
@@ -97,9 +97,9 @@ export const DashboardPageBase = (input: DashboardPageProps) => {
     const main = resolveMain()
 
     return (
-        <Tree
+        <Grammar
             contract="dashboard-rail-then-main"
-            render={defineContractComponent("dashboard-rail-then-main", {
+            render={createGrammarNode("dashboard-rail-then-main", {
                 rail,
                 main,
             })}

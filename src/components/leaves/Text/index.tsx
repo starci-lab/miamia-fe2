@@ -1,6 +1,6 @@
 import { skeletonVariants } from "@heroui/react"
 import { Icon, type IconName } from "@/components/leaves/Icon"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `Text`: one line of resolved copy, at one of two weights of attention.
@@ -71,8 +71,8 @@ export type TextData = TextCommonData & (
     | { readonly size?: Exclude<TextSize, "xs">; readonly tone?: TextTone }
 )
 
-/** Props for {@link Text}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type TextProps = LeafProps<TextData>
+/** Props for {@link Text}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type TextProps = ComponentProps<TextData>
 
 /**
  * The role a live line carries. `off` is not a live region at all, so it takes no role - a

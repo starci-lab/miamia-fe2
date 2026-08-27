@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Button } from "@/components/leaves/Button"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `ConfirmButton`: a destructive act that will not fire on one stray press.
@@ -43,8 +43,8 @@ export type ConfirmButtonActions = {
     readonly confirm?: () => void
 }
 
-/** Props for {@link ConfirmButton}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type ConfirmButtonProps = LeafProps<ConfirmButtonData, ConfirmButtonActions>
+/** Props for {@link ConfirmButton}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type ConfirmButtonProps = ComponentProps<ConfirmButtonData, ConfirmButtonActions>
 
 /** How long the armed state stays open, in milliseconds. */
 const ARMED_WINDOW_MS = 3000

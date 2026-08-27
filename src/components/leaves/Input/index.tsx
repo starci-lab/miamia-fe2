@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Input as HeroInput, skeletonVariants } from "@heroui/react"
 import { Icon } from "@/components/leaves/Icon"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `Input`: the box a reader types into.
@@ -50,8 +50,8 @@ export type InputActions = {
     readonly change?: (value: string) => void
 }
 
-/** Props for {@link Input}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type InputProps = LeafProps<InputData, InputActions>
+/** Props for {@link Input}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type InputProps = ComponentProps<InputData, InputActions>
 
 /** The kind, as the platform's own type attribute plus what it should autocomplete. */
 const KINDS = {

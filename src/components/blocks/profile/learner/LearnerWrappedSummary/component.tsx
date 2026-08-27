@@ -1,10 +1,10 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
 import { ProfileMetric } from "@/components/composites/ProfileMetric"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Button } from "@/components/leaves/Button"
 import { Heading } from "@/components/leaves/Heading"
-import { defineCompositeComponent, defineContractComponent, defineContractProjection, defineLeafComponent } from "@/components/contracts/props"
+import { createCompositeNode, createGrammarNode, createGrammarProjection, createLeafNode } from "@/components/contracts/props"
 
 /** Stateful Wrapped contract consumed by the pure summary block. */
 export type LearnerWrappedSummaryProps = {
@@ -23,11 +23,11 @@ export type LearnerWrappedSummaryProps = {
 export const LearnerWrappedSummary = (input: LearnerWrappedSummaryProps) => {
     const showMetrics = input.state === "pending" || input.state === "unlocked"
     return (
-        <SurfaceCard contract="learner-wrapped-summary" render={defineContractComponent("learner-wrapped-summary", {
-            heading: defineLeafComponent("heading", {}, () => <Heading props={{ content: input.props.title, level: 2 }} />),
-            ...(showMetrics ? { metrics: defineContractComponent("profile-metric-ribbon", { metric: input.props.metricLabels.map((label, index) => defineCompositeComponent("profile-metric", {}, () => <ProfileMetric props={{ label, value: input.props.metricValues?.[index] }} isLoading={input.state === "pending"} />)) }) } : {}),
-            ...(showMetrics ? {} : { notice: defineContractProjection("centred-empty-notice", () => <Tree contract="centred-empty-notice" render={defineContractComponent("centred-empty-notice", { notice: defineCompositeComponent("empty-notice", {}, () => <EmptyNotice props={{ message: input.props.notice }} />) })} />) }),
-            ...(input.props.actionLabel === undefined ? {} : { action: defineLeafComponent("button", {}, () => <Button props={{ label: input.props.actionLabel ?? "", variant: "secondary", size: "sm" }} on={{ press: input.on?.action }} />) }),
+        <SurfaceCard contract="learner-wrapped-summary" render={createGrammarNode("learner-wrapped-summary", {
+            heading: createLeafNode("heading", {}, () => <Heading props={{ content: input.props.title, level: 2 }} />),
+            ...(showMetrics ? { metrics: createGrammarNode("profile-metric-ribbon", { metric: input.props.metricLabels.map((label, index) => createCompositeNode("profile-metric", {}, () => <ProfileMetric props={{ label, value: input.props.metricValues?.[index] }} isLoading={input.state === "pending"} />)) }) } : {}),
+            ...(showMetrics ? {} : { notice: createGrammarProjection("centred-empty-notice", () => <Grammar contract="centred-empty-notice" render={createGrammarNode("centred-empty-notice", { notice: createCompositeNode("empty-notice", {}, () => <EmptyNotice props={{ message: input.props.notice }} />) })} />) }),
+            ...(input.props.actionLabel === undefined ? {} : { action: createLeafNode("button", {}, () => <Button props={{ label: input.props.actionLabel ?? "", variant: "secondary", size: "sm" }} on={{ press: input.on?.action }} />) }),
         })} />
     )
 }

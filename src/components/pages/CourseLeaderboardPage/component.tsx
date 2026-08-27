@@ -1,5 +1,5 @@
 import { SurfaceListCard, type SurfaceListCardData } from "@/components/branches/SurfaceListCard"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Podium, type PodiumEntryData } from "@/components/composites/Podium"
 import { RankedUserRow, type RankedUserRowData } from "@/components/composites/RankedUserRow"
@@ -9,11 +9,11 @@ import { ChoiceTabs } from "@/components/leaves/ChoiceTabs"
 import { Heading } from "@/components/leaves/Heading"
 import { Text } from "@/components/leaves/Text"
 import {
-    defineContractComponent,
-    defineContractProjection,
-    defineLeafComponent,
+    createGrammarNode,
+    createGrammarProjection,
+    createLeafNode,
     type BlockProps,
-    type LeafProps,
+    type ComponentProps,
 } from "@/components/contracts/props"
 
 /** The four backend-derived score lenses supported by the course board. */
@@ -74,13 +74,13 @@ type CourseLeaderboardListData = SurfaceListCardData & {
     readonly ellipsisLabel?: string
 }
 
-const CourseLeaderboardList = ({ props, isLoading = false }: LeafProps<CourseLeaderboardListData>) => (
-    <Tree contract="ranked-user-list" render={defineContractProjection("ranked-user-list", () => (
+const CourseLeaderboardList = ({ props, isLoading = false }: ComponentProps<CourseLeaderboardListData>) => (
+    <Grammar contract="ranked-user-list" render={createGrammarProjection("ranked-user-list", () => (
         <>
             {props.rows.map((row) => <RankedUserRow key={row.id} props={row} isLoading={isLoading} />)}
             {props.ellipsisLabel === undefined ? null : (
-                <Tree contract="ranked-user-ellipsis-row" render={defineContractComponent("ranked-user-ellipsis-row", {
-                    label: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+                <Grammar contract="ranked-user-ellipsis-row" render={createGrammarNode("ranked-user-ellipsis-row", {
+                    label: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                         <Text props={{ content: props.ellipsisLabel, size: "xs", tone: "muted" }} />
                     )),
                 })} />
@@ -90,20 +90,20 @@ const CourseLeaderboardList = ({ props, isLoading = false }: LeafProps<CourseLea
     ))} />
 )
 
-const CourseLeaderboardListContent = defineContractComponent("ranked-user-list", CourseLeaderboardList)
+const CourseLeaderboardListContent = createGrammarNode("ranked-user-list", CourseLeaderboardList)
 
 /** Pure course leaderboard with category, viewer standing, snapshot time and honest data states. */
 export const CourseLeaderboardPageBase = (input: CourseLeaderboardPageProps) => {
     const isLoading = input.state === "pending"
     const board = input.props.board
-    const header = defineContractComponent("page-header-stack", {
-        trail: defineLeafComponent("breadcrumbs", {}, () => (
+    const header = createGrammarNode("page-header-stack", {
+        trail: createLeafNode("breadcrumbs", {}, () => (
             <Breadcrumbs props={{ steps: input.props.trail, label: input.props.title }} on={{ course: input.on?.course }} />
         )),
-        title: defineLeafComponent("heading", {}, () => <Heading props={{ content: input.props.title, level: 1 }} />),
+        title: createLeafNode("heading", {}, () => <Heading props={{ content: input.props.title, level: 1 }} />),
     })
-    const category = defineContractComponent("scope-switch-row", {
-        tabs: defineLeafComponent("choice-tabs", {}, () => (
+    const category = createGrammarNode("scope-switch-row", {
+        tabs: createLeafNode("choice-tabs", {}, () => (
             <ChoiceTabs
                 props={{
                     label: input.props.categoryLabel,
@@ -118,10 +118,10 @@ export const CourseLeaderboardPageBase = (input: CourseLeaderboardPageProps) => 
 
     if (input.state === "empty" || input.state === "failed") {
         return (
-            <Tree contract="league-page-column" render={defineContractComponent("league-page-column", {
+            <Grammar contract="league-page-column" render={createGrammarNode("league-page-column", {
                 header,
                 scope: category,
-                board: defineContractProjection("league-board-stack", () => (
+                board: createGrammarProjection("league-board-stack", () => (
                     <EmptyNotice
                         props={{
                             icon: "league",
@@ -136,11 +136,11 @@ export const CourseLeaderboardPageBase = (input: CourseLeaderboardPageProps) => 
     }
 
     return (
-        <Tree contract="league-page-column" render={defineContractComponent("league-page-column", {
+        <Grammar contract="league-page-column" render={createGrammarNode("league-page-column", {
             header,
             scope: category,
-            board: defineContractComponent("league-board-stack", {
-                hero: defineContractProjection("standing-hero-card", () => (
+            board: createGrammarNode("league-board-stack", {
+                hero: createGrammarProjection("standing-hero-card", () => (
                     <StandingHeroCard
                         props={{
                             standing: board.standing,
@@ -151,7 +151,7 @@ export const CourseLeaderboardPageBase = (input: CourseLeaderboardPageProps) => 
                         isLoading={isLoading}
                     />
                 )),
-                podium: defineContractProjection("podium", () => (
+                podium: createGrammarProjection("podium", () => (
                     <Podium
                         props={{
                             entries: board.podium,
@@ -161,7 +161,7 @@ export const CourseLeaderboardPageBase = (input: CourseLeaderboardPageProps) => 
                         isLoading={isLoading}
                     />
                 )),
-                list: defineContractProjection("ranked-user-followable-list", () => (
+                list: createGrammarProjection("ranked-user-followable-list", () => (
                     <SurfaceListCard
                         contract="ranked-user-list"
                         render={CourseLeaderboardListContent}

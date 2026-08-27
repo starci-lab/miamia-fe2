@@ -27,15 +27,15 @@ import type { LearnMobileView } from "@/components/layouts/LearnShellLayout/comp
 import type { ReactionType } from "@/modules/api/graphql/queries/types/reactions"
 // Contract machinery through the candidate mirror, and only because `ContractKey` is closed over the
 // table on disk: the entries this page needs are proposals, not yet law. The mirror is the locked
-// `contracts/*` and `branches/Tree` copied verbatim with their imports repointed; on materialization
+// `contracts/*` and `branches/Grammar` copied verbatim with their imports repointed; on materialization
 // these specifiers become `@/`.
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import {
-    defineCompositeComponent,
-    defineContractComponent,
-    defineContractProjection,
-    defineLeafComponent,
-    type LeafProps,
+    createCompositeNode,
+    createGrammarNode,
+    createGrammarProjection,
+    createLeafNode,
+    type ComponentProps,
 } from "@/components/contracts/props"
 
 /**
@@ -152,7 +152,7 @@ export type CourseLearnContentPageData = {
         readonly value: number
         readonly total: number
     }
-    /** The course tree in the map panel: every module, and the contents of the open one. */
+    /** The course Grammar in the map panel: every module, and the contents of the open one. */
     readonly modules?: ReadonlyArray<CourseModule>
     /** The places inside THIS content, and which one the reader is level with. */
     readonly outline?: ReadonlyArray<ContentOutlineEntry>
@@ -178,7 +178,7 @@ export type ContentOutlineEntry = {
     readonly id: string
     readonly label: string
     readonly isCurrent?: boolean
-    /** How deep inside the article this place sits - the outline is a tree, not a list. */
+    /** How deep inside the article this place sits - the outline is a Grammar, not a list. */
     readonly depth?: 1 | 2 | 3
 }
 
@@ -221,15 +221,15 @@ type ContentNextStepsData = SurfaceListCardData & {
  * surfaces - and a completion mark would promise something to finish, while these are places to
  * open.
  */
-const ContentNextStepsView = ({ props }: LeafProps<ContentNextStepsData>) => (
-    <Tree
+const ContentNextStepsView = ({ props }: ComponentProps<ContentNextStepsData>) => (
+    <Grammar
         contract="content-next-list"
-        render={defineContractComponent("content-next-list", {
-            step: props.steps.map((step) => defineContractComponent("content-next-row", {
-                label: defineLeafComponent("text", { size: "md" }, () => (
+        render={createGrammarNode("content-next-list", {
+            step: props.steps.map((step) => createGrammarNode("content-next-row", {
+                label: createLeafNode("text", { size: "md" }, () => (
                     <Text props={{ content: step.label, size: "md" }} />
                 )),
-                disclosure: defineLeafComponent("icon", {}, () => (
+                disclosure: createLeafNode("icon", {}, () => (
                     <Icon props={{ name: "next", role: "chip" }} />
                 )),
             })),
@@ -238,7 +238,7 @@ const ContentNextStepsView = ({ props }: LeafProps<ContentNextStepsData>) => (
 )
 
 /** Stable component type branded for the exact list contract it implements. */
-const ContentNextSteps = defineContractComponent("content-next-list", ContentNextStepsView)
+const ContentNextSteps = createGrammarNode("content-next-list", ContentNextStepsView)
 
 /**
  * Draw one content.
@@ -253,12 +253,12 @@ export const CourseLearnContentPageBase = (input: CourseLearnContentPageProps) =
     const faces = input.props.faces ?? []
     const discussion = input.props.discussion
 
-    const article = defineLeafComponent("article", {}, () => (
+    const article = createLeafNode("article", {}, () => (
         <Article props={{ body: input.props.body }} isLoading={isLoading} />
     ))
 
-    const header = defineContractComponent("page-header-stack", {
-        trail: defineLeafComponent("breadcrumbs", {}, () => (
+    const header = createGrammarNode("page-header-stack", {
+        trail: createLeafNode("breadcrumbs", {}, () => (
             <Breadcrumbs
                 props={{
                     label: input.props.title ?? "",
@@ -271,7 +271,7 @@ export const CourseLearnContentPageBase = (input: CourseLearnContentPageProps) =
                 on={{ course: input.on?.goCourse, module: input.on?.goModule }}
             />
         )),
-        title: defineLeafComponent("heading", {}, () => (
+        title: createLeafNode("heading", {}, () => (
             <Heading props={{ content: input.props.title, level: 1 }} isLoading={isLoading} />
         )),
     })
@@ -281,18 +281,18 @@ export const CourseLearnContentPageBase = (input: CourseLearnContentPageProps) =
      * a whole node - vendor card, body, and the entry inside it - and handing the key back as slots
      * would open a second node around a node that exists.
      */
-    const paper = defineContractProjection("content-reading-paper", () => (
+    const paper = createGrammarProjection("content-reading-paper", () => (
         <SurfaceCard
             contract="content-reading-paper"
-            render={defineContractComponent("content-reading-paper", {
+            render={createGrammarNode("content-reading-paper", {
                 ...(isLoading || isLocked || input.props.selectionHint === undefined ? {} : {
-                    hint: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+                    hint: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                         <Text props={{ content: input.props.selectionHint, size: "sm", tone: "muted" }} />
                     )),
                 }),
                 article,
                 ...(isLocked ? {
-                    paywall: defineCompositeComponent("empty-notice", {}, () => (
+                    paywall: createCompositeNode("empty-notice", {}, () => (
                         <EmptyNotice
                             props={{
                                 icon: "course",
@@ -313,16 +313,16 @@ export const CourseLearnContentPageBase = (input: CourseLearnContentPageProps) =
      * present and inert.
      */
     const hasFooter = !isLoading && !isLocked && !hasFailed
-    const footer = defineContractComponent("content-reader-footer", {
+    const footer = createGrammarNode("content-reader-footer", {
         ...(input.props.reactions === undefined ? {} : {
-            reactions: defineContractProjection("content-reaction-card", () => (
+            reactions: createGrammarProjection("content-reaction-card", () => (
                 <SurfaceCard
                     contract="content-reaction-card"
-                    render={defineContractComponent("content-reaction-card", {
-                        prompt: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+                    render={createGrammarNode("content-reaction-card", {
+                        prompt: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                             <Text props={{ content: labels.reactionPrompt, size: "sm", tone: "muted" }} />
                         )),
-                        reactions: defineLeafComponent("reaction-picker", {}, () => (
+                        reactions: createLeafNode("reaction-picker", {}, () => (
                             <ReactionPicker
                                 props={{
                                     label: labels.reactionsLabel,
@@ -339,7 +339,7 @@ export const CourseLearnContentPageBase = (input: CourseLearnContentPageProps) =
             )),
         }),
         ...(discussion === undefined ? {} : {
-            discussion: defineContractProjection("content-discussion-panel", () => (
+            discussion: createGrammarProjection("content-discussion-panel", () => (
                 <ContentDiscussionPanelView
                     state={discussion.state}
                     props={discussion.props}
@@ -352,7 +352,7 @@ export const CourseLearnContentPageBase = (input: CourseLearnContentPageProps) =
             )),
         }),
         ...((input.props.nextSteps ?? []).length === 0 ? {} : {
-            next: defineContractProjection("content-next-list", () => (
+            next: createGrammarProjection("content-next-list", () => (
                 <SurfaceListCard
                     props={{ label: labels.nextTitle, steps: [...(input.props.nextSteps ?? [])] }}
                     contract="content-next-list"
@@ -362,7 +362,7 @@ export const CourseLearnContentPageBase = (input: CourseLearnContentPageProps) =
         }),
         // The pager is the content's place in its module, so it stands even at one page - furniture
         // that appears with the data teaches a reader the page changed shape.
-        pager: defineLeafComponent("pagination", {}, () => (
+        pager: createLeafNode("pagination", {}, () => (
             <Pagination
                 props={{
                     label: labels.pageLabel,
@@ -377,8 +377,8 @@ export const CourseLearnContentPageBase = (input: CourseLearnContentPageProps) =
     })
 
     const body = hasFailed
-        ? defineContractComponent("centred-empty-notice", {
-            notice: defineCompositeComponent("empty-notice", {}, () => (
+        ? createGrammarNode("centred-empty-notice", {
+            notice: createCompositeNode("empty-notice", {}, () => (
                 <EmptyNotice
                     props={{
                         icon: "course",
@@ -389,7 +389,7 @@ export const CourseLearnContentPageBase = (input: CourseLearnContentPageProps) =
                 />
             )),
         })
-        : defineContractComponent("content-reading-column", {
+        : createGrammarNode("content-reading-column", {
             reading: paper,
             ...(hasFooter ? { footer } : {}),
         })
@@ -401,8 +401,8 @@ export const CourseLearnContentPageBase = (input: CourseLearnContentPageProps) =
      */
     const progress = input.props.courseProgress
     const progressPercent = progress === undefined ? undefined : Math.round((progress.value / progress.total) * 100)
-    const contents = defineContractComponent("content-map-panel", {
-        progress: defineCompositeComponent("labelled-progress-row", {}, () => (
+    const contents = createGrammarNode("content-map-panel", {
+        progress: createCompositeNode("labelled-progress-row", {}, () => (
             <LabelledProgressRow
                 props={{
                     id: "course-progress",
@@ -413,7 +413,7 @@ export const CourseLearnContentPageBase = (input: CourseLearnContentPageProps) =
                 isLoading={isLoading}
             />
         )),
-        search: defineLeafComponent("search-box", {}, () => (
+        search: createLeafNode("search-box", {}, () => (
             <SearchBox
                 props={{
                     placeholder: labels.searchPlaceholder,
@@ -422,21 +422,21 @@ export const CourseLearnContentPageBase = (input: CourseLearnContentPageProps) =
                 }}
             />
         )),
-        module: (input.props.modules ?? []).map((module) => defineContractComponent("content-map-module", {
-            title: defineContractComponent("content-map-module-summary", {
-                title: defineLeafComponent("text", { size: "sm" }, () => (
+        module: (input.props.modules ?? []).map((module) => createGrammarNode("content-map-module", {
+            title: createGrammarNode("content-map-module-summary", {
+                title: createLeafNode("text", { size: "sm" }, () => (
                     <Text props={{ content: module.title, size: "sm" }} isLoading={isLoading} />
                 )),
-                fact: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+                fact: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                     <Text props={{ content: module.countLabel, size: "xs", tone: "muted" }} isLoading={isLoading} />
                 )),
-                caret: defineLeafComponent("icon", { role: "chip" }, () => (
+                caret: createLeafNode("icon", { role: "chip" }, () => (
                     <Icon props={{ name: module.isOpen === true ? "disclosure" : "next", role: "chip" }} />
                 )),
             }),
             // A module the reader has not opened carries no rows at all: the map is scanned by
             // module first, and four closed modules each showing five contents is not a map.
-            row: (module.isOpen === true ? module.contents ?? [] : []).map((content) => defineLeafComponent("content-map-row", {}, () => (
+            row: (module.isOpen === true ? module.contents ?? [] : []).map((content) => createLeafNode("content-map-row", {}, () => (
                 <ContentMapRow
                     props={{
                         id: content.id,
@@ -458,16 +458,16 @@ export const CourseLearnContentPageBase = (input: CourseLearnContentPageProps) =
      * the reading in exchange for nothing.
      */
     const outlineEntries = hasFailed || isLoading ? [] : input.props.outline ?? []
-    const outline = defineContractComponent("content-outline-rail", {
-        label: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+    const outline = createGrammarNode("content-outline-rail", {
+        label: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
             <Text props={{ content: labels.outlineTitle, size: "sm", tone: "muted" }} />
         )),
-        heading: outlineEntries.map((entry) => defineLeafComponent("nav-link", { kind: "section" }, () => (
+        heading: outlineEntries.map((entry) => createLeafNode("nav-link", { kind: "section" }, () => (
             <NavLink props={{ label: entry.label, kind: "section", depth: entry.depth, isCurrent: entry.isCurrent }} />
         ))),
     })
 
-    const reader = defineContractComponent("learn-content-page", {
+    const reader = createGrammarNode("learn-content-page", {
         header,
         /*
                  * The bar is real at every state, which is the legacy decision this restores: the
@@ -497,19 +497,19 @@ export const CourseLearnContentPageBase = (input: CourseLearnContentPageProps) =
     })
 
     if (input.props.mobileView === "contents") {
-        return <Tree contract="content-map-panel" render={contents} />
+        return <Grammar contract="content-map-panel" render={contents} />
     }
     if (input.props.mobileView === "lesson") {
-        return <Tree contract="learn-content-page" render={reader} />
+        return <Grammar contract="learn-content-page" render={reader} />
     }
     if (input.props.mobileView === "outline") {
-        return <Tree contract="content-outline-rail" render={outline} />
+        return <Grammar contract="content-outline-rail" render={outline} />
     }
 
     return (
-        <Tree
+        <Grammar
             contract="content-reader-frame"
-            render={defineContractComponent("content-reader-frame", {
+            render={createGrammarNode("content-reader-frame", {
                 contents,
                 main: reader,
                 ...(outlineEntries.length === 0 ? {} : { outline }),

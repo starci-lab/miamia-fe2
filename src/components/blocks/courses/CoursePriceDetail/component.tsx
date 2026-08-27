@@ -1,11 +1,11 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { Heading } from "@/components/leaves/Heading"
 import { StatRow } from "@/components/composites/StatRow"
 import { Text } from "@/components/leaves/Text"
 import {
-    defineCompositeComponent,
-    defineContractComponent,
-    defineLeafComponent,
+    createCompositeNode,
+    createGrammarNode,
+    createLeafNode,
     type BlockProps,
 } from "@/components/contracts/props"
 
@@ -75,19 +75,19 @@ export const CoursePriceDetailBase = (input: CoursePriceDetailProps) => {
     const lines = input.props.lines ?? []
 
     return (
-        <Tree
+        <Grammar
             contract="course-price-detail-stack"
-            render={defineContractComponent("course-price-detail-stack", {
-                title: defineLeafComponent("heading", {}, () => (
+            render={createGrammarNode("course-price-detail-stack", {
+                title: createLeafNode("heading", {}, () => (
                     <Heading props={{ content: input.props.title, level: 2 }} isLoading={isLoading} />
                 )),
                 ...(input.state === "unavailable" ? {
-                    notice: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+                    notice: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                         <Text props={{ content: input.props.unavailableMessage, size: "sm", tone: "muted" }} />
                     )),
                 } : {
-                    reckoning: defineContractComponent("stacked-stat-rows", {
-                        stat: lines.map((line) => defineCompositeComponent("stat-row", {}, () => (
+                    reckoning: createGrammarNode("stacked-stat-rows", {
+                        stat: lines.map((line) => createCompositeNode("stat-row", {}, () => (
                             <StatRow
                                 props={{
                                     icon: LINE_ICONS[line.id] ?? "cart",
@@ -100,12 +100,12 @@ export const CoursePriceDetailBase = (input: CoursePriceDetailProps) => {
                     }),
                 }),
                 ...(input.props.reason === undefined ? {} : {
-                    reason: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+                    reason: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                         <Text props={{ content: input.props.reason, size: "sm", tone: "muted" }} isLoading={isLoading} />
                     )),
                 }),
                 ...(input.props.forwardLook === undefined ? {} : {
-                    forward: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+                    forward: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                         <Text props={{ content: input.props.forwardLook, size: "sm", tone: "muted" }} isLoading={isLoading} />
                     )),
                 }),

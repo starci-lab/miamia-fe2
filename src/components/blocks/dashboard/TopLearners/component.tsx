@@ -1,15 +1,15 @@
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
 import { SurfaceListCard, type SurfaceListCardData } from "@/components/branches/SurfaceListCard"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { LeaderboardStandingRow, type LeaderboardStandingRowData } from "@/components/composites/LeaderboardStandingRow"
 import { RankedUserRow, type RankedUserRowData } from "@/components/composites/RankedUserRow"
 import { CONTRACTS } from "@/components/contracts"
 import {
-    defineCompositeComponent,
-    defineContractComponent,
-    defineContractProjection,
-    type LeafProps,
+    createCompositeNode,
+    createGrammarNode,
+    createGrammarProjection,
+    type ComponentProps,
 } from "@/components/contracts/props"
 
 /** Resolved global standing and ranked rows. */
@@ -45,9 +45,9 @@ type TopLearnersListActions = {
 
 const ROW_COUNT = CONTRACTS["ranked-user-list"].children.user.restingCount
 
-const TopLearnersListContentView = ({ props, on, isLoading = false }: LeafProps<TopLearnersListData, TopLearnersListActions>) => (
-    <Tree contract="ranked-user-list" render={defineContractComponent("ranked-user-list", {
-        user: props.rows.map((row) => defineCompositeComponent("ranked-user-row", {}, () => (
+const TopLearnersListContentView = ({ props, on, isLoading = false }: ComponentProps<TopLearnersListData, TopLearnersListActions>) => (
+    <Grammar contract="ranked-user-list" render={createGrammarNode("ranked-user-list", {
+        user: props.rows.map((row) => createCompositeNode("ranked-user-row", {}, () => (
             <RankedUserRow
                 props={row}
                 on={{ open: on?.[`open:${row.id}`], follow: on?.[`follow:${row.id}`] }}
@@ -57,7 +57,7 @@ const TopLearnersListContentView = ({ props, on, isLoading = false }: LeafProps<
     })} />
 )
 
-const TopLearnersListContent = defineContractComponent("ranked-user-list", TopLearnersListContentView)
+const TopLearnersListContent = createGrammarNode("ranked-user-list", TopLearnersListContentView)
 
 /** Draw the global leaderboard and local follow outcomes. */
 export const TopLearnersBase = (input: TopLearnersProps) => {
@@ -67,8 +67,8 @@ export const TopLearnersBase = (input: TopLearnersProps) => {
             <SurfaceCard
                 props={{ label: input.props.label }}
                 contract="empty-notice-card"
-                render={defineContractComponent("empty-notice-card", {
-                    notice: defineCompositeComponent("empty-notice", {}, () => (
+                render={createGrammarNode("empty-notice-card", {
+                    notice: createCompositeNode("empty-notice", {}, () => (
                         <EmptyNotice
                             props={{
                                 icon: "league",
@@ -90,7 +90,7 @@ export const TopLearnersBase = (input: TopLearnersProps) => {
             followLabel: "",
         }))
         : input.props.rows
-    const list = defineContractProjection("ranked-user-list", () => (
+    const list = createGrammarProjection("ranked-user-list", () => (
         <SurfaceListCard
             contract="ranked-user-list"
             render={TopLearnersListContent}
@@ -109,8 +109,8 @@ export const TopLearnersBase = (input: TopLearnersProps) => {
             props={{ label: input.props.label, seeMoreLabel: input.props.seeMoreLabel }}
             on={{ seeMore: input.on?.seeMore }}
             contract="leaderboard-card"
-            render={defineContractComponent("leaderboard-card", {
-                standing: defineCompositeComponent("leaderboard-standing-row", {}, () => (
+            render={createGrammarNode("leaderboard-card", {
+                standing: createCompositeNode("leaderboard-standing-row", {}, () => (
                     <LeaderboardStandingRow props={input.props.standing} isLoading={isLoading} />
                 )),
                 list,

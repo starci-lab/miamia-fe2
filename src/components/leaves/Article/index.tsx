@@ -6,14 +6,14 @@ import remarkParse from "remark-parse"
 import { unified } from "unified"
 import { Heading } from "@/components/leaves/Heading"
 import { CodeBlock } from "@/components/leaves/CodeBlock"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `Article`: the body of one content, as its author wrote it.
  *
  * Target path on materialization: `src/components/leaves/Article/index.tsx`.
  *
- * WHY THE BODY IS ONE LEAF AND NOT A TREE OF THEM. `ContentEntity.body` is markdown - the entity
+ * WHY THE BODY IS ONE LEAF AND NOT A Grammar OF THEM. `ContentEntity.body` is markdown - the entity
  * says so in as many words - and markdown's paragraphs contain INLINE children: a bolded phrase, a
  * piece of code inside a sentence, a link mid-clause. Every text leaf in this house takes
  * `content: string`, which holds a sentence but not a sentence with a link in the middle of it. A
@@ -47,7 +47,7 @@ export type ArticleData = {
 }
 
 /** Props for {@link Article}. */
-export type ArticleProps = LeafProps<ArticleData>
+export type ArticleProps = ComponentProps<ArticleData>
 
 /** The house type scale, one entry per node this admits. */
 const NODE_CLASSES = {

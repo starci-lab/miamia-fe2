@@ -2,11 +2,11 @@ import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Icon } from "@/components/leaves/Icon"
 import { Text } from "@/components/leaves/Text"
 import { PressableSurface } from "@/components/branches/PressableSurface"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import {
-    defineContractComponent,
-    defineContractProjection,
-    defineLeafComponent,
+    createGrammarNode,
+    createGrammarProjection,
+    createLeafNode,
     type BlockProps,
 } from "@/components/contracts/props"
 
@@ -21,7 +21,7 @@ import {
  * which is exactly what `no-duplicate-entry-shape` refuses.
  *
  * WHAT IT DOES NOT REUSE IS THE `TaskProgressRow` COMPOSITE, and the reason is a fact rather than a
- * preference: that composite renders its own `Tree`, so its rows cannot be PRESSED. A problem row
+ * preference: that composite renders its own `Grammar`, so its rows cannot be PRESSED. A problem row
  * must open the problem, which means focus, keyboard and a pressed state - link semantics the
  * composite does not carry. The list entry was widened to admit the row CONTRACT so the same
  * anatomy can be wrapped in `PressableSurface` instead.
@@ -116,18 +116,18 @@ export const CodingProblemListBase = (input: CodingProblemListProps) => {
     const problems = isLoading ? resting : (input.props.problems ?? [])
 
     return (
-        <Tree
+        <Grammar
             contract="marked-row-list"
-            render={defineContractComponent("marked-row-list", {
-                row: problems.map((problem) => defineContractProjection("task-mark-title-fact-row", () => (
+            render={createGrammarNode("marked-row-list", {
+                row: problems.map((problem) => createGrammarProjection("task-mark-title-fact-row", () => (
                     <PressableSurface
                         contract="task-mark-title-fact-row"
                         label={problem.label}
                         press={() => input.on?.open?.(problem.slug)}
                         hover="surface"
                         disabled={isLoading}
-                        render={defineContractComponent("task-mark-title-fact-row", {
-                            mark: defineLeafComponent("icon", {}, () => (
+                        render={createGrammarNode("task-mark-title-fact-row", {
+                            mark: createLeafNode("icon", {}, () => (
                                 <Icon
                                     props={{
                                         name: problem.isSolved ? "complete" : "pending",
@@ -136,10 +136,10 @@ export const CodingProblemListBase = (input: CodingProblemListProps) => {
                                     isLoading={isLoading}
                                 />
                             )),
-                            title: defineLeafComponent("text", {}, () => (
+                            title: createLeafNode("text", {}, () => (
                                 <Text props={{ content: problem.title }} isLoading={isLoading} />
                             )),
-                            fact: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+                            fact: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                                 <Text
                                     props={{ content: problem.fact, size: "xs", tone: "muted" }}
                                     isLoading={isLoading}

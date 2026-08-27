@@ -1,5 +1,5 @@
 import { useRef, useState, type SubmitEvent } from "react"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { Button } from "@/components/leaves/Button"
 import { Checkbox } from "@/components/leaves/Checkbox"
 import { Divider } from "@/components/leaves/Divider"
@@ -8,15 +8,15 @@ import { Heading } from "@/components/leaves/Heading"
 import { Text } from "@/components/leaves/Text"
 import { TextLink } from "@/components/leaves/TextLink"
 import { KeycloakIdentityProvider } from "@/modules/api/graphql/mutations/types/auth"
-import { defineCompositeComponent, defineContractComponent, defineLeafComponent } from "@/components/contracts/props"
+import { createCompositeNode, createGrammarNode, createLeafNode } from "@/components/contracts/props"
 
 /**
  * BLOCK - `AuthenticationPanel`, presentational half.
  *
  * THE STEP IS THE STATE, and the status is not. `details`, `code` and `done` each draw a different
- * tree - a form of two boxes, a form of one, a confirmation - so they are states. `sending`,
- * `verifying` and `resending` draw the SAME tree with a disabled control and a different sentence,
- * so they are props. If it selects a different tree it is a state; otherwise it is props.
+ * Grammar - a form of two boxes, a form of one, a confirmation - so they are states. `sending`,
+ * `verifying` and `resending` draw the SAME Grammar with a disabled control and a different sentence,
+ * so they are props. If it selects a different Grammar it is a state; otherwise it is props.
  *
  * THE ORDER IS THE DESIGN, and it is not arbitrary. The shortcuts come FIRST because most readers
  * take one and never reach the form; the divider names the choice between them rather than merely
@@ -155,19 +155,19 @@ export const AuthenticationPanelBase = (input: AuthenticationPanelInput) => {
     const [hasConfirmationMismatch, setHasConfirmationMismatch] = useState(false)
 
     /** The name of the surface, over the line that says what it is for. */
-    const header = defineContractComponent("centred-title-pair", {
-        title: defineLeafComponent("heading", {}, () => (
+    const header = createGrammarNode("centred-title-pair", {
+        title: createLeafNode("heading", {}, () => (
             <span id={AUTHENTICATION_PANEL_TITLE_ID}>
                 <Heading props={{ content: input.props.title, level: 2 }} />
             </span>
         )),
-        description: defineLeafComponent("text", { size: "sm" }, () => (
+        description: createLeafNode("text", { size: "sm" }, () => (
             <Text props={{ content: input.props.subtitle, size: "sm", tone: "muted" }} />
         )),
     })
 
     /** The one sentence, announced when it is a refusal and merely shown when it is not. */
-    const status = input.props.statusMessage === "" ? undefined : defineLeafComponent("text", {}, () => (
+    const status = input.props.statusMessage === "" ? undefined : createLeafNode("text", {}, () => (
         <Text
             props={{
                 content: input.props.statusMessage,
@@ -180,20 +180,20 @@ export const AuthenticationPanelBase = (input: AuthenticationPanelInput) => {
 
     if (input.state === "done") {
         return (
-            <Tree
+            <Grammar
                 contract="centred-page-column"
-                render={defineContractComponent("centred-page-column", {
+                render={createGrammarNode("centred-page-column", {
                     header,
                     body: [
-                        defineContractComponent("centred-title-pair", {
-                            title: defineLeafComponent("heading", {}, () => (
+                        createGrammarNode("centred-title-pair", {
+                            title: createLeafNode("heading", {}, () => (
                                 <Heading props={{ content: input.props.doneTitle, level: 3 }} />
                             )),
-                            description: defineLeafComponent("text", { size: "sm" }, () => (
+                            description: createLeafNode("text", { size: "sm" }, () => (
                                 <Text props={{ content: input.props.doneHint, tone: "muted", size: "sm" }} />
                             )),
                         }),
-                        ...(status === undefined ? [] : [defineContractComponent("stacked-peer-controls", {
+                        ...(status === undefined ? [] : [createGrammarNode("stacked-peer-controls", {
                             control: [status],
                         })]),
                     ],
@@ -208,18 +208,18 @@ export const AuthenticationPanelBase = (input: AuthenticationPanelInput) => {
             input.on?.submitCode?.({ otp: values.current.otp })
         }
         return (
-            <Tree
+            <Grammar
                 contract="centred-page-column"
-                render={defineContractComponent("centred-page-column", {
+                render={createGrammarNode("centred-page-column", {
                     header,
                     body: [
-                        defineLeafComponent("form", {}, () => (
+                        createLeafNode("form", {}, () => (
                             <form onSubmit={submit}>
-                                <Tree
+                                <Grammar
                                     contract="stacked-peer-controls"
-                                    render={defineContractComponent("stacked-peer-controls", {
+                                    render={createGrammarNode("stacked-peer-controls", {
                                         control: [
-                                            defineCompositeComponent("field", {}, () => (
+                                            createCompositeNode("field", {}, () => (
                                                 <Field
                                                     props={{
                                                         id: CODE_ID,
@@ -234,7 +234,7 @@ export const AuthenticationPanelBase = (input: AuthenticationPanelInput) => {
                                                 />
                                             )),
                                             ...(status === undefined ? [] : [status]),
-                                            defineLeafComponent("button", {}, () => (
+                                            createLeafNode("button", {}, () => (
                                                 <Button
                                                     props={{
                                                         label: input.props.submitLabel,
@@ -250,11 +250,11 @@ export const AuthenticationPanelBase = (input: AuthenticationPanelInput) => {
                                 />
                             </form>
                         )),
-                        defineContractComponent("spread-choice-row", {
-                            choice: defineLeafComponent("text-link", { size: "sm" }, () => (
+                        createGrammarNode("spread-choice-row", {
+                            choice: createLeafNode("text-link", { size: "sm" }, () => (
                                 <TextLink props={{ label: input.props.resendLabel, size: "sm" }} on={{ press: input.on?.resend }} />
                             )),
-                            exit: defineLeafComponent("text-link", { size: "sm" }, () => (
+                            exit: createLeafNode("text-link", { size: "sm" }, () => (
                                 <TextLink
                                     props={{ label: input.props.useAnotherEmailLabel, size: "sm" }}
                                     on={{ press: () => input.on?.changeMode?.("signIn") }}
@@ -281,38 +281,38 @@ export const AuthenticationPanelBase = (input: AuthenticationPanelInput) => {
     }
 
     return (
-        <Tree
+        <Grammar
             contract="centred-page-column"
-            render={defineContractComponent("centred-page-column", {
+            render={createGrammarNode("centred-page-column", {
                 header,
                 body: [
-                    defineContractComponent("auth-entry-stack", {
-                        shortcuts: defineContractComponent("auth-shortcuts-over-divider", {
+                    createGrammarNode("auth-entry-stack", {
+                        shortcuts: createGrammarNode("auth-shortcuts-over-divider", {
                             shortcut: [
-                                defineLeafComponent("button", {}, () => (
+                                createLeafNode("button", {}, () => (
                                     <Button
                                         props={{ label: input.props.oauthGoogle, variant: "outline", icon: "google", disabled: input.props.isPending }}
                                         on={{ press: () => input.on?.oauthPress?.(KeycloakIdentityProvider.Google) }}
                                     />
                                 )),
-                                defineLeafComponent("button", {}, () => (
+                                createLeafNode("button", {}, () => (
                                     <Button
                                         props={{ label: input.props.oauthGithub, variant: "outline", icon: "github", disabled: input.props.isPending }}
                                         on={{ press: () => input.on?.oauthPress?.(KeycloakIdentityProvider.Github) }}
                                     />
                                 )),
                             ],
-                            divider: defineLeafComponent("divider", {}, () => (
+                            divider: createLeafNode("divider", {}, () => (
                                 <Divider props={{ label: input.props.orLabel }} />
                             )),
                         }),
-                        credentials: defineLeafComponent("form", {}, () => (
+                        credentials: createLeafNode("form", {}, () => (
                             <form onSubmit={submit}>
-                                <Tree
+                                <Grammar
                                     contract="stacked-peer-controls"
-                                    render={defineContractComponent("stacked-peer-controls", {
+                                    render={createGrammarNode("stacked-peer-controls", {
                                         control: [
-                                            defineCompositeComponent("field", {}, () => (
+                                            createCompositeNode("field", {}, () => (
                                                 <Field
                                                     props={{
                                                         id: EMAIL_ID,
@@ -325,7 +325,7 @@ export const AuthenticationPanelBase = (input: AuthenticationPanelInput) => {
                                                     on={{ change: (value) => { values.current.email = value } }}
                                                 />
                                             )),
-                                            defineCompositeComponent("field", {}, () => (
+                                            createCompositeNode("field", {}, () => (
                                                 <Field
                                                     props={{
                                                         id: PASSWORD_ID,
@@ -342,7 +342,7 @@ export const AuthenticationPanelBase = (input: AuthenticationPanelInput) => {
                                                 />
                                             )),
                                             ...(input.props.mode !== "signUp" ? [] : [
-                                                defineCompositeComponent("field", {}, () => (
+                                                createCompositeNode("field", {}, () => (
                                                     <Field
                                                         props={{
                                                             id: CONFIRM_PASSWORD_ID,
@@ -365,8 +365,8 @@ export const AuthenticationPanelBase = (input: AuthenticationPanelInput) => {
                                                     />
                                                 )),
                                             ]),
-                                            defineContractComponent("spread-choice-row", {
-                                                choice: defineLeafComponent("checkbox", {}, () => (
+                                            createGrammarNode("spread-choice-row", {
+                                                choice: createLeafNode("checkbox", {}, () => (
                                                     input.props.mode === "signUp" ? (
                                                         <Checkbox
                                                             props={{
@@ -393,7 +393,7 @@ export const AuthenticationPanelBase = (input: AuthenticationPanelInput) => {
                                                         />
                                                     )
                                                 )),
-                                                exit: input.props.mode !== "signIn" ? undefined : defineLeafComponent("text-link", { size: "sm" }, () => (
+                                                exit: input.props.mode !== "signIn" ? undefined : createLeafNode("text-link", { size: "sm" }, () => (
                                                     <TextLink
                                                         props={{ label: input.props.forgotPassword, size: "sm" }}
                                                         on={{ press: () => input.on?.changeMode?.("forgotPassword") }}
@@ -401,7 +401,7 @@ export const AuthenticationPanelBase = (input: AuthenticationPanelInput) => {
                                                 )),
                                             }),
                                             ...(status === undefined ? [] : [status]),
-                                            defineLeafComponent("button", {}, () => (
+                                            createLeafNode("button", {}, () => (
                                                 <Button
                                                     props={{
                                                         label: input.props.submitLabel,
@@ -419,11 +419,11 @@ export const AuthenticationPanelBase = (input: AuthenticationPanelInput) => {
                         )),
                     }),
                 ],
-                footer: defineContractComponent("centred-prompt-row", {
-                    prompt: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+                footer: createGrammarNode("centred-prompt-row", {
+                    prompt: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                         <Text props={{ content: input.props.promptQuestion, size: "sm", tone: "muted" }} />
                     )),
-                    action: defineLeafComponent("text-link", { size: "sm" }, () => (
+                    action: createLeafNode("text-link", { size: "sm" }, () => (
                         <TextLink
                             props={{ label: input.props.promptAction, size: "sm" }}
                             on={{ press: () => input.on?.changeMode?.(input.props.mode === "signIn" ? "signUp" : "signIn") }}

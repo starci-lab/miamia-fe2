@@ -1,5 +1,5 @@
 import { Text } from "@/components/leaves/Text"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `Divider`: the line that says two things above and below it are alternatives.
@@ -18,8 +18,8 @@ export type DividerData = {
     readonly label: string
 }
 
-/** Props for {@link Divider}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type DividerProps = LeafProps<DividerData>
+/** Props for {@link Divider}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type DividerProps = ComponentProps<DividerData>
 
 /** A rule either side of the word, with the word holding them apart. */
 const DIVIDER_CLASSES = "flex flex-row items-center gap-3"

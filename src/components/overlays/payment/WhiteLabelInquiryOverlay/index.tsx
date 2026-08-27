@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from "react"
 import { WhiteLabelInquiryPanel } from "@/components/blocks/payment/WhiteLabelInquiryPanel"
-import { defineContractProjection } from "@/components/contracts/props"
+import { createGrammarProjection } from "@/components/contracts/props"
 import { WhiteLabelInquiryOverlayBase as WhiteLabelInquiryOverlayView } from "./component"
 
 /** Visibility and dismissal behavior for the White-label inquiry. */
@@ -15,7 +15,7 @@ export const WhiteLabelInquiryOverlay = ({ isOpen, onDismiss }: WhiteLabelInquir
         <WhiteLabelInquiryOverlayView
             isOpen={isOpen}
             onDismiss={guardedDismiss}
-            render={defineContractProjection("white-label-inquiry-panel", () => (
+            render={createGrammarProjection("white-label-inquiry-panel", () => (
                 <WhiteLabelInquiryPanel onDismiss={guardedDismiss} onPendingChange={setPending} />
             ))}
         />

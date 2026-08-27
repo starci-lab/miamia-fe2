@@ -1,16 +1,16 @@
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
 import { SurfaceListCard, type SurfaceListCardData } from "@/components/branches/SurfaceListCard"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { LabelledProgressRow } from "@/components/composites/LabelledProgressRow"
 import { Button } from "@/components/leaves/Button"
 import { Text } from "@/components/leaves/Text"
 import {
-    defineCompositeComponent,
-    defineContractComponent,
-    defineContractProjection,
-    defineLeafComponent,
-    type LeafProps,
+    createCompositeNode,
+    createGrammarNode,
+    createGrammarProjection,
+    createLeafNode,
+    type ComponentProps,
 } from "@/components/contracts/props"
 
 /** Readiness band already resolved by product policy. */
@@ -64,10 +64,10 @@ type JobReadinessListData = SurfaceListCardData & {
 }
 
 /** Render only the peer pillars; the enclosing readiness card owns summary and action. */
-const JobReadinessListContent = ({ props, isLoading = false }: LeafProps<JobReadinessListData>) => {
+const JobReadinessListContent = ({ props, isLoading = false }: ComponentProps<JobReadinessListData>) => {
     return (
-        <Tree contract="job-readiness-list" render={defineContractComponent("job-readiness-list", {
-            row: props.metrics.map((metric) => defineCompositeComponent("labelled-progress-row", {}, () => (
+        <Grammar contract="job-readiness-list" render={createGrammarNode("job-readiness-list", {
+            row: props.metrics.map((metric) => createCompositeNode("labelled-progress-row", {}, () => (
                 <LabelledProgressRow
                     props={{ id: metric.id, title: metric.label, percent: metric.score, percentText: metric.scoreLabel }}
                     isLoading={isLoading}
@@ -77,7 +77,7 @@ const JobReadinessListContent = ({ props, isLoading = false }: LeafProps<JobRead
     )
 }
 
-const JobReadinessList = defineContractComponent("job-readiness-list", JobReadinessListContent)
+const JobReadinessList = createGrammarNode("job-readiness-list", JobReadinessListContent)
 
 /** Draw the learner's strongest-track readiness without owning routing or fetching. */
 export const JobReadinessWidgetBase = (input: JobReadinessWidgetProps) => {
@@ -87,8 +87,8 @@ export const JobReadinessWidgetBase = (input: JobReadinessWidgetProps) => {
             <SurfaceCard
                 props={{ label: input.props.label }}
                 contract="empty-notice-card"
-                render={defineContractComponent("empty-notice-card", {
-                    notice: defineCompositeComponent("empty-notice", {}, () => (
+                render={createGrammarNode("empty-notice-card", {
+                    notice: createCompositeNode("empty-notice", {}, () => (
                         <EmptyNotice
                             props={{
                                 icon: "jobs",
@@ -109,7 +109,7 @@ export const JobReadinessWidgetBase = (input: JobReadinessWidgetProps) => {
         input.props.depthScore === undefined ? input.props.courseTitle : `${input.props.depthScore} · ${input.props.courseTitle ?? ""}`
     )
 
-    const metricsList = defineContractProjection("job-readiness-list", () => (
+    const metricsList = createGrammarProjection("job-readiness-list", () => (
         <SurfaceListCard
             contract="job-readiness-list"
             render={JobReadinessList}
@@ -128,15 +128,15 @@ export const JobReadinessWidgetBase = (input: JobReadinessWidgetProps) => {
             props={{ label: input.props.label }}
             contract="job-readiness-card"
             isLoading={isLoading}
-            render={defineContractComponent("job-readiness-card", {
+            render={createGrammarNode("job-readiness-card", {
                 ...(input.props.percentileLabel === undefined && !isLoading ? {} : {
-                    percentile: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+                    percentile: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                         <Text props={{ content: input.props.percentileLabel, size: "xs", tone: "muted" }} isLoading={isLoading} />
                     )),
                 }),
                 metrics: metricsList,
                 ...(input.props.actionLabel === undefined && !isLoading ? {} : {
-                    action: defineLeafComponent("button", {}, () => (
+                    action: createLeafNode("button", {}, () => (
                         <Button
                             props={{ label: input.props.actionLabel ?? "", size: "sm", variant: "primary" }}
                             on={{ press: input.on?.act }}

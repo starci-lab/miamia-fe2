@@ -1,8 +1,9 @@
+import { CLASS_NAME_1, CLASS_NAME_2, CLASS_NAME_3 } from './styles'
 "use client"
 
 import { ListBox } from "@heroui/react"
 import { Icon, type IconName } from "@/components/leaves/Icon"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /** One destination in the legacy quick-access ListBox. */
 export type QuickActionItem = {
@@ -23,7 +24,7 @@ export type QuickActionsListActions = {
 }
 
 /** Fixed data and action slots for the quick-access ListBox. */
-export type QuickActionsListProps = LeafProps<QuickActionsListData, QuickActionsListActions>
+export type QuickActionsListProps = ComponentProps<QuickActionsListData, QuickActionsListActions>
 
 /** Draw the original native HeroUI ListBox chrome used by the legacy dashboard rail. */
 export const QuickActionsList = ({ props, on }: QuickActionsListProps) => (
@@ -33,17 +34,17 @@ export const QuickActionsList = ({ props, on }: QuickActionsListProps) => (
         aria-label={props.label}
         selectionMode="none"
         onAction={(key) => on?.activate?.(String(key))}
-        className="gap-1 p-0"
+        className={CLASS_NAME_1}
     >
         {props.items.map((item) => (
             <ListBox.Item
                 key={item.id}
                 id={item.id}
                 textValue={item.label}
-                className="flex cursor-pointer items-center gap-2 rounded-large px-2 py-2 text-foreground outline-none data-[focus-visible=true]:ring-2 data-[focus-visible=true]:ring-accent data-[hovered=true]:bg-default"
+                className={CLASS_NAME_2}
             >
                 <Icon props={{ name: item.icon, role: "leading" }} />
-                <span className="min-w-0 flex-1 truncate text-sm">{item.label}</span>
+                <span className={CLASS_NAME_3}>{item.label}</span>
             </ListBox.Item>
         ))}
     </ListBox>

@@ -1,5 +1,6 @@
+import { CLASS_NAME_1 } from './styles'
 import { skeletonVariants } from "@heroui/react"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `CoverImage`: one course's artwork, at a fixed aspect.
@@ -35,8 +36,8 @@ export type CoverImageData = {
     readonly ratio?: CoverImageRatio
 }
 
-/** Props for {@link CoverImage}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type CoverImageProps = LeafProps<CoverImageData>
+/** Props for {@link CoverImage}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type CoverImageProps = ComponentProps<CoverImageData>
 
 /** The two aspects, written as whole class literals so Tailwind can see them. */
 const RATIO_CLASSES = {
@@ -83,7 +84,7 @@ export const CoverImage = ({ props, isLoading = false }: CoverImageProps) => {
                 // explained the absence by naming the directive, and the gate flagged the sentence:
                 // the rule matches the token in source text, so prose about a suppression reads to
                 // it exactly like a suppression. Naming it is what tripped it.
-                <img src={source} alt={props.alt} className="size-full object-cover" />
+                <img src={source} alt={props.alt} className={CLASS_NAME_1} />
             )}
         </div>
     )

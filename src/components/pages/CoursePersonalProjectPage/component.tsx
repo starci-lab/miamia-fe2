@@ -1,10 +1,10 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { Button } from "@/components/leaves/Button"
 import { Heading } from "@/components/leaves/Heading"
 import { NavLink } from "@/components/leaves/NavLink"
 import { Progress } from "@/components/leaves/Progress"
 import { Text } from "@/components/leaves/Text"
-import { defineContractComponent, defineLeafComponent } from "@/components/contracts/props"
+import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
 
 /** One ordered task destination on the personal-project dashboard. */
 export type CoursePersonalProjectTaskRow = {
@@ -36,22 +36,22 @@ export const CoursePersonalProjectPageBase = (input: CoursePersonalProjectPagePr
         ? Array.from({ length: 4 }, (_, index) => ({ id: `pending-${index}`, label: "", isCurrent: false }))
         : input.props.tasks
     return (
-        <Tree
+        <Grammar
             contract="course-personal-project-page"
-            render={defineContractComponent("course-personal-project-page", {
-                title: defineLeafComponent("heading", {}, () => (
+            render={createGrammarNode("course-personal-project-page", {
+                title: createLeafNode("heading", {}, () => (
                     <Heading props={{ content: input.props.title, level: 1 }} isLoading={loading} />
                 )),
-                description: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+                description: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                     <Text props={{ content: input.props.description, size: "sm", tone: "muted" }} isLoading={loading} />
                 )),
-                progress: defineLeafComponent("progress", {}, () => (
+                progress: createLeafNode("progress", {}, () => (
                     <Progress props={{ value: input.props.completionPercent, label: input.props.progressLabel }} isLoading={loading} />
                 )),
-                fact: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+                fact: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                     <Text props={{ content: input.props.progressText, size: "sm", tone: "muted" }} isLoading={loading} />
                 )),
-                task: tasks.map((task) => defineLeafComponent("nav-link", { kind: "section" }, () => (
+                task: tasks.map((task) => createLeafNode("nav-link", { kind: "section" }, () => (
                     <NavLink
                         props={{ label: task.label, kind: "section", isCurrent: task.isCurrent }}
                         on={{ press: () => input.on?.openTask?.(task.id) }}
@@ -59,12 +59,12 @@ export const CoursePersonalProjectPageBase = (input: CoursePersonalProjectPagePr
                     />
                 ))),
                 ...(input.props.notice === undefined ? {} : {
-                    notice: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+                    notice: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                         <Text props={{ content: input.props.notice, size: "sm", tone: "muted" }} />
                     )),
                 }),
                 ...(input.state !== "failed" ? {} : {
-                    retry: defineLeafComponent("button", {}, () => (
+                    retry: createLeafNode("button", {}, () => (
                         <Button props={{ label: input.props.retryLabel }} on={{ press: input.on?.retry }} />
                     )),
                 }),

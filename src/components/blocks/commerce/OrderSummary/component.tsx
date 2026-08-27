@@ -1,8 +1,8 @@
 import { Text } from "@/components/leaves/Text"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import {
-    defineContractComponent,
-    defineLeafComponent,
+    createGrammarNode,
+    createLeafNode,
     type BlockProps,
 } from "@/components/contracts/props"
 
@@ -83,19 +83,19 @@ export const OrderSummaryBase = (input: OrderSummaryProps) => {
 
     /** One muted component of the total: what it is called, and how much of it there is. */
     const componentRow = (label: string, value?: string) =>
-        defineContractComponent("label-with-muted-fact-row", {
-            label: defineLeafComponent("text", { size: "sm", weight: "semibold" }, () => (
+        createGrammarNode("label-with-muted-fact-row", {
+            label: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
                 <Text props={{ content: label, size: "sm", weight: "semibold" }} />
             )),
-            fact: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+            fact: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                 <Text props={{ content: figure(value), size: "xs", tone: "muted" }} isLoading={isLoading} />
             )),
         })
 
     return (
-        <Tree
+        <Grammar
             contract="order-summary-stack"
-            render={defineContractComponent("order-summary-stack", {
+            render={createGrammarNode("order-summary-stack", {
                 subtotal: componentRow(labels.subtotal, input.props.subtotal),
                 ...(input.props.savings === undefined ? {} : {
                     savings: componentRow(labels.savings, input.props.savings),
@@ -103,11 +103,11 @@ export const OrderSummaryBase = (input: OrderSummaryProps) => {
                 ...(input.props.surcharge === undefined ? {} : {
                     surcharge: componentRow(labels.surcharge, input.props.surcharge),
                 }),
-                total: defineContractComponent("order-total-row", {
-                    label: defineLeafComponent("text", { size: "sm", weight: "semibold" }, () => (
+                total: createGrammarNode("order-total-row", {
+                    label: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
                         <Text props={{ content: labels.total, size: "sm", weight: "semibold" }} />
                     )),
-                    amount: defineLeafComponent("text", { size: "md", weight: "semibold" }, () => (
+                    amount: createLeafNode("text", { size: "md", weight: "semibold" }, () => (
                         <Text
                             props={{ content: figure(input.props.total), size: "md", weight: "semibold" }}
                             isLoading={isLoading}

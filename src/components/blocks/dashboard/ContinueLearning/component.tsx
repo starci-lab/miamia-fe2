@@ -2,7 +2,7 @@ import { SurfaceCard } from "@/components/branches/SurfaceCard"
 import { Text } from "@/components/leaves/Text"
 import { SeeMoreLink } from "@/components/leaves/SeeMoreLink"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
-import { defineCompositeComponent, defineContractComponent, defineContractProjection, defineLeafComponent } from "@/components/contracts/props"
+import { createCompositeNode, createGrammarNode, createGrammarProjection, createLeafNode } from "@/components/contracts/props"
 
 /**
  * BLOCK - `ContinueLearning`, presentational half.
@@ -17,10 +17,10 @@ import { defineCompositeComponent, defineContractComponent, defineContractProjec
  * one block that means them. Extract it when a SECOND surface needs the same card, and not before
  * - promotion is triggered by the second consumer, never by a prediction of one.
  *
- * THE STATE PICKS THE TREE. `ready` draws the run; `onboarding` and `empty` draw a notice with a
+ * THE STATE PICKS THE Grammar. `ready` draws the run; `onboarding` and `empty` draw a notice with a
  * way out and differ only in which sentence is true; `failed` says so and offers the request
  * again; `pending` draws the run at rest so the section keeps its height. A situation that did not
- * change the tree would be props.
+ * change the Grammar would be props.
  *
  * THE SECTION IS FRAMELESS ON PURPOSE. Its content is itself a set of surfaces, and an inset
  * inside an inset reads as a mistake rather than as a hierarchy.
@@ -52,7 +52,7 @@ export type ContinueLearningFrame = {
 /**
  * What the three "nothing to show" situations carry.
  *
- * They draw the same tree and differ only in which sentence is true, so they share a shape - but
+ * They draw the same Grammar and differ only in which sentence is true, so they share a shape - but
  * they stay THREE members of the union rather than one member holding three literals, because a
  * discriminant that is itself a union does not narrow the props beside it.
  */
@@ -75,18 +75,18 @@ const renderResumeCard = (
     resumeLabel: string | undefined,
     isLoading: boolean,
     onResume: ((id: string) => void) | undefined,
-) => defineContractProjection("resume-item-card", () => (
+) => createGrammarProjection("resume-item-card", () => (
     // THE CARD'S GROUND IS THE BRANCH'S, NOT THE ENTRY'S. The item is one surface inside a
     // frameless section, so the surface branch draws it here and the entry keeps only the way
     // its three lines stand together.
-    <SurfaceCard contract="resume-item-card" render={defineContractComponent("resume-item-card", {
-        kind: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+    <SurfaceCard contract="resume-item-card" render={createGrammarNode("resume-item-card", {
+        kind: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
             <Text
                 props={{ content: item?.kindLabel, size: "sm", tone: "muted" }}
                 isLoading={isLoading}
             />
         )),
-        title: defineLeafComponent("text", { size: "md", weight: "medium" }, () => (
+        title: createLeafNode("text", { size: "md", weight: "medium" }, () => (
             <Text
                 props={{ content: item?.title, size: "md", weight: "medium" }}
                 isLoading={isLoading}
@@ -94,7 +94,7 @@ const renderResumeCard = (
         )),
         // A resting card has no destination yet, so it has no dead way out.
         ...(item === undefined || resumeLabel === undefined ? {} : {
-            resume: defineLeafComponent("see-more-link", {}, () => (
+            resume: createLeafNode("see-more-link", {}, () => (
                 <SeeMoreLink
                     props={{ label: resumeLabel }}
                     on={{ press: () => onResume?.(item.id) }}
@@ -138,8 +138,8 @@ export const ContinueLearningBase = (input: ContinueLearningInput) => {
     if (input.state === "onboarding" || input.state === "empty" || input.state === "failed") {
         return (
             <SurfaceCard props={{ label: input.props.label }} contract="empty-notice-card"
-                render={defineContractComponent("empty-notice-card", {
-                    notice: defineCompositeComponent("empty-notice", {}, () => (
+                render={createGrammarNode("empty-notice-card", {
+                    notice: createCompositeNode("empty-notice", {}, () => (
                         <EmptyNotice
                             props={{
                                 icon: "course",
@@ -165,7 +165,7 @@ export const ContinueLearningBase = (input: ContinueLearningInput) => {
         items: ReadonlyArray<ResumeItem | undefined>,
         resumeLabel: string | undefined,
         isLoading: boolean,
-    ) => defineContractComponent("resume-card-grid", {
+    ) => createGrammarNode("resume-card-grid", {
         card: items.map((item) => renderResumeCard(item, resumeLabel, isLoading, input.on?.resume)),
     })
 

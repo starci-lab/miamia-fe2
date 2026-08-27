@@ -1,11 +1,11 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Button } from "@/components/leaves/Button"
 import { Heading } from "@/components/leaves/Heading"
 import { NavLink } from "@/components/leaves/NavLink"
 import { SearchBox } from "@/components/leaves/SearchBox"
 import { Text } from "@/components/leaves/Text"
-import { defineCompositeComponent, defineContractComponent, defineLeafComponent } from "@/components/contracts/props"
+import { createCompositeNode, createGrammarNode, createLeafNode } from "@/components/contracts/props"
 
 /** Query states exposed by the pure course concept map. */
 export type CourseMindMapPageState = "pending" | "ready" | "empty" | "failed"
@@ -65,7 +65,7 @@ export const CourseMindMapPageBase = (input: CourseMindMapPageProps) => {
     const selected = input.props.nodes.find((node) => node.id === input.props.selectedId)
     const noResults = input.state === "ready" && input.props.nodes.length === 0
     const notice = input.state === "empty" || input.state === "failed" || noResults
-        ? defineCompositeComponent("empty-notice", {}, () => (
+        ? createCompositeNode("empty-notice", {}, () => (
             <EmptyNotice
                 props={{
                     message: deriveNoticeMessage(
@@ -83,16 +83,16 @@ export const CourseMindMapPageBase = (input: CourseMindMapPageProps) => {
         : undefined
 
     return (
-        <Tree contract="course-mind-map-page" render={defineContractComponent("course-mind-map-page", {
-            header: defineContractComponent("page-header-stack", {
-                title: defineLeafComponent("heading", {}, () => (
+        <Grammar contract="course-mind-map-page" render={createGrammarNode("course-mind-map-page", {
+            header: createGrammarNode("page-header-stack", {
+                title: createLeafNode("heading", {}, () => (
                     <Heading props={{ content: input.props.title, level: 1 }} isLoading={loading} />
                 )),
             }),
-            description: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+            description: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                 <Text props={{ content: input.props.description, size: "sm", tone: "muted" }} isLoading={loading} />
             )),
-            search: defineLeafComponent("search-box", {}, () => (
+            search: createLeafNode("search-box", {}, () => (
                 <SearchBox
                     props={{
                         label: input.props.searchLabel,
@@ -102,10 +102,10 @@ export const CourseMindMapPageBase = (input: CourseMindMapPageProps) => {
                     on={{ search: input.on.search }}
                 />
             )),
-            graphFact: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+            graphFact: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                 <Text props={{ content: input.props.graphFact, size: "xs", tone: "muted" }} isLoading={loading} />
             )),
-            node: input.props.nodes.map((node) => defineLeafComponent("nav-link", { kind: "section" }, () => (
+            node: input.props.nodes.map((node) => createLeafNode("nav-link", { kind: "section" }, () => (
                 <NavLink
                     props={{
                         label: node.detail === undefined ? node.label : `${node.label} · ${node.detail}`,
@@ -117,12 +117,12 @@ export const CourseMindMapPageBase = (input: CourseMindMapPageProps) => {
                 />
             ))),
             ...(selected?.detail === undefined ? {} : {
-                selection: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+                selection: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                     <Text props={{ content: selected.detail, size: "sm", tone: "muted" }} />
                 )),
             }),
             ...(selected?.canOpen !== true ? {} : {
-                open: defineLeafComponent("button", {}, () => (
+                open: createLeafNode("button", {}, () => (
                     <Button props={{ label: input.props.openLabel, variant: "primary" }} on={{ press: () => input.on.openContent(selected.id) }} />
                 )),
             }),

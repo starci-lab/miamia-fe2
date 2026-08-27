@@ -1,5 +1,5 @@
 import { Pagination as VendorPagination } from "@heroui/react"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `Pagination`: which page of a list is showing, and the way to another one.
@@ -44,8 +44,8 @@ export type PaginationActions = {
     readonly change?: (page: number) => void
 }
 
-/** Props for {@link Pagination}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type PaginationProps = LeafProps<PaginationData, PaginationActions>
+/** Props for {@link Pagination}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type PaginationProps = ComponentProps<PaginationData, PaginationActions>
 
 /**
  * The visible window: first, last, the showing page and one neighbour either side.

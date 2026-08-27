@@ -1,6 +1,7 @@
+import { CLASS_NAME_1 } from './styles'
 import { Button as HeroButton, skeletonVariants, Spinner } from "@heroui/react"
 import { Icon, type IconName } from "@/components/leaves/Icon"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `Button`: the thing a reader presses.
@@ -61,14 +62,14 @@ export type ButtonData = {
     readonly isPending?: boolean
 }
 
-/** What pressing it does. Handlers travel apart from data: a function is not a `DataValue`. */
+/** What pressing it does. Handlers travel apart from data: a function is not a `SerializableValue`. */
 export type ButtonActions = {
     /** Called on press. */
     readonly press?: () => void
 }
 
-/** Props for {@link Button}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type ButtonProps = LeafProps<ButtonData, ButtonActions>
+/** Props for {@link Button}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type ButtonProps = ComponentProps<ButtonData, ButtonActions>
 
 /** The four appearances, as the vendor names them, so fill and foreground travel together. */
 const VARIANTS = { primary: "primary", secondary: "secondary", outline: "outline", ghost: "ghost" } as const
@@ -131,7 +132,7 @@ export const Button = ({ props, on, isLoading = false }: ButtonProps) => {
             // itself: a reader aiming at the words is hovering the button, not the arrow.
             className={isLoading ? LOADING_CLASSES : "group relative"}
         >
-            {isPending ? <Spinner size="sm" className="absolute" aria-hidden="true" /> : null}
+            {isPending ? <Spinner size="sm" className={CLASS_NAME_1} aria-hidden="true" /> : null}
             {placement === "leading" ? glyph : null}
             <span className={isPending ? "invisible" : undefined}>{props.label}</span>
             {placement === "trailing" ? glyph : null}

@@ -3,7 +3,7 @@ import type {
     DailyQuestContentData,
     DailyQuestContentProps,
 } from "@/components/blocks/dashboard/DailyQuest/component"
-import { defineContractComponent } from "@/components/contracts/props"
+import { createGrammarNode } from "@/components/contracts/props"
 
 /** A real component type used only to prove the generic contract/props fence. */
 const DailyQuestView = (input: DailyQuestContentProps) => {
@@ -12,7 +12,7 @@ const DailyQuestView = (input: DailyQuestContentProps) => {
 }
 
 /** The exact contract identity carried by the component type. */
-const dailyQuestContent = defineContractComponent("marked-row-list", DailyQuestView)
+const dailyQuestContent = createGrammarNode("marked-row-list", DailyQuestView)
 
 /** Complete runtime data accepted by both the surface and its content component. */
 const dailyQuestProps: DailyQuestContentData = {
@@ -30,7 +30,7 @@ export const validSurfaceList = (
 )
 
 /** A component branded for another contract cannot enter the list host. */
-const wrongContractContent = defineContractComponent("empty-notice-card", DailyQuestView)
+const wrongContractContent = createGrammarNode("empty-notice-card", DailyQuestView)
 
 /** Compile-time refusal fixture for a mismatched contract identity. */
 export const wrongContractSurfaceList = (

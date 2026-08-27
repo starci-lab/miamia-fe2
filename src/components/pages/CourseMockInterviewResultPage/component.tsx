@@ -1,4 +1,4 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { EvidenceRow } from "@/components/composites/EvidenceRow"
 import { LabelledProgressRow } from "@/components/composites/LabelledProgressRow"
@@ -7,9 +7,9 @@ import { Heading } from "@/components/leaves/Heading"
 import { Progress } from "@/components/leaves/Progress"
 import { Text } from "@/components/leaves/Text"
 import {
-    defineCompositeComponent,
-    defineContractComponent,
-    defineLeafComponent,
+    createCompositeNode,
+    createGrammarNode,
+    createLeafNode,
 } from "@/components/contracts/props"
 
 /** Finite situations shown by the result route. */
@@ -72,30 +72,30 @@ export const CourseMockInterviewResultPageBase = (input: CourseMockInterviewResu
     const loading = input.state === "grading"
     const ready = input.state === "ready"
     const action = [
-        defineLeafComponent("button", {}, () => (
+        createLeafNode("button", {}, () => (
             <Button props={{ label: input.props.newSessionLabel, variant: "primary" }} on={{ press: input.on?.newSession }} />
         )),
         ...(ready ? [] : [
-            defineLeafComponent("button", {}, () => (
+            createLeafNode("button", {}, () => (
                 <Button props={{ label: input.props.retryLabel, variant: "outline" }} on={{ press: input.on?.retry }} />
             )),
         ]),
     ]
 
     return (
-        <Tree
+        <Grammar
             contract="course-mock-interview-result-page"
-            render={defineContractComponent("course-mock-interview-result-page", {
-                header: defineContractComponent("centred-title-pair", {
-                    title: defineLeafComponent("heading", {}, () => (
+            render={createGrammarNode("course-mock-interview-result-page", {
+                header: createGrammarNode("centred-title-pair", {
+                    title: createLeafNode("heading", {}, () => (
                         <Heading props={{ content: input.props.title, level: 1 }} isLoading={loading} />
                     )),
-                    description: defineLeafComponent("text", { size: "sm" }, () => (
+                    description: createLeafNode("text", { size: "sm" }, () => (
                         <Text props={{ content: input.props.description, size: "sm", tone: "muted" }} isLoading={loading} />
                     )),
                 }),
                 ...(input.state === "failed" ? {
-                    notice: defineCompositeComponent("empty-notice", {}, () => (
+                    notice: createCompositeNode("empty-notice", {}, () => (
                         <EmptyNotice
                             props={{ message: input.props.failedLabel, actionLabel: input.props.retryLabel }}
                             on={{ act: input.on?.retry }}
@@ -103,32 +103,32 @@ export const CourseMockInterviewResultPageBase = (input: CourseMockInterviewResu
                     )),
                 } : {}),
                 ...(input.state === "grading" ? {
-                    notice: defineCompositeComponent("empty-notice", {}, () => (
+                    notice: createCompositeNode("empty-notice", {}, () => (
                         <EmptyNotice props={{ message: input.props.gradingLabel }} />
                     )),
-                    grading: defineLeafComponent("progress", {}, () => (
+                    grading: createLeafNode("progress", {}, () => (
                         <Progress props={{ label: input.props.gradingLabel }} isLoading />
                     )),
                 } : {}),
                 ...(ready ? {
-                    scoreLabel: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+                    scoreLabel: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                         <Text props={{ content: input.props.scoreLabel, size: "xs", tone: "muted" }} />
                     )),
-                    score: defineLeafComponent("heading", {}, () => (
+                    score: createLeafNode("heading", {}, () => (
                         <Heading props={{ content: `${input.props.score ?? 0}/100`, level: 1 }} />
                     )),
-                    verdict: defineContractComponent("centred-title-pair", {
-                        title: defineLeafComponent("heading", {}, () => (
+                    verdict: createGrammarNode("centred-title-pair", {
+                        title: createLeafNode("heading", {}, () => (
                             <Heading props={{ content: input.props.verdict, level: 2 }} />
                         )),
-                        description: defineLeafComponent("text", { size: "sm" }, () => (
+                        description: createLeafNode("text", { size: "sm" }, () => (
                             <Text props={{ content: input.props.promptTitle, size: "sm", tone: "muted" }} />
                         )),
                     }),
-                    phaseTitle: defineLeafComponent("heading", {}, () => (
+                    phaseTitle: createLeafNode("heading", {}, () => (
                         <Heading props={{ content: input.props.phaseTitle, level: 2 }} />
                     )),
-                    phase: input.props.phases.map((item) => defineCompositeComponent("labelled-progress-row", {}, () => (
+                    phase: input.props.phases.map((item) => createCompositeNode("labelled-progress-row", {}, () => (
                         <LabelledProgressRow
                             props={{
                                 id: item.id,
@@ -138,23 +138,23 @@ export const CourseMockInterviewResultPageBase = (input: CourseMockInterviewResu
                             }}
                         />
                     ))),
-                    strengthsTitle: defineLeafComponent("heading", {}, () => (
+                    strengthsTitle: createLeafNode("heading", {}, () => (
                         <Heading props={{ content: input.props.strengthsTitle, level: 2 }} />
                     )),
-                    strength: input.props.strengths.map((item) => defineLeafComponent("text", { size: "sm" }, () => (
+                    strength: input.props.strengths.map((item) => createLeafNode("text", { size: "sm" }, () => (
                         <Text props={{ content: item, size: "sm" }} />
                     ))),
-                    gapsTitle: defineLeafComponent("heading", {}, () => (
+                    gapsTitle: createLeafNode("heading", {}, () => (
                         <Heading props={{ content: input.props.gapsTitle, level: 2 }} />
                     )),
-                    gap: input.props.gaps.map((item) => defineLeafComponent("text", { size: "sm" }, () => (
+                    gap: input.props.gaps.map((item) => createLeafNode("text", { size: "sm" }, () => (
                         <Text props={{ content: item, size: "sm" }} />
                     ))),
                     ...(input.props.reviews.length === 0 ? {} : {
-                        reviewsTitle: defineLeafComponent("heading", {}, () => (
+                        reviewsTitle: createLeafNode("heading", {}, () => (
                             <Heading props={{ content: input.props.reviewsTitle, level: 2 }} />
                         )),
-                        review: input.props.reviews.map((item) => defineCompositeComponent("evidence-row", {}, () => (
+                        review: input.props.reviews.map((item) => createCompositeNode("evidence-row", {}, () => (
                             <EvidenceRow
                                 props={{
                                     title: `${item.title}: ${item.answer}`,

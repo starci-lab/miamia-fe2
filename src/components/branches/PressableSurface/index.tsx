@@ -1,5 +1,5 @@
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import type { ContractKey } from "@/components/contracts"
 import type { ContractComponent } from "@/components/contracts/props"
 
@@ -90,7 +90,7 @@ export const PressableSurface = <const K extends ContractKey>({
         >
             {isRaised
                 ? <SurfaceCard contract={contract} render={render} />
-                : <Tree contract={contract} render={render} />}
+                : <Grammar contract={contract} render={render} />}
         </button>
     )
 

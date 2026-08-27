@@ -1,9 +1,9 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
 import { ProfileMetric } from "@/components/composites/ProfileMetric"
 import { LabelledProgressRow } from "@/components/composites/LabelledProgressRow"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
-import { defineCompositeComponent, defineContractComponent, defineContractProjection } from "@/components/contracts/props"
+import { createCompositeNode, createGrammarNode, createGrammarProjection } from "@/components/contracts/props"
 
 /** Stateful private-progress contract consumed by the pure snapshot block. */
 export type LearnerProgressSnapshotProps = {
@@ -24,8 +24,8 @@ export type LearnerProgressSnapshotProps = {
 /** Renders authenticated totals without exposing them to a visitor route. */
 export const LearnerProgressSnapshot = (input: LearnerProgressSnapshotProps) => {
     const loading = input.state === "pending"
-    const metrics = defineContractComponent("profile-metric-ribbon", {
-        metric: input.props.metricLabels.map((label, index) => defineCompositeComponent("profile-metric", {}, () => (
+    const metrics = createGrammarNode("profile-metric-ribbon", {
+        metric: input.props.metricLabels.map((label, index) => createCompositeNode("profile-metric", {}, () => (
             <ProfileMetric props={{ label, value: input.props.metricValues?.[index] }} isLoading={loading} />
         ))),
     })
@@ -33,13 +33,13 @@ export const LearnerProgressSnapshot = (input: LearnerProgressSnapshotProps) => 
         <SurfaceCard
             props={{ label: input.props.title }}
             contract="learner-progress-snapshot"
-            render={defineContractComponent("learner-progress-snapshot", {
+            render={createGrammarNode("learner-progress-snapshot", {
                 metrics,
-                level: defineCompositeComponent("labelled-progress-row", {}, () => (
+                level: createCompositeNode("labelled-progress-row", {}, () => (
                     <LabelledProgressRow props={{ id: "level", title: input.props.levelLabel, percent: input.props.levelPercent, percentText: input.props.levelFact }} isLoading={loading} />
                 )),
-                ...(input.state === "failed" ? { notice: defineContractProjection("centred-empty-notice", () => (
-                    <Tree contract="centred-empty-notice" render={defineContractComponent("centred-empty-notice", { notice: defineCompositeComponent("empty-notice", {}, () => <EmptyNotice props={{ message: input.props.failedMessage, actionLabel: input.props.retryLabel }} on={{ act: input.on?.retry }} />) })} />
+                ...(input.state === "failed" ? { notice: createGrammarProjection("centred-empty-notice", () => (
+                    <Grammar contract="centred-empty-notice" render={createGrammarNode("centred-empty-notice", { notice: createCompositeNode("empty-notice", {}, () => <EmptyNotice props={{ message: input.props.failedMessage, actionLabel: input.props.retryLabel }} on={{ act: input.on?.retry }} />) })} />
                 )) } : {}),
             })}
         />

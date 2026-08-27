@@ -1,6 +1,6 @@
 import { Link as HeroLink, skeletonVariants } from "@heroui/react"
 import { Icon } from "@/components/leaves/Icon"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `SeeMoreLink`: the way out of a section, drawn at the end of its label line.
@@ -30,8 +30,8 @@ export type SeeMoreLinkActions = {
     readonly press?: () => void
 }
 
-/** Props for {@link SeeMoreLink}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type SeeMoreLinkProps = LeafProps<SeeMoreLinkData, SeeMoreLinkActions>
+/** Props for {@link SeeMoreLink}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type SeeMoreLinkProps = ComponentProps<SeeMoreLinkData, SeeMoreLinkActions>
 
 /** The line: never wraps, never grows, and carries the hover group the caret rides. */
 const LINE_CLASSES = "group inline-flex w-fit shrink-0 cursor-pointer items-center gap-1 text-sm font-semibold text-accent-soft-foreground no-underline"

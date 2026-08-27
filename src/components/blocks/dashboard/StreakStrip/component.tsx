@@ -6,9 +6,9 @@ import { Button } from "@/components/leaves/Button"
 import { Text } from "@/components/leaves/Text"
 import type { DayCellData } from "@/components/leaves/DayCell"
 import {
-    defineCompositeComponent,
-    defineContractComponent,
-    defineLeafComponent,
+    createCompositeNode,
+    createGrammarNode,
+    createLeafNode,
 } from "@/components/contracts/props"
 
 /**
@@ -16,12 +16,12 @@ import {
  *
  * The last seven days as a run of columns, beside the production prompt or compact streak result.
  *
- * THE STATE PICKS THE TREE, AND THAT IS ALL A STATE IS. `failed` draws a notice; `pending` and
+ * THE STATE PICKS THE Grammar, AND THAT IS ALL A STATE IS. `failed` draws a notice; `pending` and
  * `ready` draw the same card, one of them resting. Zero activity is DATA for that same week, not a
  * reason to replace seven days and their readout with a giant empty notice.
  *
- * `isLoading` IS WRITTEN HERE AND NOWHERE ABOVE. This is the seam: the block decides which tree a
- * situation deserves, and when the situation is "not settled yet" it picks the tree it would have
+ * `isLoading` IS WRITTEN HERE AND NOWHERE ABOVE. This is the seam: the block decides which Grammar a
+ * situation deserves, and when the situation is "not settled yet" it picks the Grammar it would have
  * shown and hands it the flag.
  */
 
@@ -78,7 +78,7 @@ export const StreakStripBase = (input: StreakStripInput) => {
     if (input.state === "failed") {
         return (
             <SurfaceCard props={{ label: input.props.label }} contract="empty-notice-card"
-                render={defineContractComponent("empty-notice-card", { notice: defineCompositeComponent("empty-notice", {}, () => <EmptyNotice
+                render={createGrammarNode("empty-notice-card", { notice: createCompositeNode("empty-notice", {}, () => <EmptyNotice
                     props={{ icon: "streak", message: input.props.message, actionLabel: input.props.retryLabel }}
                     on={{ act: input.on?.retry }}
                 />) })} />
@@ -89,21 +89,21 @@ export const StreakStripBase = (input: StreakStripInput) => {
     const hasActivity = input.state === "ready"
         && (input.props.streak > 0 || input.props.days.some((day) => day.active === true))
     const activeToday = input.state === "ready" && input.props.days.at(-1)?.active === true
-    // Legacy keeps the settled tree's active-side skeleton while the weekly stats are pending.
+    // Legacy keeps the settled Grammar's active-side skeleton while the weekly stats are pending.
     const showActiveCluster = isLoading || hasActivity
     const promptMessage = input.state === "ready" ? input.props.emptyMessage : input.props.message
 
     const outcome = showActiveCluster
-        ? defineContractComponent("streak-active-summary", {
-            current: defineLeafComponent("text", { size: "sm", weight: "medium" }, () => (
+        ? createGrammarNode("streak-active-summary", {
+            current: createLeafNode("text", { size: "sm", weight: "medium" }, () => (
                 <Text props={{ content: input.state === "ready" ? input.props.current : undefined, size: "sm", weight: "medium" }} isLoading={isLoading} />
             )),
-            record: defineLeafComponent("badge", {}, () => (
+            record: createLeafNode("badge", {}, () => (
                 <Badge props={{ content: input.state === "ready" ? input.props.record : "", tone: "accent" }} isLoading={isLoading} />
             )),
         })
-        : defineContractComponent("streak-empty-prompt", {
-            message: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+        : createGrammarNode("streak-empty-prompt", {
+            message: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                 <Text
                     props={{
                         content: promptMessage,
@@ -113,7 +113,7 @@ export const StreakStripBase = (input: StreakStripInput) => {
                     isLoading={isLoading}
                 />
             )),
-            action: defineLeafComponent("button", { size: "sm", variant: "primary" }, () => (
+            action: createLeafNode("button", { size: "sm", variant: "primary" }, () => (
                 <Button
                     props={{ label: input.props.actionLabel, size: "sm", variant: "primary" }}
                     on={{ press: input.on?.learn }}
@@ -126,9 +126,9 @@ export const StreakStripBase = (input: StreakStripInput) => {
         <SurfaceCard
             props={{ label: input.props.label }}
             contract="streak-summary-card"
-            render={defineContractComponent("streak-summary-card", {
-                summary: defineContractComponent("streak-week-with-outcome", {
-                    week: defineCompositeComponent("streak-week-run", {}, () => (
+            render={createGrammarNode("streak-summary-card", {
+                summary: createGrammarNode("streak-week-with-outcome", {
+                    week: createCompositeNode("streak-week-run", {}, () => (
                         <StreakWeekRun
                             props={{ days }}
                             isLoading={isLoading}
@@ -137,11 +137,11 @@ export const StreakStripBase = (input: StreakStripInput) => {
                     outcome,
                 }),
                 ...(hasActivity && !activeToday && input.state === "ready" ? {
-                    nudge: defineContractComponent("streak-daily-nudge", {
-                        message: defineLeafComponent("text", { size: "sm", weight: "medium" }, () => (
+                    nudge: createGrammarNode("streak-daily-nudge", {
+                        message: createLeafNode("text", { size: "sm", weight: "medium" }, () => (
                             <Text props={{ content: input.props.nudge, size: "sm", weight: "medium" }} />
                         )),
-                        action: defineLeafComponent("button", { size: "sm", variant: "primary" }, () => (
+                        action: createLeafNode("button", { size: "sm", variant: "primary" }, () => (
                             <Button
                                 props={{ label: input.props.actionLabel, size: "sm", variant: "primary" }}
                                 on={{ press: input.on?.learn }}

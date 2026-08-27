@@ -1,7 +1,7 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import {
-    defineContractComponent,
-    defineContractProjection,
+    createGrammarNode,
+    createGrammarProjection,
 } from "@/components/contracts/props"
 import {
     JudgeStatusStripBase,
@@ -78,25 +78,25 @@ export type CodingProblemPageProps = {
  * @param input - {@link CodingProblemPageProps}
  */
 export const CodingProblemPageBase = (input: CodingProblemPageProps) => (
-    <Tree
+    <Grammar
         contract="coding-problem-page"
-        render={defineContractComponent("coding-problem-page", {
-            reading: defineContractProjection("problem-reading-column", () => (
+        render={createGrammarNode("coding-problem-page", {
+            reading: createGrammarProjection("problem-reading-column", () => (
                 <ProblemReadingColumnBase
                     state={input.props.reading.state}
                     props={input.props.reading.props}
                     on={{ selectTab: input.on?.selectTab }}
                 />
             )),
-            work: defineContractComponent("problem-work-column", {
-                verdict: defineContractProjection("judge-status-strip", () => (
+            work: createGrammarNode("problem-work-column", {
+                verdict: createGrammarProjection("judge-status-strip", () => (
                     <JudgeStatusStripBase
                         state={input.props.verdict.state}
                         props={input.props.verdict.props}
                         on={{ act: input.on?.verdictAct }}
                     />
                 )),
-                work: defineContractProjection("editor-over-console", () => (
+                work: createGrammarProjection("editor-over-console", () => (
                     <SolutionEditorBase
                         state={input.props.editor.state}
                         props={input.props.editor.props}

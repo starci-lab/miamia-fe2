@@ -1,6 +1,6 @@
 import { Checkbox as HeroCheckbox } from "@heroui/react"
 import { TextLink } from "@/components/leaves/TextLink"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `Checkbox`: a choice the reader makes about the form around it.
@@ -38,8 +38,8 @@ export type CheckboxActions = {
     readonly follow?: (id: string) => void
 }
 
-/** Props for {@link Checkbox}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type CheckboxProps = LeafProps<CheckboxData, CheckboxActions>
+/** Props for {@link Checkbox}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type CheckboxProps = ComponentProps<CheckboxData, CheckboxActions>
 
 /** The tick and its words on one baseline, with the whole row pressable. */
 const ROOT_CLASSES = "flex flex-row items-center gap-2 text-sm"

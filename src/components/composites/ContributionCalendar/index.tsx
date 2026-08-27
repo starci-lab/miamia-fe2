@@ -1,11 +1,11 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { ChoiceTabs } from "@/components/leaves/ChoiceTabs"
 import { ContributionGrid } from "@/components/leaves/ContributionGrid"
 import { ContributionIntensityLegend } from "@/components/leaves/ContributionIntensityLegend"
 import { Text } from "@/components/leaves/Text"
 import {
-    defineContractComponent,
-    defineLeafComponent,
+    createGrammarNode,
+    createLeafNode,
     type CompositeProps,
 } from "@/components/contracts/props"
 
@@ -39,11 +39,11 @@ export type ContributionCalendarProps = CompositeProps<ContributionCalendarData,
 
 /** Draw the fixed year summary, intrinsic plot and its reading key. */
 export const ContributionCalendar = ({ props, on, isLoading = false }: ContributionCalendarProps) => {
-    const heading = defineContractComponent("contribution-calendar-heading-row", {
-        total: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+    const heading = createGrammarNode("contribution-calendar-heading-row", {
+        total: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
             <Text props={{ content: props.totalLabel, size: "xs", tone: "muted" }} isLoading={isLoading} />
         )),
-        years: defineLeafComponent("choice-tabs", {}, () => (
+        years: createLeafNode("choice-tabs", {}, () => (
             <ChoiceTabs
                 props={{
                     label: props.totalLabel ?? "",
@@ -54,20 +54,20 @@ export const ContributionCalendar = ({ props, on, isLoading = false }: Contribut
             />
         )),
     })
-    const footer = defineContractComponent("contribution-calendar-footer-row", {
-        streak: defineLeafComponent("text", { size: "sm" }, () => (
+    const footer = createGrammarNode("contribution-calendar-footer-row", {
+        streak: createLeafNode("text", { size: "sm" }, () => (
             <Text props={{ content: props.streakLabel, size: "sm" }} isLoading={isLoading} />
         )),
-        intensity: defineLeafComponent("contribution-intensity-legend", {}, () => (
+        intensity: createLeafNode("contribution-intensity-legend", {}, () => (
             <ContributionIntensityLegend
                 props={{ lessLabel: props.lessLabel, moreLabel: props.moreLabel }}
                 isLoading={isLoading}
             />
         )),
     })
-    const content = defineContractComponent("contribution-calendar-stack", {
+    const content = createGrammarNode("contribution-calendar-stack", {
         heading,
-        grid: defineLeafComponent("contribution-grid", {}, () => (
+        grid: createLeafNode("contribution-grid", {}, () => (
             <ContributionGrid
                 props={{
                     year: props.year,
@@ -81,7 +81,7 @@ export const ContributionCalendar = ({ props, on, isLoading = false }: Contribut
         footer,
     })
 
-    return <Tree contract="contribution-calendar-stack" render={content} />
+    return <Grammar contract="contribution-calendar-stack" render={content} />
 }
 
 /** Source-level tier marker for the fixed contribution calendar composition. */

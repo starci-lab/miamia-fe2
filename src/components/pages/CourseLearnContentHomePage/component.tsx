@@ -1,8 +1,8 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { CurriculumModuleRow } from "@/components/leaves/CurriculumModuleRow"
 import { Heading } from "@/components/leaves/Heading"
 import { Text } from "@/components/leaves/Text"
-import { defineContractComponent, defineLeafComponent } from "@/components/contracts/props"
+import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
 import type { CourseModule } from "@/modules/api/graphql/queries/types/course"
 
 /** Resolved copy owned by the Modules landing page. */
@@ -28,18 +28,18 @@ export type CourseLearnContentHomeProps = {
 export const CourseLearnContentHomePageBase = (input: CourseLearnContentHomeProps) => {
     const loading = input.state === "pending"
     return (
-        <Tree contract="course-learn-content-home-page" render={defineContractComponent("course-learn-content-home-page", {
-            title: defineLeafComponent("heading", {}, () => (
+        <Grammar contract="course-learn-content-home-page" render={createGrammarNode("course-learn-content-home-page", {
+            title: createLeafNode("heading", {}, () => (
                 <Heading props={{ content: input.title ?? input.labels.title, level: 1 }} isLoading={loading} />
             )),
-            description: defineLeafComponent("text", { size: "sm" }, () => (
+            description: createLeafNode("text", { size: "sm" }, () => (
                 <Text props={{ content: input.description ?? input.labels.description, size: "sm" }} isLoading={loading} />
             )),
-            modulesTitle: input.state === "failed" ? undefined : defineLeafComponent("heading", {}, () => (
+            modulesTitle: input.state === "failed" ? undefined : createLeafNode("heading", {}, () => (
                 <Heading props={{ content: input.labels.modules, level: 2 }} />
             )),
             module: input.state === "failed" ? [] : (input.modules ?? []).map((module) => (
-                defineLeafComponent("curriculum-module-row", {}, () => (
+                createLeafNode("curriculum-module-row", {}, () => (
                     <CurriculumModuleRow
                         props={{ title: module.title, levelLabel: module.contentTier, previewLabel: `${module.numContents}` }}
                         isLoading={loading}

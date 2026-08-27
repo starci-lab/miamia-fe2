@@ -1,10 +1,10 @@
 import { Button } from "@/components/leaves/Button"
 import { StatusDot, type StatusDotTone } from "@/components/leaves/StatusDot"
 import { Text } from "@/components/leaves/Text"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import {
-    defineContractComponent,
-    defineLeafComponent,
+    createGrammarNode,
+    createLeafNode,
     type BlockProps,
 } from "@/components/contracts/props"
 
@@ -94,10 +94,10 @@ export type JudgeStatusStripProps =
  * @param input - {@link JudgeStatusStripProps}
  */
 export const JudgeStatusStripBase = (input: JudgeStatusStripProps) => (
-    <Tree
+    <Grammar
         contract="judge-status-strip"
-        render={defineContractComponent("judge-status-strip", {
-            mark: defineLeafComponent("status-dot", {}, () => (
+        render={createGrammarNode("judge-status-strip", {
+            mark: createLeafNode("status-dot", {}, () => (
                 <StatusDot
                     props={{
                         tone: VERDICT_TONE[input.state],
@@ -105,14 +105,14 @@ export const JudgeStatusStripBase = (input: JudgeStatusStripProps) => (
                     }}
                 />
             )),
-            verdict: defineLeafComponent("text", { size: "sm", weight: "semibold" }, () => (
+            verdict: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
                 <Text props={{ content: input.props.verdictLabel, size: "sm", weight: "semibold" }} />
             )),
-            detail: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+            detail: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                 <Text props={{ content: input.props.detailLabel, size: "xs", tone: "muted" }} />
             )),
             ...(input.props.actionLabel === undefined ? {} : {
-                action: defineLeafComponent("button", {}, () => (
+                action: createLeafNode("button", {}, () => (
                     <Button
                         props={{
                             label: input.props.actionLabel ?? "",

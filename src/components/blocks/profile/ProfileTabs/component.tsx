@@ -1,6 +1,6 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { ExtendedTabs, type ExtendedTab } from "@/components/leaves/ExtendedTabs"
-import { defineContractComponent, defineLeafComponent } from "@/components/contracts/props"
+import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
 
 /** Route-derived public-profile destinations resolved by the persistent layout. */
 export type ProfileTabsData = {
@@ -17,8 +17,8 @@ type ProfileTabsInput = { readonly props: ProfileTabsData, readonly on?: Profile
 
 /** Draw profile-owned route chrome without borrowing the global navbar owner. */
 export const ProfileTabsBase = (input: ProfileTabsInput) => (
-    <Tree contract="underlined-tab-strip" render={defineContractComponent("underlined-tab-strip", {
-        tabs: defineLeafComponent("extended-tabs", {}, () => (
+    <Grammar contract="underlined-tab-strip" render={createGrammarNode("underlined-tab-strip", {
+        tabs: createLeafNode("extended-tabs", {}, () => (
             <ExtendedTabs props={input.props} on={{ select: input.on?.select }} />
         )),
     })} />

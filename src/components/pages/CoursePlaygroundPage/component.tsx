@@ -1,9 +1,9 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Heading } from "@/components/leaves/Heading"
 import { NavLink } from "@/components/leaves/NavLink"
 import { Text } from "@/components/leaves/Text"
-import { defineCompositeComponent, defineContractComponent, defineLeafComponent } from "@/components/contracts/props"
+import { createCompositeNode, createGrammarNode, createLeafNode } from "@/components/contracts/props"
 import type { PlaygroundSummary } from "@/modules/api/graphql/queries/query-playgrounds"
 
 /** Catalog states exposed by the pure playground hub. */
@@ -34,7 +34,7 @@ export const CoursePlaygroundPageBase = (input: CoursePlaygroundPageProps) => {
         ? Array.from({ length: 4 }, (_, index) => ({ id: `pending-${index}`, slug: `pending-${index}`, title: "", icon: null, stepCount: 0 }))
         : input.props.playgrounds
     const notice = input.state === "empty" || input.state === "failed"
-        ? defineCompositeComponent("empty-notice", {}, () => (
+        ? createCompositeNode("empty-notice", {}, () => (
             <EmptyNotice
                 props={{
                     message: input.state === "failed" ? input.props.failedText : input.props.emptyText,
@@ -46,16 +46,16 @@ export const CoursePlaygroundPageBase = (input: CoursePlaygroundPageProps) => {
         : undefined
 
     return (
-        <Tree contract="course-playground-page" render={defineContractComponent("course-playground-page", {
-            header: defineContractComponent("page-header-stack", {
-                title: defineLeafComponent("heading", {}, () => (
+        <Grammar contract="course-playground-page" render={createGrammarNode("course-playground-page", {
+            header: createGrammarNode("page-header-stack", {
+                title: createLeafNode("heading", {}, () => (
                     <Heading props={{ content: input.props.title, level: 1 }} isLoading={loading} />
                 )),
             }),
-            description: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+            description: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                 <Text props={{ content: input.props.description, size: "sm", tone: "muted" }} isLoading={loading} />
             )),
-            playground: rows.map((playground) => defineLeafComponent("nav-link", { kind: "section" }, () => (
+            playground: rows.map((playground) => createLeafNode("nav-link", { kind: "section" }, () => (
                 <NavLink
                     props={{ label: `${playground.title} · ${playground.stepCount} ${input.props.stepLabel}`, kind: "section" }}
                     on={{ press: () => input.on.openSetup(playground.slug) }}

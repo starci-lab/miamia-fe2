@@ -1,3 +1,4 @@
+import { CLASS_NAME_1 } from './styles'
 import {
     AcademicCapIcon,
     ArrowPathIcon,
@@ -82,7 +83,7 @@ import {
 } from "@heroicons/react/16/solid"
 import type { ComponentType, SVGProps } from "react"
 import { GithubMark, GoogleMark } from "./brands"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `Icon`: the picture a word needs when the word alone is slower to find.
@@ -123,8 +124,8 @@ export type IconData = {
     readonly role?: IconRole
 }
 
-/** Props for {@link Icon}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type IconProps = LeafProps<IconData>
+/** Props for {@link Icon}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type IconProps = ComponentProps<IconData>
 
 /**
  * The meaning-to-glyph map. The only file in the repository that names a Heroicon.
@@ -229,7 +230,7 @@ export const Icon = ({ props, isLoading = false }: IconProps) => {
     const role = props.role ?? "chip"
     const Glyph = glyph[role]
     if (isLoading) {
-        return <span aria-hidden="true" data-tier="leaf" data-component="Icon" className="size-5 shrink-0 animate-pulse rounded-full bg-default" />
+        return <span aria-hidden="true" data-tier="leaf" data-component="Icon" className={CLASS_NAME_1} />
     }
     const className = props.name === "complete"
         ? `${ROLE_CLASSES[role]} text-success-soft-foreground`

@@ -1,12 +1,12 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Button } from "@/components/leaves/Button"
 import { Heading } from "@/components/leaves/Heading"
 import { Text } from "@/components/leaves/Text"
 import {
-    defineCompositeComponent,
-    defineContractComponent,
-    defineLeafComponent,
+    createCompositeNode,
+    createGrammarNode,
+    createLeafNode,
 } from "@/components/contracts/props"
 import type { FlashcardSessionMode } from "@/modules/api/graphql/queries/query-my-in-progress-flashcard-session"
 
@@ -59,66 +59,66 @@ export const CourseFlashcardResultPageBase = (input: CourseFlashcardResultPagePr
         [data.xpLabel, data.xpText],
         [data.durationLabel, data.durationText],
     ] as const
-    const header = defineContractComponent("centred-title-pair", {
-        title: defineLeafComponent("heading", {}, () => (
+    const header = createGrammarNode("centred-title-pair", {
+        title: createLeafNode("heading", {}, () => (
             <Heading props={{ content: data.title, level: 1 }} isLoading={isLoading} />
         )),
-        description: defineLeafComponent("text", { size: "sm" }, () => (
+        description: createLeafNode("text", { size: "sm" }, () => (
             <Text props={{ content: data.subtitle, size: "sm", tone: "muted" }} isLoading={isLoading} />
         )),
     })
     const stats = state === "failed"
         ? undefined
-        : statValues.map(([label, value]) => defineContractComponent("flashcard-result-stat", {
-            label: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+        : statValues.map(([label, value]) => createGrammarNode("flashcard-result-stat", {
+            label: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                 <Text props={{ content: label, size: "xs" }} isLoading={isLoading} />
             )),
-            value: defineLeafComponent("heading", {}, () => (
+            value: createLeafNode("heading", {}, () => (
                 <Heading props={{ content: value, level: 2 }} isLoading={isLoading} />
             )),
         }))
     const nextDue = state === "ready" && data.nextDueText !== undefined
-        ? defineContractComponent("centred-title-pair", {
-            title: defineLeafComponent("heading", {}, () => (
+        ? createGrammarNode("centred-title-pair", {
+            title: createLeafNode("heading", {}, () => (
                 <Heading props={{ content: data.nextDueLabel, level: 3 }} />
             )),
-            description: defineLeafComponent("text", { size: "sm" }, () => (
+            description: createLeafNode("text", { size: "sm" }, () => (
                 <Text props={{ content: data.nextDueText, size: "sm", weight: "semibold" }} />
             )),
         })
         : undefined
     const grades = state === "ready"
-        ? data.gradeRows.map((row) => defineContractComponent("flashcard-result-fact-row", {
-            label: defineLeafComponent("text", { size: "sm", weight: "medium" }, () => (
+        ? data.gradeRows.map((row) => createGrammarNode("flashcard-result-fact-row", {
+            label: createLeafNode("text", { size: "sm", weight: "medium" }, () => (
                 <Text props={{ content: row.label, size: "sm", weight: "medium" }} />
             )),
-            value: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+            value: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                 <Text props={{ content: row.value.toString(), size: "sm", tone: "muted" }} />
             )),
         }))
         : undefined
     const weakTopics = state === "ready"
-        ? data.weakTopics.map((topic) => defineContractComponent("flashcard-result-fact-row", {
-            label: defineLeafComponent("text", { size: "sm", weight: "medium" }, () => (
+        ? data.weakTopics.map((topic) => createGrammarNode("flashcard-result-fact-row", {
+            label: createLeafNode("text", { size: "sm", weight: "medium" }, () => (
                 <Text props={{ content: topic.tag, size: "sm", weight: "medium" }} />
             )),
-            value: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+            value: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                 <Text props={{ content: topic.value, size: "sm", tone: "muted" }} />
             )),
         }))
         : undefined
     const actions = state === "ready"
         ? [
-            defineLeafComponent("button", {}, () => (
+            createLeafNode("button", {}, () => (
                 <Button props={{ label: data.backLabel, variant: "outline" }} on={{ press: on.back }} />
             )),
-            defineLeafComponent("button", {}, () => (
+            createLeafNode("button", {}, () => (
                 <Button props={{ label: data.retrySessionLabel, variant: "primary" }} on={{ press: on.retrySession }} />
             )),
         ]
         : undefined
     const notice = state === "failed"
-        ? defineCompositeComponent("empty-notice", {}, () => (
+        ? createCompositeNode("empty-notice", {}, () => (
             <EmptyNotice
                 props={{ message: data.failedText, actionLabel: data.retryLabel }}
                 on={{ act: on.retryLoad }}
@@ -127,21 +127,21 @@ export const CourseFlashcardResultPageBase = (input: CourseFlashcardResultPagePr
         : undefined
 
     return (
-        <Tree contract="course-flashcard-result-page" render={defineContractComponent("course-flashcard-result-page", {
-            mode: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+        <Grammar contract="course-flashcard-result-page" render={createGrammarNode("course-flashcard-result-page", {
+            mode: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                 <Text props={{ content: data.mode === "review" ? "Review" : "Quiz", size: "sm", tone: "muted" }} />
             )),
             header,
             stat: stats,
             nextDue,
             breakdownTitle: state === "ready" && data.gradeRows.length > 0
-                ? defineLeafComponent("heading", {}, () => (
+                ? createLeafNode("heading", {}, () => (
                     <Heading props={{ content: data.breakdownTitle, level: 2 }} />
                 ))
                 : undefined,
             grade: grades,
             weakTopicsTitle: state === "ready" && data.weakTopics.length > 0
-                ? defineLeafComponent("heading", {}, () => (
+                ? createLeafNode("heading", {}, () => (
                     <Heading props={{ content: data.weakTopicsTitle, level: 2 }} />
                 ))
                 : undefined,

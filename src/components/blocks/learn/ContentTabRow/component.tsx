@@ -1,6 +1,6 @@
 import { ChoiceTabs } from "@/components/leaves/ChoiceTabs"
 import type { IconName } from "@/components/leaves/Icon"
-import { defineContractComponent, defineLeafComponent } from "@/components/contracts/props"
+import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
 
 /**
  * BLOCK - `ContentTabRow`: the content's two tab axes on one row.
@@ -82,10 +82,10 @@ const selectFace = (
  * @param on - {@link ContentTabRowActions}
  */
 export const contentTabRow = (props: ContentTabRowData, on?: ContentTabRowActions) =>
-    defineContractComponent("dual-tabs-toolbar", {
+    createGrammarNode("dual-tabs-toolbar", {
         // The faces are a PANEL switch, so they take the segmented pill rather than the filter
         // underline: pressing one replaces what is being read rather than narrowing it.
-        leading: defineLeafComponent("choice-tabs", {}, () => (
+        leading: createLeafNode("choice-tabs", {}, () => (
             <ChoiceTabs
                 props={{
                     label: props.facesLabel,
@@ -100,7 +100,7 @@ export const contentTabRow = (props: ContentTabRowData, on?: ContentTabRowAction
                 on={{ select: (faceId) => selectFace(props.faces, on, faceId) }}
             />
         )),
-        trailing: defineLeafComponent("choice-tabs", {}, () => (
+        trailing: createLeafNode("choice-tabs", {}, () => (
             <ChoiceTabs
                 props={{
                     label: props.languagesLabel ?? "",

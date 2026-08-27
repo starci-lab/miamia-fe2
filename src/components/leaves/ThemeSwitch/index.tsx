@@ -1,6 +1,6 @@
 import { Switch } from "@heroui/react"
 import { Icon } from "@/components/leaves/Icon"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /** Current appearance and accessible copy for the navbar switch. */
 export type ThemeSwitchData = {
@@ -14,7 +14,7 @@ export type ThemeSwitchActions = {
 }
 
 /** Fixed props for the light/dark switch. */
-export type ThemeSwitchProps = LeafProps<ThemeSwitchData, ThemeSwitchActions>
+export type ThemeSwitchProps = ComponentProps<ThemeSwitchData, ThemeSwitchActions>
 
 /** Draw the same native HeroUI switch used by the legacy navbar. */
 export const ThemeSwitch = ({ props, on }: ThemeSwitchProps) => (

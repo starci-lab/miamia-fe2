@@ -1,8 +1,8 @@
 import { CONTRACTS } from "@/components/contracts"
 import { SurfaceListCard, type SurfaceListCardData } from "@/components/branches/SurfaceListCard"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { TrendingContentRow, type TrendingContentRowData } from "@/components/composites/TrendingContentRow"
-import { defineCompositeComponent, defineContractComponent, type LeafProps } from "@/components/contracts/props"
+import { createCompositeNode, createGrammarNode, type ComponentProps } from "@/components/contracts/props"
 
 /** Label and ranked content rows drawn by the trending block. */
 export type TrendingContentsData = SurfaceListCardData & { readonly items: ReadonlyArray<TrendingContentRowData> }
@@ -12,15 +12,15 @@ export type TrendingContentsActions = { readonly [key: string]: (() => void) | u
 export type TrendingContentsProps = { readonly state: "pending" | "hidden" | "ready"; readonly props: TrendingContentsData; readonly on?: TrendingContentsActions }
 
 const COUNT = CONTRACTS["trending-content-list"].children.item.restingCount
-const TrendingListView = ({ props, on, isLoading = false }: LeafProps<TrendingContentsData, TrendingContentsActions>) => {
+const TrendingListView = ({ props, on, isLoading = false }: ComponentProps<TrendingContentsData, TrendingContentsActions>) => {
     const items = isLoading ? Array.from({ length: COUNT }, (_, index) => ({ id: `resting-${index}` })) : props.items
-    return <Tree contract="trending-content-list" render={defineContractComponent("trending-content-list", {
-        item: items.map((item) => defineCompositeComponent("trending-content-row", {}, () => (
+    return <Grammar contract="trending-content-list" render={createGrammarNode("trending-content-list", {
+        item: items.map((item) => createCompositeNode("trending-content-row", {}, () => (
             <TrendingContentRow props={item} on={{ open: on?.[item.id] }} isLoading={isLoading} />
         ))),
     })} />
 }
-const TrendingList = defineContractComponent("trending-content-list", TrendingListView)
+const TrendingList = createGrammarNode("trending-content-list", TrendingListView)
 
 /** Draw the ranked joined list while hiding settled absence. */
 export const TrendingContentsBase = (input: TrendingContentsProps) => input.state === "hidden" ? null : (

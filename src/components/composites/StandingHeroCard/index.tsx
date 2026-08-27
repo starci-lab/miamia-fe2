@@ -4,9 +4,9 @@ import { Button } from "@/components/leaves/Button"
 import { Progress } from "@/components/leaves/Progress"
 import { Text } from "@/components/leaves/Text"
 import {
-    defineCompositeComponent,
-    defineContractComponent,
-    defineLeafComponent,
+    createCompositeNode,
+    createGrammarNode,
+    createLeafNode,
     type CompositeProps,
 } from "@/components/contracts/props"
 
@@ -53,16 +53,16 @@ export type StandingHeroCardProps = CompositeProps<StandingHeroCardData, Standin
 export const StandingHeroCard = ({ props, on, isLoading = false }: StandingHeroCardProps) => {
     const progress = props.progress
     return (
-        <SurfaceCard contract="standing-hero-card" render={defineContractComponent("standing-hero-card", {
-            standing: defineCompositeComponent("leaderboard-standing-row", {}, () => (
+        <SurfaceCard contract="standing-hero-card" render={createGrammarNode("standing-hero-card", {
+            standing: createCompositeNode("leaderboard-standing-row", {}, () => (
                 <LeaderboardStandingRow props={props.standing} isLoading={isLoading} />
             )),
             ...(progress === undefined ? {} : {
-                goal: defineContractComponent("standing-goal-meter", {
-                    label: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+                goal: createGrammarNode("standing-goal-meter", {
+                    label: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                         <Text props={{ content: progress.label, size: "xs", tone: "muted" }} isLoading={isLoading} />
                     )),
-                    progress: defineLeafComponent("progress", {}, () => (
+                    progress: createLeafNode("progress", {}, () => (
                         <Progress
                             props={{
                                 value: Math.round(progress.ratio * 100),
@@ -73,7 +73,7 @@ export const StandingHeroCard = ({ props, on, isLoading = false }: StandingHeroC
                     )),
                 }),
             }),
-            action: defineLeafComponent("button", {}, () => (
+            action: createLeafNode("button", {}, () => (
                 <Button
                     props={{ label: props.ctaLabel, variant: "primary", size: "md" }}
                     on={{ press: on?.cta }}

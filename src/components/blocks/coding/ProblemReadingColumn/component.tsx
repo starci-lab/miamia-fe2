@@ -3,10 +3,10 @@ import { Badge } from "@/components/leaves/Badge"
 import { ExtendedTabs } from "@/components/leaves/ExtendedTabs"
 import { Heading } from "@/components/leaves/Heading"
 import { Text } from "@/components/leaves/Text"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import {
-    defineContractComponent,
-    defineLeafComponent,
+    createGrammarNode,
+    createLeafNode,
     type BlockProps,
 } from "@/components/contracts/props"
 
@@ -83,10 +83,10 @@ export const ProblemReadingColumnBase = (input: ProblemReadingColumnProps) => {
     const tags = input.props.tags ?? []
 
     return (
-        <Tree
+        <Grammar
             contract="problem-reading-column"
-            render={defineContractComponent("problem-reading-column", {
-                tabs: defineLeafComponent("extended-tabs", {}, () => (
+            render={createGrammarNode("problem-reading-column", {
+                tabs: createLeafNode("extended-tabs", {}, () => (
                     <ExtendedTabs
                         props={{
                             label: labels.group,
@@ -101,24 +101,24 @@ export const ProblemReadingColumnBase = (input: ProblemReadingColumnProps) => {
                         on={{ select: input.on?.selectTab }}
                     />
                 )),
-                body: defineContractComponent("problem-statement-stack", {
-                    heading: defineContractComponent("title-with-baseline-fact", {
-                        title: defineLeafComponent("heading", {}, () => (
+                body: createGrammarNode("problem-statement-stack", {
+                    heading: createGrammarNode("title-with-baseline-fact", {
+                        title: createLeafNode("heading", {}, () => (
                             <Heading props={{ content: input.props.title, level: 1 }} isLoading={isLoading} />
                         )),
-                        fact: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+                        fact: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                             <Text
                                 props={{ content: input.props.difficulty, size: "sm", tone: "muted" }}
                                 isLoading={isLoading}
                             />
                         )),
                     }),
-                    prose: defineLeafComponent("article", {}, () => (
+                    prose: createLeafNode("article", {}, () => (
                         <Article props={{ body: input.props.body }} isLoading={isLoading} />
                     )),
                     ...(tags.length === 0 ? {} : {
-                        tags: defineContractComponent("profile-topic-chip-run", {
-                            topic: tags.map((tag) => defineLeafComponent("badge", {}, () => (
+                        tags: createGrammarNode("profile-topic-chip-run", {
+                            topic: tags.map((tag) => createLeafNode("badge", {}, () => (
                                 <Badge props={{ content: tag, tone: "neutral" }} />
                             ))),
                         }),

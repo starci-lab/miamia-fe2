@@ -6,7 +6,7 @@ import {
     type CoursePriceDetailState,
     type CoursePriceLine,
 } from "@/components/blocks/courses/CoursePriceDetail/component"
-import { defineContractProjection } from "@/components/contracts/props"
+import { createGrammarProjection } from "@/components/contracts/props"
 import { useQueryCoursePricePreviewSwr } from "@/hooks"
 import { isPersonalPrice } from "@/modules/utils/course-price"
 import { CoursePriceOverlayBase } from "./component"
@@ -114,7 +114,7 @@ export const CoursePriceOverlay = ({ courseId, title, isOpen, onDismiss }: Cours
         <CoursePriceOverlayBase
             isOpen={isOpen}
             onDismiss={onDismiss}
-            render={defineContractProjection("course-price-detail-stack", () => (
+            render={createGrammarProjection("course-price-detail-stack", () => (
                 <CoursePriceDetailBase
                     state={state}
                     props={{

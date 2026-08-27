@@ -1,4 +1,4 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { ExamPaperCard, type ExamPaperCardData } from "@/components/composites/ExamPaperCard"
 import { Button } from "@/components/leaves/Button"
@@ -7,7 +7,7 @@ import { Heading } from "@/components/leaves/Heading"
 import { Pagination } from "@/components/leaves/Pagination"
 import { SearchBox } from "@/components/leaves/SearchBox"
 import { Text } from "@/components/leaves/Text"
-import { defineCompositeComponent, defineContractComponent, defineContractProjection, defineLeafComponent, type BlockProps } from "@/components/contracts/props"
+import { createCompositeNode, createGrammarNode, createGrammarProjection, createLeafNode, type BlockProps } from "@/components/contracts/props"
 
 /** One real paper collection shown in the catalogue selector. */
 export type ExamCollectionData = { readonly id: string; readonly label: string; readonly count: number }
@@ -28,36 +28,36 @@ export type ExamCatalogProps = BlockProps<"loading" | "failed" | "empty" | "read
 export const ExamCatalogBase = (input: ExamCatalogProps) => {
     const isLoading = input.state === "loading"
     const notice = input.state === "failed" || input.state === "empty"
-    return <Tree contract="exam-catalog-page" render={defineContractComponent("exam-catalog-page", {
-        header: defineContractComponent("page-header-stack", {
-            title: defineLeafComponent("heading", {}, () => <Heading props={{ content: input.props.title, level: 1 }} />),
+    return <Grammar contract="exam-catalog-page" render={createGrammarNode("exam-catalog-page", {
+        header: createGrammarNode("page-header-stack", {
+            title: createLeafNode("heading", {}, () => <Heading props={{ content: input.props.title, level: 1 }} />),
         }),
-        premium: defineContractComponent("premium-value-band", {
-            copy: defineContractComponent("premium-copy-stack", {
-                title: defineLeafComponent("heading", {}, () => <Heading props={{ content: input.props.premiumTitle, level: 2 }} />),
-                body: defineLeafComponent("text", {}, () => <Text props={{ content: input.props.premiumBody, tone: "muted" }} />),
+        premium: createGrammarNode("premium-value-band", {
+            copy: createGrammarNode("premium-copy-stack", {
+                title: createLeafNode("heading", {}, () => <Heading props={{ content: input.props.premiumTitle, level: 2 }} />),
+                body: createLeafNode("text", {}, () => <Text props={{ content: input.props.premiumBody, tone: "muted" }} />),
             }),
-            action: defineLeafComponent("button", {}, () => <Button props={{ label: input.props.premiumAction, variant: "primary" }} on={{ press: input.on?.requestPremium }} />),
+            action: createLeafNode("button", {}, () => <Button props={{ label: input.props.premiumAction, variant: "primary" }} on={{ press: input.on?.requestPremium }} />),
         }),
-        query: defineContractComponent("catalog-query-with-count", {
-            query: defineLeafComponent("search-box", {}, () => <SearchBox props={{ label: input.props.searchLabel, placeholder: input.props.searchPlaceholder, clearLabel: input.props.searchClearLabel }} on={{ search: input.on?.search }} />),
-            count: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: input.props.countLabel, size: "sm", tone: "muted" }} />),
+        query: createGrammarNode("catalog-query-with-count", {
+            query: createLeafNode("search-box", {}, () => <SearchBox props={{ label: input.props.searchLabel, placeholder: input.props.searchPlaceholder, clearLabel: input.props.searchClearLabel }} on={{ search: input.on?.search }} />),
+            count: createLeafNode("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: input.props.countLabel, size: "sm", tone: "muted" }} />),
         }),
-        collections: defineLeafComponent("choice-tabs", {}, () => <ChoiceTabs props={{ label: input.props.collectionLabel, selectedKey: input.props.selectedCollectionId, variant: "primary", tabs: input.props.collections.map((item) => ({ id: item.id, label: item.label })) }} on={{ select: input.on?.selectCollection }} />),
+        collections: createLeafNode("choice-tabs", {}, () => <ChoiceTabs props={{ label: input.props.collectionLabel, selectedKey: input.props.selectedCollectionId, variant: "primary", tabs: input.props.collections.map((item) => ({ id: item.id, label: item.label })) }} on={{ select: input.on?.selectCollection }} />),
         ...(notice ? {} : {
-            section: defineContractComponent("exam-program-section", {
-                heading: defineContractComponent("title-with-baseline-fact", {
-                    title: defineLeafComponent("heading", {}, () => <Heading props={{ content: input.props.sectionTitle, level: 2 }} />),
-                    fact: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: input.props.countLabel, size: "sm", tone: "muted" }} />),
+            section: createGrammarNode("exam-program-section", {
+                heading: createGrammarNode("title-with-baseline-fact", {
+                    title: createLeafNode("heading", {}, () => <Heading props={{ content: input.props.sectionTitle, level: 2 }} />),
+                    fact: createLeafNode("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: input.props.countLabel, size: "sm", tone: "muted" }} />),
                 }),
-                papers: defineContractComponent("exam-paper-grid", {
-                    paper: input.props.papers.map((paper) => defineContractProjection("exam-paper-card", () => <ExamPaperCard key={paper.id} props={paper} on={{ open: input.on?.[`open:${paper.id}`] }} isLoading={isLoading} />)),
+                papers: createGrammarNode("exam-paper-grid", {
+                    paper: input.props.papers.map((paper) => createGrammarProjection("exam-paper-card", () => <ExamPaperCard key={paper.id} props={paper} on={{ open: input.on?.[`open:${paper.id}`] }} isLoading={isLoading} />)),
                 }),
             }),
-            pagination: defineLeafComponent("pagination", {}, () => <Pagination props={{ label: input.props.pageLabel, page: input.props.page, total: input.props.totalPages, previousLabel: input.props.previousLabel, nextLabel: input.props.nextLabel }} on={{ change: input.on?.changePage }} />),
+            pagination: createLeafNode("pagination", {}, () => <Pagination props={{ label: input.props.pageLabel, page: input.props.page, total: input.props.totalPages, previousLabel: input.props.previousLabel, nextLabel: input.props.nextLabel }} on={{ change: input.on?.changePage }} />),
         }),
         ...(notice ? {
-            notice: defineCompositeComponent("empty-notice", {}, () => <EmptyNotice props={{ icon: "review", message: input.state === "failed" ? input.props.failedMessage : input.props.emptyMessage, actionLabel: input.state === "failed" ? input.props.retryLabel : undefined }} on={{ act: input.on?.retry }} />),
+            notice: createCompositeNode("empty-notice", {}, () => <EmptyNotice props={{ icon: "review", message: input.state === "failed" ? input.props.failedMessage : input.props.emptyMessage, actionLabel: input.state === "failed" ? input.props.retryLabel : undefined }} on={{ act: input.on?.retry }} />),
         } : {}),
     })} />
 }

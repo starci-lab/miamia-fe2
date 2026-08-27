@@ -1,8 +1,8 @@
 import { Text } from "@/components/leaves/Text"
 import { Progress } from "@/components/leaves/Progress"
 import type { CompositeProps } from "@/components/contracts/props"
-import { Tree } from "@/components/branches/Tree"
-import { defineContractComponent, defineLeafComponent } from "@/components/contracts/props"
+import { Grammar } from "@/components/branches/Grammar"
+import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
 
 /**
  * COMPOSITE - `LabelledProgressRow`: a name, how far along it is, and the bar that shows it.
@@ -32,7 +32,7 @@ export type LabelledProgressRowData = {
     readonly percentText?: string
 }
 
-/** Props for {@link LabelledProgressRow}. Three fixed slots, no fourth - see {@link LeafProps}. */
+/** Props for {@link LabelledProgressRow}. Three fixed slots, no fourth - see {@link ComponentProps}. */
 export type LabelledProgressRowProps = CompositeProps<LabelledProgressRowData>
 
 /**
@@ -41,15 +41,15 @@ export type LabelledProgressRowProps = CompositeProps<LabelledProgressRowData>
  * @param input - {@link LabelledProgressRowProps}
  */
 export const LabelledProgressRow = ({ props, isLoading = false }: LabelledProgressRowProps) => {
-    const line = defineContractComponent("label-with-muted-fact-row", {
-        label: defineLeafComponent("text", { size: "sm", weight: "semibold" }, () => <Text props={{ content: props.title, size: "sm", weight: "semibold" }} isLoading={isLoading} />),
-        fact: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => <Text props={{ content: props.percentText, size: "xs" }} isLoading={isLoading} />),
+    const line = createGrammarNode("label-with-muted-fact-row", {
+        label: createLeafNode("text", { size: "sm", weight: "semibold" }, () => <Text props={{ content: props.title, size: "sm", weight: "semibold" }} isLoading={isLoading} />),
+        fact: createLeafNode("text", { size: "xs", tone: "muted" }, () => <Text props={{ content: props.percentText, size: "xs" }} isLoading={isLoading} />),
     })
-    const content = defineContractComponent("label-fact-over-progress", {
+    const content = createGrammarNode("label-fact-over-progress", {
         line,
-        progress: defineLeafComponent("progress", {}, () => <Progress props={{ value: props.percent, label: props.title ?? "" }} isLoading={isLoading} />),
+        progress: createLeafNode("progress", {}, () => <Progress props={{ value: props.percent, label: props.title ?? "" }} isLoading={isLoading} />),
     })
-    return <Tree contract="label-fact-over-progress" render={content} />
+    return <Grammar contract="label-fact-over-progress" render={content} />
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */

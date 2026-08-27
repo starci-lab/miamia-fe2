@@ -1,4 +1,4 @@
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `CodeBlock`: a run of code, set apart from the prose around it.
@@ -32,7 +32,7 @@ export type CodeBlockData = {
 }
 
 /** Props for {@link CodeBlock}. */
-export type CodeBlockProps = LeafProps<CodeBlockData>
+export type CodeBlockProps = ComponentProps<CodeBlockData>
 
 const FRAME_CLASSES = "flex w-full min-w-0 flex-col gap-2 rounded-medium bg-surface p-4"
 const LANGUAGE_CLASSES = "text-xs leading-4 text-muted"

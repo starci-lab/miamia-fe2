@@ -1,10 +1,10 @@
 import type { ReactNode } from "react"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { ShellNav } from "@/components/layouts/ShellNav"
 import {
-    defineContractComponent,
-    defineContractProjection,
-    defineLeafComponent,
+    createGrammarNode,
+    createGrammarProjection,
+    createLeafNode,
 } from "@/components/contracts/props"
 
 /** Props for the cart route layout. */
@@ -25,15 +25,15 @@ type CartLayoutProps = {
  * every route except its own.
  */
 const CartLayout = ({ children }: CartLayoutProps) => (
-    <Tree
+    <Grammar
         contract="nav-over-body-page"
-        render={defineContractComponent("nav-over-body-page", {
-            navigation: defineContractProjection("double-navbar", () => <ShellNav />),
-            body: defineContractProjection("routed-page-main", () => (
-                <Tree
+        render={createGrammarNode("nav-over-body-page", {
+            navigation: createGrammarProjection("double-navbar", () => <ShellNav />),
+            body: createGrammarProjection("routed-page-main", () => (
+                <Grammar
                     contract="routed-page-main"
-                    render={defineContractComponent("routed-page-main", {
-                        page: defineLeafComponent("page", {}, () => children),
+                    render={createGrammarNode("routed-page-main", {
+                        page: createLeafNode("page", {}, () => children),
                     })}
                 />
             )),

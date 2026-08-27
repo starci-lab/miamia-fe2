@@ -1,8 +1,9 @@
+import { CLASS_NAME_1, CLASS_NAME_2, CLASS_NAME_3, CLASS_NAME_4, CLASS_NAME_5, CLASS_NAME_6 } from './styles'
 "use client"
 
 import { useRef } from "react"
 import { motion } from "framer-motion"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /** One contribution day with its already-resolved accessible description. */
 export type ContributionGridDay = {
@@ -20,7 +21,7 @@ export type ContributionGridData = {
 }
 
 /** Props for the intrinsic contribution plot. */
-export type ContributionGridProps = LeafProps<ContributionGridData>
+export type ContributionGridProps = ComponentProps<ContributionGridData>
 
 type CalendarCell = ContributionGridDay & { readonly inYear: boolean }
 type CalendarWeek = { readonly id: string; readonly monthLabel?: string; readonly cells: ReadonlyArray<CalendarCell> }
@@ -85,23 +86,23 @@ export const ContributionGrid = ({ props, isLoading = false }: ContributionGridP
     const weeks = makeWeeks(props.year, props.days, props.monthLabels)
 
     return (
-        <div ref={viewportRef} className="cursor-grab overflow-hidden active:cursor-grabbing" data-part="calendar-viewport">
+        <div ref={viewportRef} className={CLASS_NAME_1} data-part="calendar-viewport">
             <motion.div
                 drag="x"
                 dragConstraints={viewportRef}
                 dragElastic={0.04}
                 dragMomentum={false}
-                className="flex w-max flex-row items-start gap-1"
+                className={CLASS_NAME_2}
                 data-part="calendar-grid"
             >
-                <span className="flex w-8 shrink-0 flex-col gap-1 pt-5 pr-1" aria-hidden="true">
+                <span className={CLASS_NAME_3} aria-hidden="true">
                     {Array.from({ length: 7 }, (_unused, index) => (
-                        <span key={index} className="h-3 text-xs leading-3 text-muted">{props.weekdayLabels[index] ?? ""}</span>
+                        <span key={index} className={CLASS_NAME_4}>{props.weekdayLabels[index] ?? ""}</span>
                     ))}
                 </span>
                 {weeks.map((week) => (
-                    <span key={week.id} className="flex shrink-0 flex-col gap-1" data-part="calendar-week">
-                        <span className="h-4 w-3 whitespace-nowrap text-xs text-muted" aria-hidden="true">{week.monthLabel ?? ""}</span>
+                    <span key={week.id} className={CLASS_NAME_5} data-part="calendar-week">
+                        <span className={CLASS_NAME_6} aria-hidden="true">{week.monthLabel ?? ""}</span>
                         {week.cells.map((cell) => (
                             <span
                                 key={cell.date}

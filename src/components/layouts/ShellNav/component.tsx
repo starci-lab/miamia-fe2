@@ -1,4 +1,4 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { Link } from "@/components/leaves/Link"
 import { NavLink } from "@/components/leaves/NavLink"
 import { IconButton } from "@/components/leaves/IconButton"
@@ -7,7 +7,7 @@ import { PressableInputLike } from "@/components/leaves/PressableInputLike"
 import { ThemeSwitch } from "@/components/leaves/ThemeSwitch"
 import { ExtendedTabs } from "@/components/leaves/ExtendedTabs"
 import type { IconName } from "@/components/leaves/Icon"
-import { defineContractComponent, defineLeafComponent } from "@/components/contracts/props"
+import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
 
 /** One destination in the primary navbar row. */
 export type ShellNavRoute = {
@@ -62,19 +62,19 @@ export type ShellNavProps = {
 
 /** Draw the primary navbar and its optional page-tab bottom layer as one landmark. */
 export const ShellNavBase = (input: ShellNavProps) => (
-    <Tree
+    <Grammar
         contract="double-navbar"
-        render={defineContractComponent("double-navbar", {
-            primary: defineContractComponent("brand-links-then-tools-bar", {
-                navigation: defineContractComponent("inline-nav-links", {
-                    brand: defineLeafComponent("link", { emphasis: "brand" }, () => (
+        render={createGrammarNode("double-navbar", {
+            primary: createGrammarNode("brand-links-then-tools-bar", {
+                navigation: createGrammarNode("inline-nav-links", {
+                    brand: createLeafNode("link", { emphasis: "brand" }, () => (
                         <Link
                             props={{ label: input.props.brand, emphasis: "brand" }}
                             on={{ press: () => input.on?.navigate?.("dashboard") }}
                         />
                     )),
-                    routes: defineContractComponent("inline-route-links", {
-                        route: input.props.routes.map((route) => defineLeafComponent("nav-link", { kind: "route" }, () => (
+                    routes: createGrammarNode("inline-route-links", {
+                        route: input.props.routes.map((route) => createLeafNode("nav-link", { kind: "route" }, () => (
                             <NavLink
                                 props={{ label: route.label, isCurrent: route.isCurrent, kind: "route" }}
                                 on={{ press: () => input.on?.navigate?.(route.id) }}
@@ -82,18 +82,18 @@ export const ShellNavBase = (input: ShellNavProps) => (
                         ))),
                     }),
                 }),
-                tools: defineContractComponent("inline-tool-row", {
-                    desktop: defineContractComponent("desktop-navbar-tools", {
-                        search: defineLeafComponent("pressable-input-like", {}, () => (
+                tools: createGrammarNode("inline-tool-row", {
+                    desktop: createGrammarNode("desktop-navbar-tools", {
+                        search: createLeafNode("pressable-input-like", {}, () => (
                             <PressableInputLike
                                 props={{ placeholder: input.props.searchPlaceholder, label: input.props.searchLabel, shortcut: input.props.searchShortcut }}
                                 on={{ press: input.on?.openSearch }}
                             />
                         )),
-                        locale: defineLeafComponent("icon-button", {}, () => (
+                        locale: createLeafNode("icon-button", {}, () => (
                             <IconButton props={{ icon: "locale", label: input.props.localeLabel }} on={{ press: input.on?.toggleLocale }} />
                         )),
-                        theme: defineLeafComponent("theme-switch", {}, () => (
+                        theme: createLeafNode("theme-switch", {}, () => (
                             <ThemeSwitch
                                 props={{ isDark: input.props.isDark, label: input.props.themeLabel }}
                                 on={{ change: input.on?.toggleTheme }}
@@ -101,15 +101,15 @@ export const ShellNavBase = (input: ShellNavProps) => (
                         )),
                     }),
                     tool: [
-                        defineLeafComponent("icon-button", {}, () => (
+                        createLeafNode("icon-button", {}, () => (
                             <IconButton props={{ icon: "cart", label: input.props.cartLabel }} on={{ press: input.on?.openCart }} />
                         )),
-                        ...(input.props.isSignedIn ? [defineLeafComponent("icon-button", {}, () => (
+                        ...(input.props.isSignedIn ? [createLeafNode("icon-button", {}, () => (
                             <IconButton props={{ icon: "notification", label: input.props.notificationLabel }} />
                         ))] : []),
-                        ...(input.props.isSignedIn ? [defineLeafComponent("icon-button", {}, () => (
+                        ...(input.props.isSignedIn ? [createLeafNode("icon-button", {}, () => (
                             <IconButton props={{ icon: "account", label: input.props.accountLabel }} />
-                        ))] : [defineLeafComponent("account-menu", {}, () => (
+                        ))] : [createLeafNode("account-menu", {}, () => (
                             <AccountMenu
                                 props={{
                                     label: input.props.accountLabel,
@@ -123,8 +123,8 @@ export const ShellNavBase = (input: ShellNavProps) => (
                     ],
                 }),
             }),
-            bottom: input.props.tabs === undefined ? undefined : defineContractComponent("underlined-tab-strip", {
-                tabs: defineLeafComponent("extended-tabs", {}, () => (
+            bottom: input.props.tabs === undefined ? undefined : createGrammarNode("underlined-tab-strip", {
+                tabs: createLeafNode("extended-tabs", {}, () => (
                     <ExtendedTabs
                         props={{
                             label: input.props.brand,

@@ -1,7 +1,7 @@
 "use client"
 
 import { MembershipCheckoutPanel } from "@/components/blocks/membership/MembershipCheckoutPanel"
-import { defineContractProjection } from "@/components/contracts/props"
+import { createGrammarProjection } from "@/components/contracts/props"
 import { MembershipCheckoutOverlayBase } from "./component"
 
 /** Defines visibility and dismissal for the connected checkout overlay. */
@@ -12,7 +12,7 @@ export const MembershipCheckoutOverlay = ({ isOpen, onDismiss, returnUrl, cancel
     <MembershipCheckoutOverlayBase
         isOpen={isOpen}
         onDismiss={onDismiss}
-        render={defineContractProjection("purchase-checkout-panel", () => (
+        render={createGrammarProjection("purchase-checkout-panel", () => (
             <MembershipCheckoutPanel onDismiss={onDismiss} returnUrl={returnUrl} cancelUrl={cancelUrl} />
         ))}
     />

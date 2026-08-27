@@ -1,9 +1,9 @@
 import { Fragment } from "react"
 import { contractNodeProps, contractSpec, type ContractKey } from "@/components/contracts"
-import type { ContractComponent, LeafComponent } from "@/components/contracts/props"
+import type { ContractComponent, RenderLeaf } from "@/components/contracts/props"
 
 /**
- * BRANCH - `Tree`: the smallest branch there is. It draws ONE registry node.
+ * BRANCH - `Grammar`: the smallest branch there is. It draws ONE registry node.
  *
  * Anything needing more than one node is a named branch that nests these. That is the whole of the
  * assembly story: the registry describes a node, a branch describes how nodes stack.
@@ -12,12 +12,12 @@ import type { ContractComponent, LeafComponent } from "@/components/contracts/pr
  * there is no seam here for a caller or a maintainer to quietly adjust.
  *
  * INSPECTABILITY. The node carries `data-node` (which key drew it) and `data-why` (why the things
- * inside it sit that way). The reason travels into the DOM because the place a tree is wrong is
+ * inside it sit that way). The reason travels into the DOM because the place a Grammar is wrong is
  * the place a reader is looking when they notice.
  */
 
-/** Props for {@link Tree}. */
-export interface TreeProps<K extends ContractKey> {
+/** Props for {@link Grammar}. */
+export interface GrammarProps<K extends ContractKey> {
     /**
      * The registry key. This is the ONLY layout decision an author makes: it fixes the node's
      * classes and, through the key's own name, what belongs inside it.
@@ -33,7 +33,7 @@ export interface ContractContentProps<K extends ContractKey> {
     render: ContractComponent<NoInfer<K>>
 }
 
-/** Normalize one slot's declared value into the list Tree walks: as-is when repeated, empty when absent, one entry otherwise. */
+/** Normalize one slot's declared value into the list Grammar walks: as-is when repeated, empty when absent, one entry otherwise. */
 const toSlotValues = (value: unknown): ReadonlyArray<unknown> => {
     if (Array.isArray(value)) return value
     if (value === undefined) return []
@@ -49,18 +49,18 @@ export const ContractContent = <const K extends ContractKey>({ contract, render 
         const value = slots[slot as keyof typeof slots]
         const values = toSlotValues(value)
         return values.map((component: unknown, index: number) => {
-            const child = component as ContractComponent<ContractKey> | LeafComponent<string, Readonly<Record<never, never>>>
+            const child = component as ContractComponent<ContractKey> | RenderLeaf<string, Readonly<Record<never, never>>>
             if (child.meta.shape === "contract") {
                 const contractChild = child as ContractComponent<ContractKey>
                 // A projection is a branch that already drew the host for this contract. Opening
-                // another Tree around it changes the DOM and therefore the layout: the navbar was
+                // another Grammar around it changes the DOM and therefore the layout: the navbar was
                 // inset twice and every projected SurfaceCard gained a duplicate section wrapper.
                 if (contractChild.kind === "projection") {
                     return <Fragment key={`${slot}-${index}`}>{contractChild.project()}</Fragment>
                 }
-                return <Tree key={`${slot}-${index}`} contract={contractChild.meta.contract} render={contractChild} />
+                return <Grammar key={`${slot}-${index}`} contract={contractChild.meta.contract} render={contractChild} />
             }
-            const leaf = child as LeafComponent<string, Readonly<Record<never, never>>>
+            const leaf = child as RenderLeaf<string, Readonly<Record<never, never>>>
             return <Fragment key={`${slot}-${index}`}>{leaf()}</Fragment>
         })
     })
@@ -69,9 +69,9 @@ export const ContractContent = <const K extends ContractKey>({ contract, render 
 /**
  * Draw one registry node.
  *
- * @param props - {@link TreeProps}
+ * @param props - {@link GrammarProps}
  */
-export const Tree = <const K extends ContractKey>({ contract, render }: TreeProps<K>) => {
+export const Grammar = <const K extends ContractKey>({ contract, render }: GrammarProps<K>) => {
     const nodeProps = contractNodeProps(contract)
     /*
      * THE ENTRY NAMES THE ELEMENT, NOT THE CALLER. A `<main>` is the document's one main landmark
@@ -79,21 +79,21 @@ export const Tree = <const K extends ContractKey>({ contract, render }: TreeProp
      * the children the key already fixes.
      *
      * The alternative was an `as` prop, and it is the wrong door: it hands the element back to the
-     * call site, which is the single decision `TreeProps` exists to refuse. It also scales the way
+     * call site, which is the single decision `GrammarProps` exists to refuse. It also scales the way
      * this repository already paid for once - `Main` was a whole second frame whose only job was to
-     * swap the tag, so every rule taught about `Tree` had to be taught about `Main` too, and the one
+     * swap the tag, so every rule taught about `Grammar` had to be taught about `Main` too, and the one
      * that was not reported the landmark as a node with no key.
      */
     const spec = contractSpec(contract)
     const Host = spec.host ?? "div"
     return (
         <Host
-            data-component="Tree"
+            data-component="Grammar"
             {...nodeProps}
             /*
              * A LIST HAS TO SAY IT IS ONE, TWICE. Tailwind's preflight sets `list-style: none` on
              * every ul and ol, and Safari answers that by dropping the element from the
-             * accessibility tree entirely - so the list the entry just claimed is announced to
+             * accessibility Grammar entirely - so the list the entry just claimed is announced to
              * VoiceOver as loose text, and a twenty-three module curriculum stops having a length.
              *
              * The role restores exactly what the entry already says and changes nothing else. It

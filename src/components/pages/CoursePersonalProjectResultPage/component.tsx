@@ -1,5 +1,5 @@
-import { Tree } from "@/components/branches/Tree"
-import { defineContractComponent, defineLeafComponent } from "@/components/contracts/props"
+import { Grammar } from "@/components/branches/Grammar"
+import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
 import { Button } from "@/components/leaves/Button"
 import { Heading } from "@/components/leaves/Heading"
 import { Text } from "@/components/leaves/Text"
@@ -31,15 +31,15 @@ export const CoursePersonalProjectResultPageBase = (input: CoursePersonalProject
     const loading = input.state === "pending"
     const attempts = input.state === "ready"
         ? [
-            defineLeafComponent("text", {}, () => (
+            createLeafNode("text", {}, () => (
                 <Text props={{ content: input.props.attemptsLabel, weight: "semibold" }} />
             )),
-            ...input.props.attempts.map((attempt) => defineLeafComponent("text", {}, () => (
+            ...input.props.attempts.map((attempt) => createLeafNode("text", {}, () => (
                 <Text props={{ content: attempt.label }} />
             ))),
         ]
         : [
-            defineLeafComponent("text", {}, () => (
+            createLeafNode("text", {}, () => (
                 <Text
                     props={{
                         content: input.props.notice,
@@ -51,33 +51,33 @@ export const CoursePersonalProjectResultPageBase = (input: CoursePersonalProject
         ]
     const feedback = input.state === "ready"
         ? [
-            defineLeafComponent("text", {}, () => (
+            createLeafNode("text", {}, () => (
                 <Text props={{ content: input.props.feedbackLabel, weight: "semibold" }} />
             )),
-            ...input.props.feedbacks.map((feedback) => defineLeafComponent("text", {}, () => (
+            ...input.props.feedbacks.map((feedback) => createLeafNode("text", {}, () => (
                 <Text props={{ content: feedback.label }} />
             ))),
         ]
         : undefined
 
     return (
-        <Tree
+        <Grammar
             contract="course-personal-project-result-page"
-            render={defineContractComponent("course-personal-project-result-page", {
-                header: defineContractComponent("centred-title-pair", {
-                    title: defineLeafComponent("heading", {}, () => (
+            render={createGrammarNode("course-personal-project-result-page", {
+                header: createGrammarNode("centred-title-pair", {
+                    title: createLeafNode("heading", {}, () => (
                         <Heading props={{ content: input.props.title, level: 1 }} isLoading={loading} />
                     )),
-                    description: defineLeafComponent("text", { size: "sm" }, () => (
+                    description: createLeafNode("text", { size: "sm" }, () => (
                         <Text props={{ content: input.props.description, size: "sm" }} isLoading={loading} />
                     )),
                 }),
-                attempts: defineContractComponent("stacked-peer-controls", { control: attempts }),
+                attempts: createGrammarNode("stacked-peer-controls", { control: attempts }),
                 ...(feedback === undefined ? {} : {
-                    feedback: defineContractComponent("stacked-peer-controls", { control: feedback }),
+                    feedback: createGrammarNode("stacked-peer-controls", { control: feedback }),
                 }),
                 ...(loading ? {} : {
-                    action: defineLeafComponent("button", {}, () => (
+                    action: createLeafNode("button", {}, () => (
                         <Button
                             props={{ label: input.props.retryTaskLabel }}
                             on={{ press: input.on?.retryTask }}

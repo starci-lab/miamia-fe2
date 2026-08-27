@@ -1,9 +1,9 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { LearnerProgressSnapshot, type LearnerProgressSnapshotProps } from "@/components/blocks/profile/learner/LearnerProgressSnapshot/component"
 import { LearnerWrappedSummary, type LearnerWrappedSummaryProps } from "@/components/blocks/profile/learner/LearnerWrappedSummary/component"
 import { ProfileViewSwitch, type ProfileView } from "@/components/blocks/profile/learner/ProfileViewSwitch/component"
-import { defineCompositeComponent, defineContractComponent, defineContractProjection, defineLeafComponent } from "@/components/contracts/props"
+import { createCompositeNode, createGrammarNode, createGrammarProjection, createLeafNode } from "@/components/contracts/props"
 
 /** Audience, evidence and actions consumed by the pure learner overview page. */
 export type ProfileOverviewPageProps = {
@@ -23,14 +23,14 @@ export type ProfileOverviewPageProps = {
 export const ProfileOverviewPageBase = (input: ProfileOverviewPageProps) => {
     const privateView = input.state === "owner" && input.props.selectedView === "private"
     return (
-        <Tree contract="learner-profile-overview" render={defineContractComponent("learner-profile-overview", {
-            ...(input.state === "owner" ? { view: defineLeafComponent("choice-tabs", {}, () => <ProfileViewSwitch props={{ ...input.props.switchLabels, selectedView: input.props.selectedView }} on={{ select: input.on?.selectView }} />) } : {}),
+        <Grammar contract="learner-profile-overview" render={createGrammarNode("learner-profile-overview", {
+            ...(input.state === "owner" ? { view: createLeafNode("choice-tabs", {}, () => <ProfileViewSwitch props={{ ...input.props.switchLabels, selectedView: input.props.selectedView }} on={{ select: input.on?.selectView }} />) } : {}),
             ...(privateView ? {
-                progress: defineContractProjection("learner-progress-snapshot", () => <LearnerProgressSnapshot {...input.props.progress} on={{ retry: input.on?.retryProgress }} />),
-                wrapped: defineContractProjection("learner-wrapped-summary", () => <LearnerWrappedSummary {...input.props.wrapped} on={{ action: input.on?.openWrapped }} />),
+                progress: createGrammarProjection("learner-progress-snapshot", () => <LearnerProgressSnapshot {...input.props.progress} on={{ retry: input.on?.retryProgress }} />),
+                wrapped: createGrammarProjection("learner-wrapped-summary", () => <LearnerWrappedSummary {...input.props.wrapped} on={{ action: input.on?.openWrapped }} />),
             } : {
-                public: defineContractProjection("centred-empty-notice", () => (
-                    <Tree contract="centred-empty-notice" render={defineContractComponent("centred-empty-notice", { notice: defineCompositeComponent("empty-notice", {}, () => <EmptyNotice props={{ message: input.props.publicMessage, description: input.props.publicDescription }} />) })} />
+                public: createGrammarProjection("centred-empty-notice", () => (
+                    <Grammar contract="centred-empty-notice" render={createGrammarNode("centred-empty-notice", { notice: createCompositeNode("empty-notice", {}, () => <EmptyNotice props={{ message: input.props.publicMessage, description: input.props.publicDescription }} />) })} />
                 )),
             }),
         })} />

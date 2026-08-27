@@ -1,8 +1,9 @@
+import { CLASS_NAME_1 } from './styles'
 "use client"
 
 import { Tabs } from "@heroui/react"
 import { Icon, type IconName } from "@/components/leaves/Icon"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /** One peer choice, optionally led by a glyph naming the shape it selects. */
 export type ChoiceTabData = {
@@ -28,7 +29,7 @@ export type ChoiceTabsData = {
 /** Selection reported by the peer-choice control. */
 export type ChoiceTabsActions = { readonly select?: (key: string) => void }
 /** Props for the peer-choice control. */
-export type ChoiceTabsProps = LeafProps<ChoiceTabsData, ChoiceTabsActions>
+export type ChoiceTabsProps = ComponentProps<ChoiceTabsData, ChoiceTabsActions>
 
 /**
  * Why the segmented pill is PAINTED rather than animated.
@@ -71,7 +72,7 @@ export const ChoiceTabs = ({ props, on }: ChoiceTabsProps) => {
                           * flex, the vendor spaced them by its own rules and the icon touched the
                           * first letter.
                           */}
-                            <span className="inline-flex items-center gap-2">
+                            <span className={CLASS_NAME_1}>
                                 {tab.icon === undefined ? null : <Icon props={{ name: tab.icon, role: "leading" }} />}
                                 {tab.label}
                             </span>

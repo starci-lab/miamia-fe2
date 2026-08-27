@@ -1,5 +1,5 @@
 import { Typography, skeletonVariants } from "@heroui/react"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `Heading`: the name of a thing, at a level of the document outline.
@@ -20,8 +20,8 @@ export type HeadingData = {
     readonly level?: HeadingLevel
 }
 
-/** Props for {@link Heading}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type HeadingProps = LeafProps<HeadingData>
+/** Props for {@link Heading}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type HeadingProps = ComponentProps<HeadingData>
 
 /**
  * The set per outline level - the tag comes from `level`, these are the type metrics.

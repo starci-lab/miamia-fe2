@@ -1,6 +1,6 @@
 import { Link as HeroLink } from "@heroui/react"
 import { Icon, type IconName } from "@/components/leaves/Icon"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `NavLink`: one destination in the bar, or one tab under it.
@@ -30,7 +30,7 @@ export type NavLinkData = {
     /**
      * How deep inside the page this section sits. Only a `section` reads it.
      *
-     * The outline of a document is a TREE, and a flat list of its headings is a list of places
+     * The outline of a document is a Grammar, and a flat list of its headings is a list of places
      * with the one fact that orders them thrown away - which of them is inside which. Legacy
      * indents from the third level down for exactly that reason.
      */
@@ -42,8 +42,8 @@ export type NavLinkActions = {
     readonly press?: () => void
 }
 
-/** Props for {@link NavLink}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type NavLinkProps = LeafProps<NavLinkData, NavLinkActions>
+/** Props for {@link NavLink}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type NavLinkProps = ComponentProps<NavLinkData, NavLinkActions>
 
 /** The set per kind, with the current one carrying its own weight and rule. */
 const KIND_CLASSES = {

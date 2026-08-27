@@ -1,4 +1,4 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { LabelledProgressRow } from "@/components/composites/LabelledProgressRow"
 import { Article } from "@/components/leaves/Article"
@@ -7,7 +7,7 @@ import { ConfirmButton } from "@/components/leaves/ConfirmButton"
 import { Heading } from "@/components/leaves/Heading"
 import { SingleChoice, type SingleChoiceOptionData } from "@/components/leaves/SingleChoice"
 import { Text } from "@/components/leaves/Text"
-import { defineCompositeComponent, defineContractComponent, defineLeafComponent, type BlockProps } from "@/components/contracts/props"
+import { createCompositeNode, createGrammarNode, createLeafNode, type BlockProps } from "@/components/contracts/props"
 
 /** Summarizes the learner's graded performance for one skill. */
 export type ExamSkillSummary = { readonly id: string; readonly title: string; readonly percent: number; readonly percentText: string }
@@ -26,77 +26,77 @@ export type ExamSessionActions = { readonly selectAnswer?: (id: string) => void;
 /** Defines the stateful contract consumed by the pure exam-session block. */
 export type ExamSessionProps = BlockProps<"loading" | "failed" | "ready" | "submitting" | "graded", ExamSessionData> & { readonly on?: ExamSessionActions }
 
-const factRow = (label: string, value: string) => defineContractComponent("label-with-muted-fact-row", {
-    label: defineLeafComponent("text", { size: "sm", weight: "semibold" }, () => <Text props={{ content: label, size: "sm", weight: "semibold" }} />),
-    fact: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => <Text props={{ content: value, size: "xs" }} />),
+const factRow = (label: string, value: string) => createGrammarNode("label-with-muted-fact-row", {
+    label: createLeafNode("text", { size: "sm", weight: "semibold" }, () => <Text props={{ content: label, size: "sm", weight: "semibold" }} />),
+    fact: createLeafNode("text", { size: "xs", tone: "muted" }, () => <Text props={{ content: value, size: "xs" }} />),
 })
 
 /** Renders the pure exam runner and graded-result states. */
 export const ExamSessionBase = (input: ExamSessionProps) => {
-    const header = defineContractComponent("exam-session-header", {
-        title: defineContractComponent("title-with-baseline-fact", {
-            title: defineLeafComponent("heading", {}, () => <Heading props={{ content: input.props.title, level: 1 }} />),
-            fact: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: input.props.positionLabel, size: "sm", tone: "muted" }} />),
+    const header = createGrammarNode("exam-session-header", {
+        title: createGrammarNode("title-with-baseline-fact", {
+            title: createLeafNode("heading", {}, () => <Heading props={{ content: input.props.title, level: 1 }} />),
+            fact: createLeafNode("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: input.props.positionLabel, size: "sm", tone: "muted" }} />),
         }),
-        exit: defineLeafComponent("confirm-button", {}, () => <ConfirmButton props={{ label: input.props.exitLabel, confirmLabel: input.props.exitConfirmLabel, disabled: input.state === "submitting" }} on={{ confirm: input.on?.exit }} />),
+        exit: createLeafNode("confirm-button", {}, () => <ConfirmButton props={{ label: input.props.exitLabel, confirmLabel: input.props.exitConfirmLabel, disabled: input.state === "submitting" }} on={{ confirm: input.on?.exit }} />),
     })
     if (input.state === "loading" || input.state === "failed") {
-        return <Tree contract="exam-session-page" render={defineContractComponent("exam-session-page", {
+        return <Grammar contract="exam-session-page" render={createGrammarNode("exam-session-page", {
             header,
-            body: defineContractComponent("exam-state-notice", {
-                notice: defineCompositeComponent("empty-notice", {}, () => <EmptyNotice props={{ icon: "review", message: input.state === "loading" ? input.props.loadingMessage : input.props.failedMessage, actionLabel: input.state === "failed" ? input.props.retryLabel : undefined }} on={{ act: input.on?.retry }} />),
+            body: createGrammarNode("exam-state-notice", {
+                notice: createCompositeNode("empty-notice", {}, () => <EmptyNotice props={{ icon: "review", message: input.state === "loading" ? input.props.loadingMessage : input.props.failedMessage, actionLabel: input.state === "failed" ? input.props.retryLabel : undefined }} on={{ act: input.on?.retry }} />),
             }),
         })} />
     }
     if (input.state === "graded") {
-        return <Tree contract="exam-session-page" render={defineContractComponent("exam-session-page", {
+        return <Grammar contract="exam-session-page" render={createGrammarNode("exam-session-page", {
             header,
-            body: defineContractComponent("exam-result-summary", {
-                score: defineContractComponent("premium-value-band", {
-                    copy: defineContractComponent("premium-copy-stack", {
-                        title: defineLeafComponent("heading", {}, () => <Heading props={{ content: input.props.resultTitle, level: 2 }} />),
-                        body: defineLeafComponent("text", {}, () => <Text props={{ content: `${input.props.scoreText} · ${input.props.scoreBody}` }} />),
+            body: createGrammarNode("exam-result-summary", {
+                score: createGrammarNode("premium-value-band", {
+                    copy: createGrammarNode("premium-copy-stack", {
+                        title: createLeafNode("heading", {}, () => <Heading props={{ content: input.props.resultTitle, level: 2 }} />),
+                        body: createLeafNode("text", {}, () => <Text props={{ content: `${input.props.scoreText} · ${input.props.scoreBody}` }} />),
                     }),
                 }),
                 ...(input.props.skills.length === 0 ? {} : {
-                    skills: defineContractComponent("exam-skill-list", {
-                        title: defineLeafComponent("heading", {}, () => <Heading props={{ content: input.props.skillTitle, level: 2 }} />),
-                        skill: input.props.skills.map((skill) => defineCompositeComponent("labelled-progress-row", {}, () => <LabelledProgressRow key={skill.id} props={skill} />)),
+                    skills: createGrammarNode("exam-skill-list", {
+                        title: createLeafNode("heading", {}, () => <Heading props={{ content: input.props.skillTitle, level: 2 }} />),
+                        skill: input.props.skills.map((skill) => createCompositeNode("labelled-progress-row", {}, () => <LabelledProgressRow key={skill.id} props={skill} />)),
                     }),
                 }),
-                answers: defineContractComponent("exam-answer-review-list", {
-                    answer: input.props.reviews.map((review) => defineContractComponent("exam-answer-review", {
-                        title: defineContractComponent("title-with-baseline-fact", {
-                            title: defineLeafComponent("heading", {}, () => <Heading props={{ content: review.number, level: 3 }} />),
-                            fact: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: review.verdict, size: "sm", tone: "muted" }} />),
+                answers: createGrammarNode("exam-answer-review-list", {
+                    answer: input.props.reviews.map((review) => createGrammarNode("exam-answer-review", {
+                        title: createGrammarNode("title-with-baseline-fact", {
+                            title: createLeafNode("heading", {}, () => <Heading props={{ content: review.number, level: 3 }} />),
+                            fact: createLeafNode("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: review.verdict, size: "sm", tone: "muted" }} />),
                         }),
-                        stem: defineLeafComponent("text", {}, () => <Text props={{ content: review.stem }} />),
+                        stem: createLeafNode("text", {}, () => <Text props={{ content: review.stem }} />),
                         selected: factRow(review.selectedLabel, review.selected),
                         correct: factRow(review.correctLabel, review.correct),
-                        ...(review.explanation === undefined ? {} : { explanation: defineLeafComponent("article", {}, () => <Article props={{ body: review.explanation }} />) }),
+                        ...(review.explanation === undefined ? {} : { explanation: createLeafNode("article", {}, () => <Article props={{ body: review.explanation }} />) }),
                     })),
                 }),
-                actions: defineContractComponent("exam-session-actions", {
-                    progress: defineLeafComponent("text", {}, () => <Text props={{ content: input.props.scoreText, size: "sm", tone: "muted" }} />),
-                    forward: defineLeafComponent("button", {}, () => <Button props={{ label: input.props.backLabel, variant: "primary" }} on={{ press: input.on?.back }} />),
+                actions: createGrammarNode("exam-session-actions", {
+                    progress: createLeafNode("text", {}, () => <Text props={{ content: input.props.scoreText, size: "sm", tone: "muted" }} />),
+                    forward: createLeafNode("button", {}, () => <Button props={{ label: input.props.backLabel, variant: "primary" }} on={{ press: input.on?.back }} />),
                 }),
             }),
         })} />
     }
-    return <Tree contract="exam-session-page" render={defineContractComponent("exam-session-page", {
+    return <Grammar contract="exam-session-page" render={createGrammarNode("exam-session-page", {
         header,
-        body: defineContractComponent("exam-passage-question", {
-            ...(input.props.passage === undefined ? {} : { passage: defineLeafComponent("article", {}, () => <Article props={{ body: input.props.passage }} />) }),
-            question: defineContractComponent("exam-question-card", {
-                eyebrow: defineLeafComponent("text", {}, () => <Text props={{ content: input.props.questionLabel, size: "sm", tone: "accent" }} />),
-                stem: defineLeafComponent("heading", {}, () => <Heading props={{ content: input.props.stem, level: 2 }} />),
-                answer: defineLeafComponent("single-choice", {}, () => <SingleChoice props={{ label: input.props.questionLabel, name: "exam-answer", options: input.props.options, selectedKey: input.props.selectedKey, disabled: input.state === "submitting" }} on={{ select: input.on?.selectAnswer }} />),
+        body: createGrammarNode("exam-passage-question", {
+            ...(input.props.passage === undefined ? {} : { passage: createLeafNode("article", {}, () => <Article props={{ body: input.props.passage }} />) }),
+            question: createGrammarNode("exam-question-card", {
+                eyebrow: createLeafNode("text", {}, () => <Text props={{ content: input.props.questionLabel, size: "sm", tone: "accent" }} />),
+                stem: createLeafNode("heading", {}, () => <Heading props={{ content: input.props.stem, level: 2 }} />),
+                answer: createLeafNode("single-choice", {}, () => <SingleChoice props={{ label: input.props.questionLabel, name: "exam-answer", options: input.props.options, selectedKey: input.props.selectedKey, disabled: input.state === "submitting" }} on={{ select: input.on?.selectAnswer }} />),
             }),
         }),
-        actions: defineContractComponent("exam-session-actions", {
-            previous: defineLeafComponent("button", {}, () => <Button props={{ label: input.props.previousLabel, variant: "ghost" }} on={{ press: input.on?.previous }} />),
-            progress: defineLeafComponent("text", {}, () => <Text props={{ content: input.props.positionLabel, size: "sm", tone: "muted" }} />),
-            forward: defineLeafComponent("button", {}, () => <Button props={{ label: input.props.isLast ? input.props.submitLabel : input.props.nextLabel, variant: "primary", isPending: input.state === "submitting" }} on={{ press: input.props.isLast ? input.on?.submit : input.on?.forward }} />),
+        actions: createGrammarNode("exam-session-actions", {
+            previous: createLeafNode("button", {}, () => <Button props={{ label: input.props.previousLabel, variant: "ghost" }} on={{ press: input.on?.previous }} />),
+            progress: createLeafNode("text", {}, () => <Text props={{ content: input.props.positionLabel, size: "sm", tone: "muted" }} />),
+            forward: createLeafNode("button", {}, () => <Button props={{ label: input.props.isLast ? input.props.submitLabel : input.props.nextLabel, variant: "primary", isPending: input.state === "submitting" }} on={{ press: input.props.isLast ? input.on?.submit : input.on?.forward }} />),
         }),
     })} />
 }

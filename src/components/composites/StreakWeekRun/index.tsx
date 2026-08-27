@@ -1,8 +1,8 @@
 import { DayCell, type DayCellData } from "@/components/leaves/DayCell"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import {
-    defineContractComponent,
-    defineLeafComponent,
+    createGrammarNode,
+    createLeafNode,
     type CompositeProps,
 } from "@/components/contracts/props"
 
@@ -34,7 +34,7 @@ export type StreakWeekRunData = {
     readonly days?: ReadonlyArray<DayCellData>
 }
 
-/** Props for {@link StreakWeekRun}. Three fixed slots, no fourth - see {@link LeafProps}. */
+/** Props for {@link StreakWeekRun}. Three fixed slots, no fourth - see {@link ComponentProps}. */
 export type StreakWeekRunProps = CompositeProps<StreakWeekRunData>
 
 /**
@@ -43,9 +43,9 @@ export type StreakWeekRunProps = CompositeProps<StreakWeekRunData>
  * @param input - {@link StreakWeekRunProps}
  */
 export const StreakWeekRun = ({ props, isLoading = false }: StreakWeekRunProps) => (
-    <Tree contract="streak-week-run" render={defineContractComponent("streak-week-run", {
+    <Grammar contract="streak-week-run" render={createGrammarNode("streak-week-run", {
         day: (isLoading ? RESTING_WEEK : (props.days ?? RESTING_WEEK)).map((day) => (
-            defineLeafComponent("day-cell", {}, () => (
+            createLeafNode("day-cell", {}, () => (
                 <DayCell key={day.id} props={day} isLoading={isLoading} />
             ))
         )),

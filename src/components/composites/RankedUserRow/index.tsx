@@ -1,4 +1,4 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { Avatar } from "@/components/leaves/Avatar"
 import { Badge } from "@/components/leaves/Badge"
 import { Button } from "@/components/leaves/Button"
@@ -7,8 +7,8 @@ import { RankMark } from "@/components/leaves/RankMark"
 import { Text } from "@/components/leaves/Text"
 import { TextLink } from "@/components/leaves/TextLink"
 import {
-    defineContractComponent,
-    defineLeafComponent,
+    createGrammarNode,
+    createLeafNode,
     type CompositeProps,
 } from "@/components/contracts/props"
 import type { ContractKey } from "@/components/contracts"
@@ -58,7 +58,7 @@ const contractFor = (verdict?: RankedUserVerdict): ContractKey => {
  */
 const movementCell = (showsMovement: boolean, isLoading: boolean, props: RankedUserRowData) => {
     if (showsMovement) {
-        return defineLeafComponent("rank-delta-caret", {}, () => (
+        return createLeafNode("rank-delta-caret", {}, () => (
             <RankDeltaCaret
                 props={{ delta: props.rankDelta, accessibleLabel: props.movementLabel }}
                 isLoading={isLoading}
@@ -66,11 +66,11 @@ const movementCell = (showsMovement: boolean, isLoading: boolean, props: RankedU
         ))
     }
     if (isLoading) {
-        return defineLeafComponent("badge", {}, () => (
+        return createLeafNode("badge", {}, () => (
             <Badge props={{ content: props.movementLabel, tone: "neutral" }} isLoading />
         ))
     }
-    return defineLeafComponent("text", {}, () => <Text props={{ content: undefined, size: "sm" }} />)
+    return createLeafNode("text", {}, () => <Text props={{ content: undefined, size: "sm" }} />)
 }
 
 /**
@@ -88,7 +88,7 @@ export const RankedUserRow = ({ props, on, isLoading = false }: CompositeProps<R
     // the dashboard preview shows neither a follow control nor the space one would take.
     const showsFollow = props.isMe !== true && props.followLabel !== undefined
     const name = isLoading || props.isMe === true
-        ? defineLeafComponent("text", {}, () => (
+        ? createLeafNode("text", {}, () => (
             <Text
                 props={{
                     content: props.name,
@@ -99,13 +99,13 @@ export const RankedUserRow = ({ props, on, isLoading = false }: CompositeProps<R
                 isLoading={isLoading}
             />
         ))
-        : defineLeafComponent("text-link", {}, () => (
+        : createLeafNode("text-link", {}, () => (
             <TextLink props={{ label: props.name ?? "", size: "sm" }} on={{ press: on?.open }} />
         ))
-    const identity = defineContractComponent("ranked-user-name-over-subtitle", {
+    const identity = createGrammarNode("ranked-user-name-over-subtitle", {
         name,
         ...((props.subtitle === undefined && !isLoading) ? {} : {
-            subtitle: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+            subtitle: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                 <Text props={{ content: props.subtitle, size: "xs", tone: "muted" }} isLoading={isLoading} />
             )),
         }),
@@ -120,7 +120,7 @@ export const RankedUserRow = ({ props, on, isLoading = false }: CompositeProps<R
      */
     const movement = movementCell(showsMovement, isLoading, props)
     const follow = showsFollow
-        ? defineLeafComponent("button", {}, () => (
+        ? createLeafNode("button", {}, () => (
             <Button
                 props={{
                     label: props.isFollowing === true
@@ -136,18 +136,18 @@ export const RankedUserRow = ({ props, on, isLoading = false }: CompositeProps<R
         ))
         : undefined
     return (
-        <Tree contract={contract} render={defineContractComponent(contract, {
-            rank: defineLeafComponent("rank-mark", { placement: "row" }, () => (
+        <Grammar contract={contract} render={createGrammarNode(contract, {
+            rank: createLeafNode("rank-mark", { placement: "row" }, () => (
                 <RankMark
                     props={{ rank: props.rank, placement: "row", accessibleLabel: props.rankLabel }}
                     isLoading={isLoading}
                 />
             )),
-            avatar: defineLeafComponent("avatar", {}, () => (
+            avatar: createLeafNode("avatar", {}, () => (
                 <Avatar props={{ name: props.name, src: props.avatar ?? undefined, size: "sm" }} isLoading={isLoading} />
             )),
             identity,
-            points: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+            points: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                 <Text props={{ content: props.points, size: "xs", tone: "muted" }} isLoading={isLoading} />
             )),
             movement,

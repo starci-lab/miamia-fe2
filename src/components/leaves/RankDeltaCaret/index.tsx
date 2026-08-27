@@ -1,5 +1,5 @@
 import { skeletonVariants } from "@heroui/react"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * TARGET PATH: src/components/leaves/RankDeltaCaret/index.tsx
@@ -26,7 +26,7 @@ export type RankDeltaCaretData = {
 }
 
 /** Props for {@link RankDeltaCaret}. */
-export type RankDeltaCaretProps = LeafProps<RankDeltaCaretData>
+export type RankDeltaCaretProps = ComponentProps<RankDeltaCaretData>
 
 /** The three movement readings this leaf can draw; internal, so the export surface is unchanged. */
 type RankDeltaDirection = "up" | "down" | "flat"

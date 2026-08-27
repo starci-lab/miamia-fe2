@@ -1,7 +1,7 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { SurfaceFormCard } from "@/components/branches/SurfaceFormCard"
 import { AuthenticationPanel } from "@/components/blocks/auth/AuthenticationPanel"
-import { defineContractComponent, defineContractProjection } from "@/components/contracts/props"
+import { createGrammarNode, createGrammarProjection } from "@/components/contracts/props"
 
 /** What the authentication page reports. */
 export type AuthenticationPageActions = {
@@ -20,17 +20,17 @@ export type AuthenticationPageProps = {
  * @param input - {@link AuthenticationPageProps}
  */
 export const AuthenticationPageBase = ({ on }: AuthenticationPageProps) => {
-    const cardContent = defineContractComponent("authentication-panel-card", {
-        panel: defineContractProjection("centred-page-column", () => (
+    const cardContent = createGrammarNode("authentication-panel-card", {
+        panel: createGrammarProjection("centred-page-column", () => (
             <AuthenticationPanel onSignedIn={on?.signedIn} />
         )),
     })
 
     return (
-        <Tree
+        <Grammar
             contract="centred-authentication-page"
-            render={defineContractComponent("centred-authentication-page", {
-                surface: defineContractProjection("authentication-panel-card", () => (
+            render={createGrammarNode("centred-authentication-page", {
+                surface: createGrammarProjection("authentication-panel-card", () => (
                     <SurfaceFormCard contract="authentication-panel-card" render={cardContent} />
                 )),
             })}

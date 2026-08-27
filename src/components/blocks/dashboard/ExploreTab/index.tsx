@@ -1,13 +1,13 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { FeedExplorer } from "@/components/blocks/dashboard/FeedExplorer"
 import { WhoToFollow } from "@/components/blocks/dashboard/WhoToFollow"
-import { defineContractComponent, defineContractProjection } from "@/components/contracts/props"
+import { createGrammarNode, createGrammarProjection } from "@/components/contracts/props"
 
 /** Explore preserves legacy order and independent connected-block lifetimes. */
 export const ExploreTab = () => (
-    <Tree contract="explore-main" render={defineContractComponent("explore-main", {
-        feed: defineContractProjection("feed-explorer", () => <FeedExplorer />),
-        suggestions: defineContractProjection("suggested-user-list", () => <WhoToFollow />),
+    <Grammar contract="explore-main" render={createGrammarNode("explore-main", {
+        feed: createGrammarProjection("feed-explorer", () => <FeedExplorer />),
+        suggestions: createGrammarProjection("suggested-user-list", () => <WhoToFollow />),
     })} />
 )
 

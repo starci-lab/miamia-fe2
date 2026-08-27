@@ -1,10 +1,10 @@
 import { Button } from "@/components/leaves/Button"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import {
-    defineCompositeComponent,
-    defineContractComponent,
-    defineContractProjection,
-    defineLeafComponent,
+    createCompositeNode,
+    createGrammarNode,
+    createGrammarProjection,
+    createLeafNode,
 } from "@/components/contracts/props"
 import { DrawerBranch } from "@/components/branches/DrawerBranch"
 import { CartLine } from "@/components/blocks/commerce/CartLine"
@@ -99,7 +99,7 @@ export type CartDrawerProps = {
 /** How many resting lines the panel shows while the first request is in flight. */
 const RESTING_COUNT = 3
 
-/** The summary's own tree: resting while the drawer loads, else pricing's success or failure. */
+/** The summary's own Grammar: resting while the drawer loads, else pricing's success or failure. */
 const resolveOrderSummaryState = (isLoading: boolean, hasPricingFailed: boolean): OrderSummaryState => {
     if (isLoading) return "pending"
     return hasPricingFailed ? "failed" : "ready"
@@ -126,16 +126,16 @@ export const CartDrawerBase = (input: CartDrawerProps) => {
             isOpen={input.props.isOpen}
             title={labels.title}
             contract="cart-drawer-column"
-            render={defineContractComponent("cart-drawer-column", {
+            render={createGrammarNode("cart-drawer-column", {
                 ...(showsNotice ? {} : {
-                    lines: defineContractComponent("cart-line-list", {
-                        line: lines.map((line) => defineContractProjection("cart-line-row", () => (
+                    lines: createGrammarNode("cart-line-list", {
+                        line: lines.map((line) => createGrammarProjection("cart-line-row", () => (
                             <CartLine state={isLoading ? "pending" : "ready"} line={line} />
                         ))),
                     }),
                 }),
                 ...(showsNotice ? {} : {
-                    summary: defineContractProjection("order-summary-stack", () => (
+                    summary: createGrammarProjection("order-summary-stack", () => (
                         <OrderSummaryView
                             state={resolveOrderSummaryState(isLoading, input.props.hasPricingFailed === true)}
                             props={{
@@ -148,15 +148,15 @@ export const CartDrawerBase = (input: CartDrawerProps) => {
                     )),
                 }),
                 ...(showsNotice ? {} : {
-                    actions: defineContractComponent("stacked-peer-controls", {
+                    actions: createGrammarNode("stacked-peer-controls", {
                         control: [
-                            defineLeafComponent("button", {}, () => (
+                            createLeafNode("button", {}, () => (
                                 <Button
                                     props={{ label: labels.checkout, variant: "primary", disabled: isLoading }}
                                     on={{ press: input.on?.checkout }}
                                 />
                             )),
-                            defineLeafComponent("button", {}, () => (
+                            createLeafNode("button", {}, () => (
                                 <Button
                                     props={{ label: labels.viewFullCart, variant: "secondary" }}
                                     on={{ press: input.on?.viewFullCart }}
@@ -166,7 +166,7 @@ export const CartDrawerBase = (input: CartDrawerProps) => {
                     }),
                 }),
                 ...(showsNotice ? {
-                    notice: defineCompositeComponent("empty-notice", {}, () => (
+                    notice: createCompositeNode("empty-notice", {}, () => (
                         <EmptyNotice
                             props={{
                                 icon: "cart",

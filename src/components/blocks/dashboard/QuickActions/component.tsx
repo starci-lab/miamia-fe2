@@ -1,7 +1,7 @@
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
 import { QuickActionsList } from "@/components/leaves/QuickActionsList"
 import type { QuickActionItem } from "@/components/leaves/QuickActionsList"
-import { defineContractComponent, defineLeafComponent } from "@/components/contracts/props"
+import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
 
 /** Resolved quick-action data for the pure block half. */
 export type QuickActionsData = {
@@ -25,8 +25,8 @@ export const QuickActionsBase = (input: QuickActionsProps) => (
     <SurfaceCard
         props={{ label: input.props.label, isFrameless: true }}
         contract="stacked-peer-controls"
-        render={defineContractComponent("stacked-peer-controls", {
-            control: [defineLeafComponent("quick-actions-list", {}, () => (
+        render={createGrammarNode("stacked-peer-controls", {
+            control: [createLeafNode("quick-actions-list", {}, () => (
                 <QuickActionsList
                     props={{ label: input.props.label, items: input.props.items }}
                     on={input.on}

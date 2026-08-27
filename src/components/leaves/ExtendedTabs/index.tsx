@@ -1,8 +1,9 @@
+import { CLASS_NAME_1, CLASS_NAME_2, CLASS_NAME_3, CLASS_NAME_4 } from './styles'
 "use client"
 
 import { Tabs } from "@heroui/react"
 import { Icon, type IconName } from "@/components/leaves/Icon"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /** One tab in the legacy dashboard strip. */
 export type ExtendedTab = {
@@ -24,7 +25,7 @@ export type ExtendedTabsActions = {
 }
 
 /** Fixed data and actions accepted by the closed StarCi tab leaf. */
-export type ExtendedTabsProps = LeafProps<ExtendedTabsData, ExtendedTabsActions>
+export type ExtendedTabsProps = ComponentProps<ExtendedTabsData, ExtendedTabsActions>
 
 /**
  * The original StarCi `ExtendedTabs` rendering, closed over typed tab data.
@@ -34,12 +35,12 @@ export type ExtendedTabsProps = LeafProps<ExtendedTabsData, ExtendedTabsActions>
  * can no longer replace that anatomy with arbitrary markup.
  */
 export const ExtendedTabs = ({ props, on }: ExtendedTabsProps) => (
-    <div data-tier="leaf" data-component="ExtendedTabs" className="w-full px-6">
+    <div data-tier="leaf" data-component="ExtendedTabs" className={CLASS_NAME_1}>
         <Tabs
             variant="secondary"
             selectedKey={props.selectedKey}
             onSelectionChange={(key) => on?.select?.(String(key))}
-            className="extended-tabs whitespace-nowrap"
+            className={CLASS_NAME_2}
         >
             <Tabs.ListContainer>
                 <Tabs.List aria-label={props.label}>
@@ -49,9 +50,9 @@ export const ExtendedTabs = ({ props, on }: ExtendedTabsProps) => (
                             id={tab.id}
                             aria-controls={`dashboard-panel-${tab.id}`}
                         >
-                            <span className="flex items-center gap-2">
+                            <span className={CLASS_NAME_3}>
                                 <Icon props={{ name: tab.icon, role: "leading" }} />
-                                <span className="hidden md:inline">{tab.label}</span>
+                                <span className={CLASS_NAME_4}>{tab.label}</span>
                             </span>
                             <Tabs.Indicator />
                         </Tabs.Tab>

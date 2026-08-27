@@ -5,8 +5,8 @@ import { MyCoursesProgress } from "@/components/blocks/dashboard/MyCoursesProgre
 import { RecommendedCourses } from "@/components/blocks/dashboard/RecommendedCourses"
 import { UpcomingLivestreamCard } from "@/components/blocks/dashboard/UpcomingLivestreamCard"
 import { CoursePriceOverlay } from "@/components/overlays/courses/CoursePriceOverlay"
-import { defineContractComponent, defineContractProjection } from "@/components/contracts/props"
-import { Tree } from "@/components/branches/Tree"
+import { createGrammarNode, createGrammarProjection } from "@/components/contracts/props"
+import { Grammar } from "@/components/branches/Grammar"
 
 /**
  * Orchestrate the three legacy learning blocks in fixed order.
@@ -22,15 +22,15 @@ export const CoursesTab = () => {
 
     return (
         <>
-            <Tree
+            <Grammar
                 contract="dashboard-tab-main"
-                render={defineContractComponent("dashboard-tab-main", {
+                render={createGrammarNode("dashboard-tab-main", {
                     section: [
-                        defineContractProjection("label-row-over-card", () => <MyCoursesProgress />),
-                        defineContractProjection("label-row-over-card", () => (
+                        createGrammarProjection("label-row-over-card", () => <MyCoursesProgress />),
+                        createGrammarProjection("label-row-over-card", () => (
                             <RecommendedCourses onOpenPriceDetail={setPricedCourseId} />
                         )),
-                        defineContractProjection("label-row-over-card", () => <UpcomingLivestreamCard />),
+                        createGrammarProjection("label-row-over-card", () => <UpcomingLivestreamCard />),
                     ],
                 })}
             />

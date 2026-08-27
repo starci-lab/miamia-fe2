@@ -1,13 +1,13 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Button } from "@/components/leaves/Button"
 import { Heading } from "@/components/leaves/Heading"
 import { NavLink } from "@/components/leaves/NavLink"
 import { Text } from "@/components/leaves/Text"
 import {
-    defineCompositeComponent,
-    defineContractComponent,
-    defineLeafComponent,
+    createCompositeNode,
+    createGrammarNode,
+    createLeafNode,
 } from "@/components/contracts/props"
 
 /** Pure quiz-setup contract after configuration facts and actions resolve. */
@@ -62,41 +62,41 @@ export const CourseFlashcardsQuizPageBase = (input: CourseFlashcardsQuizPageProp
         { id: "senior", label: data.seniorLabel },
         { id: "staff", label: data.staffLabel },
     ] as const
-    const header = defineContractComponent("centred-title-pair", {
-        title: defineLeafComponent("heading", {}, () => (
+    const header = createGrammarNode("centred-title-pair", {
+        title: createLeafNode("heading", {}, () => (
             <Heading props={{ content: data.title, level: 1 }} isLoading={isLoading} />
         )),
-        description: defineLeafComponent("text", { size: "sm" }, () => (
+        description: createLeafNode("text", { size: "sm" }, () => (
             <Text props={{ content: data.subtitle, size: "sm", tone: "muted" }} isLoading={isLoading} />
         )),
     })
-    const modes = defineContractComponent("flashcard-mode-tabs", {
+    const modes = createGrammarNode("flashcard-mode-tabs", {
         tab: [
-            defineLeafComponent("nav-link", { kind: "tab" }, () => (
+            createLeafNode("nav-link", { kind: "tab" }, () => (
                 <NavLink props={{ label: data.reviewLabel, kind: "tab" }} on={{ press: on.openReview }} />
             )),
-            defineLeafComponent("nav-link", { kind: "tab" }, () => (
+            createLeafNode("nav-link", { kind: "tab" }, () => (
                 <NavLink props={{ label: data.quizLabel, kind: "tab", isCurrent: true }} />
             )),
         ],
     })
     const configuration = state === "ready" || state === "pending"
-        ? defineContractComponent("flashcard-quiz-configuration", {
-            title: defineLeafComponent("heading", {}, () => (
+        ? createGrammarNode("flashcard-quiz-configuration", {
+            title: createLeafNode("heading", {}, () => (
                 <Heading props={{ content: data.configurationTitle, level: 2 }} isLoading={isLoading} />
             )),
-            fact: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+            fact: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                 <Text props={{ content: `${data.cardCount} ${data.cardsLabel}`, size: "sm", tone: "muted" }} isLoading={isLoading} />
             )),
             resume: data.resumeSessionId === undefined
                 ? undefined
-                : defineLeafComponent("button", {}, () => (
+                : createLeafNode("button", {}, () => (
                     <Button props={{ label: data.resumeLabel, variant: "outline" }} on={{ press: () => on.resume(data.resumeSessionId ?? "") }} />
                 )),
-            modeLabel: defineLeafComponent("text", { size: "sm", weight: "semibold" }, () => (
+            modeLabel: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
                 <Text props={{ content: data.modeLabel, size: "sm", weight: "semibold" }} isLoading={isLoading} />
             )),
-            mode: (["quick", "deep"] as const).map((mode) => defineLeafComponent("button", {}, () => (
+            mode: (["quick", "deep"] as const).map((mode) => createLeafNode("button", {}, () => (
                 <Button
                     props={{
                         label: mode === "quick" ? data.quickLabel : data.deepLabel,
@@ -106,10 +106,10 @@ export const CourseFlashcardsQuizPageBase = (input: CourseFlashcardsQuizPageProp
                     isLoading={isLoading}
                 />
             ))),
-            levelLabel: defineLeafComponent("text", { size: "sm", weight: "semibold" }, () => (
+            levelLabel: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
                 <Text props={{ content: data.levelLabel, size: "sm", weight: "semibold" }} isLoading={isLoading} />
             )),
-            level: levels.map((level) => defineLeafComponent("button", {}, () => (
+            level: levels.map((level) => createLeafNode("button", {}, () => (
                 <Button
                     props={{
                         label: level.label,
@@ -119,13 +119,13 @@ export const CourseFlashcardsQuizPageBase = (input: CourseFlashcardsQuizPageProp
                     isLoading={isLoading}
                 />
             ))),
-            start: defineLeafComponent("button", {}, () => (
+            start: createLeafNode("button", {}, () => (
                 <Button props={{ label: data.startLabel, variant: "primary" }} on={{ press: on.start }} isLoading={isLoading} />
             )),
         })
         : undefined
     const notice = state === "failed" || state === "empty"
-        ? defineCompositeComponent("empty-notice", {}, () => (
+        ? createCompositeNode("empty-notice", {}, () => (
             <EmptyNotice
                 props={{
                     message: state === "failed" ? data.failedText : data.emptyText,
@@ -137,7 +137,7 @@ export const CourseFlashcardsQuizPageBase = (input: CourseFlashcardsQuizPageProp
         : undefined
 
     return (
-        <Tree contract="course-flashcards-quiz-page" render={defineContractComponent("course-flashcards-quiz-page", {
+        <Grammar contract="course-flashcards-quiz-page" render={createGrammarNode("course-flashcards-quiz-page", {
             header,
             modes,
             configuration,

@@ -1,6 +1,6 @@
 import { Icon as IconifyIcon } from "@iconify/react"
 import { skeletonVariants } from "@heroui/react"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /** Where the closed rank artwork is being used. */
 export type RankMarkPlacement = "standing" | "row"
@@ -16,7 +16,7 @@ export type RankMarkData = {
 }
 
 /** Props accepted by the closed rank-artwork leaf. */
-export type RankMarkProps = LeafProps<RankMarkData>
+export type RankMarkProps = ComponentProps<RankMarkData>
 
 const PLACE_MEDALS: Readonly<Record<number, string>> = {
     1: "fluent-emoji-flat:1st-place-medal",

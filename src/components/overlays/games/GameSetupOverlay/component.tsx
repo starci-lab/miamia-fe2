@@ -1,5 +1,5 @@
 import { Button } from "@/components/leaves/Button"; import { Heading } from "@/components/leaves/Heading"; import { Input } from "@/components/leaves/Input"; import { Text } from "@/components/leaves/Text"
-import { defineContractComponent, defineLeafComponent } from "@/components/contracts/props"; import { ModalBranch } from "@/components/branches/ModalBranch"
+import { createGrammarNode, createLeafNode } from "@/components/contracts/props"; import { ModalBranch } from "@/components/branches/ModalBranch"
 import type { GameCharacter, GameMode } from "@/modules/games/types"
 
 /** Finite decision step shown by the game setup overlay. */
@@ -15,37 +15,37 @@ export type GameSetupOverlayProps = { readonly isOpen: boolean; readonly state: 
 /** Resolve the one setup-step body shown for the overlay's current decision state. */
 const resolveGameSetupContent = (input: GameSetupOverlayProps) => {
     if (input.state === "mode") {
-        return defineContractComponent("game-mode-grid", { mode: [
-            defineLeafComponent("button", {}, () => <Button props={{ label: "Chơi đơn", variant: "secondary" }} on={{ press: () => input.on?.chooseMode?.("SINGLE") }} />), // vn-ok: localized runtime copy
-            defineLeafComponent("button", {}, () => <Button props={{ label: "Chơi cùng bạn", variant: "primary" }} on={{ press: () => input.on?.chooseMode?.("COUPLE") }} />), // vn-ok: localized runtime copy
-            ...(input.props.supportsTeam ? [defineLeafComponent("button", {}, () => <Button props={{ label: "Đội 2v2", variant: "outline" }} on={{ press: () => input.on?.chooseMode?.("TEAM2V2") }} />)] : []), // vn-ok: localized runtime copy
+        return createGrammarNode("game-mode-grid", { mode: [
+            createLeafNode("button", {}, () => <Button props={{ label: "Chơi đơn", variant: "secondary" }} on={{ press: () => input.on?.chooseMode?.("SINGLE") }} />), // vn-ok: localized runtime copy
+            createLeafNode("button", {}, () => <Button props={{ label: "Chơi cùng bạn", variant: "primary" }} on={{ press: () => input.on?.chooseMode?.("COUPLE") }} />), // vn-ok: localized runtime copy
+            ...(input.props.supportsTeam ? [createLeafNode("button", {}, () => <Button props={{ label: "Đội 2v2", variant: "outline" }} on={{ press: () => input.on?.chooseMode?.("TEAM2V2") }} />)] : []), // vn-ok: localized runtime copy
         ] })
     }
     if (input.state === "room") {
-        return defineContractComponent("game-code-join-row", {
-            create: defineLeafComponent("button", {}, () => <Button props={{ label: "Tạo phòng mới", variant: "primary" }} on={{ press: input.on?.createRoom }} />), // vn-ok: localized runtime copy
-            label: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: "Hoặc nhập mã phòng bạn gửi", size: "sm", tone: "muted" }} />), // vn-ok: localized runtime copy
-            code: defineLeafComponent("input", {}, () => <Input props={{ id: "game-room-code", name: "roomCode", kind: "text", placeholder: "Mã phòng" }} on={{ change: input.on?.changeCode }} />), // vn-ok: localized runtime copy
-            join: defineLeafComponent("button", {}, () => <Button props={{ label: "Vào phòng", variant: "outline", disabled: input.props.roomCode.trim().length === 0 }} on={{ press: input.on?.joinRoom }} />), // vn-ok: localized runtime copy
+        return createGrammarNode("game-code-join-row", {
+            create: createLeafNode("button", {}, () => <Button props={{ label: "Tạo phòng mới", variant: "primary" }} on={{ press: input.on?.createRoom }} />), // vn-ok: localized runtime copy
+            label: createLeafNode("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: "Hoặc nhập mã phòng bạn gửi", size: "sm", tone: "muted" }} />), // vn-ok: localized runtime copy
+            code: createLeafNode("input", {}, () => <Input props={{ id: "game-room-code", name: "roomCode", kind: "text", placeholder: "Mã phòng" }} on={{ change: input.on?.changeCode }} />), // vn-ok: localized runtime copy
+            join: createLeafNode("button", {}, () => <Button props={{ label: "Vào phòng", variant: "outline", disabled: input.props.roomCode.trim().length === 0 }} on={{ press: input.on?.joinRoom }} />), // vn-ok: localized runtime copy
         })
     }
-    return defineContractComponent("game-character-grid", { character: [
-        defineLeafComponent("button", {}, () => <Button props={{ label: "Chọn Mia", variant: "primary" }} on={{ press: () => input.on?.chooseCharacter?.("MIA") }} />), // vn-ok: localized runtime copy
-        defineLeafComponent("button", {}, () => <Button props={{ label: "Chọn Max", variant: "secondary" }} on={{ press: () => input.on?.chooseCharacter?.("MAX") }} />), // vn-ok: localized runtime copy
+    return createGrammarNode("game-character-grid", { character: [
+        createLeafNode("button", {}, () => <Button props={{ label: "Chọn Mia", variant: "primary" }} on={{ press: () => input.on?.chooseCharacter?.("MIA") }} />), // vn-ok: localized runtime copy
+        createLeafNode("button", {}, () => <Button props={{ label: "Chọn Max", variant: "secondary" }} on={{ press: () => input.on?.chooseCharacter?.("MAX") }} />), // vn-ok: localized runtime copy
     ] })
 }
 
 /** Render exactly one setup decision inside the shared modal shell. */
 export const GameSetupOverlayBase = (input: GameSetupOverlayProps) => {
-    const header = defineContractComponent("page-header-stack", { title: defineLeafComponent("heading", {}, () => <Heading props={{ content: `${input.props.title} · ${input.props.gameTitle}`, level: 2 }} />) })
+    const header = createGrammarNode("page-header-stack", { title: createLeafNode("heading", {}, () => <Heading props={{ content: `${input.props.title} · ${input.props.gameTitle}`, level: 2 }} />) })
     const content = resolveGameSetupContent(input)
     return <ModalBranch
         isOpen={input.isOpen}
         size="md"
         contract="game-setup-panel"
-        render={defineContractComponent("game-setup-panel", {
+        render={createGrammarNode("game-setup-panel", {
             header,
-            ...(input.state === "mode" ? {} : { back: defineLeafComponent("button", {}, () => <Button props={{ label: "Quay lại", variant: "ghost", size: "sm" }} on={{ press: input.on?.back }} />) }), // vn-ok: localized runtime copy
+            ...(input.state === "mode" ? {} : { back: createLeafNode("button", {}, () => <Button props={{ label: "Quay lại", variant: "ghost", size: "sm" }} on={{ press: input.on?.back }} />) }), // vn-ok: localized runtime copy
             content,
         })}
         onDismiss={input.onDismiss}

@@ -1,6 +1,7 @@
+import { CLASS_NAME_1, CLASS_NAME_2, CLASS_NAME_3, CLASS_NAME_4 } from './styles'
 import { Link as HeroLink } from "@heroui/react"
 import { Icon, type IconName } from "@/components/leaves/Icon"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `Link`: text that either reports internal navigation or opens an external destination.
@@ -29,8 +30,8 @@ export type LinkActions = {
     readonly press?: () => void
 }
 
-/** Props for {@link Link}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type LinkProps = LeafProps<LinkData, LinkActions>
+/** Props for {@link Link}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type LinkProps = ComponentProps<LinkData, LinkActions>
 
 /** The set per emphasis. */
 const EMPHASIS_CLASSES = {
@@ -48,7 +49,7 @@ const BrandLockup = ({ label }: BrandLockupProps) => (
         <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 512 512"
-            className="h-10 w-auto shrink-0"
+            className={CLASS_NAME_1}
             role="img"
             aria-label={label}
         >
@@ -60,9 +61,9 @@ const BrandLockup = ({ label }: BrandLockupProps) => (
             <circle cx="404" cy="108" r="14" fill="#FB59A7" />
             <circle cx="108" cy="404" r="14" fill="#FB59A7" />
         </svg>
-        <span className="flex flex-col leading-none">
-            <span className="text-sm font-semibold leading-none text-foreground">StarCi</span>
-            <span className="text-[8px] uppercase leading-none text-muted">Academy</span>
+        <span className={CLASS_NAME_2}>
+            <span className={CLASS_NAME_3}>StarCi</span>
+            <span className={CLASS_NAME_4}>Academy</span>
         </span>
     </>
 )

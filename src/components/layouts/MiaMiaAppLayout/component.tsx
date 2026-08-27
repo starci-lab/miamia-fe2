@@ -1,8 +1,8 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { learnSpine, type LearnSpineActions, type LearnSpineData } from "@/components/blocks/learn/LearnSpine/component"
 import { NavLink } from "@/components/leaves/NavLink"
 import type { IconName } from "@/components/leaves/Icon"
-import { defineContractComponent, defineLeafComponent } from "@/components/contracts/props"
+import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
 import type { ComponentType } from "react"
 
 /** Enumerates destinations shared by desktop navigation and the mobile footbar. */
@@ -20,11 +20,11 @@ export type MiaMiaAppLayoutProps = { readonly props: MiaMiaAppLayoutData; readon
 export const MiaMiaAppLayoutBase = (input: MiaMiaAppLayoutProps) => {
     const Surface = input.surface
     return (
-        <Tree contract="learn-shell-frame" render={defineContractComponent("learn-shell-frame", {
+        <Grammar contract="learn-shell-frame" render={createGrammarNode("learn-shell-frame", {
             spine: learnSpine({ props: input.props.spine, on: { openRow: input.on?.openDestination } }),
-            body: defineLeafComponent("page", {}, () => <Surface />),
-            bar: defineContractComponent("learn-mobile-tab-bar", {
-                tab: input.props.mobileTabs.map((tab) => defineLeafComponent("nav-link", { kind: "tab" }, () => (
+            body: createLeafNode("page", {}, () => <Surface />),
+            bar: createGrammarNode("learn-mobile-tab-bar", {
+                tab: input.props.mobileTabs.map((tab) => createLeafNode("nav-link", { kind: "tab" }, () => (
                     <NavLink props={{ label: tab.label, icon: tab.icon, kind: "tab", isCurrent: tab.isCurrent }} on={{ press: () => input.on?.openDestination?.(tab.id) }} />
                 ))),
             }),

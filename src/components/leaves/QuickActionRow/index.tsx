@@ -1,6 +1,6 @@
 import { Link as HeroLink } from "@heroui/react"
 import { Icon, type IconName } from "@/components/leaves/Icon"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `QuickActionRow`: one shortcut on the rail.
@@ -31,8 +31,8 @@ export type QuickActionRowActions = {
     readonly press?: () => void
 }
 
-/** Props for {@link QuickActionRow}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type QuickActionRowProps = LeafProps<QuickActionRowData, QuickActionRowActions>
+/** Props for {@link QuickActionRow}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type QuickActionRowProps = ComponentProps<QuickActionRowData, QuickActionRowActions>
 
 /** The row is the target: it carries the inset, the radius and the hover. */
 const ROW_CLASSES = "flex flex-row items-center gap-2 rounded-xl px-2 py-2 text-sm hover:bg-default"

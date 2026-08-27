@@ -2,10 +2,10 @@ import { Badge } from "@/components/leaves/Badge"
 import { CoverImage } from "@/components/leaves/CoverImage"
 import { IconButton } from "@/components/leaves/IconButton"
 import { Text } from "@/components/leaves/Text"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import {
-    defineContractComponent,
-    defineLeafComponent,
+    createGrammarNode,
+    createLeafNode,
     type BlockProps,
 } from "@/components/contracts/props"
 
@@ -72,24 +72,24 @@ export const CartLineBase = (input: CartLineProps) => {
     const isLoading = input.state === "pending"
 
     return (
-        <Tree
+        <Grammar
             contract="cart-line-row"
-            render={defineContractComponent("cart-line-row", {
-                cover: defineLeafComponent("cover-image", {}, () => (
+            render={createGrammarNode("cart-line-row", {
+                cover: createLeafNode("cover-image", {}, () => (
                     <CoverImage
                         props={{ src: input.props.cover ?? null, alt: "", ratio: "wide" }}
                         isLoading={isLoading}
                     />
                 )),
-                identity: defineContractComponent("evidence-title-over-subtitle", {
-                    title: defineLeafComponent("text", { size: "sm", weight: "semibold" }, () => (
+                identity: createGrammarNode("evidence-title-over-subtitle", {
+                    title: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
                         <Text
                             props={{ content: input.props.title, size: "sm", weight: "semibold" }}
                             isLoading={isLoading}
                         />
                     )),
                     ...(input.props.tier === undefined ? {} : {
-                        subtitle: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+                        subtitle: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                             <Text
                                 props={{ content: input.props.tier, size: "xs", tone: "muted" }}
                                 isLoading={isLoading}
@@ -97,8 +97,8 @@ export const CartLineBase = (input: CartLineProps) => {
                         )),
                     }),
                 }),
-                price: defineContractComponent("price-discount-line", {
-                    price: defineLeafComponent("text", { size: "sm", weight: "semibold" }, () => (
+                price: createGrammarNode("price-discount-line", {
+                    price: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
                         <Text
                             props={{ content: input.props.price, size: "sm", weight: "semibold" }}
                             isLoading={isLoading}
@@ -108,7 +108,7 @@ export const CartLineBase = (input: CartLineProps) => {
                     // original price and no discount, and a struck price beside the payable one
                     // with nothing struck out of it is a rule through a number that is still true.
                     ...(input.props.originalPrice === undefined ? {} : {
-                        original: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+                        original: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                             <Text
                                 props={{
                                     content: input.props.originalPrice,
@@ -124,7 +124,7 @@ export const CartLineBase = (input: CartLineProps) => {
                         )),
                     }),
                     ...(input.props.discountLabel === undefined ? {} : {
-                        discount: defineLeafComponent("badge", {}, () => (
+                        discount: createLeafNode("badge", {}, () => (
                             <Badge
                                 props={{ content: input.props.discountLabel, tone: "success" }}
                                 isLoading={isLoading}
@@ -135,7 +135,7 @@ export const CartLineBase = (input: CartLineProps) => {
                 // THE CONTROL IS DISABLED WHILE ITS OWN REMOVAL IS IN FLIGHT, not while any line's
                 // is. A basket where removing one course froze every other row would report a
                 // whole-list operation for a single-row one.
-                remove: defineLeafComponent("icon-button", {}, () => (
+                remove: createLeafNode("icon-button", {}, () => (
                     <IconButton
                         props={{ icon: "close", label: input.props.removeLabel }}
                         on={{ press: input.state === "removing" ? undefined : input.on?.remove }}

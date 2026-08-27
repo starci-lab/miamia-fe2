@@ -1,9 +1,9 @@
 import { Avatar } from "@/components/leaves/Avatar"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { ReactionPicker, type ReactionLabels } from "@/components/leaves/ReactionPicker"
 import { Text } from "@/components/leaves/Text"
 import { TextLink } from "@/components/leaves/TextLink"
-import { defineContractComponent, defineLeafComponent, type CompositeProps } from "@/components/contracts/props"
+import { createGrammarNode, createLeafNode, type CompositeProps } from "@/components/contracts/props"
 import type { ReactionType } from "@/modules/api/graphql/queries/types/reactions"
 
 /** Resolved actor, event and reaction state drawn by one activity row. */
@@ -29,23 +29,23 @@ export type ActivityRowProps = CompositeProps<ActivityRowData, ActivityRowAction
 /** Draw one actor sentence, its optional reaction and quiet timestamp. */
 export const ActivityRow = ({ props, on, isLoading = false }: ActivityRowProps) => {
     const reactionLabels = props.reactionLabels
-    const sentence = defineContractComponent("activity-actor-action-target-sentence", {
-        actor: defineLeafComponent("text-link", { size: "sm" }, () => (
+    const sentence = createGrammarNode("activity-actor-action-target-sentence", {
+        actor: createLeafNode("text-link", { size: "sm" }, () => (
             <TextLink props={{ label: props.actor ?? "", size: "sm" }} on={{ press: on?.openActor }} />
         )),
-        action: defineLeafComponent("text", { size: "sm" }, () => (
+        action: createLeafNode("text", { size: "sm" }, () => (
             <Text props={{ content: props.action, size: "sm" }} isLoading={isLoading} />
         )),
         ...(props.target === undefined ? {} : {
-            target: defineLeafComponent("text-link", { size: "sm" }, () => (
+            target: createLeafNode("text-link", { size: "sm" }, () => (
                 <TextLink props={{ label: props.target ?? "", size: "sm" }} on={{ press: on?.openTarget }} />
             )),
         }),
     })
-    const body = defineContractComponent("activity-sentence-over-reaction", {
+    const body = createGrammarNode("activity-sentence-over-reaction", {
         sentence,
         ...(props.reactionLabel === undefined || reactionLabels === undefined ? {} : {
-            reaction: defineLeafComponent("reaction-picker", {}, () => (
+            reaction: createLeafNode("reaction-picker", {}, () => (
                 <ReactionPicker props={{
                     label: props.reactionLabel ?? "",
                     count: props.reactionCount ?? 0,
@@ -58,12 +58,12 @@ export const ActivityRow = ({ props, on, isLoading = false }: ActivityRowProps) 
     })
 
     return (
-        <Tree contract="activity-actor-body-time-row" render={defineContractComponent("activity-actor-body-time-row", {
-            avatar: defineLeafComponent("avatar", {}, () => (
+        <Grammar contract="activity-actor-body-time-row" render={createGrammarNode("activity-actor-body-time-row", {
+            avatar: createLeafNode("avatar", {}, () => (
                 <Avatar props={{ name: props.actor, src: props.avatar, size: "sm" }} isLoading={isLoading} />
             )),
             body,
-            time: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+            time: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                 <Text props={{ content: props.time, size: "xs", tone: "muted" }} isLoading={isLoading} />
             )),
         })} />

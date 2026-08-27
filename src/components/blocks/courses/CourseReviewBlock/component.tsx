@@ -1,10 +1,10 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { Heading } from "@/components/leaves/Heading"
 import { Icon } from "@/components/leaves/Icon"
 import { Text } from "@/components/leaves/Text"
 import {
-    defineContractComponent,
-    defineLeafComponent,
+    createGrammarNode,
+    createLeafNode,
     type BlockProps,
 } from "@/components/contracts/props"
 
@@ -76,35 +76,35 @@ export const CourseReviewBlockBase = ({
         return <Text props={{ content: props.emptyLabel, size: "sm", tone: "muted" }} />
     }
     return (
-        <Tree
+        <Grammar
             contract="course-review-block"
-            render={defineContractComponent("course-review-block", {
-                summary: defineContractComponent("course-review-summary", {
-                    score: defineLeafComponent("heading", {}, () => (
+            render={createGrammarNode("course-review-block", {
+                summary: createGrammarNode("course-review-summary", {
+                    score: createLeafNode("heading", {}, () => (
                         <Heading props={{ content: props.averageScore.toFixed(1), level: 3 }} />
                     )),
-                    scale: defineContractComponent("rating-star-run", {
-                        star: Array.from({ length: SCORE_SCALE }, () => defineLeafComponent("icon", {}, () => (
+                    scale: createGrammarNode("rating-star-run", {
+                        star: Array.from({ length: SCORE_SCALE }, () => createLeafNode("icon", {}, () => (
                             <Icon props={{ name: "star", role: "chip" }} />
                         ))),
                     }),
-                    count: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+                    count: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                         <Text props={{ content: props.countLabel, size: "sm", tone: "muted" }} />
                     )),
                 }),
-                list: defineContractComponent("course-review-list", {
-                    review: props.reviews.map((review) => defineContractComponent("course-review-row", {
-                        author: defineContractComponent("course-review-author-line", {
-                            name: defineLeafComponent("text", { size: "sm", weight: "medium" }, () => (
+                list: createGrammarNode("course-review-list", {
+                    review: props.reviews.map((review) => createGrammarNode("course-review-row", {
+                        author: createGrammarNode("course-review-author-line", {
+                            name: createLeafNode("text", { size: "sm", weight: "medium" }, () => (
                                 <Text props={{ content: review.author, size: "sm", weight: "medium" }} />
                             )),
-                            score: defineLeafComponent("text", { size: "xs" }, () => (
+                            score: createLeafNode("text", { size: "xs" }, () => (
                                 <Text props={{ content: `${review.score}/${SCORE_SCALE}`, size: "xs" }} />
                             )),
                         }),
                         body: review.body === undefined
                             ? undefined
-                            : defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+                            : createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                                 <Text props={{ content: review.body, size: "sm", tone: "muted" }} />
                             )),
                     })),

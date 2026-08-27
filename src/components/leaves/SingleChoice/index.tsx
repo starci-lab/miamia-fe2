@@ -1,7 +1,7 @@
 "use client"
 
 import { Radio, RadioGroup } from "@heroui/react"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /** Describes one answer option in a single-choice question. */
 export type SingleChoiceOptionData = {
@@ -24,7 +24,7 @@ export type SingleChoiceData = {
 /** Defines answer-selection behavior. */
 export type SingleChoiceActions = { readonly select?: (id: string) => void }
 /** Defines the pure single-choice leaf contract. */
-export type SingleChoiceProps = LeafProps<SingleChoiceData, SingleChoiceActions>
+export type SingleChoiceProps = ComponentProps<SingleChoiceData, SingleChoiceActions>
 
 /** Renders a single-choice question and its answer options. */
 export const SingleChoice = ({ props, on }: SingleChoiceProps) => (

@@ -122,8 +122,6 @@ export const ShellNav = () => {
             isCurrent: tab.id === (searchParams.get("tab") ?? "overview"),
         }))
         : undefined
-    const tabs = dashboardTabs
-
     const selectTab = useCallback((key: string) => {
         router.replace(key === "overview" ? "/dashboard" : `/dashboard?tab=${key}`)
     }, [router])
@@ -139,7 +137,7 @@ export const ShellNav = () => {
                 props={{
                     brand: t("brand"),
                     routes,
-                    tabs,
+                    tabs: dashboardTabs,
                     themeLabel: isDark ? t("themeLight") : t("themeDark"),
                     isDark,
                     localeLabel: t("locale"),

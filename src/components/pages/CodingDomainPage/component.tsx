@@ -2,12 +2,12 @@ import { Breadcrumbs } from "@/components/leaves/Breadcrumbs"
 import { Heading } from "@/components/leaves/Heading"
 import { Progress } from "@/components/leaves/Progress"
 import { Text } from "@/components/leaves/Text"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import {
-    defineCompositeComponent,
-    defineContractComponent,
-    defineContractProjection,
-    defineLeafComponent,
+    createCompositeNode,
+    createGrammarNode,
+    createGrammarProjection,
+    createLeafNode,
 } from "@/components/contracts/props"
 import {
     CodingProblemListBase,
@@ -80,11 +80,11 @@ export const CodingDomainPageBase = (input: CodingDomainPageProps) => {
     const showsList = input.props.problems.state !== "empty" && input.props.problems.state !== "all-solved"
 
     return (
-        <Tree
+        <Grammar
             contract="coding-domain-page"
-            render={defineContractComponent("coding-domain-page", {
-                header: defineContractComponent("page-header-stack", {
-                    trail: defineLeafComponent("breadcrumbs", {}, () => (
+            render={createGrammarNode("coding-domain-page", {
+                header: createGrammarNode("page-header-stack", {
+                    trail: createLeafNode("breadcrumbs", {}, () => (
                         <Breadcrumbs
                             props={{
                                 label: labels.title,
@@ -97,26 +97,26 @@ export const CodingDomainPageBase = (input: CodingDomainPageProps) => {
                             on={{ home: input.on?.goHome, practice: input.on?.goPractice }}
                         />
                     )),
-                    title: defineLeafComponent("heading", {}, () => (
+                    title: createLeafNode("heading", {}, () => (
                         <Heading props={{ content: labels.title, level: 1 }} />
                     )),
                 }),
-                standing: defineContractComponent("label-fact-over-progress", {
-                    line: defineContractComponent("label-with-muted-fact-row", {
-                        label: defineLeafComponent("text", { size: "sm", weight: "semibold" }, () => (
+                standing: createGrammarNode("label-fact-over-progress", {
+                    line: createGrammarNode("label-with-muted-fact-row", {
+                        label: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
                             <Text props={{ content: labels.standingLabel, size: "sm", weight: "semibold" }} />
                         )),
-                        fact: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+                        fact: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                             <Text props={{ content: labels.standingFact, size: "xs", tone: "muted" }} />
                         )),
                     }),
                     // `Progress` reads 0..100, never a ratio.
-                    progress: defineLeafComponent("progress", {}, () => (
+                    progress: createLeafNode("progress", {}, () => (
                         <Progress props={{ label: labels.meterLabel, value: input.props.percent ?? 0 }} />
                     )),
                 }),
                 ...(showsList ? {
-                    problems: defineContractProjection("marked-row-list", () => (
+                    problems: createGrammarProjection("marked-row-list", () => (
                         <CodingProblemListBase
                             state={input.props.problems.state}
                             props={{ problems: input.props.problems.items }}
@@ -127,8 +127,8 @@ export const CodingDomainPageBase = (input: CodingDomainPageProps) => {
                     // The block draws an `EmptyNotice` in these two states, so the projection is
                     // declared as that composite rather than as the list it is NOT drawing. A slot
                     // records what actually lands in it; naming the other branch here would make
-                    // the registry describe a tree that never renders.
-                    notice: defineCompositeComponent("empty-notice", {}, () => (
+                    // the registry describe a Grammar that never renders.
+                    notice: createCompositeNode("empty-notice", {}, () => (
                         <CodingProblemListBase
                             state={input.props.problems.state}
                             props={{

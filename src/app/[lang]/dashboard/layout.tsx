@@ -1,10 +1,10 @@
 import type { ReactNode } from "react"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { ShellNav } from "@/components/layouts/ShellNav"
 import {
-    defineContractComponent,
-    defineContractProjection,
-    defineLeafComponent,
+    createGrammarNode,
+    createGrammarProjection,
+    createLeafNode,
 } from "@/components/contracts/props"
 
 /** Props for the dashboard route family layout. */
@@ -23,15 +23,15 @@ type DashboardLayoutProps = {
  * instead of walking every link again on each route change.
  */
 const DashboardLayout = ({ children }: DashboardLayoutProps) => (
-    <Tree
+    <Grammar
         contract="nav-over-body-page"
-        render={defineContractComponent("nav-over-body-page", {
-            navigation: defineContractProjection("double-navbar", () => <ShellNav />),
-            body: defineContractProjection("routed-page-main", () => (
-                <Tree
+        render={createGrammarNode("nav-over-body-page", {
+            navigation: createGrammarProjection("double-navbar", () => <ShellNav />),
+            body: createGrammarProjection("routed-page-main", () => (
+                <Grammar
                     contract="routed-page-main"
-                    render={defineContractComponent("routed-page-main", {
-                        page: defineLeafComponent("page", {}, () => children),
+                    render={createGrammarNode("routed-page-main", {
+                        page: createLeafNode("page", {}, () => children),
                     })}
                 />
             )),

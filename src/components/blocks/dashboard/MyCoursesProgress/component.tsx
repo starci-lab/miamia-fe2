@@ -1,10 +1,10 @@
 import { CONTRACTS } from "@/components/contracts"
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
 import { SurfaceListCard, type SurfaceListCardData } from "@/components/branches/SurfaceListCard"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { CourseProgressRow, type CourseProgressRowData } from "@/components/composites/CourseProgressRow"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
-import { defineCompositeComponent, defineContractComponent, type LeafProps } from "@/components/contracts/props"
+import { createCompositeNode, createGrammarNode, type ComponentProps } from "@/components/contracts/props"
 
 /** Resolved frame and rows for enrolled-course progress. */
 export type MyCoursesProgressData = SurfaceListCardData & {
@@ -23,7 +23,7 @@ export type MyCoursesProgressProps = {
 }
 
 const COUNT = CONTRACTS["course-progress-list"].children.course.restingCount
-const CourseListView = ({ props, on, isLoading = false }: LeafProps<MyCoursesProgressData, MyCoursesProgressActions>) => {
+const CourseListView = ({ props, on, isLoading = false }: ComponentProps<MyCoursesProgressData, MyCoursesProgressActions>) => {
     const rows = isLoading ? Array.from({ length: COUNT }, (_, index): CourseProgressRowData => ({
         id: `resting-${index}`,
         dimensions: [
@@ -32,20 +32,20 @@ const CourseListView = ({ props, on, isLoading = false }: LeafProps<MyCoursesPro
             { id: "milestone", label: "", completed: 0, total: 0, percent: 0, tone: "warning" },
         ],
     })) : props.rows
-    return <Tree contract="course-progress-list" render={defineContractComponent("course-progress-list", {
-        course: rows.map((row) => defineCompositeComponent("course-progress-row", {}, () => (
+    return <Grammar contract="course-progress-list" render={createGrammarNode("course-progress-list", {
+        course: rows.map((row) => createCompositeNode("course-progress-row", {}, () => (
             <CourseProgressRow props={row} on={{ open: on?.[`open:${row.id}`] }} isLoading={isLoading} />
         ))),
     })} />
 }
-const CourseList = defineContractComponent("course-progress-list", CourseListView)
+const CourseList = createGrammarNode("course-progress-list", CourseListView)
 
 /** Draw enrolled-course progress, keeping every request outcome local to the block. */
 export const MyCoursesProgressBase = (input: MyCoursesProgressProps) => {
     if (input.state === "empty" || input.state === "failed") {
         const message = input.state === "empty" ? input.props.emptyMessage : input.props.errorMessage
-        return <SurfaceCard props={{ label: input.props.label }} contract="empty-notice-card" render={defineContractComponent("empty-notice-card", {
-            notice: defineCompositeComponent("empty-notice", {}, () => <EmptyNotice
+        return <SurfaceCard props={{ label: input.props.label }} contract="empty-notice-card" render={createGrammarNode("empty-notice-card", {
+            notice: createCompositeNode("empty-notice", {}, () => <EmptyNotice
                 props={{ icon: "course", message: message ?? "", actionLabel: input.props.retryLabel }}
                 on={{ act: input.on?.retry }}
             />),

@@ -1,5 +1,5 @@
 import { ProgressBar, skeletonVariants } from "@heroui/react"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `Progress`: how far along something is, as a bar.
@@ -19,8 +19,8 @@ export type ProgressData = {
     readonly label: string
 }
 
-/** Props for {@link Progress}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type ProgressProps = LeafProps<ProgressData>
+/** Props for {@link Progress}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type ProgressProps = ComponentProps<ProgressData>
 
 /** The bar takes the width it is given. */
 const BASE_CLASSES = "w-full"

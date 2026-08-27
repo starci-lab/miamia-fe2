@@ -1,10 +1,10 @@
 import { Badge } from "@/components/leaves/Badge"
 import { Button } from "@/components/leaves/Button"
 import { CodeBlock } from "@/components/leaves/CodeBlock"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import {
-    defineContractComponent,
-    defineLeafComponent,
+    createGrammarNode,
+    createLeafNode,
     type BlockProps,
 } from "@/components/contracts/props"
 import { CodeEditor, type EditorTelemetry } from "@/components/leaves/CodeEditor"
@@ -100,8 +100,8 @@ export const SolutionEditorBase = (input: SolutionEditorProps) => {
     const isBusy = input.state === "submitting"
     const testcases = input.props.testcases ?? []
 
-    const toolbar = defineContractComponent("editor-toolbar-row", {
-        language: defineLeafComponent("select", {}, () => (
+    const toolbar = createGrammarNode("editor-toolbar-row", {
+        language: createLeafNode("select", {}, () => (
             <Select
                 props={{
                     id: LANGUAGE_ID,
@@ -114,14 +114,14 @@ export const SolutionEditorBase = (input: SolutionEditorProps) => {
                 on={{ select: input.on?.changeLanguage }}
             />
         )),
-        actions: defineContractComponent("catalog-card-action-row", {
-            cart: defineLeafComponent("button", {}, () => (
+        actions: createGrammarNode("catalog-card-action-row", {
+            cart: createLeafNode("button", {}, () => (
                 <Button
                     props={{ label: labels.run, size: "sm", variant: "outline", disabled: isBusy }}
                     on={{ press: input.on?.run }}
                 />
             )),
-            open: defineLeafComponent("button", {}, () => (
+            open: createLeafNode("button", {}, () => (
                 <Button
                     props={{
                         label: isBusy ? labels.submitting : labels.submit,
@@ -139,11 +139,11 @@ export const SolutionEditorBase = (input: SolutionEditorProps) => {
     })
 
     return (
-        <Tree
+        <Grammar
             contract="editor-over-console"
-            render={defineContractComponent("editor-over-console", {
+            render={createGrammarNode("editor-over-console", {
                 toolbar,
-                editor: defineLeafComponent("code-editor", {}, () => (
+                editor: createLeafNode("code-editor", {}, () => (
                     <CodeEditor
                         props={{
                             id: EDITOR_ID,
@@ -159,9 +159,9 @@ export const SolutionEditorBase = (input: SolutionEditorProps) => {
                     />
                 )),
                 ...(testcases.length === 0 ? {} : {
-                    console: defineContractComponent("judge-console", {
-                        cases: defineContractComponent("testcase-chip-run", {
-                            testcase: testcases.map((testcase) => defineLeafComponent("badge", {}, () => (
+                    console: createGrammarNode("judge-console", {
+                        cases: createGrammarNode("testcase-chip-run", {
+                            testcase: testcases.map((testcase) => createLeafNode("badge", {}, () => (
                                 <Badge
                                     props={{
                                         content: testcase.label,
@@ -171,7 +171,7 @@ export const SolutionEditorBase = (input: SolutionEditorProps) => {
                             ))),
                         }),
                         ...(input.props.compilerMessage === undefined ? {} : {
-                            message: defineLeafComponent("code-block", {}, () => (
+                            message: createLeafNode("code-block", {}, () => (
                                 <CodeBlock props={{ code: input.props.compilerMessage ?? "" }} />
                             )),
                         }),

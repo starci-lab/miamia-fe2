@@ -3,7 +3,7 @@ import { LabelledProgressRow } from "@/components/composites/LabelledProgressRow
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Text } from "@/components/leaves/Text"
 import type { LabelledProgressRowData } from "@/components/composites/LabelledProgressRow"
-import { defineCompositeComponent, defineContractComponent, defineLeafComponent } from "@/components/contracts/props"
+import { createCompositeNode, createGrammarNode, createLeafNode } from "@/components/contracts/props"
 
 /**
  * BLOCK - `WeeklyGoals`, presentational half.
@@ -74,7 +74,7 @@ export const WeeklyGoalsBase = (input: WeeklyGoalsInput) => {
     if (input.state === "failed") {
         return (
             <SurfaceCard props={{ label: input.props.label }} contract="empty-notice-card"
-                render={defineContractComponent("empty-notice-card", { notice: defineCompositeComponent("empty-notice", {}, () => <EmptyNotice
+                render={createGrammarNode("empty-notice-card", { notice: createCompositeNode("empty-notice", {}, () => <EmptyNotice
                     props={{ icon: "league", message: input.props.message, actionLabel: input.props.retryLabel }}
                     on={{ act: input.on?.retry }}
                 />) })} />
@@ -94,8 +94,8 @@ export const WeeklyGoalsBase = (input: WeeklyGoalsInput) => {
             on={{ seeMore: input.on?.edit }}
             isLoading={isLoading}
             contract="weekly-goals-card"
-            render={defineContractComponent("weekly-goals-card", {
-                summary: defineLeafComponent("text", { size: "sm", weight: "medium" }, () => (
+            render={createGrammarNode("weekly-goals-card", {
+                summary: createLeafNode("text", { size: "sm", weight: "medium" }, () => (
                     <Text
                         props={{
                             content: input.state === "ready" ? input.props.summary : undefined,
@@ -105,9 +105,9 @@ export const WeeklyGoalsBase = (input: WeeklyGoalsInput) => {
                         isLoading={isLoading}
                     />
                 )),
-                goals: defineContractComponent("bordered-goal-grid", {
+                goals: createGrammarNode("bordered-goal-grid", {
                     goal: (input.state === "ready" ? input.props.rows : RESTING_ROWS).map((row) => (
-                        defineCompositeComponent("labelled-progress-row", {}, () => (
+                        createCompositeNode("labelled-progress-row", {}, () => (
                             <LabelledProgressRow props={row} isLoading={isLoading} />
                         ))
                     )),

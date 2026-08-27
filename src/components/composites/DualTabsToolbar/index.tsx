@@ -1,6 +1,6 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { ChoiceTabs, type ChoiceTabsData } from "@/components/leaves/ChoiceTabs"
-import { defineContractComponent, defineLeafComponent, type CompositeProps } from "@/components/contracts/props"
+import { createGrammarNode, createLeafNode, type CompositeProps } from "@/components/contracts/props"
 
 /** Two controlled peer-choice axes sharing one toolbar row. */
 export type DualTabsToolbarData = {
@@ -19,11 +19,11 @@ export type DualTabsToolbarProps = CompositeProps<DualTabsToolbarData, DualTabsT
 
 /** Draw two primary peer-choice axes on the same toolbar. */
 export const DualTabsToolbar = ({ props, on }: DualTabsToolbarProps) => (
-    <Tree contract="dual-tabs-toolbar" render={defineContractComponent("dual-tabs-toolbar", {
-        leading: defineLeafComponent("choice-tabs", {}, () => (
+    <Grammar contract="dual-tabs-toolbar" render={createGrammarNode("dual-tabs-toolbar", {
+        leading: createLeafNode("choice-tabs", {}, () => (
             <ChoiceTabs props={{ ...props.leading, variant: "primary" }} on={{ select: on?.selectLeading }} />
         )),
-        trailing: defineLeafComponent("choice-tabs", {}, () => (
+        trailing: createLeafNode("choice-tabs", {}, () => (
             <ChoiceTabs props={{ ...props.trailing, variant: "primary" }} on={{ select: on?.selectTrailing }} />
         )),
     })} />

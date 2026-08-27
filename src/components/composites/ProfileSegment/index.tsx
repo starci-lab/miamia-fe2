@@ -1,6 +1,6 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { Text } from "@/components/leaves/Text"
-import { defineContractComponent, defineLeafComponent, type CompositeProps } from "@/components/contracts/props"
+import { createGrammarNode, createLeafNode, type CompositeProps } from "@/components/contracts/props"
 
 /** Resolved caption for one distribution segment. */
 export type ProfileSegmentData = { readonly label?: string }
@@ -9,8 +9,8 @@ export type ProfileSegmentProps = CompositeProps<ProfileSegmentData>
 
 /** Draw one share inside a joined distribution run. */
 export const ProfileSegment = ({ props, isLoading = false }: ProfileSegmentProps) => (
-    <Tree contract="profile-segment-piece" render={defineContractComponent("profile-segment-piece", {
-        value: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => <Text props={{ content: props.label, size: "xs", tone: "muted" }} isLoading={isLoading} />),
+    <Grammar contract="profile-segment-piece" render={createGrammarNode("profile-segment-piece", {
+        value: createLeafNode("text", { size: "xs", tone: "muted" }, () => <Text props={{ content: props.label, size: "xs", tone: "muted" }} isLoading={isLoading} />),
     })} />
 )
 

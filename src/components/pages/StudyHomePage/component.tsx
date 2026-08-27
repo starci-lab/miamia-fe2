@@ -1,19 +1,13 @@
 import type { ComponentType } from "react"
-import { Tree } from "@/components/branches/Tree"
-import { defineContractComponent, defineContractProjection } from "@/components/contracts/props"
+import { Grammar } from "@/components/branches/Grammar"
+import { createGrammarNode, createGrammarProjection } from "@/components/contracts/props"
 
 type StudyHomePageProps = { readonly continueSurface: ComponentType; readonly progressSurface: ComponentType }
 
 /** Keeps resume before progress in the Study landing reading order. */
-export const StudyHomePageBase = ({ continueSurface, progressSurface }: StudyHomePageProps) => <Tree contract="study-home-grid" render={defineContractComponent("study-home-grid", {
-    resume: defineContractProjection("study-resume-hero", () => {
-        const ContinueSurface = continueSurface
-        return <ContinueSurface />
-    }),
-    progress: defineContractProjection("study-progress-card", () => {
-        const ProgressSurface = progressSurface
-        return <ProgressSurface />
-    }),
+export const StudyHomePageBase = ({ continueSurface: ContinueSurface, progressSurface: ProgressSurface }: StudyHomePageProps) => <Grammar contract="study-home-grid" render={createGrammarNode("study-home-grid", {
+    resume: createGrammarProjection("study-resume-hero", () => <ContinueSurface />),
+    progress: createGrammarProjection("study-progress-card", () => <ProgressSurface />),
 })} />
 
 /** Declares the pure Study landing page. */

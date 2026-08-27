@@ -1,8 +1,8 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { Text } from "@/components/leaves/Text"
 import {
-    defineContractComponent,
-    defineLeafComponent,
+    createGrammarNode,
+    createLeafNode,
     type BlockProps,
 } from "@/components/contracts/props"
 
@@ -53,14 +53,14 @@ export const CoursePrerequisiteListBase = ({
     state === "none"
         ? null
         :
-        <Tree
+        <Grammar
             contract="course-prerequisite-list"
-            render={defineContractComponent("course-prerequisite-list", {
-                prerequisite: props.prerequisites.map((prerequisite, index) => defineContractComponent("course-prerequisite-row", {
-                    mark: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+            render={createGrammarNode("course-prerequisite-list", {
+                prerequisite: props.prerequisites.map((prerequisite, index) => createGrammarNode("course-prerequisite-row", {
+                    mark: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                         <Text props={{ content: `${index + 1}.`, size: "sm", tone: "muted" }} />
                     )),
-                    requirement: defineLeafComponent("text", { size: "sm" }, () => (
+                    requirement: createLeafNode("text", { size: "sm" }, () => (
                         <Text props={{ content: prerequisite.requirement, size: "sm" }} />
                     )),
                 })),

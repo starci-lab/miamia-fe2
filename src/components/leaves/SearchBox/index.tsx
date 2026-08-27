@@ -1,9 +1,10 @@
+import { CLASS_NAME_1 } from './styles'
 "use client"
 
 import { useRef, useState, type ReactNode } from "react"
 import { InputGroup } from "@heroui/react"
 import { Icon } from "@/components/leaves/Icon"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `SearchBox`: the one field that lives in the bar.
@@ -48,8 +49,8 @@ export type SearchBoxActions = {
     readonly search?: (query: string) => void
 }
 
-/** Props for {@link SearchBox}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type SearchBoxProps = LeafProps<SearchBoxData, SearchBoxActions>
+/** Props for {@link SearchBox}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type SearchBoxProps = ComponentProps<SearchBoxData, SearchBoxActions>
 
 /** The hint is set as a key, not as a word. */
 const SHORTCUT_CLASSES = "shrink-0 rounded border px-2 py-1 text-xs text-muted"
@@ -127,7 +128,7 @@ export const SearchBox = ({ props, on }: SearchBoxProps) => {
             data-tier="leaf"
             data-component="SearchBox"
             role="search"
-            className="w-full max-w-xs"
+            className={CLASS_NAME_1}
             onSubmit={(event) => {
                 event.preventDefault()
                 on?.search?.(field()?.value ?? "")

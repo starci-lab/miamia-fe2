@@ -1,9 +1,10 @@
+import { CLASS_NAME_1, CLASS_NAME_2, CLASS_NAME_3, CLASS_NAME_4 } from './styles'
 "use client"
 
 import { useEffect, useRef, useState } from "react"
 import { Button as HeroButton, cn } from "@heroui/react"
 import { AnimatePresence, motion } from "framer-motion"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 import { ReactionType } from "@/modules/api/graphql/queries/types/reactions"
 
 /** Localized copy for the fixed StarCi reaction vocabulary. */
@@ -51,7 +52,7 @@ export type ReactionPickerData = {
 /** A selected reaction, or `null` when the current reaction is removed. */
 export type ReactionPickerActions = { readonly select?: (type: ReactionType | null) => void }
 /** Props for the intrinsic six-reaction control. */
-export type ReactionPickerProps = LeafProps<ReactionPickerData, ReactionPickerActions>
+export type ReactionPickerProps = ComponentProps<ReactionPickerData, ReactionPickerActions>
 
 const PICKER_VARIANTS = {
     hidden: { opacity: 0, y: 8, scale: 0.8 },
@@ -89,7 +90,7 @@ export const ReactionPicker = ({ props, on }: ReactionPickerProps) => {
 
     if (on?.select === undefined) {
         if (props.count <= 0) return null
-        return <div data-tier="leaf" data-component="ReactionPicker" className="flex items-center gap-1 text-xs text-muted">
+        return <div data-tier="leaf" data-component="ReactionPicker" className={CLASS_NAME_1}>
             {selectedLabel === undefined || props.selected === null || props.selected === undefined
                 ? null
                 : <ReactionImage type={props.selected} size="summary" />}
@@ -102,7 +103,7 @@ export const ReactionPicker = ({ props, on }: ReactionPickerProps) => {
         setIsOpen(false)
     }
 
-    return <div ref={rootRef} data-tier="leaf" data-component="ReactionPicker" className="relative flex items-center">
+    return <div ref={rootRef} data-tier="leaf" data-component="ReactionPicker" className={CLASS_NAME_2}>
         <HeroButton
             variant="tertiary"
             size="sm"
@@ -123,7 +124,7 @@ export const ReactionPicker = ({ props, on }: ReactionPickerProps) => {
                 animate="visible"
                 exit="exit"
                 style={{ transformOrigin: "bottom left" }}
-                className="absolute bottom-full left-0 z-10 mb-1 flex items-center gap-1 rounded-full bg-surface p-1 ring-1 ring-separator"
+                className={CLASS_NAME_3}
             >
                 {REACTION_TYPES.map((type) => <motion.button
                     key={type}
@@ -139,7 +140,7 @@ export const ReactionPicker = ({ props, on }: ReactionPickerProps) => {
                         props.selected === type && "bg-accent-soft",
                     )}
                 >
-                    <span className="pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-foreground px-2 text-[10px] font-medium text-background opacity-0 transition-opacity group-hover/reaction:opacity-100">
+                    <span className={CLASS_NAME_4}>
                         {props.labels[type]}
                     </span>
                     <ReactionImage type={type} size="picker" />

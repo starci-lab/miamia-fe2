@@ -3,7 +3,7 @@ import {
     ContributionCalendar,
     type ContributionCalendarDay,
 } from "@/components/composites/ContributionCalendar"
-import { defineCompositeComponent, defineContractComponent } from "@/components/contracts/props"
+import { createCompositeNode, createGrammarNode } from "@/components/contracts/props"
 
 /** One calendar day with its already-resolved accessible label. */
 export type ContributionDay = ContributionCalendarDay
@@ -52,8 +52,8 @@ export const OverviewContributionsBase = (input: OverviewContributionsProps) => 
         <SurfaceCard
             props={{ label: input.props.label }}
             contract="contribution-calendar-card"
-            render={defineContractComponent("contribution-calendar-card", {
-                calendar: defineCompositeComponent("contribution-calendar", {}, () => (
+            render={createGrammarNode("contribution-calendar-card", {
+                calendar: createCompositeNode("contribution-calendar", {}, () => (
                     <ContributionCalendar
                         props={{
                             year: input.props.year,

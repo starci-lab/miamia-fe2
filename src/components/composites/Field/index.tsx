@@ -2,8 +2,8 @@ import { Text } from "@/components/leaves/Text"
 import { Input, type InputKind } from "@/components/leaves/Input"
 import { Label } from "@/components/leaves/Label"
 import type { CompositeProps } from "@/components/contracts/props"
-import { Tree } from "@/components/branches/Tree"
-import { defineContractComponent, defineLeafComponent } from "@/components/contracts/props"
+import { Grammar } from "@/components/branches/Grammar"
+import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
 
 /**
  * COMPOSITE - `Field`: one labelled box, with its hint or its refusal underneath.
@@ -56,7 +56,7 @@ export type FieldActions = {
     readonly change?: (value: string) => void
 }
 
-/** Props for {@link Field}. Three fixed slots, no fourth - see {@link LeafProps}. */
+/** Props for {@link Field}. Three fixed slots, no fourth - see {@link ComponentProps}. */
 export type FieldProps = CompositeProps<FieldData, FieldActions>
 
 /**
@@ -65,9 +65,9 @@ export type FieldProps = CompositeProps<FieldData, FieldActions>
  * @param input - {@link FieldProps}
  */
 export const Field = ({ props, on, isLoading = false }: FieldProps) => {
-    const content = defineContractComponent("label-field-hint", {
-        label: defineLeafComponent("label", {}, () => <Label props={{ htmlFor: props.id, content: props.label }} />),
-        field: defineLeafComponent("input", {}, () => (
+    const content = createGrammarNode("label-field-hint", {
+        label: createLeafNode("label", {}, () => <Label props={{ htmlFor: props.id, content: props.label }} />),
+        field: createLeafNode("input", {}, () => (
             <Input
                 props={{
                     id: props.id,
@@ -84,11 +84,11 @@ export const Field = ({ props, on, isLoading = false }: FieldProps) => {
                 isLoading={isLoading}
             />
         )),
-        hint: props.hint === undefined ? undefined : defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+        hint: props.hint === undefined ? undefined : createLeafNode("text", { size: "xs", tone: "muted" }, () => (
             <Text props={{ id: `${props.id}-hint`, content: props.hint, size: "xs", live: props.isInvalid === true ? "assertive" : "off" }} />
         )),
     })
-    return <Tree contract="label-field-hint" render={content} />
+    return <Grammar contract="label-field-hint" render={content} />
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */

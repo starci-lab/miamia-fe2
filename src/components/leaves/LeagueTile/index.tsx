@@ -1,6 +1,6 @@
 import { skeletonVariants } from "@heroui/react"
 import { RankMark } from "@/components/leaves/RankMark"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `LeagueTile`: the viewer's own place, on a plate of its own.
@@ -29,8 +29,8 @@ export type LeagueTileData = {
     readonly accessibleLabel?: string
 }
 
-/** Props for {@link LeagueTile}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type LeagueTileProps = LeafProps<LeagueTileData>
+/** Props for {@link LeagueTile}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type LeagueTileProps = ComponentProps<LeagueTileData>
 
 /** The plate: one step above `IconTile`'s largest, with the radius kept concentric. */
 const PLATE_CLASSES = "inline-flex size-12 shrink-0 items-center justify-center rounded-2xl bg-default"

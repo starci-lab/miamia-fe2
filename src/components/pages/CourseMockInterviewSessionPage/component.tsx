@@ -1,4 +1,4 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { CodeBlock } from "@/components/leaves/CodeBlock"
 import { Button } from "@/components/leaves/Button"
 import { Heading } from "@/components/leaves/Heading"
@@ -6,9 +6,9 @@ import { Text } from "@/components/leaves/Text"
 import { Textarea } from "@/components/leaves/Textarea"
 import { LabelledProgressRow } from "@/components/composites/LabelledProgressRow"
 import {
-    defineCompositeComponent,
-    defineContractComponent,
-    defineLeafComponent,
+    createCompositeNode,
+    createGrammarNode,
+    createLeafNode,
 } from "@/components/contracts/props"
 
 /** Finite runtime situations shown by the interview room. */
@@ -69,20 +69,20 @@ export const CourseMockInterviewSessionPageBase = (input: CourseMockInterviewSes
     const isPending = input.state === "connecting"
     const isBusy = input.state === "connecting" || input.state === "syncing"
     const canAnswer = input.state === "live"
-    const turn = input.props.turns.map((item) => defineContractComponent("centred-title-pair", {
-        title: defineLeafComponent("heading", {}, () => (
+    const turn = input.props.turns.map((item) => createGrammarNode("centred-title-pair", {
+        title: createLeafNode("heading", {}, () => (
             <Heading props={{ content: item.label, level: 3 }} />
         )),
-        description: defineLeafComponent("text", { size: "sm" }, () => (
+        description: createLeafNode("text", { size: "sm" }, () => (
             <Text props={{ content: item.content, size: "sm" }} />
         )),
     }))
     const action = [
         input.state === "failed"
-            ? defineLeafComponent("button", {}, () => (
+            ? createLeafNode("button", {}, () => (
                 <Button props={{ label: input.props.retryLabel, variant: "primary" }} on={{ press: input.on?.retry }} />
             ))
-            : defineLeafComponent("button", {}, () => (
+            : createLeafNode("button", {}, () => (
                 <Button
                     props={{
                         label: input.props.submitLabel,
@@ -94,31 +94,31 @@ export const CourseMockInterviewSessionPageBase = (input: CourseMockInterviewSes
                 />
             )),
         ...(input.props.streamingText === undefined ? [] : [
-            defineLeafComponent("button", {}, () => (
+            createLeafNode("button", {}, () => (
                 <Button props={{ label: input.props.abortLabel, variant: "outline" }} on={{ press: input.on?.abort }} />
             )),
         ]),
-        defineLeafComponent("button", {}, () => (
+        createLeafNode("button", {}, () => (
             <Button props={{ label: input.props.finishLabel, variant: "outline", disabled: isBusy }} on={{ press: input.on?.finish }} />
         )),
-        defineLeafComponent("button", {}, () => (
+        createLeafNode("button", {}, () => (
             <Button props={{ label: input.props.leaveLabel, variant: "ghost" }} on={{ press: input.on?.leave }} />
         )),
     ]
 
     return (
-        <Tree
+        <Grammar
             contract="course-mock-interview-session-page"
-            render={defineContractComponent("course-mock-interview-session-page", {
-                header: defineContractComponent("centred-title-pair", {
-                    title: defineLeafComponent("heading", {}, () => (
+            render={createGrammarNode("course-mock-interview-session-page", {
+                header: createGrammarNode("centred-title-pair", {
+                    title: createLeafNode("heading", {}, () => (
                         <Heading props={{ content: input.props.promptTitle, level: 1 }} isLoading={isPending} />
                     )),
-                    description: defineLeafComponent("text", { size: "sm" }, () => (
+                    description: createLeafNode("text", { size: "sm" }, () => (
                         <Text props={{ content: input.props.title, size: "sm", tone: "muted" }} isLoading={isPending} />
                     )),
                 }),
-                progress: defineCompositeComponent("labelled-progress-row", {}, () => (
+                progress: createCompositeNode("labelled-progress-row", {}, () => (
                     <LabelledProgressRow
                         props={{
                             id: "mock-interview-progress",
@@ -130,11 +130,11 @@ export const CourseMockInterviewSessionPageBase = (input: CourseMockInterviewSes
                     />
                 )),
                 ...(input.props.remainingLabel === undefined ? {} : {
-                    remaining: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+                    remaining: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                         <Text props={{ content: input.props.remainingLabel, size: "xs", tone: "muted" }} />
                     )),
                 }),
-                notice: defineLeafComponent("text", { size: "sm" }, () => (
+                notice: createLeafNode("text", { size: "sm" }, () => (
                     <Text
                         props={{
                             content: input.props.notice ?? input.props.stateLabel,
@@ -147,19 +147,19 @@ export const CourseMockInterviewSessionPageBase = (input: CourseMockInterviewSes
                 )),
                 turn,
                 ...(input.props.streamingText === undefined ? {} : {
-                    streaming: defineContractComponent("centred-title-pair", {
-                        title: defineLeafComponent("heading", {}, () => (
+                    streaming: createGrammarNode("centred-title-pair", {
+                        title: createLeafNode("heading", {}, () => (
                             <Heading props={{ content: input.props.interviewerPendingLabel, level: 3 }} />
                         )),
-                        description: defineLeafComponent("text", { size: "sm" }, () => (
+                        description: createLeafNode("text", { size: "sm" }, () => (
                             <Text props={{ content: input.props.streamingText, size: "sm", live: "polite" }} />
                         )),
                     }),
                 }),
-                answerLabel: defineLeafComponent("text", { size: "sm", weight: "medium" }, () => (
+                answerLabel: createLeafNode("text", { size: "sm", weight: "medium" }, () => (
                     <Text props={{ content: input.props.answerLabel, size: "sm", weight: "medium" }} />
                 )),
-                answer: defineLeafComponent("textarea", {}, () => (
+                answer: createLeafNode("textarea", {}, () => (
                     <Textarea
                         props={{
                             id: "mock-interview-answer",
@@ -173,14 +173,14 @@ export const CourseMockInterviewSessionPageBase = (input: CourseMockInterviewSes
                     />
                 )),
                 action,
-                workspaceTitle: defineLeafComponent("heading", {}, () => (
+                workspaceTitle: createLeafNode("heading", {}, () => (
                     <Heading props={{ content: input.props.workspaceLabel, level: 2 }} isLoading={isPending} />
                 )),
                 workspace: input.props.workspaceCode === undefined
-                    ? defineLeafComponent("text", {}, () => (
+                    ? createLeafNode("text", {}, () => (
                         <Text props={{ content: input.props.interviewerPendingLabel, size: "sm", tone: "muted" }} isLoading={isPending} />
                     ))
-                    : defineLeafComponent("code-block", {}, () => (
+                    : createLeafNode("code-block", {}, () => (
                         <CodeBlock props={{ code: input.props.workspaceCode ?? "" }} />
                     )),
             })}

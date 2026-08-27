@@ -1,9 +1,9 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Button } from "@/components/leaves/Button"
 import { Heading } from "@/components/leaves/Heading"
 import { Text } from "@/components/leaves/Text"
-import { defineCompositeComponent, defineContractComponent, defineLeafComponent } from "@/components/contracts/props"
+import { createCompositeNode, createGrammarNode, createLeafNode } from "@/components/contracts/props"
 import type { Playground } from "@/modules/api/graphql/queries/query-playground"
 
 /** Setup and agent-pairing states exposed by the pure setup page. */
@@ -40,7 +40,7 @@ export const CoursePlaygroundSetupPageBase = (input: CoursePlaygroundSetupPagePr
     const failed = input.state === "failed"
     const paired = input.state === "paired" || input.state === "ready"
     const notice = failed
-        ? defineCompositeComponent("empty-notice", {}, () => (
+        ? createCompositeNode("empty-notice", {}, () => (
             <EmptyNotice
                 props={{ message: input.props.failedText, actionLabel: input.props.retryLabel }}
                 on={{ act: input.on.retry }}
@@ -50,14 +50,14 @@ export const CoursePlaygroundSetupPageBase = (input: CoursePlaygroundSetupPagePr
     const resolveActions = () => {
         if (failed) return undefined
         if (paired) {
-            return [defineLeafComponent("button", {}, () => (
+            return [createLeafNode("button", {}, () => (
                 <Button
                     props={{ label: input.props.enterLabel, variant: "primary", disabled: input.state !== "ready" }}
                     on={{ press: input.on.enter }}
                 />
             ))]
         }
-        return [defineLeafComponent("button", {}, () => (
+        return [createLeafNode("button", {}, () => (
             <Button
                 props={{
                     label: input.state === "starting" ? input.props.startingLabel : input.props.startLabel,
@@ -72,37 +72,37 @@ export const CoursePlaygroundSetupPageBase = (input: CoursePlaygroundSetupPagePr
     const actions = resolveActions()
 
     return (
-        <Tree contract="course-playground-setup-page" render={defineContractComponent("course-playground-setup-page", {
-            header: defineContractComponent("page-header-stack", {
-                title: defineLeafComponent("heading", {}, () => (
+        <Grammar contract="course-playground-setup-page" render={createGrammarNode("course-playground-setup-page", {
+            header: createGrammarNode("page-header-stack", {
+                title: createLeafNode("heading", {}, () => (
                     <Heading
                         props={{ content: input.props.playground?.title ?? input.props.titleFallback, level: 1 }}
                         isLoading={loading}
                     />
                 )),
             }),
-            description: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+            description: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                 <Text
                     props={{ content: input.props.playground?.description ?? "", size: "sm", tone: "muted" }}
                     isLoading={loading}
                 />
             )),
             ...(!failed ? {
-                preparationTitle: defineLeafComponent("heading", {}, () => (
+                preparationTitle: createLeafNode("heading", {}, () => (
                     <Heading props={{ content: input.props.preparationTitle, level: 2 }} isLoading={loading} />
                 )),
-                preparationStep: input.props.preparationSteps.map((step, index) => defineLeafComponent("text", { size: "sm" }, () => (
+                preparationStep: input.props.preparationSteps.map((step, index) => createLeafNode("text", { size: "sm" }, () => (
                     <Text props={{ content: `${index + 1}. ${step}`, size: "sm" }} isLoading={loading} />
                 ))),
             } : {}),
             ...(paired ? {
-                pairingLabel: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+                pairingLabel: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                     <Text props={{ content: input.props.pairingLabel, size: "xs", tone: "muted" }} />
                 )),
-                pairingCode: defineLeafComponent("text", { size: "sm", weight: "semibold" }, () => (
+                pairingCode: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
                     <Text props={{ content: input.props.pairingCode, size: "sm", weight: "semibold" }} />
                 )),
-                status: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+                status: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                     <Text
                         props={{
                             content: input.state === "ready" ? input.props.readyLabel : input.props.waitingLabel,

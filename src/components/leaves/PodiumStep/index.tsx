@@ -1,5 +1,5 @@
 import { skeletonVariants } from "@heroui/react"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `PodiumStep`: the block a finisher stands on, and how tall it is.
@@ -23,8 +23,8 @@ export type PodiumStepData = {
     readonly place: PodiumPlace
 }
 
-/** Props for {@link PodiumStep}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type PodiumStepProps = LeafProps<PodiumStepData>
+/** Props for {@link PodiumStep}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type PodiumStepProps = ComponentProps<PodiumStepData>
 
 /** Shared block shape: one width, a flat top edge and the number centred on it. */
 const BASE_CLASSES = "flex w-20 items-center justify-center rounded-t-2xl bg-default text-base font-bold"

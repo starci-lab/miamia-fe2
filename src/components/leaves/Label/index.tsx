@@ -1,5 +1,5 @@
 import { Icon, type IconName } from "@/components/leaves/Icon"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `Label`: the name of a box, tied to it.
@@ -19,8 +19,8 @@ export type LabelData = {
     readonly icon?: IconName
 }
 
-/** Props for {@link Label}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type LabelProps = LeafProps<LabelData>
+/** Props for {@link Label}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type LabelProps = ComponentProps<LabelData>
 
 /** The glyph sits on the label's baseline without the label learning it is in a row. */
 const LABEL_CLASSES = "inline-flex items-center gap-2 text-sm font-medium"

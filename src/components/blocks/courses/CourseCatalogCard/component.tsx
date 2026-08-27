@@ -5,18 +5,18 @@ import { Text } from "@/components/leaves/Text"
 import { TaskProgressRow } from "@/components/composites/TaskProgressRow"
 import { TextLink } from "@/components/leaves/TextLink"
 // Contract machinery through the candidate mirror, and only because `ContractKey` is closed over
-// the table on disk. The mirror is the locked `contracts/*` and `branches/Tree` copied verbatim
+// the table on disk. The mirror is the locked `contracts/*` and `branches/Grammar` copied verbatim
 // with their imports repointed. On materialization these specifiers become `@/`.
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
 import { SurfaceListCard, type SurfaceListCardData } from "@/components/branches/SurfaceListCard"
 import {
-    defineCompositeComponent,
-    defineContractComponent,
-    defineContractProjection,
-    defineLeafComponent,
+    createCompositeNode,
+    createGrammarNode,
+    createGrammarProjection,
+    createLeafNode,
     type BlockProps,
-    type LeafProps,
+    type ComponentProps,
 } from "@/components/contracts/props"
 import { CoverImage } from "@/components/leaves/CoverImage"
 
@@ -112,11 +112,11 @@ type ValuePropositionsData = SurfaceListCardData & {
  * ONE TICK, ONE OWNER. The row is `TaskProgressRow` - the same composite the day's tasks use - so
  * a promise and a task cannot end up wearing two different marks for the same "done" idea.
  */
-const ValuePropositionsView = ({ props, isLoading = false }: LeafProps<ValuePropositionsData>) => (
-    <Tree
+const ValuePropositionsView = ({ props, isLoading = false }: ComponentProps<ValuePropositionsData>) => (
+    <Grammar
         contract="marked-row-list"
-        render={defineContractComponent("marked-row-list", {
-            row: props.promises.map((promise, index) => defineCompositeComponent("task-progress-row", {}, () => (
+        render={createGrammarNode("marked-row-list", {
+            row: props.promises.map((promise, index) => createCompositeNode("task-progress-row", {}, () => (
                 <TaskProgressRow
                     props={{ id: `promise-${index}`, title: promise, isComplete: true }}
                     isLoading={isLoading}
@@ -127,7 +127,7 @@ const ValuePropositionsView = ({ props, isLoading = false }: LeafProps<ValueProp
 )
 
 /** Stable component type branded for the exact list contract it implements. */
-const ValuePropositions = defineContractComponent("marked-row-list", ValuePropositionsView)
+const ValuePropositions = createGrammarNode("marked-row-list", ValuePropositionsView)
 
 /**
  * Draw one purchasable course.
@@ -137,15 +137,15 @@ const ValuePropositions = defineContractComponent("marked-row-list", ValuePropos
 export const CourseCatalogCardBase = (input: CourseCatalogCardProps) => {
     const isLoading = input.state === "pending"
 
-    const price = defineContractComponent("price-discount-line", {
-        price: defineLeafComponent("text", { size: "sm", weight: "semibold" }, () => (
+    const price = createGrammarNode("price-discount-line", {
+        price: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
             <Text
                 props={{ content: input.props.price, size: "sm", weight: "semibold" }}
                 isLoading={isLoading}
             />
         )),
         ...(input.props.originalPrice === undefined ? {} : {
-            original: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+            original: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                 <Text
                     props={{
                         content: input.props.originalPrice,
@@ -160,37 +160,37 @@ export const CourseCatalogCardBase = (input: CourseCatalogCardProps) => {
             )),
         }),
         ...(input.props.discountLabel === undefined ? {} : {
-            discount: defineLeafComponent("badge", {}, () => (
+            discount: createLeafNode("badge", {}, () => (
                 <Badge props={{ content: input.props.discountLabel, tone: "success" }} isLoading={isLoading} />
             )),
         }),
     })
 
-    const heading = defineContractComponent("catalog-card-heading-row", {
-        title: defineLeafComponent("heading", {}, () => (
+    const heading = createGrammarNode("catalog-card-heading-row", {
+        title: createLeafNode("heading", {}, () => (
             <Heading props={{ content: input.props.title, level: 2 }} isLoading={isLoading} />
         )),
-        count: defineLeafComponent("text", { size: "xs" }, () => (
+        count: createLeafNode("text", { size: "xs" }, () => (
             <Text props={{ content: input.props.enrolmentLabel, size: "xs" }} isLoading={isLoading} />
         )),
     })
 
-    const priceGroup = defineContractComponent("catalog-price-group", {
+    const priceGroup = createGrammarNode("catalog-price-group", {
         price,
         // WHAT IT SAVES AND WHY IT COSTS THIS ARE ONE THOUGHT, so they share a line rather than
         // stacking. Set on its own and a step larger, the question read louder than the saving it
         // was asking about, which is the rank the other way round.
         ...(input.props.priceDetailLabel === undefined ? {} : {
-            note: defineContractComponent("price-note-row", {
+            note: createGrammarNode("price-note-row", {
                 ...(input.props.savingsLabel === undefined ? {} : {
-                    fact: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+                    fact: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                         <Text
                             props={{ content: input.props.savingsLabel, size: "xs", tone: "muted" }}
                             isLoading={isLoading}
                         />
                     )),
                 }),
-                action: defineLeafComponent("text-link", { size: "xs" }, () => (
+                action: createLeafNode("text-link", { size: "xs" }, () => (
                     <TextLink
                         props={{ label: input.props.priceDetailLabel ?? "", size: "xs" }}
                         on={{ press: input.on?.openPriceDetail }}
@@ -200,20 +200,20 @@ export const CourseCatalogCardBase = (input: CourseCatalogCardProps) => {
         }),
     })
 
-    const body = defineContractComponent("catalog-card-body", {
+    const body = createGrammarNode("catalog-card-body", {
         heading,
         price: priceGroup,
         // The promises are the SAME LABELLED JOINED LIST the day's tasks are, always visible.
         //
         // An earlier revision folded them behind a native disclosure of its own making, then drew
-        // the rows as a bare tree of icon-bearing lines. Both were the same mistake twice: the
+        // the rows as a bare Grammar of icon-bearing lines. Both were the same mistake twice: the
         // reader compares courses line by line, so a claim behind a press is a claim they will not
         // read against the card beside it - and the product already owns this whole shape.
         // `SurfaceListCard` is the label over a joined body, `TaskProgressRow` is the ticked row
         // inside it, and `isNested` is the answer to a list standing on a surface that is already
         // raised: an outline rather than a second elevation. Rebuilt by hand, this card grew a
         // checklist that only resembled the checklist.
-        promises: defineContractProjection("marked-row-list", () => (
+        promises: createGrammarProjection("marked-row-list", () => (
             <SurfaceListCard
                 props={{
                     label: input.props.promisesSummary ?? "",
@@ -227,7 +227,7 @@ export const CourseCatalogCardBase = (input: CourseCatalogCardProps) => {
         )),
     })
 
-    const cover = defineLeafComponent("cover-image", {}, () => (
+    const cover = createLeafNode("cover-image", {}, () => (
         <CoverImage
             props={{ src: input.props.cover ?? null, alt: "", ratio: "wide" }}
             isLoading={isLoading}
@@ -240,8 +240,8 @@ export const CourseCatalogCardBase = (input: CourseCatalogCardProps) => {
      * OFFERS rather than of how it is read, and the reader who switched to scan would quietly lose
      * the ability to buy.
      */
-    const action = defineContractComponent("catalog-card-action-row", {
-        cart: defineLeafComponent("button", {}, () => (
+    const action = createGrammarNode("catalog-card-action-row", {
+        cart: createLeafNode("button", {}, () => (
             <Button
                 props={{
                     label: input.props.cartLabel ?? "",
@@ -253,7 +253,7 @@ export const CourseCatalogCardBase = (input: CourseCatalogCardProps) => {
                 on={{ press: input.on?.addToCart }}
             />
         )),
-        open: defineLeafComponent("button", {}, () => (
+        open: createLeafNode("button", {}, () => (
             <Button
                 props={{
                     label: input.props.viewLabel ?? "",
@@ -283,18 +283,18 @@ export const CourseCatalogCardBase = (input: CourseCatalogCardProps) => {
          * this owns what the row says.
          */
         return (
-            <Tree
+            <Grammar
                 contract="catalog-card-line"
-                render={defineContractComponent("catalog-card-line", {
+                render={createGrammarNode("catalog-card-line", {
                     cover,
-                    body: defineContractComponent("catalog-card-line-body", {
-                        heading: defineContractComponent("title-with-baseline-fact", {
-                            title: defineLeafComponent("heading", {}, () => (
+                    body: createGrammarNode("catalog-card-line-body", {
+                        heading: createGrammarNode("title-with-baseline-fact", {
+                            title: createLeafNode("heading", {}, () => (
                                 <Heading props={{ content: input.props.title, level: 2 }} isLoading={isLoading} />
                             )),
                             // The entry fixes this step: a fact read as part of the heading sentence
                             // sits at the body step beside it, not at the caption step below it.
-                            fact: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+                            fact: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                                 <Text props={{ content: input.props.enrolmentLabel, size: "sm", tone: "muted" }} isLoading={isLoading} />
                             )),
                         }),
@@ -309,7 +309,7 @@ export const CourseCatalogCardBase = (input: CourseCatalogCardProps) => {
     return (
         <SurfaceCard
             contract="catalog-card"
-            render={defineContractComponent("catalog-card", {
+            render={createGrammarNode("catalog-card", {
                 cover,
                 body,
                 // THE CART IS THE QUIETER OF THE TWO, deliberately. Both are ways in, but one

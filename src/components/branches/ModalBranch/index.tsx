@@ -1,21 +1,22 @@
+import { CLASS_NAME_1 } from './styles'
 import { Modal } from "@heroui/react"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import type { ContractKey } from "@/components/contracts"
 import type { ContractComponent } from "@/components/contracts/props"
 
 /**
  * BRANCH - `ModalBranch`: the vendor's covering mechanics, wrapped once.
  *
- * SLOTS-4: it takes `{contract, render}`, exactly like `Tree`, instead of an untyped `children`
+ * SLOTS-4: it takes `{contract, render}`, exactly like `Grammar`, instead of an untyped `children`
  * hole. A modal owns focus trapping, Escape, backdrop dismissal, scroll locking and placement; the
  * content it covers is now always a checked contract identity rather than an arbitrary subtree.
  *
- * BOUND SLOTS DRAW THROUGH `Tree`, the one file that turns a key into an element (CONTRACT-7): the
- * vendor body hosts `<Tree contract render />`, and the entry's own host lands INSIDE that body,
+ * BOUND SLOTS DRAW THROUGH `Grammar`, the one file that turns a key into an element (CONTRACT-7): the
+ * vendor body hosts `<Grammar contract render />`, and the entry's own host lands INSIDE that body,
  * never ON it (CONTRACT-4).
  *
- * A PROJECTION HAS ALREADY DRAWN ITS OWN HOST. Routing it through `Tree` a second time would open a
- * second host around content that already opened one - the same fault `Tree`'s own `ContractContent`
+ * A PROJECTION HAS ALREADY DRAWN ITS OWN HOST. Routing it through `Grammar` a second time would open a
+ * second host around content that already opened one - the same fault `Grammar`'s own `ContractContent`
  * refuses for a projected SLOT, reproduced here for a projected ROOT. So a projection's `project()`
  * is called directly and its output is handed to the vendor body with no host in between.
  */
@@ -49,10 +50,10 @@ export const ModalBranch = <const K extends ContractKey>(input: ModalBranchProps
             <Modal.Container size={input.size ?? "md"} placement="center">
                 <Modal.Dialog data-tier="branch" data-component="ModalBranch">
                     <Modal.CloseTrigger />
-                    <Modal.Body className="p-0">
+                    <Modal.Body className={CLASS_NAME_1}>
                         {input.render.kind === "projection"
                             ? input.render.project()
-                            : <Tree contract={input.contract} render={input.render} />}
+                            : <Grammar contract={input.contract} render={input.render} />}
                     </Modal.Body>
                 </Modal.Dialog>
             </Modal.Container>

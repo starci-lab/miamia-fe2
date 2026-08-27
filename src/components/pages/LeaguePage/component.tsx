@@ -1,5 +1,5 @@
 import { SurfaceListCard, type SurfaceListCardActions, type SurfaceListCardData } from "@/components/branches/SurfaceListCard"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Podium, type PodiumEntryData } from "@/components/composites/Podium"
 import { RankedUserRow, type RankedUserRowData } from "@/components/composites/RankedUserRow"
@@ -10,11 +10,11 @@ import { Breadcrumbs, type BreadcrumbStep } from "@/components/leaves/Breadcrumb
 import { Heading } from "@/components/leaves/Heading"
 import { Text } from "@/components/leaves/Text"
 import {
-    defineContractComponent,
-    defineContractProjection,
-    defineLeafComponent,
+    createGrammarNode,
+    createGrammarProjection,
+    createLeafNode,
     type BlockProps,
-    type LeafProps,
+    type ComponentProps,
 } from "@/components/contracts/props"
 
 /** The two competitions this page can show. */
@@ -75,14 +75,14 @@ type LeagueListData = SurfaceListCardData & {
  *
  * `SurfaceListCard` does NOT draw the contract node - it takes the key for typing and leaves the
  * drawing to whatever it renders. Returning a bare fragment here is what removed the separators and
- * the row inset from this page while the dashboard, which wraps the same rows in `Tree`, kept them:
+ * the row inset from this page while the dashboard, which wraps the same rows in `Grammar`, kept them:
  * every one of those classes lives on the `ranked-user-list` entry and on nothing else.
  *
  * It is a PROJECTION rather than named slots because this list holds three kinds of child - ranked
  * rows, the gap marker, and the pinned viewer row - and the `user` slot admits ranked rows only.
  */
-const LeagueListView = ({ props, on, isLoading = false }: LeafProps<LeagueListData, SurfaceListCardActions>) => (
-    <Tree contract="ranked-user-followable-list" render={defineContractProjection("ranked-user-followable-list", () => (
+const LeagueListView = ({ props, on, isLoading = false }: ComponentProps<LeagueListData, SurfaceListCardActions>) => (
+    <Grammar contract="ranked-user-followable-list" render={createGrammarProjection("ranked-user-followable-list", () => (
         <>
             {props.rows.map((row) => (
                 <RankedUserRow
@@ -93,8 +93,8 @@ const LeagueListView = ({ props, on, isLoading = false }: LeafProps<LeagueListDa
                 />
             ))}
             {props.ellipsisLabel === undefined ? null : (
-                <Tree contract="ranked-user-ellipsis-row" render={defineContractComponent("ranked-user-ellipsis-row", {
-                    label: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+                <Grammar contract="ranked-user-ellipsis-row" render={createGrammarNode("ranked-user-ellipsis-row", {
+                    label: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                         <Text props={{ content: props.ellipsisLabel, size: "xs", tone: "muted" }} />
                     )),
                 })} />
@@ -106,7 +106,7 @@ const LeagueListView = ({ props, on, isLoading = false }: LeafProps<LeagueListDa
     ))} />
 )
 
-const LeagueListContent = defineContractComponent("ranked-user-followable-list", LeagueListView)
+const LeagueListContent = createGrammarNode("ranked-user-followable-list", LeagueListView)
 
 /**
  * PAGE - `LeaguePage`, presentational half.
@@ -118,8 +118,8 @@ const LeagueListContent = defineContractComponent("ranked-user-followable-list",
 export const LeaguePageBase = (input: LeaguePageProps) => {
     const isLoading = input.state === "pending"
     const board = input.props.board
-    const scope = defineContractComponent("scope-switch-row", {
-        tabs: defineLeafComponent("choice-tabs", {}, () => (
+    const scope = createGrammarNode("scope-switch-row", {
+        tabs: createLeafNode("choice-tabs", {}, () => (
             <ChoiceTabs
                 props={{
                     label: input.props.scopeLabel,
@@ -134,24 +134,24 @@ export const LeaguePageBase = (input: LeaguePageProps) => {
             />
         )),
     })
-    const header = defineContractComponent("page-header-stack", {
-        trail: defineLeafComponent("breadcrumbs", {}, () => (
+    const header = createGrammarNode("page-header-stack", {
+        trail: createLeafNode("breadcrumbs", {}, () => (
             <Breadcrumbs
                 props={{ steps: input.props.trail, label: input.props.title }}
                 on={{ home: input.on?.goHome }}
             />
         )),
-        title: defineLeafComponent("heading", {}, () => (
+        title: createLeafNode("heading", {}, () => (
             <Heading props={{ content: input.props.title, level: 1 }} />
         )),
     })
 
     if (input.state === "empty" || input.state === "failed") {
         return (
-            <Tree contract="league-page-column" render={defineContractComponent("league-page-column", {
+            <Grammar contract="league-page-column" render={createGrammarNode("league-page-column", {
                 header,
                 scope,
-                board: defineContractProjection("league-board-stack", () => (
+                board: createGrammarProjection("league-board-stack", () => (
                     <EmptyNotice
                         props={{
                             icon: "league",
@@ -169,11 +169,11 @@ export const LeaguePageBase = (input: LeaguePageProps) => {
     }
 
     return (
-        <Tree contract="league-page-column" render={defineContractComponent("league-page-column", {
+        <Grammar contract="league-page-column" render={createGrammarNode("league-page-column", {
             header,
             scope,
-            board: defineContractComponent("league-board-stack", {
-                hero: defineContractProjection("standing-hero-card", () => (
+            board: createGrammarNode("league-board-stack", {
+                hero: createGrammarProjection("standing-hero-card", () => (
                     <StandingHeroCard
                         props={{
                             standing: board.standing,
@@ -185,7 +185,7 @@ export const LeaguePageBase = (input: LeaguePageProps) => {
                         isLoading={isLoading}
                     />
                 )),
-                podium: defineContractProjection("podium", () => (
+                podium: createGrammarProjection("podium", () => (
                     <Podium
                         props={{
                             entries: board.podium,
@@ -199,7 +199,7 @@ export const LeaguePageBase = (input: LeaguePageProps) => {
                 // there is, this list draws NOTHING rather than an empty notice: the page has just
                 // said who is here, and a second panel explaining that nobody else is would be the
                 // screen contradicting itself one gap lower.
-                list: defineContractProjection("ranked-user-followable-list", () => (board.rows.length === 0 && board.selfRow === undefined ? null : (
+                list: createGrammarProjection("ranked-user-followable-list", () => (board.rows.length === 0 && board.selfRow === undefined ? null : (
                     <SurfaceListCard
                         contract="ranked-user-followable-list"
                         render={LeagueListContent}

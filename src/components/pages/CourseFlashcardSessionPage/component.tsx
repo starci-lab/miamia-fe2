@@ -1,12 +1,12 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Button } from "@/components/leaves/Button"
 import { Heading } from "@/components/leaves/Heading"
 import { Text } from "@/components/leaves/Text"
 import {
-    defineCompositeComponent,
-    defineContractComponent,
-    defineLeafComponent,
+    createCompositeNode,
+    createGrammarNode,
+    createLeafNode,
 } from "@/components/contracts/props"
 import type { FlashcardSessionMode } from "@/modules/api/graphql/queries/query-my-in-progress-flashcard-session"
 
@@ -59,43 +59,43 @@ export const CourseFlashcardSessionPageBase = (input: CourseFlashcardSessionPage
     const { state, data, on } = input
     const isLoading = state === "pending"
     const settledFailure = state === "failed" || state === "expired"
-    const header = defineContractComponent("flashcard-session-header", {
+    const header = createGrammarNode("flashcard-session-header", {
         deck: data.deckTitle === undefined
             ? undefined
-            : defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+            : createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                 <Text props={{ content: data.deckTitle, size: "sm", tone: "muted" }} isLoading={isLoading} />
             )),
-        title: defineLeafComponent("heading", {}, () => (
+        title: createLeafNode("heading", {}, () => (
             <Heading props={{ content: data.title, level: 1 }} isLoading={isLoading} />
         )),
-        leave: defineLeafComponent("button", {}, () => (
+        leave: createLeafNode("button", {}, () => (
             <Button props={{ label: data.leaveLabel, variant: "outline" }} on={{ press: on.leave }} />
         )),
     })
     const progress = settledFailure
         ? undefined
-        : defineContractComponent("label-with-muted-fact-row", {
-            label: defineLeafComponent("text", { size: "sm", weight: "semibold" }, () => (
+        : createGrammarNode("label-with-muted-fact-row", {
+            label: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
                 <Text props={{ content: data.progressText, size: "sm", weight: "semibold" }} isLoading={isLoading} />
             )),
-            fact: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+            fact: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                 <Text props={{ content: data.level ?? undefined, size: "xs" }} isLoading={isLoading} />
             )),
         })
     const card = settledFailure
         ? undefined
-        : defineContractComponent("flashcard-session-card", {
-            prompt: defineLeafComponent("text", { size: "md", weight: "medium" }, () => (
+        : createGrammarNode("flashcard-session-card", {
+            prompt: createLeafNode("text", { size: "md", weight: "medium" }, () => (
                 <Text props={{ content: data.prompt, size: "md", weight: "medium" }} isLoading={isLoading} />
             )),
             answer: data.answerVisible
-                ? defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+                ? createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                     <Text props={{ content: data.answer, size: "sm", tone: "muted" }} />
                 ))
                 : undefined,
         })
     const status = state === "syncing" || state === "completing"
-        ? defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+        ? createLeafNode("text", { size: "sm", tone: "muted" }, () => (
             <Text
                 props={{
                     content: state === "syncing" ? data.syncingLabel : data.completingLabel,
@@ -110,27 +110,27 @@ export const CourseFlashcardSessionPageBase = (input: CourseFlashcardSessionPage
     if (state !== "active") {
         actions = undefined
     } else if (!data.answerVisible) {
-        actions = [defineLeafComponent("button", {}, () => (
+        actions = [createLeafNode("button", {}, () => (
             <Button props={{ label: data.revealLabel, variant: "primary" }} on={{ press: on.reveal }} />
         ))]
     } else if (data.mode === "review") {
         actions = ([data.againLabel, data.hardLabel, data.goodLabel, data.easyLabel] as const).map((label, grade) => (
-            defineLeafComponent("button", {}, () => (
+            createLeafNode("button", {}, () => (
                 <Button props={{ label, variant: grade === 2 ? "primary" : "outline" }} on={{ press: () => on.rate(grade as 0 | 1 | 2 | 3) }} />
             ))
         ))
     } else {
         actions = [
-            defineLeafComponent("button", {}, () => (
+            createLeafNode("button", {}, () => (
                 <Button props={{ label: data.incorrectLabel, variant: "outline" }} on={{ press: () => on.answerQuiz(false) }} />
             )),
-            defineLeafComponent("button", {}, () => (
+            createLeafNode("button", {}, () => (
                 <Button props={{ label: data.correctLabel, variant: "primary" }} on={{ press: () => on.answerQuiz(true) }} />
             )),
         ]
     }
     const notice = settledFailure
-        ? defineCompositeComponent("empty-notice", {}, () => (
+        ? createCompositeNode("empty-notice", {}, () => (
             <EmptyNotice
                 props={{
                     message: state === "expired" ? data.expiredText : data.failedText,
@@ -142,7 +142,7 @@ export const CourseFlashcardSessionPageBase = (input: CourseFlashcardSessionPage
         : undefined
 
     return (
-        <Tree contract="course-flashcard-session-page" render={defineContractComponent("course-flashcard-session-page", {
+        <Grammar contract="course-flashcard-session-page" render={createGrammarNode("course-flashcard-session-page", {
             header,
             progress,
             card,

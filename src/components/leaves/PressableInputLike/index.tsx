@@ -1,6 +1,7 @@
+import { CLASS_NAME_1, CLASS_NAME_2, CLASS_NAME_3 } from './styles'
 import { Button, Kbd } from "@heroui/react"
 import { Icon } from "@/components/leaves/Icon"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /** Copy shown by the navbar's input-looking press target. */
 export type PressableInputLikeData = {
@@ -15,7 +16,7 @@ export type PressableInputLikeActions = {
 }
 
 /** Fixed props for the navbar search trigger. */
-export type PressableInputLikeProps = LeafProps<PressableInputLikeData, PressableInputLikeActions>
+export type PressableInputLikeProps = ComponentProps<PressableInputLikeData, PressableInputLikeActions>
 
 /**
  * Draw a button with the exact field appearance used by the legacy navbar.
@@ -28,11 +29,11 @@ export const PressableInputLike = ({ props, on }: PressableInputLikeProps) => (
         variant="outline"
         aria-label={props.label}
         onPress={on?.press}
-        className="h-9 min-h-9 w-64 justify-between gap-2 rounded-field border-[var(--field-border)] bg-field px-3 font-normal text-field-foreground shadow-[var(--field-shadow)] hover:bg-field"
+        className={CLASS_NAME_1}
     >
-        <span className="inline-flex min-w-0 items-center gap-2">
+        <span className={CLASS_NAME_2}>
             <Icon props={{ name: "search", role: "leading" }} />
-            <span className="truncate text-sm text-field-placeholder">{props.placeholder}</span>
+            <span className={CLASS_NAME_3}>{props.placeholder}</span>
         </span>
         {props.shortcut === undefined ? null : <Kbd>{props.shortcut}</Kbd>}
     </Button>

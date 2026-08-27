@@ -1,6 +1,6 @@
 import { SurfaceFormCard } from "@/components/branches/SurfaceFormCard"
 import { SurfaceListCard, type SurfaceListCardData } from "@/components/branches/SurfaceListCard"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Breadcrumbs, type BreadcrumbStep } from "@/components/leaves/Breadcrumbs"
 import { Button } from "@/components/leaves/Button"
@@ -10,12 +10,12 @@ import { SearchBox } from "@/components/leaves/SearchBox"
 import { Text } from "@/components/leaves/Text"
 import { Textarea } from "@/components/leaves/Textarea"
 import {
-    defineCompositeComponent,
-    defineContractComponent,
-    defineContractProjection,
-    defineLeafComponent,
+    createCompositeNode,
+    createGrammarNode,
+    createGrammarProjection,
+    createLeafNode,
     type BlockProps,
-    type LeafProps,
+    type ComponentProps,
 } from "@/components/contracts/props"
 
 /** One resolved question or reply line rendered by the Q&A list. */
@@ -77,12 +77,12 @@ const PENDING_QA_ROWS: ReadonlyArray<CourseQaThreadRow> = Array.from(
     (_unused, index) => ({ id: `pending-${index}`, body: "", meta: "" }),
 )
 
-const CourseQaList = ({ props, on, isLoading = false }: LeafProps<CourseQaListData, CourseQaListActions>) => {
+const CourseQaList = ({ props, on, isLoading = false }: ComponentProps<CourseQaListData, CourseQaListActions>) => {
     const displayedRows = isLoading ? PENDING_QA_ROWS : props.rows
     const steps = !isLoading && props.rows.length === 0
-        ? [defineContractProjection("content-next-row", () => <EmptyNotice props={{ message: props.emptyMessage }} />)]
-        : displayedRows.map((row) => defineContractComponent("content-next-row", {
-            label: defineLeafComponent("text", { size: "md" }, () => (
+        ? [createGrammarProjection("content-next-row", () => <EmptyNotice props={{ message: props.emptyMessage }} />)]
+        : displayedRows.map((row) => createGrammarNode("content-next-row", {
+            label: createLeafNode("text", { size: "md" }, () => (
                 <Text
                     props={{
                         content: row.replyLabel === undefined ? `${row.body} · ${row.meta}` : `${row.body} · ${row.meta} · ${row.replyLabel}`,
@@ -93,13 +93,13 @@ const CourseQaList = ({ props, on, isLoading = false }: LeafProps<CourseQaListDa
                 />
             )),
             ...(on?.[`open:${row.id}`] === undefined ? {} : {
-                disclosure: defineLeafComponent("icon", {}, () => <Icon props={{ name: "disclosure", role: "chip" }} />),
+                disclosure: createLeafNode("icon", {}, () => <Icon props={{ name: "disclosure", role: "chip" }} />),
             }),
         }))
-    return <Tree contract="content-next-list" render={defineContractComponent("content-next-list", { step: steps })} />
+    return <Grammar contract="content-next-list" render={createGrammarNode("content-next-list", { step: steps })} />
 }
 
-const CourseQaListContent = defineContractComponent("content-next-list", CourseQaList)
+const CourseQaListContent = createGrammarNode("content-next-list", CourseQaList)
 
 /** Pure course Q&A list, inline ask form and one selected thread. */
 export const CourseQaPageBase = (input: CourseQaPageProps) => {
@@ -109,13 +109,13 @@ export const CourseQaPageBase = (input: CourseQaPageProps) => {
     const listActions: CourseQaListActions = Object.fromEntries(
         input.props.questions.map((question) => [`open:${question.id}`, () => input.on?.openThread?.(question.id)]),
     )
-    const header = defineContractComponent("page-header-stack", {
-        trail: defineLeafComponent("breadcrumbs", {}, () => (
+    const header = createGrammarNode("page-header-stack", {
+        trail: createLeafNode("breadcrumbs", {}, () => (
             <Breadcrumbs props={{ steps: input.props.trail, label: input.props.title }} on={{ course: input.on?.course }} />
         )),
-        title: defineLeafComponent("heading", {}, () => <Heading props={{ content: input.props.title, level: 1 }} />),
+        title: createLeafNode("heading", {}, () => <Heading props={{ content: input.props.title, level: 1 }} />),
     })
-    const toolbar = defineContractProjection("catalog-search-count-view-row", () => (
+    const toolbar = createGrammarProjection("catalog-search-count-view-row", () => (
         <>
             <SearchBox
                 props={{
@@ -127,9 +127,9 @@ export const CourseQaPageBase = (input: CourseQaPageProps) => {
             />
             <SurfaceFormCard
                 contract="stacked-peer-controls"
-                render={defineContractComponent("stacked-peer-controls", {
+                render={createGrammarNode("stacked-peer-controls", {
                     control: [
-                        defineContractProjection("spread-choice-row", () => (
+                        createGrammarProjection("spread-choice-row", () => (
                             <Textarea
                                 key={input.props.draftKey}
                                 props={{
@@ -144,7 +144,7 @@ export const CourseQaPageBase = (input: CourseQaPageProps) => {
                                 on={{ change: input.on?.changeDraft }}
                             />
                         )),
-                        defineLeafComponent("button", {}, () => (
+                        createLeafNode("button", {}, () => (
                             <Button
                                 props={{
                                     label: input.props.askLabel,
@@ -163,7 +163,7 @@ export const CourseQaPageBase = (input: CourseQaPageProps) => {
     ))
 
     const notice = input.state === "failed" || input.state === "empty"
-        ? defineCompositeComponent("empty-notice", {}, () => (
+        ? createCompositeNode("empty-notice", {}, () => (
             <EmptyNotice
                 props={{
                     icon: input.state === "failed" ? "retry" : "community",
@@ -176,11 +176,11 @@ export const CourseQaPageBase = (input: CourseQaPageProps) => {
         : undefined
 
     return (
-        <Tree contract="course-qa-page" render={defineContractComponent("course-qa-page", {
+        <Grammar contract="course-qa-page" render={createGrammarNode("course-qa-page", {
             header,
             composer: toolbar,
             ...(notice === undefined ? {
-                thread: defineContractProjection("catalog-section-group", () => (
+                thread: createGrammarProjection("catalog-section-group", () => (
                     <>
                         {input.props.selectedQuestion === undefined ? null : (
                             <Button props={{ label: input.props.backLabel, variant: "ghost", size: "sm" }} on={{ press: input.on?.closeThread }} />

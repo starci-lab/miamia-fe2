@@ -3,15 +3,15 @@ import {
     SurfaceListCard,
     type SurfaceListCardActions,
 } from "@/components/branches/SurfaceListCard"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { TaskProgressRow } from "@/components/composites/TaskProgressRow"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { CONTRACTS } from "@/components/contracts"
 import type { LabelledProgressRowData } from "@/components/composites/LabelledProgressRow"
 import {
-    defineCompositeComponent,
-    defineContractComponent,
-    type LeafProps,
+    createCompositeNode,
+    createGrammarNode,
+    type ComponentProps,
 } from "@/components/contracts/props"
 
 /**
@@ -19,10 +19,10 @@ import {
  *
  * Today's tasks, and what finishing them is worth.
  *
- * THE STATE PICKS THE TREE, AND THAT IS ALL A STATE IS. `claimable` grows a control that the other
+ * THE STATE PICKS THE Grammar, AND THAT IS ALL A STATE IS. `claimable` grows a control that the other
  * situations do not have, and `claimed` replaces the offer with a fact - three different trees.
  * `pending` and `open` draw the same one, with `pending` resting. If a situation did not change
- * the tree it would be props.
+ * the Grammar it would be props.
  *
  * THE CONTROL IS ABSENT, NOT DISABLED, until the day is done. A greyed-out claim button invites a
  * reader to press it and learn nothing; the reward line above says what it is for, and the button
@@ -82,7 +82,7 @@ export type DailyQuestContentData = {
 }
 
 /** Fixed component input for {@link DailyQuestContent}. */
-export type DailyQuestContentProps = LeafProps<DailyQuestContentData, SurfaceListCardActions>
+export type DailyQuestContentProps = ComponentProps<DailyQuestContentData, SurfaceListCardActions>
 
 /** How many copies the contract requires while the repeated slot is resting. */
 const RESTING_COUNT = CONTRACTS["marked-row-list"].children.row.restingCount
@@ -96,10 +96,10 @@ const DailyQuestContentView = ({ props, isLoading = false }: DailyQuestContentPr
         : props.tasks
 
     return (
-        <Tree
+        <Grammar
             contract="marked-row-list"
-            render={defineContractComponent("marked-row-list", {
-                row: tasks.map((task) => defineCompositeComponent("task-progress-row", {}, () => (
+            render={createGrammarNode("marked-row-list", {
+                row: tasks.map((task) => createCompositeNode("task-progress-row", {}, () => (
                     <TaskProgressRow
                         props={{
                             id: task.id,
@@ -116,7 +116,7 @@ const DailyQuestContentView = ({ props, isLoading = false }: DailyQuestContentPr
 }
 
 /** Stable component type branded for the exact list contract it implements. */
-const DailyQuestContent = defineContractComponent("marked-row-list", DailyQuestContentView)
+const DailyQuestContent = createGrammarNode("marked-row-list", DailyQuestContentView)
 
 /** The situation this surface is in, plus the actions it exposes. */
 type DailyQuestInput = DailyQuestProps & { readonly on?: DailyQuestActions }
@@ -137,7 +137,7 @@ export const DailyQuestBase = (input: DailyQuestInput) => {
     if (input.state === "failed") {
         return (
             <SurfaceCard props={{ label: input.props.label }} contract="empty-notice-card"
-                render={defineContractComponent("empty-notice-card", { notice: defineCompositeComponent("empty-notice", {}, () => <EmptyNotice
+                render={createGrammarNode("empty-notice-card", { notice: createCompositeNode("empty-notice", {}, () => <EmptyNotice
                     props={{ icon: "review", message: input.props.message, actionLabel: input.props.retryLabel }}
                     on={{ act: input.on?.retry }}
                 />) })} />
@@ -146,8 +146,8 @@ export const DailyQuestBase = (input: DailyQuestInput) => {
     if (input.state === "empty") {
         return (
             <SurfaceCard props={{ label: input.props.label }} contract="empty-notice-card"
-                render={defineContractComponent("empty-notice-card", {
-                    notice: defineCompositeComponent("empty-notice", {}, () => (
+                render={createGrammarNode("empty-notice-card", {
+                    notice: createCompositeNode("empty-notice", {}, () => (
                         <EmptyNotice props={{ icon: "review", message: input.props.message }} />
                     )),
                 })} />

@@ -2,7 +2,7 @@ import { SurfaceCard } from "@/components/branches/SurfaceCard"
 import { PressableSurface } from "@/components/branches/PressableSurface"
 import { Badge } from "@/components/leaves/Badge"
 import { Text } from "@/components/leaves/Text"
-import { defineContractComponent, defineLeafComponent, type CompositeProps } from "@/components/contracts/props"
+import { createGrammarNode, createLeafNode, type CompositeProps } from "@/components/contracts/props"
 
 /** Resolved showcase facts for one pinned project. */
 export type ProfileProjectCardData = {
@@ -20,21 +20,21 @@ export type ProfileProjectCardProps = CompositeProps<ProfileProjectCardData, Pro
 
 /** One pinned-project tile; unlike a proof row, its tags and verification form a bounded showcase. */
 export const ProfileProjectCard = ({ props, on, isLoading = false }: ProfileProjectCardProps) => {
-    const content = defineContractComponent("profile-project-card", {
-        badge: defineLeafComponent("badge", {}, () => (
+    const content = createGrammarNode("profile-project-card", {
+        badge: createLeafNode("badge", {}, () => (
             <Badge props={{ content: props.verified ? "Verified by StarCi" : props.kind ?? "External", tone: props.verified ? "success" : "neutral" }} isLoading={isLoading} />
         )),
-        title: defineLeafComponent("text", { size: "sm", weight: "semibold" }, () => (
+        title: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
             <Text props={{ content: props.title, size: "sm", weight: "semibold" }} isLoading={isLoading} />
         )),
         ...(props.description === undefined ? {} : {
-            description: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+            description: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                 <Text props={{ content: props.description, size: "xs" }} isLoading={isLoading} />
             )),
         }),
         ...(props.technologies.length === 0 ? {} : {
-            tech: defineContractComponent("profile-project-tech-run", {
-                tech: props.technologies.map((technology) => defineLeafComponent("badge", {}, () => (
+            tech: createGrammarNode("profile-project-tech-run", {
+                tech: props.technologies.map((technology) => createLeafNode("badge", {}, () => (
                     <Badge props={{ content: technology }} isLoading={isLoading} />
                 ))),
             }),

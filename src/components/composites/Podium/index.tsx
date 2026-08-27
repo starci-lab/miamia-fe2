@@ -1,12 +1,12 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { Avatar } from "@/components/leaves/Avatar"
 import { PodiumStep, type PodiumPlace } from "@/components/leaves/PodiumStep"
 import { RankMark } from "@/components/leaves/RankMark"
 import { Text } from "@/components/leaves/Text"
 import {
-    defineCompositeComponent,
-    defineContractComponent,
-    defineLeafComponent,
+    createCompositeNode,
+    createGrammarNode,
+    createLeafNode,
     type CompositeProps,
 } from "@/components/contracts/props"
 
@@ -67,21 +67,21 @@ export const Podium = ({ props, isLoading = false }: PodiumProps) => {
         const entry = byRank.get(rank)
         if (entry === undefined && !isLoading) return []
         const name = nameFor(entry, props.meLabel, props.anonymousLabel)
-        return [defineCompositeComponent("podium-place", {}, () => (
-            <Tree contract="podium-place" render={defineContractComponent("podium-place", {
-                mark: defineLeafComponent("rank-mark", { placement: "row" }, () => (
+        return [createCompositeNode("podium-place", {}, () => (
+            <Grammar contract="podium-place" render={createGrammarNode("podium-place", {
+                mark: createLeafNode("rank-mark", { placement: "row" }, () => (
                     <RankMark
                         props={{ rank, placement: "row", accessibleLabel: entry?.rankLabel }}
                         isLoading={isLoading}
                     />
                 )),
-                avatar: defineLeafComponent("avatar", {}, () => (
+                avatar: createLeafNode("avatar", {}, () => (
                     <Avatar
                         props={{ name, src: entry?.avatar ?? undefined, size: rank === 1 ? "lg" : "md" }}
                         isLoading={isLoading}
                     />
                 )),
-                name: defineLeafComponent("text", {}, () => (
+                name: createLeafNode("text", {}, () => (
                     <Text
                         props={{
                             content: name,
@@ -92,16 +92,16 @@ export const Podium = ({ props, isLoading = false }: PodiumProps) => {
                         isLoading={isLoading}
                     />
                 )),
-                points: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+                points: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                     <Text props={{ content: entry?.pointsLabel, size: "xs", tone: "muted" }} isLoading={isLoading} />
                 )),
-                step: defineLeafComponent("podium-step", {}, () => (
+                step: createLeafNode("podium-step", {}, () => (
                     <PodiumStep props={{ place: rank }} isLoading={isLoading} />
                 )),
             })} />
         ))]
     })
-    return <Tree contract="podium" render={defineContractComponent("podium", { place })} />
+    return <Grammar contract="podium" render={createGrammarNode("podium", { place })} />
 }
 
 /** Source-level tier marker. */

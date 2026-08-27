@@ -1,5 +1,5 @@
 import { Link as HeroLink } from "@heroui/react"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `TextLink`: words that change what is on screen without going anywhere.
@@ -39,8 +39,8 @@ export type TextLinkActions = {
     readonly press?: () => void
 }
 
-/** Props for {@link TextLink}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type TextLinkProps = LeafProps<TextLinkData, TextLinkActions>
+/** Props for {@link TextLink}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type TextLinkProps = ComponentProps<TextLinkData, TextLinkActions>
 
 /** HeroUI Link owns interaction styling; this leaf adds only the house reading step. */
 const SIZE_CLASSES = { xs: "text-xs", sm: "text-sm", md: "text-base" } as const

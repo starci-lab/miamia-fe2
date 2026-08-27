@@ -1,11 +1,11 @@
 "use client"
 
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { StreakStatRow } from "@/components/blocks/dashboard/StreakStatRow"
 import { CreditStatRow } from "@/components/blocks/dashboard/CreditStatRow"
 import { RewardStatRow } from "@/components/blocks/dashboard/RewardStatRow"
 import { ProfileIdentityRow } from "@/components/blocks/dashboard/ProfileIdentityRow"
-import { defineCompositeComponent, defineContractComponent } from "@/components/contracts/props"
+import { createCompositeNode, createGrammarNode } from "@/components/contracts/props"
 
 /**
  * BLOCK - `IdentityRail`: the three standing figures, read as one rail.
@@ -22,15 +22,15 @@ import { defineCompositeComponent, defineContractComponent } from "@/components/
  */
 export const IdentityRail = () => {
     return (
-        <Tree
+        <Grammar
             contract="profile-over-stat-rows"
-            render={defineContractComponent("profile-over-stat-rows", {
-                profile: defineCompositeComponent("profile-row", {}, () => <ProfileIdentityRow />),
-                stats: defineContractComponent("stacked-stat-rows", {
+            render={createGrammarNode("profile-over-stat-rows", {
+                profile: createCompositeNode("profile-row", {}, () => <ProfileIdentityRow />),
+                stats: createGrammarNode("stacked-stat-rows", {
                     stat: [
-                        defineCompositeComponent("stat-row", {}, () => <StreakStatRow />),
-                        defineCompositeComponent("stat-row", {}, () => <CreditStatRow />),
-                        defineCompositeComponent("stat-row", {}, () => <RewardStatRow />),
+                        createCompositeNode("stat-row", {}, () => <StreakStatRow />),
+                        createCompositeNode("stat-row", {}, () => <CreditStatRow />),
+                        createCompositeNode("stat-row", {}, () => <RewardStatRow />),
                     ],
                 }),
             })}

@@ -4,9 +4,9 @@ import { Button } from "@/components/leaves/Button"
 import { CoverImage } from "@/components/leaves/CoverImage"
 import { Text } from "@/components/leaves/Text"
 import {
-    defineContractComponent,
-    defineContractProjection,
-    defineLeafComponent,
+    createGrammarNode,
+    createGrammarProjection,
+    createLeafNode,
 } from "@/components/contracts/props"
 
 /**
@@ -86,9 +86,9 @@ export type CoursePricingRailState = "ready" | "price-pending"
 
 /** Props for {@link CoursePricingRailBase}. */
 export type CoursePricingRailProps = {
-    /** The business situation, which picks the tree. */
+    /** The business situation, which picks the Grammar. */
     readonly state: CoursePricingRailState
-    /** What that tree says. */
+    /** What that Grammar says. */
     readonly props: CoursePricingRailData
     /** What the rail reports. */
     readonly on?: CoursePricingRailActions
@@ -104,18 +104,18 @@ export const CoursePricingRailBase = (input: CoursePricingRailProps) => {
     const phases = input.props.phases ?? []
     const activePhase = phases.find((phase) => phase.isActive === true)
 
-    const priceLine = defineContractComponent("price-discount-line", {
-        price: defineLeafComponent("text", { size: "sm", weight: "semibold" }, () => (
+    const priceLine = createGrammarNode("price-discount-line", {
+        price: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
             <Text props={{ content: input.props.price, size: "sm", weight: "semibold" }} isLoading={isPricePending} />
         )),
         original: input.props.originalPrice === undefined || isPricePending
             ? undefined
-            : defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+            : createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                 <Text props={{ content: input.props.originalPrice, size: "xs", tone: "muted", isSuperseded: true }} />
             )),
         discount: input.props.discountLabel === undefined || isPricePending
             ? undefined
-            : defineLeafComponent("badge", {}, () => (
+            : createLeafNode("badge", {}, () => (
                 <Badge props={{ content: input.props.discountLabel, tone: "accent" }} />
             )),
     })
@@ -123,48 +123,48 @@ export const CoursePricingRailBase = (input: CoursePricingRailProps) => {
     return (
         <SurfaceCard
             contract="course-pricing-rail"
-            render={defineContractComponent("course-pricing-rail", {
-                cover: defineLeafComponent("cover-image", {}, () => (
+            render={createGrammarNode("course-pricing-rail", {
+                cover: createLeafNode("cover-image", {}, () => (
                     <CoverImage props={{ src: input.props.coverUrl ?? null, alt: input.props.title, ratio: "wide" }} />
                 )),
-                price: defineContractComponent("course-price-block", {
+                price: createGrammarNode("course-price-block", {
                     line: priceLine,
                     savings: input.props.savingsLabel === undefined || isPricePending
                         ? undefined
-                        : defineLeafComponent("text", { size: "xs" }, () => (
+                        : createLeafNode("text", { size: "xs" }, () => (
                             <Text props={{ content: input.props.savingsLabel, size: "xs" }} />
                         )),
                     scarcity: input.props.scarcityLabel === undefined
                         ? undefined
-                        : defineLeafComponent("badge", {}, () => (
+                        : createLeafNode("badge", {}, () => (
                             <Badge props={{ content: input.props.scarcityLabel, tone: "warning" }} />
                         )),
                 }),
                 phase: activePhase === undefined
                     ? undefined
-                    : defineLeafComponent("badge", {}, () => (
+                    : createLeafNode("badge", {}, () => (
                         <Badge props={{ content: activePhase.name, tone: "accent" }} />
                     )),
-                ladder: phases.length === 0 ? undefined : defineContractComponent("course-pricing-phase-grid", {
-                    phase: phases.map((phase) => defineContractComponent("course-pricing-phase-card", {
+                ladder: phases.length === 0 ? undefined : createGrammarNode("course-pricing-phase-grid", {
+                    phase: phases.map((phase) => createGrammarNode("course-pricing-phase-card", {
                         name: phase.isActive === true
-                            ? defineLeafComponent("badge", {}, () => (
+                            ? createLeafNode("badge", {}, () => (
                                 <Badge props={{ content: phase.name, tone: "accent" }} />
                             ))
-                            : defineLeafComponent("text", {}, () => (
+                            : createLeafNode("text", {}, () => (
                                 <Text props={{ content: phase.name, size: "sm", weight: "semibold" }} />
                             )),
-                        value: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+                        value: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                             <Text props={{ content: phase.value, size: "xs", tone: "muted" }} />
                         )),
                     })),
                 }),
-                action: defineLeafComponent("button", {}, () => (
+                action: createLeafNode("button", {}, () => (
                     <Button props={{ label: input.props.ctaLabel, variant: "primary", size: "md", icon: "next" }} on={{ press: input.on?.act }} />
                 )),
                 proof: input.props.enrolmentLabel === undefined
                     ? undefined
-                    : defineLeafComponent("text", { size: "xs" }, () => (
+                    : createLeafNode("text", { size: "xs" }, () => (
                         <Text props={{ content: input.props.enrolmentLabel, size: "xs" }} />
                     )),
             })}
@@ -175,12 +175,12 @@ export const CoursePricingRailBase = (input: CoursePricingRailProps) => {
 /**
  * The rail, branded for the slot that holds it.
  *
- * A projection rather than bound slots: `SurfaceCard` has already drawn the contract's `Tree`, and
+ * A projection rather than bound slots: `SurfaceCard` has already drawn the contract's `Grammar`, and
  * `ContractContent` renders a projection without opening a second node around it. Binding slots
  * here instead would inset the rail twice.
  */
 export const CoursePricingRail = (input: CoursePricingRailProps) =>
-    defineContractProjection("course-pricing-rail", () => <CoursePricingRailBase {...input} />)
+    createGrammarProjection("course-pricing-rail", () => <CoursePricingRailBase {...input} />)
 
 /** Source-level ownership marker. */
 export const meta = { world: "pure", domain: "courses" } as const

@@ -1,6 +1,6 @@
 import { skeletonVariants } from "@heroui/react"
 import { Icon, type IconName } from "@/components/leaves/Icon"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `IconTile`: a glyph on a filled plate, for the one mark that leads a row.
@@ -39,8 +39,8 @@ export type IconTileData = {
     readonly size?: IconTileSize
 }
 
-/** Props for {@link IconTile}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type IconTileProps = LeafProps<IconTileData>
+/** Props for {@link IconTile}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type IconTileProps = ComponentProps<IconTileData>
 
 /** The fill and its foreground, always as a pair. */
 const TONE_CLASSES = {

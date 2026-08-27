@@ -1,7 +1,7 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { CurriculumModuleRow } from "@/components/leaves/CurriculumModuleRow"
 import { Heading } from "@/components/leaves/Heading"
-import { defineContractComponent, defineLeafComponent } from "@/components/contracts/props"
+import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
 import type { ModuleDetail } from "@/modules/api/graphql/queries/query-module"
 
 /** State and resolved module data drawn by the pure module route. */
@@ -14,11 +14,11 @@ export type CourseLearnModulePageProps = {
 
 /** Draw one selected module and its authored content run. */
 export const CourseLearnModulePageBase = (input: CourseLearnModulePageProps) => (
-    <Tree contract="course-learn-module-page" render={defineContractComponent("course-learn-module-page", {
-        title: defineLeafComponent("heading", {}, () => (
+    <Grammar contract="course-learn-module-page" render={createGrammarNode("course-learn-module-page", {
+        title: createLeafNode("heading", {}, () => (
             <Heading props={{ content: input.title, level: 1 }} isLoading={input.state === "pending"} />
         )),
-        module: defineLeafComponent("curriculum-module-row", {}, () => (
+        module: createLeafNode("curriculum-module-row", {}, () => (
             <CurriculumModuleRow
                 props={{
                     title: input.module?.title ?? input.label,

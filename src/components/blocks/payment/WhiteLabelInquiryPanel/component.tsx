@@ -6,7 +6,7 @@ import { Heading } from "@/components/leaves/Heading"
 import { Label } from "@/components/leaves/Label"
 import { Text } from "@/components/leaves/Text"
 import { Textarea } from "@/components/leaves/Textarea"
-import { defineCompositeComponent, defineContractComponent, defineLeafComponent } from "@/components/contracts/props"
+import { createCompositeNode, createGrammarNode, createLeafNode } from "@/components/contracts/props"
 
 /** User-entered values retained across validation and retry. */
 export type WhiteLabelInquiryValues = { readonly name: string; readonly email: string; readonly message: string }
@@ -17,11 +17,11 @@ export type WhiteLabelInquiryPanelProps = { readonly state: "idle" | "invalid" |
 /** The result notice for a settled submission, or nothing while the form is still open. */
 const resolveNotice = (input: WhiteLabelInquiryPanelProps) => {
     if (input.state === "succeeded") {
-        return { notice: defineCompositeComponent("empty-notice", {}, () => <EmptyNotice props={{ message: input.copy.succeeded }} />) }
+        return { notice: createCompositeNode("empty-notice", {}, () => <EmptyNotice props={{ message: input.copy.succeeded }} />) }
     }
     if (input.state === "failed") {
         return {
-            notice: defineCompositeComponent("empty-notice", {}, () => (
+            notice: createCompositeNode("empty-notice", {}, () => (
                 <EmptyNotice props={{ message: input.copy.failed, actionLabel: input.copy.retry }} on={{ act: input.onSubmit }} />
             )),
         }
@@ -30,18 +30,18 @@ const resolveNotice = (input: WhiteLabelInquiryPanelProps) => {
 }
 
 /** Renders the complete anonymous White-label inquiry form. */
-export const WhiteLabelInquiryPanelBase = (input: WhiteLabelInquiryPanelProps) => <SurfaceFormCard contract="white-label-inquiry-panel" render={defineContractComponent("white-label-inquiry-panel", {
-    title: defineLeafComponent("heading", {}, () => <Heading props={{ content: input.copy.title, level: 2 }} />),
-    body: defineLeafComponent("text", {}, () => <Text props={{ content: input.copy.body, tone: "muted" }} />),
-    name: defineCompositeComponent("field", {}, () => <Field props={{ id: "white-label-name", name: "name", label: input.copy.name, placeholder: input.copy.namePlaceholder, hint: input.errors.name, isInvalid: input.errors.name !== undefined, disabled: input.state === "submitting" }} on={{ change: (value) => input.onChange("name", value) }} />),
-    email: defineCompositeComponent("field", {}, () => <Field props={{ id: "white-label-email", name: "email", label: input.copy.email, kind: "email", placeholder: input.copy.emailPlaceholder, hint: input.errors.email, isInvalid: input.errors.email !== undefined, disabled: input.state === "submitting" }} on={{ change: (value) => input.onChange("email", value) }} />),
-    messageLabel: defineLeafComponent("label", {}, () => <Label props={{ htmlFor: "white-label-message", content: input.copy.message }} />),
-    message: defineLeafComponent("textarea", {}, () => <Textarea props={{ id: "white-label-message", name: "message", label: input.copy.message, placeholder: input.copy.messagePlaceholder, defaultValue: input.values.message, isInvalid: input.errors.message !== undefined, disabled: input.state === "submitting" }} on={{ change: (value) => input.onChange("message", value) }} />),
-    ...(input.errors.message === undefined ? {} : { messageHint: defineLeafComponent("text", {}, () => <Text props={{ content: input.errors.message, size: "xs", live: "assertive" }} />) }),
+export const WhiteLabelInquiryPanelBase = (input: WhiteLabelInquiryPanelProps) => <SurfaceFormCard contract="white-label-inquiry-panel" render={createGrammarNode("white-label-inquiry-panel", {
+    title: createLeafNode("heading", {}, () => <Heading props={{ content: input.copy.title, level: 2 }} />),
+    body: createLeafNode("text", {}, () => <Text props={{ content: input.copy.body, tone: "muted" }} />),
+    name: createCompositeNode("field", {}, () => <Field props={{ id: "white-label-name", name: "name", label: input.copy.name, placeholder: input.copy.namePlaceholder, hint: input.errors.name, isInvalid: input.errors.name !== undefined, disabled: input.state === "submitting" }} on={{ change: (value) => input.onChange("name", value) }} />),
+    email: createCompositeNode("field", {}, () => <Field props={{ id: "white-label-email", name: "email", label: input.copy.email, kind: "email", placeholder: input.copy.emailPlaceholder, hint: input.errors.email, isInvalid: input.errors.email !== undefined, disabled: input.state === "submitting" }} on={{ change: (value) => input.onChange("email", value) }} />),
+    messageLabel: createLeafNode("label", {}, () => <Label props={{ htmlFor: "white-label-message", content: input.copy.message }} />),
+    message: createLeafNode("textarea", {}, () => <Textarea props={{ id: "white-label-message", name: "message", label: input.copy.message, placeholder: input.copy.messagePlaceholder, defaultValue: input.values.message, isInvalid: input.errors.message !== undefined, disabled: input.state === "submitting" }} on={{ change: (value) => input.onChange("message", value) }} />),
+    ...(input.errors.message === undefined ? {} : { messageHint: createLeafNode("text", {}, () => <Text props={{ content: input.errors.message, size: "xs", live: "assertive" }} />) }),
     ...resolveNotice(input),
     action: [
-        defineLeafComponent("button", {}, () => <Button props={{ label: input.copy.submit, variant: "primary", isPending: input.state === "submitting", disabled: input.state === "succeeded" }} on={{ press: input.onSubmit }} />),
-        defineLeafComponent("button", {}, () => <Button props={{ label: input.copy.cancel, variant: "ghost", disabled: input.state === "submitting" }} on={{ press: input.onDismiss }} />),
+        createLeafNode("button", {}, () => <Button props={{ label: input.copy.submit, variant: "primary", isPending: input.state === "submitting", disabled: input.state === "succeeded" }} on={{ press: input.onSubmit }} />),
+        createLeafNode("button", {}, () => <Button props={{ label: input.copy.cancel, variant: "ghost", disabled: input.state === "submitting" }} on={{ press: input.onDismiss }} />),
     ],
 })} />
 /** Declares the pure inquiry block boundary. */

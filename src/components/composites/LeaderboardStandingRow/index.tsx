@@ -1,8 +1,8 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { Badge } from "@/components/leaves/Badge"
 import { LeagueTile } from "@/components/leaves/LeagueTile"
 import { Text } from "@/components/leaves/Text"
-import { defineContractComponent, defineLeafComponent, type CompositeProps } from "@/components/contracts/props"
+import { createGrammarNode, createLeafNode, type CompositeProps } from "@/components/contracts/props"
 
 /** Resolved viewer-standing summary. */
 export type LeaderboardStandingRowData = {
@@ -23,23 +23,23 @@ export type LeaderboardStandingRowData = {
  * so the row reads the same whether or not a fact exists.
  */
 export const LeaderboardStandingRow = ({ props, isLoading = false }: CompositeProps<LeaderboardStandingRowData>) => (
-    <Tree contract="leaderboard-standing-row" render={defineContractComponent("leaderboard-standing-row", {
-        mark: defineLeafComponent("league-tile", {}, () => (
+    <Grammar contract="leaderboard-standing-row" render={createGrammarNode("leaderboard-standing-row", {
+        mark: createLeafNode("league-tile", {}, () => (
             <LeagueTile
                 props={{ rank: props.rank, accessibleLabel: props.rankLabel }}
                 isLoading={isLoading}
             />
         )),
-        body: defineContractComponent("evidence-title-over-subtitle", {
-            title: defineLeafComponent("text", { size: "sm", weight: "semibold" }, () => (
+        body: createGrammarNode("evidence-title-over-subtitle", {
+            title: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
                 <Text props={{ content: props.title, size: "sm", weight: "semibold" }} isLoading={isLoading} />
             )),
-            subtitle: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+            subtitle: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                 <Text props={{ content: props.subtitle, size: "xs", tone: "muted" }} isLoading={isLoading} />
             )),
         }),
         ...(props.fact === undefined ? {} : {
-            fact: defineLeafComponent("badge", {}, () => <Badge props={{ content: props.fact, tone: "warning" }} />),
+            fact: createLeafNode("badge", {}, () => <Badge props={{ content: props.fact, tone: "warning" }} />),
         }),
     })} />
 )

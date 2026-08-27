@@ -1,5 +1,5 @@
 import { TextArea } from "@heroui/react"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `Textarea`: the box a reader writes prose into.
@@ -42,8 +42,8 @@ export type TextareaActions = {
     readonly change?: (value: string) => void
 }
 
-/** Props for {@link Textarea}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type TextareaProps = LeafProps<TextareaData, TextareaActions>
+/** Props for {@link Textarea}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type TextareaProps = ComponentProps<TextareaData, TextareaActions>
 
 /**
  * Draw the multi-line box.

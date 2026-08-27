@@ -1,9 +1,9 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { Field } from "@/components/composites/Field"
 import {
-    defineCompositeComponent,
-    defineContractComponent,
-    defineLeafComponent,
+    createCompositeNode,
+    createGrammarNode,
+    createLeafNode,
 } from "@/components/contracts/props"
 import { Button } from "@/components/leaves/Button"
 import { Heading } from "@/components/leaves/Heading"
@@ -48,18 +48,18 @@ export type CourseLearnChallengePageProps = {
 export const CourseLearnChallengePageBase = (input: CourseLearnChallengePageProps) => {
     const loading = input.state === "pending"
     const renderFailedControls = () => [
-        defineLeafComponent("text", {}, () => (
+        createLeafNode("text", {}, () => (
             <Text props={{ content: input.props.notice, live: "assertive" }} />
         )),
-        defineLeafComponent("button", {}, () => (
+        createLeafNode("button", {}, () => (
             <Button props={{ label: input.props.retryLabel }} on={{ press: input.on?.retry }} />
         )),
     ]
     const renderPassedControls = () => [
-        defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+        createLeafNode("text", { size: "sm", tone: "muted" }, () => (
             <Text props={{ content: input.props.metaLine, size: "sm", tone: "muted" }} />
         )),
-        ...input.props.deliverables.map((deliverable) => defineLeafComponent("button", {}, () => (
+        ...input.props.deliverables.map((deliverable) => createLeafNode("button", {}, () => (
             <Button
                 props={{ label: `${input.props.resultLabel}: ${deliverable.title}` }}
                 on={{ press: () => input.on?.openResult?.(deliverable.id) }}
@@ -67,32 +67,32 @@ export const CourseLearnChallengePageBase = (input: CourseLearnChallengePageProp
         ))),
     ]
     const renderDefaultControls = () => [
-        defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+        createLeafNode("text", { size: "sm", tone: "muted" }, () => (
             <Text
                 props={{ content: input.props.metaLine, size: "sm", tone: "muted" }}
                 isLoading={loading}
             />
         )),
         ...(input.props.hint === undefined ? [] : [
-            defineLeafComponent("text", { size: "sm" }, () => (
+            createLeafNode("text", { size: "sm" }, () => (
                 <Text props={{ content: input.props.hint, size: "sm" }} isLoading={loading} />
             )),
         ]),
         ...input.props.deliverables.flatMap((deliverable) => [
             ...(deliverable.description === undefined ? [] : [
-                defineLeafComponent("text", {}, () => (
+                createLeafNode("text", {}, () => (
                     <Text props={{ content: deliverable.description }} isLoading={loading} />
                 )),
             ]),
             ...(deliverable.scoreLine === undefined ? [] : [
-                defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+                createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                     <Text
                         props={{ content: deliverable.scoreLine, size: "sm", tone: "muted" }}
                         isLoading={loading}
                     />
                 )),
             ]),
-            defineCompositeComponent("field", {}, () => (
+            createCompositeNode("field", {}, () => (
                 <Field
                     props={{
                         id: `challenge-submission-${deliverable.id}`,
@@ -105,7 +105,7 @@ export const CourseLearnChallengePageBase = (input: CourseLearnChallengePageProp
                     isLoading={loading}
                 />
             )),
-            defineLeafComponent("button", {}, () => (
+            createLeafNode("button", {}, () => (
                 <Button
                     props={{
                         label: input.state === "submitting"
@@ -129,18 +129,18 @@ export const CourseLearnChallengePageBase = (input: CourseLearnChallengePageProp
     const controls = resolveControls()
 
     return (
-        <Tree
+        <Grammar
             contract="course-learn-challenge-page"
-            render={defineContractComponent("course-learn-challenge-page", {
-                header: defineContractComponent("centred-title-pair", {
-                    title: defineLeafComponent("heading", {}, () => (
+            render={createGrammarNode("course-learn-challenge-page", {
+                header: createGrammarNode("centred-title-pair", {
+                    title: createLeafNode("heading", {}, () => (
                         <Heading props={{ content: input.props.title, level: 1 }} isLoading={loading} />
                     )),
-                    description: defineLeafComponent("text", { size: "sm" }, () => (
+                    description: createLeafNode("text", { size: "sm" }, () => (
                         <Text props={{ content: input.props.description, size: "sm" }} isLoading={loading} />
                     )),
                 }),
-                body: defineContractComponent("stacked-peer-controls", { control: controls }),
+                body: createGrammarNode("stacked-peer-controls", { control: controls }),
             })}
         />
     )

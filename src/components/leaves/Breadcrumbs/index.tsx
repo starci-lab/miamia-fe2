@@ -1,5 +1,5 @@
 import { Breadcrumbs as HeroBreadcrumbs, skeletonVariants } from "@heroui/react"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `Breadcrumbs`: the path that got the reader here.
@@ -36,8 +36,8 @@ export type BreadcrumbsActions = {
     readonly [key: string]: (() => void) | undefined
 }
 
-/** Props for {@link Breadcrumbs}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type BreadcrumbsProps = LeafProps<BreadcrumbsData, BreadcrumbsActions>
+/** Props for {@link Breadcrumbs}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type BreadcrumbsProps = ComponentProps<BreadcrumbsData, BreadcrumbsActions>
 
 /** The resting shape - one short bar where the trail will be. */
 const RESTING_CLASSES = skeletonVariants({ animationType: "shimmer" }).base({ className: "h-4 w-40 rounded-sm" })

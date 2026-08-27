@@ -1,10 +1,10 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { ActivityFeed, type ActivityFeedConnectedProps } from "@/components/blocks/dashboard/ActivityFeed"
 import { TrendingContents } from "@/components/blocks/dashboard/TrendingContents"
 import { Button } from "@/components/leaves/Button"
 import { Text } from "@/components/leaves/Text"
 import { DualTabsToolbar, type DualTabsToolbarProps } from "@/components/composites/DualTabsToolbar"
-import { defineContractComponent, defineContractProjection, defineLeafComponent } from "@/components/contracts/props"
+import { createGrammarNode, createGrammarProjection, createLeafNode } from "@/components/contracts/props"
 
 /** Settled controls, feed state and pagination state for Explore. */
 export type FeedExplorerData = {
@@ -29,22 +29,22 @@ export type FeedExplorerProps = { readonly props: FeedExplorerData; readonly on?
 
 /** Pure Explore feed arrangement. Requests and navigation stay in the connected half. */
 export const FeedExplorerBase = (input: FeedExplorerProps) => (
-    <Tree contract="feed-explorer" render={defineContractComponent("feed-explorer", {
-        trending: defineContractProjection("trending-content-list", () => <TrendingContents />),
-        stream: defineContractComponent("feed-stream", {
-            filters: defineContractProjection("dual-tabs-toolbar", () => (
+    <Grammar contract="feed-explorer" render={createGrammarNode("feed-explorer", {
+        trending: createGrammarProjection("trending-content-list", () => <TrendingContents />),
+        stream: createGrammarNode("feed-stream", {
+            filters: createGrammarProjection("dual-tabs-toolbar", () => (
                 <DualTabsToolbar props={input.props.filters} on={{
                     selectLeading: input.on?.selectScope,
                     selectTrailing: input.on?.selectCategory,
                 }} />
             )),
-            feed: defineContractProjection("activity-feed-result", () => (
+            feed: createGrammarProjection("activity-feed-result", () => (
                 <ActivityFeed {...input.props.feed} on={input.on?.feed} />
             )),
-            paginationError: input.props.loadMoreError === undefined ? undefined : defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+            paginationError: input.props.loadMoreError === undefined ? undefined : createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                 <Text props={{ content: input.props.loadMoreError, size: "xs", tone: "muted" }} />
             )),
-            pagination: input.props.canLoadMore || input.props.loadMoreError !== undefined ? defineLeafComponent("button", {}, () => (
+            pagination: input.props.canLoadMore || input.props.loadMoreError !== undefined ? createLeafNode("button", {}, () => (
                 <Button
                     props={{ label: input.props.loadMoreError === undefined ? input.props.loadMoreLabel : input.props.retryLabel, size: "sm", variant: "ghost", isPending: input.props.isLoadingMore }}
                     on={{ press: input.props.loadMoreError === undefined ? input.on?.loadMore : input.on?.retryLoadMore }}

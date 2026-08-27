@@ -171,7 +171,7 @@ type ContractChild<S> = S extends { readonly contract: infer K }
 
 type LeafChild<S> = S extends { readonly leaf: infer N }
     ? (N extends ReadonlyArray<infer A> ? A : N) extends infer L extends string
-        ? import("@/components/contracts/props").LeafComponent<L, ChildProps<S>>
+        ? import("@/components/contracts/props").RenderLeaf<L, ChildProps<S>>
         : never
     : never
 
@@ -211,7 +211,7 @@ export type ChildrenOf<K extends ContractKey> = {
  * reader offers it as a destination. The same holds for `<nav>`, `<ul>` and `<form>`: each is a
  * MEANING, and meaning belongs beside the classes and the children rather than in a second frame
  * component per element. `Main` was exactly that second frame - it existed only to swap the tag, so
- * every rule taught about `Tree` had to be taught about `Main` separately, and the rule that was not
+ * every rule taught about `Grammar` had to be taught about `Main` separately, and the rule that was not
  * taught reported the landmark as a node with no key.
  *
  * `li` IS HERE BECAUSE `ul` AND `ol` WERE USELESS WITHOUT IT. The union admitted both containers and
@@ -220,7 +220,7 @@ export type ChildrenOf<K extends ContractKey> = {
  * text instead. The two list hosts could not be used for the thing they are named after, and nothing
  * failed, because a `div` is never wrong on its own.
  *
- * THE NAME AND THE MEMBERS BOTH COME FROM THE TRUST TREE. This union is SCAFFOLDING, which
+ * THE NAME AND THE MEMBERS BOTH COME FROM THE TRUST Grammar. This union is SCAFFOLDING, which
  * `sources/fe/contracts.ts` states is identical in every repository; only the entry table below is
  * this repository's own. It had drifted on both counts - named `ContractHostTag` here and
  * `ContractHost` there, carrying `main` and `ol` that canon lacked while missing the `li`, `header`
@@ -1183,7 +1183,7 @@ export const CONTRACTS = buildContracts({
         classes: ["overflow-hidden", "divide-y", "divide-separator", "p-0", "[&>*]:px-4", "[&>*]:py-3", "[&>*:first-child]:pt-4", "[&>*:last-child]:pb-4"],
         children: {
             // EXTENDED. The slot admitted only the composite, and the composite renders its own
-            // `Tree` - so a row that must be PRESSED could not use this list at all. Admitting the
+            // `Grammar` - so a row that must be PRESSED could not use this list at all. Admitting the
             // row contract lets a caller wrap the same anatomy in `PressableSurface` instead. The
             // `why` below is unchanged and still true of both: what makes them peers is the mark.
             //
@@ -1968,7 +1968,7 @@ export const CONTRACTS = buildContracts({
             search: { leaf: "search-box" },
             module: { contract: "content-map-module", repeats: true, restingCount: 4 },
         },
-        why: "if you need a course navigation panel that orders progress, search, and module structure in that fixed sequence, with search sitting above the module tree because it filters the whole tree.",
+        why: "if you need a course navigation panel that orders progress, search, and module structure in that fixed sequence, with search sitting above the module Grammar because it filters the whole Grammar.",
     },
     "content-map-module-summary": {
         classes: ["flex", "w-full", "min-w-0", "flex-row", "items-center", "gap-3", "px-3", "py-2", "[&>*:first-child]:min-w-0", "[&>*:first-child]:grow", "[&>*:nth-child(2)]:shrink-0", "[&>*:last-child]:shrink-0"],

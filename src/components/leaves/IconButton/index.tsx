@@ -1,6 +1,7 @@
+import { CLASS_NAME_1 } from './styles'
 import { Button as HeroButton } from "@heroui/react"
 import { Icon, type IconName } from "@/components/leaves/Icon"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `IconButton`: a control the bar has room for only as a glyph.
@@ -30,8 +31,8 @@ export type IconButtonActions = {
     readonly press?: () => void
 }
 
-/** Props for {@link IconButton}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type IconButtonProps = LeafProps<IconButtonData, IconButtonActions>
+/** Props for {@link IconButton}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type IconButtonProps = ComponentProps<IconButtonData, IconButtonActions>
 
 /**
  * Draw a glyph that acts.
@@ -45,7 +46,7 @@ export const IconButton = ({ props, on }: IconButtonProps) => (
         data-active={props.isActive === true ? "true" : "false"}
         type="button"
         variant="tertiary"
-        className="rounded-full"
+        className={CLASS_NAME_1}
         isIconOnly
         aria-label={props.label}
         onPress={on?.press}

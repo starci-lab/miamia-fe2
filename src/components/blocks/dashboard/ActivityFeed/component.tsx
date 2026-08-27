@@ -1,11 +1,11 @@
 import { CONTRACTS } from "@/components/contracts"
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
 import { SurfaceListCard, type SurfaceListCardData } from "@/components/branches/SurfaceListCard"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { ActivityRow, type ActivityRowData } from "@/components/composites/ActivityRow"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Text } from "@/components/leaves/Text"
-import { defineCompositeComponent, defineContractComponent, defineContractProjection, defineLeafComponent, type LeafProps } from "@/components/contracts/props"
+import { createCompositeNode, createGrammarNode, createGrammarProjection, createLeafNode, type ComponentProps } from "@/components/contracts/props"
 import type { ReactionType } from "@/modules/api/graphql/queries/types/reactions"
 
 /** One local-calendar group in the activity stream. */
@@ -24,10 +24,10 @@ export type ActivityFeedProps = { readonly state: "pending" | "filteredEmpty" | 
 type ActivityListData = SurfaceListCardData & { readonly rows: ReadonlyArray<ActivityRowData> }
 
 const ROW_COUNT = CONTRACTS["activity-feed-list"].children.activity.restingCount
-const ActivityListView = ({ props, on, isLoading = false }: LeafProps<ActivityListData, ActivityFeedActions>) => {
+const ActivityListView = ({ props, on, isLoading = false }: ComponentProps<ActivityListData, ActivityFeedActions>) => {
     const rows = isLoading ? Array.from({ length: ROW_COUNT }, (_, index) => ({ id: `resting-${index}` })) : props.rows
-    return <Tree contract="activity-feed-list" render={defineContractComponent("activity-feed-list", {
-        activity: rows.map((row) => defineCompositeComponent("activity-row", {}, () => (
+    return <Grammar contract="activity-feed-list" render={createGrammarNode("activity-feed-list", {
+        activity: rows.map((row) => createCompositeNode("activity-row", {}, () => (
             <ActivityRow props={row} on={{
                 openActor: on?.[`actor:${row.id}`],
                 openTarget: on?.[`target:${row.id}`],
@@ -36,15 +36,15 @@ const ActivityListView = ({ props, on, isLoading = false }: LeafProps<ActivityLi
         ))),
     })} />
 }
-const ActivityList = defineContractComponent("activity-feed-list", ActivityListView)
+const ActivityList = createGrammarNode("activity-feed-list", ActivityListView)
 
 /** Draw local-day joined activity lists or one explicit result notice. */
 export const ActivityFeedBase = (input: ActivityFeedProps) => {
     if (input.state === "filteredEmpty" || input.state === "platformEmpty" || input.state === "failed") {
-        return <Tree contract="activity-feed-result" render={defineContractComponent("activity-feed-result", {
-            notice: defineContractProjection("empty-notice-card", () => (
-                <SurfaceCard props={{ label: "" }} contract="empty-notice-card" render={defineContractComponent("empty-notice-card", {
-                    notice: defineCompositeComponent("empty-notice", {}, () => (
+        return <Grammar contract="activity-feed-result" render={createGrammarNode("activity-feed-result", {
+            notice: createGrammarProjection("empty-notice-card", () => (
+                <SurfaceCard props={{ label: "" }} contract="empty-notice-card" render={createGrammarNode("empty-notice-card", {
+                    notice: createCompositeNode("empty-notice", {}, () => (
                         <EmptyNotice props={{
                             message: input.props.message,
                             description: input.props.description,
@@ -58,13 +58,13 @@ export const ActivityFeedBase = (input: ActivityFeedProps) => {
     const days = input.state === "pending"
         ? Array.from({ length: 2 }, (_, index) => ({ id: `resting-day-${index}`, label: "", rows: [] }))
         : input.props.days
-    return <Tree contract="activity-feed-result" render={defineContractComponent("activity-feed-result", {
-        day: days.map((day) => defineContractProjection("activity-day-group", () => (
-            <Tree contract="activity-day-group" render={defineContractComponent("activity-day-group", {
-                subtitle: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+    return <Grammar contract="activity-feed-result" render={createGrammarNode("activity-feed-result", {
+        day: days.map((day) => createGrammarProjection("activity-day-group", () => (
+            <Grammar contract="activity-day-group" render={createGrammarNode("activity-day-group", {
+                subtitle: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                     <Text props={{ content: day.label, size: "sm", tone: "muted" }} isLoading={input.state === "pending"} />
                 )),
-                list: defineContractProjection("activity-feed-list", () => (
+                list: createGrammarProjection("activity-feed-list", () => (
                     <SurfaceListCard
                         contract="activity-feed-list"
                         render={ActivityList}

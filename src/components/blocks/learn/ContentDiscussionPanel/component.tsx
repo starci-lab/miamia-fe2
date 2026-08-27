@@ -1,9 +1,9 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import {
-    defineCompositeComponent,
-    defineContractComponent,
-    defineLeafComponent,
+    createCompositeNode,
+    createGrammarNode,
+    createLeafNode,
     type BlockProps,
 } from "@/components/contracts/props"
 import { Button } from "@/components/leaves/Button"
@@ -66,32 +66,32 @@ export const ContentDiscussionPanelBase = (input: ContentDiscussionPanelProps) =
     const comments = isLoading ? PENDING_COMMENTS : input.props.comments
     const canCompose = input.state === "ready" || input.state === "empty" || isSubmitting
 
-    const list = defineContractComponent("content-discussion-list", {
-        comment: comments.map((comment) => defineContractComponent("content-discussion-comment-row", {
-            author: defineLeafComponent("text", { size: "sm", weight: "semibold" }, () => (
+    const list = createGrammarNode("content-discussion-list", {
+        comment: comments.map((comment) => createGrammarNode("content-discussion-comment-row", {
+            author: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
                 <Text
                     props={{ content: comment.author, size: "sm", weight: "semibold" }}
                     isLoading={isLoading}
                 />
             )),
-            meta: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+            meta: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                 <Text props={{ content: comment.meta, size: "xs", tone: "muted" }} isLoading={isLoading} />
             )),
-            body: defineLeafComponent("text", { size: "sm" }, () => (
+            body: createLeafNode("text", { size: "sm" }, () => (
                 <Text props={{ content: comment.body, size: "sm" }} isLoading={isLoading} />
             )),
         })),
     })
 
     return (
-        <Tree
+        <Grammar
             contract="content-discussion-panel"
-            render={defineContractComponent("content-discussion-panel", {
-                title: defineLeafComponent("heading", {}, () => (
+            render={createGrammarNode("content-discussion-panel", {
+                title: createLeafNode("heading", {}, () => (
                     <Heading props={{ content: input.props.labels.title, level: 2 }} />
                 )),
                 ...(canCompose ? {
-                    composer: defineLeafComponent("textarea", {}, () => (
+                    composer: createLeafNode("textarea", {}, () => (
                         <Textarea
                             key={input.props.draftKey}
                             props={{
@@ -106,7 +106,7 @@ export const ContentDiscussionPanelBase = (input: ContentDiscussionPanelProps) =
                             on={{ change: input.on?.changeDraft }}
                         />
                     )),
-                    submit: defineLeafComponent("button", {}, () => (
+                    submit: createLeafNode("button", {}, () => (
                         <Button
                             props={{
                                 label: isSubmitting ? input.props.labels.submitting : input.props.labels.submit,
@@ -120,7 +120,7 @@ export const ContentDiscussionPanelBase = (input: ContentDiscussionPanelProps) =
                     )),
                 } : {}),
                 ...(input.state === "failed" || input.state === "empty" ? {
-                    notice: defineCompositeComponent("empty-notice", {}, () => (
+                    notice: createCompositeNode("empty-notice", {}, () => (
                         <EmptyNotice
                             props={{
                                 icon: input.state === "failed" ? "retry" : "community",

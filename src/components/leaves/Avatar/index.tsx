@@ -1,7 +1,8 @@
+import { CLASS_NAME_1 } from './styles'
 import { Avatar as DiceAvatar, Style } from "@dicebear/core"
 import lorelei from "@dicebear/styles/lorelei.json" with { type: "json" }
 import { Avatar as HeroAvatar, skeletonVariants } from "@heroui/react"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `Avatar`: the mark that says which person a row is about.
@@ -23,8 +24,8 @@ export type AvatarData = {
     readonly size?: AvatarSize
 }
 
-/** Props for {@link Avatar}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type AvatarProps = LeafProps<AvatarData>
+/** Props for {@link Avatar}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type AvatarProps = ComponentProps<AvatarData>
 
 /** The size step, as the vendor names it. */
 const SIZES = { sm: "sm", md: "md", lg: "lg" } as const
@@ -74,7 +75,7 @@ export const Avatar = ({ props, isLoading = false }: AvatarProps) => {
                 {fallbackSrc !== undefined ? (
                     <img
                         data-avatar-fallback="dicebear-lorelei"
-                        className="size-full object-cover"
+                        className={CLASS_NAME_1}
                         src={fallbackSrc}
                         alt={name}
                     />

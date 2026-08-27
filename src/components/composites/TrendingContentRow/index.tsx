@@ -1,7 +1,7 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { Text } from "@/components/leaves/Text"
 import { TextLink } from "@/components/leaves/TextLink"
-import { defineContractComponent, defineLeafComponent, type CompositeProps } from "@/components/contracts/props"
+import { createGrammarNode, createLeafNode, type CompositeProps } from "@/components/contracts/props"
 
 /** Rank and title for one trending result. */
 export type TrendingContentRowData = {
@@ -17,11 +17,11 @@ export type TrendingContentRowProps = CompositeProps<TrendingContentRowData, Tre
 
 /** Draw one ranked actionable title; the first three ranks retain the legacy accent treatment. */
 export const TrendingContentRow = ({ props, on, isLoading = false }: TrendingContentRowProps) => (
-    <Tree contract="rank-title-row" render={defineContractComponent("rank-title-row", {
-        rank: defineLeafComponent("text", { size: "sm", weight: "semibold" }, () => (
+    <Grammar contract="rank-title-row" render={createGrammarNode("rank-title-row", {
+        rank: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
             <Text props={{ content: props.rank, size: "sm", weight: "semibold", tone: props.isTopRank === true ? "accent" : "muted" }} isLoading={isLoading} />
         )),
-        title: defineLeafComponent("text-link", { size: "sm" }, () => (
+        title: createLeafNode("text-link", { size: "sm" }, () => (
             <TextLink props={{ label: props.title ?? "", size: "sm" }} on={{ press: on?.open }} />
         )),
     })} />

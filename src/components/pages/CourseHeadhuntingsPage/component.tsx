@@ -1,5 +1,5 @@
 import { SurfaceListCard, type SurfaceListCardData } from "@/components/branches/SurfaceListCard"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Breadcrumbs, type BreadcrumbStep } from "@/components/leaves/Breadcrumbs"
 import { Heading } from "@/components/leaves/Heading"
@@ -7,12 +7,12 @@ import { SearchBox } from "@/components/leaves/SearchBox"
 import { Text } from "@/components/leaves/Text"
 import { TextLink } from "@/components/leaves/TextLink"
 import {
-    defineCompositeComponent,
-    defineContractComponent,
-    defineContractProjection,
-    defineLeafComponent,
+    createCompositeNode,
+    createGrammarNode,
+    createGrammarProjection,
+    createLeafNode,
     type BlockProps,
-    type LeafProps,
+    type ComponentProps,
 } from "@/components/contracts/props"
 
 /** One company destination or consultant contact line in the directory. */
@@ -65,10 +65,10 @@ const resolveDirectoryHandler = (row: HeadhuntingDirectoryRow, on?: CourseHeadhu
     return undefined
 }
 
-const DirectoryList = ({ props, on, isLoading = false }: LeafProps<DirectoryListData, CourseHeadhuntingsPageActions>) => (
-    <Tree contract="content-next-list" render={defineContractComponent("content-next-list", {
+const DirectoryList = ({ props, on, isLoading = false }: ComponentProps<DirectoryListData, CourseHeadhuntingsPageActions>) => (
+    <Grammar contract="content-next-list" render={createGrammarNode("content-next-list", {
         step: (isLoading ? PENDING_DIRECTORY_ROWS : props.rows)
-            .map((row) => defineContractProjection("content-next-row", () => {
+            .map((row) => createGrammarProjection("content-next-row", () => {
                 const label = [row.label, row.meta, row.actionLabel].filter((part) => part !== undefined).join(" · ")
                 const handler = resolveDirectoryHandler(row, on)
                 return handler === undefined ? (
@@ -80,18 +80,18 @@ const DirectoryList = ({ props, on, isLoading = false }: LeafProps<DirectoryList
     })} />
 )
 
-const DirectoryListContent = defineContractComponent("content-next-list", DirectoryList)
+const DirectoryListContent = createGrammarNode("content-next-list", DirectoryList)
 
 /** Pure company search plus consultant contact directory. */
 export const CourseHeadhuntingsPageBase = (input: CourseHeadhuntingsPageProps) => {
     const isLoading = input.state === "pending"
-    const header = defineContractComponent("page-header-stack", {
-        trail: defineLeafComponent("breadcrumbs", {}, () => (
+    const header = createGrammarNode("page-header-stack", {
+        trail: createLeafNode("breadcrumbs", {}, () => (
             <Breadcrumbs props={{ steps: input.props.trail, label: input.props.title }} on={{ course: input.on?.course as (() => void) | undefined }} />
         )),
-        title: defineLeafComponent("heading", {}, () => <Heading props={{ content: input.props.title, level: 1 }} />),
+        title: createLeafNode("heading", {}, () => <Heading props={{ content: input.props.title, level: 1 }} />),
     })
-    const toolbar = defineContractProjection("catalog-search-count-view-row", () => (
+    const toolbar = createGrammarProjection("catalog-search-count-view-row", () => (
         <SearchBox
             props={{
                 placeholder: input.props.searchPlaceholder,
@@ -102,7 +102,7 @@ export const CourseHeadhuntingsPageBase = (input: CourseHeadhuntingsPageProps) =
         />
     ))
     const notice = input.state === "failed" || input.state === "empty"
-        ? defineCompositeComponent("empty-notice", {}, () => (
+        ? createCompositeNode("empty-notice", {}, () => (
             <EmptyNotice
                 props={{
                     icon: input.state === "failed" ? "retry" : "talents",
@@ -115,11 +115,11 @@ export const CourseHeadhuntingsPageBase = (input: CourseHeadhuntingsPageProps) =
         : undefined
 
     return (
-        <Tree contract="course-headhuntings-page" render={defineContractComponent("course-headhuntings-page", {
+        <Grammar contract="course-headhuntings-page" render={createGrammarNode("course-headhuntings-page", {
             header,
             search: toolbar,
             ...(notice === undefined ? {
-                directories: defineContractProjection("catalog-section-group", () => (
+                directories: createGrammarProjection("catalog-section-group", () => (
                     <>
                         <SurfaceListCard
                             contract="content-next-list"

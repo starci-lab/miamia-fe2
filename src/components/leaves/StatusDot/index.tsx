@@ -1,12 +1,12 @@
 import { skeletonVariants } from "@heroui/react"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /** Semantic states represented by a compact legend mark. */
 export type StatusDotTone = "accent" | "success" | "warning" | "danger"
 /** Meaning and accessible name for one status mark. */
 export type StatusDotData = { readonly tone: StatusDotTone; readonly label: string }
 /** Closed leaf props for a status mark. */
-export type StatusDotProps = LeafProps<StatusDotData>
+export type StatusDotProps = ComponentProps<StatusDotData>
 
 const TONES = {
     accent: "bg-accent",

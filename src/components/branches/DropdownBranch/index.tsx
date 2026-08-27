@@ -1,3 +1,4 @@
+import { CLASS_NAME_1 } from './styles'
 import type { ReactNode } from "react"
 import { Dropdown } from "@heroui/react"
 import { Icon, type IconName } from "@/components/leaves/Icon"
@@ -47,7 +48,7 @@ export const DropdownBranch = <const I extends string>(input: DropdownBranchProp
     <Dropdown>
         <Dropdown.Trigger
             aria-label={input.props.label}
-            className="button button--md button--tertiary button--icon-only rounded-full"
+            className={CLASS_NAME_1}
         >
             {input.trigger}
         </Dropdown.Trigger>

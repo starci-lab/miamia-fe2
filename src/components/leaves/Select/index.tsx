@@ -1,5 +1,5 @@
 import { ListBox, Select as HeroSelect } from "@heroui/react"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `Select`: one choice out of a short closed set.
@@ -49,8 +49,8 @@ export type SelectActions = {
     readonly select?: (id: string) => void
 }
 
-/** Props for {@link Select}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type SelectProps = LeafProps<SelectData, SelectActions>
+/** Props for {@link Select}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type SelectProps = ComponentProps<SelectData, SelectActions>
 
 /**
  * Draw the choice.

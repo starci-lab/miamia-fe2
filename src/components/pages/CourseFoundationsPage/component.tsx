@@ -1,10 +1,10 @@
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Heading } from "@/components/leaves/Heading"
 import { NavLink } from "@/components/leaves/NavLink"
 import { SearchBox } from "@/components/leaves/SearchBox"
 import { Text } from "@/components/leaves/Text"
-import { defineCompositeComponent, defineContractComponent, defineLeafComponent } from "@/components/contracts/props"
+import { createCompositeNode, createGrammarNode, createLeafNode } from "@/components/contracts/props"
 import type { FoundationCategory } from "@/modules/api/graphql/queries/query-foundation-categories"
 
 type FoundationCategoryRow = Pick<FoundationCategory, "id" | "title" | "description">
@@ -32,7 +32,7 @@ export const CourseFoundationsPageBase = (input: CourseFoundationsPageProps) => 
         ? Array.from({ length: 4 }, (_, index) => ({ id: `pending-${index}`, title: "", description: null }))
         : input.props.categories
     const notice = input.state === "empty" || input.state === "failed"
-        ? defineCompositeComponent("empty-notice", {}, () => (
+        ? createCompositeNode("empty-notice", {}, () => (
             <EmptyNotice
                 props={{
                     message: input.state === "failed" ? input.props.failed : input.props.empty,
@@ -44,22 +44,22 @@ export const CourseFoundationsPageBase = (input: CourseFoundationsPageProps) => 
         : undefined
 
     return (
-        <Tree contract="course-foundations-page" render={defineContractComponent("course-foundations-page", {
-            header: defineContractComponent("page-header-stack", {
-                title: defineLeafComponent("heading", {}, () => (
+        <Grammar contract="course-foundations-page" render={createGrammarNode("course-foundations-page", {
+            header: createGrammarNode("page-header-stack", {
+                title: createLeafNode("heading", {}, () => (
                     <Heading props={{ content: input.props.title, level: 1 }} isLoading={loading} />
                 )),
             }),
-            description: defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+            description: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                 <Text props={{ content: input.props.description, size: "sm", tone: "muted" }} isLoading={loading} />
             )),
-            search: defineLeafComponent("search-box", {}, () => (
+            search: createLeafNode("search-box", {}, () => (
                 <SearchBox
                     props={{ label: input.props.search, placeholder: input.props.search, clearLabel: input.props.clearSearch }}
                     on={{ search: input.on?.search }}
                 />
             )),
-            category: categories.map((category) => defineLeafComponent("nav-link", { kind: "section" }, () => (
+            category: categories.map((category) => createLeafNode("nav-link", { kind: "section" }, () => (
                 <NavLink
                     props={{
                         label: category.description === null ? category.title : `${category.title} · ${category.description}`,

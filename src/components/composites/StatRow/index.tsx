@@ -2,8 +2,8 @@ import { Icon } from "@/components/leaves/Icon"
 import { Text } from "@/components/leaves/Text"
 import type { IconName } from "@/components/leaves/Icon"
 import type { CompositeProps } from "@/components/contracts/props"
-import { Tree } from "@/components/branches/Tree"
-import { defineContractComponent, defineLeafComponent } from "@/components/contracts/props"
+import { Grammar } from "@/components/branches/Grammar"
+import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
 
 /**
  * COMPOSITE - `StatRow`: one standing figure, as a glyph, its name and the number.
@@ -29,7 +29,7 @@ export type StatRowData = {
     readonly value?: string
 }
 
-/** Props for {@link StatRow}. Three fixed slots, no fourth - see {@link LeafProps}. */
+/** Props for {@link StatRow}. Three fixed slots, no fourth - see {@link ComponentProps}. */
 export type StatRowProps = CompositeProps<StatRowData>
 
 /**
@@ -38,12 +38,12 @@ export type StatRowProps = CompositeProps<StatRowData>
  * @param input - {@link StatRowProps}
  */
 export const StatRow = ({ props, isLoading = false }: StatRowProps) => {
-    const content = defineContractComponent("glyph-title-fact-row", {
-        glyph: defineLeafComponent("icon", { size: "sm" }, () => <Icon props={{ name: props.icon, role: "leading" }} />),
-        title: defineLeafComponent("text", { size: "md", tone: "default" }, () => <Text props={{ content: props.label, size: "md" }} />),
-        fact: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => <Text props={{ content: props.value, size: "xs" }} isLoading={isLoading} />),
+    const content = createGrammarNode("glyph-title-fact-row", {
+        glyph: createLeafNode("icon", { size: "sm" }, () => <Icon props={{ name: props.icon, role: "leading" }} />),
+        title: createLeafNode("text", { size: "md", tone: "default" }, () => <Text props={{ content: props.label, size: "md" }} />),
+        fact: createLeafNode("text", { size: "xs", tone: "muted" }, () => <Text props={{ content: props.value, size: "xs" }} isLoading={isLoading} />),
     })
-    return <Tree contract="glyph-title-fact-row" render={content} />
+    return <Grammar contract="glyph-title-fact-row" render={content} />
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */

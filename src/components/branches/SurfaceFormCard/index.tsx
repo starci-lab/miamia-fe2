@@ -1,5 +1,6 @@
+import { CLASS_NAME_1, CLASS_NAME_2 } from './styles'
 import { Card } from "@heroui/react"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import type { ContractKey } from "@/components/contracts"
 import type { ContractBranchProps } from "@/components/contracts/props"
 
@@ -22,9 +23,9 @@ export const SurfaceFormCard = <const K extends ContractKey>({
     contract,
     render,
 }: SurfaceFormCardProps<K>) => (
-        <Card className="p-0" data-component="SurfaceFormCard">
-            <Card.Content className="p-0" data-component="SurfaceFormCardBody">
-                <Tree contract={contract} render={render} />
+        <Card className={CLASS_NAME_1} data-component="SurfaceFormCard">
+            <Card.Content className={CLASS_NAME_1} data-component="SurfaceFormCardBody">
+                <Grammar contract={contract} render={render} />
             </Card.Content>
         </Card>
     )

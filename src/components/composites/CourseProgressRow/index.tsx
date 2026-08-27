@@ -4,7 +4,7 @@ import { IconTile } from "@/components/leaves/IconTile"
 import { Progress } from "@/components/leaves/Progress"
 import { StatusDot, type StatusDotTone } from "@/components/leaves/StatusDot"
 import { Text } from "@/components/leaves/Text"
-import { defineContractComponent, defineLeafComponent, type CompositeProps } from "@/components/contracts/props"
+import { createGrammarNode, createLeafNode, type CompositeProps } from "@/components/contracts/props"
 
 /** One semantic course-progress dimension. */
 export type CourseProgressDimension = {
@@ -37,35 +37,35 @@ export type CourseProgressRowProps = CompositeProps<CourseProgressRowData, Cours
 
 /** Draw one whole-row course destination with three inspectable progress dimensions. */
 export const CourseProgressRow = ({ props, on, isLoading = false }: CourseProgressRowProps) => {
-    const heading = defineContractComponent("course-progress-heading", {
-        title: defineLeafComponent("text", { size: "md", weight: "semibold" }, () => (
+    const heading = createGrammarNode("course-progress-heading", {
+        title: createLeafNode("text", { size: "md", weight: "semibold" }, () => (
             <Text props={{ content: props.title, size: "md", weight: "semibold", isPressLabel: true }} isLoading={isLoading} />
         )),
         ...(props.isTrial === true && !isLoading ? {
-            trial: defineLeafComponent("badge", {}, () => <Badge props={{ content: props.trialLabel, tone: "warning" }} />),
+            trial: createLeafNode("badge", {}, () => <Badge props={{ content: props.trialLabel, tone: "warning" }} />),
         } : {}),
-        percent: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+        percent: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
             <Text props={{ content: props.percentLabel, size: "xs", tone: "muted" }} isLoading={isLoading} />
         )),
     })
-    const progress = defineContractComponent("segmented-progress-track", {
-        segment: props.dimensions.map((dimension) => defineLeafComponent("progress", {}, () => (
+    const progress = createGrammarNode("segmented-progress-track", {
+        segment: props.dimensions.map((dimension) => createLeafNode("progress", {}, () => (
             <Progress props={{ value: dimension.percent, label: dimension.label }} isLoading={isLoading} />
         ))),
     })
-    const legend = defineContractComponent("progress-dimension-legend", {
-        dimension: props.dimensions.map((dimension) => defineContractComponent("status-dot-with-label", {
-            mark: defineLeafComponent("status-dot", {}, () => (
+    const legend = createGrammarNode("progress-dimension-legend", {
+        dimension: props.dimensions.map((dimension) => createGrammarNode("status-dot-with-label", {
+            mark: createLeafNode("status-dot", {}, () => (
                 <StatusDot props={{ tone: dimension.tone, label: dimension.label }} isLoading={isLoading} />
             )),
-            label: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+            label: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                 <Text props={{ content: `${dimension.label} · ${dimension.completed}/${dimension.total}`, size: "xs", tone: "muted" }} isLoading={isLoading} />
             )),
         })),
     })
-    const body = defineContractComponent("course-progress-body", { heading, progress, legend })
-    const content = defineContractComponent("course-progress-row", {
-        mark: defineLeafComponent("icon-tile", {}, () => (
+    const body = createGrammarNode("course-progress-body", { heading, progress, legend })
+    const content = createGrammarNode("course-progress-row", {
+        mark: createLeafNode("icon-tile", {}, () => (
             <IconTile props={{ icon: "course", image: props.cover, tone: "accent", size: "md" }} isLoading={isLoading} />
         )),
         body,

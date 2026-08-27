@@ -1,5 +1,6 @@
+import { CLASS_NAME_1, CLASS_NAME_2 } from './styles'
 import { skeletonVariants } from "@heroui/react"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `DayCell`: one day of a streak, as a dot with its weekday letter.
@@ -24,8 +25,8 @@ export type DayCellData = {
     readonly active?: boolean
 }
 
-/** Props for {@link DayCell}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type DayCellProps = LeafProps<DayCellData>
+/** Props for {@link DayCell}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type DayCellProps = ComponentProps<DayCellData>
 
 /** Stacks the plain circle over its letter. */
 const BASE_CLASSES = "flex flex-col items-center gap-1"
@@ -59,10 +60,10 @@ export const DayCell = ({ props, isLoading = false }: DayCellProps) => (
             aria-hidden="true"
             className={dotClassName(isLoading, props.active)}
         />
-        <span data-part="weekday" className="text-xs text-muted">
+        <span data-part="weekday" className={CLASS_NAME_1}>
             {props.weekday ?? ""}
         </span>
-        <span data-part="date" className="sr-only">
+        <span data-part="date" className={CLASS_NAME_2}>
             {props.title ?? ""}
         </span>
     </li>

@@ -1,10 +1,10 @@
 import { Avatar } from "@/components/leaves/Avatar"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { Badge } from "@/components/leaves/Badge"
 import { Button } from "@/components/leaves/Button"
 import { Text } from "@/components/leaves/Text"
 import { TextLink } from "@/components/leaves/TextLink"
-import { defineContractComponent, defineLeafComponent, type CompositeProps } from "@/components/contracts/props"
+import { createGrammarNode, createLeafNode, type CompositeProps } from "@/components/contracts/props"
 
 /** Resolved identity, qualification and follow state for one suggested person. */
 export type SuggestedUserRowData = {
@@ -26,27 +26,27 @@ export type SuggestedUserRowProps = CompositeProps<SuggestedUserRowData, Suggest
 
 /** Draw one suggested identity with its optional badge and follow action. */
 export const SuggestedUserRow = ({ props, on, isLoading = false }: SuggestedUserRowProps) => {
-    const identity = defineContractComponent("name-over-handle", {
-        name: defineLeafComponent("text-link", { size: "sm" }, () => (
+    const identity = createGrammarNode("name-over-handle", {
+        name: createLeafNode("text-link", { size: "sm" }, () => (
             <TextLink props={{ label: props.name ?? "", size: "sm" }} on={{ press: on?.open }} />
         )),
-        handle: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+        handle: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
             <Text props={{ content: props.username, size: "xs", tone: "muted" }} isLoading={isLoading} />
         )),
     })
 
     return (
-        <Tree contract="avatar-identity-badge-action-row" render={defineContractComponent("avatar-identity-badge-action-row", {
-            avatar: defineLeafComponent("avatar", {}, () => (
+        <Grammar contract="avatar-identity-badge-action-row" render={createGrammarNode("avatar-identity-badge-action-row", {
+            avatar: createLeafNode("avatar", {}, () => (
                 <Avatar props={{ name: props.name, src: props.avatar, size: "sm" }} isLoading={isLoading} />
             )),
             identity,
             ...(props.openToWork === true ? {
-                badge: defineLeafComponent("badge", {}, () => (
+                badge: createLeafNode("badge", {}, () => (
                     <Badge props={{ content: props.openToWorkLabel, tone: "success" }} />
                 )),
             } : {}),
-            action: defineLeafComponent("button", {}, () => (
+            action: createLeafNode("button", {}, () => (
                 <Button
                     props={{
                         label: props.isFollowing === true ? props.followingLabel : props.followLabel,

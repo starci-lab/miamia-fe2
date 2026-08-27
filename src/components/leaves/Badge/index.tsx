@@ -1,5 +1,5 @@
 import { Chip, skeletonVariants } from "@heroui/react"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `Badge`: a short figure or word set apart from the line it sits on.
@@ -20,8 +20,8 @@ export type BadgeData = {
     readonly tone?: BadgeTone
 }
 
-/** Props for {@link Badge}. Three fixed slots, no fourth - see {@link LeafProps}. */
-export type BadgeProps = LeafProps<BadgeData>
+/** Props for {@link Badge}. Three fixed slots, no fourth - see {@link ComponentProps}. */
+export type BadgeProps = ComponentProps<BadgeData>
 
 /** The tone, said once, as the vendor's own token. */
 const TONE_COLORS = {

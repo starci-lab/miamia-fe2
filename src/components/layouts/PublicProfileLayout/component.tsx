@@ -1,13 +1,13 @@
 import type { ComponentType } from "react"
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { ProfileHero } from "@/components/blocks/profile/ProfileHero"
 import { ProfileTabsBase as ProfileTabsView, type ProfileTabsData } from "@/components/blocks/profile/ProfileTabs"
 import {
-    defineCompositeComponent,
-    defineContractComponent,
-    defineContractProjection,
+    createCompositeNode,
+    createGrammarNode,
+    createGrammarProjection,
 } from "@/components/contracts/props"
 
 /** Screen-level situations settled by the persistent public-profile layout. */
@@ -39,8 +39,8 @@ export const PublicProfileLayoutBase = (input: PublicProfileLayoutProps) => {
         return (
             <SurfaceCard
                 contract="centred-empty-notice"
-                render={defineContractComponent("centred-empty-notice", {
-                    notice: defineCompositeComponent("empty-notice", {}, () => (
+                render={createGrammarNode("centred-empty-notice", {
+                    notice: createCompositeNode("empty-notice", {}, () => (
                         <EmptyNotice
                             props={{ icon: "retry", message: input.props.failedMessage, actionLabel: input.props.retryLabel }}
                             on={{ act: input.on.retry }}
@@ -55,8 +55,8 @@ export const PublicProfileLayoutBase = (input: PublicProfileLayoutProps) => {
         return (
             <SurfaceCard
                 contract="centred-empty-notice"
-                render={defineContractComponent("centred-empty-notice", {
-                    notice: defineCompositeComponent("empty-notice", {}, () => (
+                render={createGrammarNode("centred-empty-notice", {
+                    notice: createCompositeNode("empty-notice", {}, () => (
                         <EmptyNotice
                             props={{ icon: "account", message: input.props.notFoundMessage, actionLabel: input.props.homeLabel }}
                             on={{ act: input.on.home }}
@@ -69,16 +69,16 @@ export const PublicProfileLayoutBase = (input: PublicProfileLayoutProps) => {
 
     if (input.state === "locked") {
         return (
-            <Tree contract="profile-page-measure" render={defineContractComponent("profile-page-measure", {
-                inset: defineContractComponent("profile-page-inset", {
-                    shell: defineContractComponent("profile-rail-container", {
-                        split: defineContractComponent("profile-rail-then-main", {
-                            rail: defineContractComponent("profile-identity-rail", {
-                                hero: defineContractProjection("profile-hero-rail", () => <ProfileHero />),
+            <Grammar contract="profile-page-measure" render={createGrammarNode("profile-page-measure", {
+                inset: createGrammarNode("profile-page-inset", {
+                    shell: createGrammarNode("profile-rail-container", {
+                        split: createGrammarNode("profile-rail-then-main", {
+                            rail: createGrammarNode("profile-identity-rail", {
+                                hero: createGrammarProjection("profile-hero-rail", () => <ProfileHero />),
                             }),
-                            main: defineContractProjection("centred-empty-notice", () => (
-                                <SurfaceCard contract="centred-empty-notice" render={defineContractComponent("centred-empty-notice", {
-                                    notice: defineCompositeComponent("empty-notice", {}, () => (
+                            main: createGrammarProjection("centred-empty-notice", () => (
+                                <SurfaceCard contract="centred-empty-notice" render={createGrammarNode("centred-empty-notice", {
+                                    notice: createCompositeNode("empty-notice", {}, () => (
                                         <EmptyNotice
                                             props={{
                                                 icon: "password",
@@ -99,18 +99,18 @@ export const PublicProfileLayoutBase = (input: PublicProfileLayoutProps) => {
     }
 
     return (
-        <Tree contract="profile-tabs-over-body" render={defineContractComponent("profile-tabs-over-body", {
-            tabs: defineContractProjection("underlined-tab-strip", () => (
+        <Grammar contract="profile-tabs-over-body" render={createGrammarNode("profile-tabs-over-body", {
+            tabs: createGrammarProjection("underlined-tab-strip", () => (
                 <ProfileTabsView props={input.props.tabs} on={{ select: input.on.selectTab }} />
             )),
-            body: defineContractComponent("profile-page-measure", {
-                inset: defineContractComponent("profile-page-inset", {
-                    shell: defineContractComponent("profile-rail-container", {
-                        split: defineContractComponent("profile-rail-then-main", {
-                            rail: defineContractComponent("profile-identity-rail", {
-                                hero: defineContractProjection("profile-hero-rail", () => <ProfileHero />),
+            body: createGrammarNode("profile-page-measure", {
+                inset: createGrammarNode("profile-page-inset", {
+                    shell: createGrammarNode("profile-rail-container", {
+                        split: createGrammarNode("profile-rail-then-main", {
+                            rail: createGrammarNode("profile-identity-rail", {
+                                hero: createGrammarProjection("profile-hero-rail", () => <ProfileHero />),
                             }),
-                            main: defineContractProjection("profile-main", () => <Body />),
+                            main: createGrammarProjection("profile-main", () => <Body />),
                         }),
                     }),
                 }),

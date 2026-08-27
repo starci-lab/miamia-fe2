@@ -1,16 +1,17 @@
+import { CLASS_NAME_1 } from './styles'
 "use client"
 
 import { useEffect, useRef } from "react"
 import type * as Phaser from "phaser"
 import type { GameAnswerResult, GameCharacter, GameSnapshot, GameType } from "@/modules/games/types"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /** Snapshot data forwarded into one browser-only Phaser scene. */
 export type GameCanvasData = { readonly gameType: GameType; readonly character: GameCharacter; readonly snapshot?: GameSnapshot; readonly answerResult?: GameAnswerResult }
 /** User answer action emitted from the Phaser scene. */
 export type GameCanvasActions = { readonly answer?: (index: number) => void }
 /** Fixed public input of the browser-only Phaser canvas. */
-export type GameCanvasProps = LeafProps<GameCanvasData, GameCanvasActions>
+export type GameCanvasProps = ComponentProps<GameCanvasData, GameCanvasActions>
 
 /** Mounts Phaser only in the browser and forwards server-authoritative state to its scene. */
 export const GameCanvas = ({ props, on }: GameCanvasProps) => {
@@ -43,7 +44,7 @@ export const GameCanvas = ({ props, on }: GameCanvasProps) => {
     useEffect(() => { if (props.snapshot !== undefined && scene.current?.scene.isActive()) scene.current.applySnapshot(props.snapshot) }, [props.snapshot])
     useEffect(() => { if (props.answerResult !== undefined && scene.current?.scene.isActive()) scene.current.applyAnswerResult(props.answerResult) }, [props.answerResult])
     // vn-ok: The accessible label is localized Vietnamese runtime copy.
-    return <div ref={host} data-tier="leaf" data-component="GameCanvas" className="aspect-video size-full overflow-hidden rounded-3xl border bg-surface shadow-surface" aria-label={`Màn chơi ${props.character}`} />
+    return <div ref={host} data-tier="leaf" data-component="GameCanvas" className={CLASS_NAME_1} aria-label={`Màn chơi ${props.character}`} />
 }
 
 /** Declares the Phaser canvas as a pure leaf. */

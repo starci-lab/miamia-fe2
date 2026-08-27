@@ -1,5 +1,5 @@
-import { Tree } from "@/components/branches/Tree"
-import { defineContractComponent, defineLeafComponent } from "@/components/contracts/props"
+import { Grammar } from "@/components/branches/Grammar"
+import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
 import { learnSpine, type LearnSpineActions, type LearnSpineData } from "@/components/blocks/learn/LearnSpine/component"
 import { NavLink } from "@/components/leaves/NavLink"
 import type { IconName } from "@/components/leaves/Icon"
@@ -81,16 +81,16 @@ export type LearnShellLayoutProps = {
 export const LearnShellLayoutBase = (input: LearnShellLayoutProps) => {
     const Surface = input.surface
     return (
-        <Tree
+        <Grammar
             contract="learn-shell-frame"
-            render={defineContractComponent("learn-shell-frame", {
+            render={createGrammarNode("learn-shell-frame", {
                 ...(input.props.isFullBleed ? {} : {
                     spine: learnSpine({ props: input.props.spine, on: input.on, isLoading: input.isLoading ?? false }),
                 }),
-                body: defineLeafComponent("page", {}, () => <Surface />),
+                body: createLeafNode("page", {}, () => <Surface />),
                 ...((input.props.mobileTabs ?? []).length === 0 ? {} : {
-                    bar: defineContractComponent("learn-mobile-tab-bar", {
-                        tab: (input.props.mobileTabs ?? []).map((tab) => defineLeafComponent("nav-link", { kind: "tab" }, () => (
+                    bar: createGrammarNode("learn-mobile-tab-bar", {
+                        tab: (input.props.mobileTabs ?? []).map((tab) => createLeafNode("nav-link", { kind: "tab" }, () => (
                             <NavLink
                                 props={{ label: tab.label, icon: tab.icon, kind: "tab", isCurrent: tab.isCurrent }}
                                 on={{ press: () => input.on?.openMobileTab?.(tab.id) }}

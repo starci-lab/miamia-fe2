@@ -1,7 +1,7 @@
 import type { ComponentType } from "react"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
-import { defineCompositeComponent, defineContractComponent, defineLeafComponent } from "@/components/contracts/props"
+import { createCompositeNode, createGrammarNode, createLeafNode } from "@/components/contracts/props"
 
 /** Data states the persistent playground frame can expose. */
 export type PlaygroundSessionFrameState = "pending" | "ready" | "failed"
@@ -19,12 +19,12 @@ export type PlaygroundSessionLayoutProps = {
 export const PlaygroundSessionLayoutBase = (input: PlaygroundSessionLayoutProps) => {
     const Surface = input.surface
     return (
-        <Tree contract="playground-session-frame" render={defineContractComponent("playground-session-frame", {
+        <Grammar contract="playground-session-frame" render={createGrammarNode("playground-session-frame", {
             ...(input.state === "failed" ? {} : {
-                surface: defineLeafComponent("page", {}, () => <Surface />),
+                surface: createLeafNode("page", {}, () => <Surface />),
             }),
             ...(input.state !== "failed" ? {} : {
-                notice: defineCompositeComponent("empty-notice", {}, () => (
+                notice: createCompositeNode("empty-notice", {}, () => (
                     <EmptyNotice
                         props={{ message: input.failedLabel, actionLabel: input.retryLabel }}
                         on={{ act: input.onRetry }}

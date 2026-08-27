@@ -1,7 +1,7 @@
 import type { ComponentType } from "react"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { NavLink } from "@/components/leaves/NavLink"
-import { defineContractComponent, defineLeafComponent } from "@/components/contracts/props"
+import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
 
 /** One task destination retained in the personal-project workspace rail. */
 export type PersonalProjectWorkspaceMilestone = {
@@ -25,17 +25,17 @@ export const PersonalProjectWorkspaceLayoutBase = (input: PersonalProjectWorkspa
         ? Array.from({ length: 4 }, (_, index) => ({ id: `pending-${index}`, label: "", isCurrent: false }))
         : input.milestones
     return (
-        <Tree
+        <Grammar
             contract="personal-project-workspace-frame"
-            render={defineContractComponent("personal-project-workspace-frame", {
-                milestone: milestones.map((milestone) => defineLeafComponent("nav-link", { kind: "section" }, () => (
+            render={createGrammarNode("personal-project-workspace-frame", {
+                milestone: milestones.map((milestone) => createLeafNode("nav-link", { kind: "section" }, () => (
                     <NavLink
                         props={{ label: milestone.label, kind: "section", isCurrent: milestone.isCurrent }}
                         on={{ press: () => input.onTask?.(milestone.id) }}
                         isLoading={input.isLoading}
                     />
                 ))),
-                body: defineLeafComponent("page", {}, () => <Surface />),
+                body: createLeafNode("page", {}, () => <Surface />),
             })}
         />
     )

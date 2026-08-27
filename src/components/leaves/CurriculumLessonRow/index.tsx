@@ -1,5 +1,6 @@
+import { CLASS_NAME_1, CLASS_NAME_2 } from './styles'
 import { Icon } from "@/components/leaves/Icon"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `CurriculumLessonRow`: one lesson inside a disclosed curriculum module.
@@ -22,7 +23,7 @@ export type CurriculumLessonRowData = {
 }
 
 /** Props for {@link CurriculumLessonRow}. */
-export type CurriculumLessonRowProps = LeafProps<CurriculumLessonRowData>
+export type CurriculumLessonRowProps = ComponentProps<CurriculumLessonRowData>
 
 const ROW_CLASSES = "flex flex-row items-center gap-2"
 
@@ -37,9 +38,9 @@ export const CurriculumLessonRow = ({ props }: CurriculumLessonRowProps) => (
         data-component="CurriculumLessonRow"
         className={ROW_CLASSES}
     >
-        <span className="min-w-0 grow text-xs leading-4 text-muted">{props.title}</span>
+        <span className={CLASS_NAME_1}>{props.title}</span>
         {props.isPreview === true ? (
-            <span className="shrink-0 text-accent-soft-foreground">
+            <span className={CLASS_NAME_2}>
                 <Icon props={{ name: "review", role: "chip" }} />
             </span>
         ) : null}

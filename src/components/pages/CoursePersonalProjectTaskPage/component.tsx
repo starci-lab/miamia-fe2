@@ -1,5 +1,5 @@
-import { Tree } from "@/components/branches/Tree"
-import { defineContractComponent, defineLeafComponent } from "@/components/contracts/props"
+import { Grammar } from "@/components/branches/Grammar"
+import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
 import { Button } from "@/components/leaves/Button"
 import { Heading } from "@/components/leaves/Heading"
 import { Text } from "@/components/leaves/Text"
@@ -27,21 +27,21 @@ export const CoursePersonalProjectTaskPageBase = (input: CoursePersonalProjectTa
     const failed = input.state === "failed"
     const controls = failed
         ? [
-            defineLeafComponent("text", {}, () => (
+            createLeafNode("text", {}, () => (
                 <Text props={{ content: input.props.notice, live: "assertive" }} />
             )),
-            defineLeafComponent("button", {}, () => (
+            createLeafNode("button", {}, () => (
                 <Button props={{ label: input.props.retryLabel }} on={{ press: input.on?.retry }} />
             )),
         ]
         : [
-            defineLeafComponent("text", { size: "sm", tone: "muted" }, () => (
+            createLeafNode("text", { size: "sm", tone: "muted" }, () => (
                 <Text
                     props={{ content: input.props.scoreLabel, size: "sm", tone: "muted" }}
                     isLoading={loading}
                 />
             )),
-            defineLeafComponent("button", {}, () => (
+            createLeafNode("button", {}, () => (
                 <Button
                     props={{
                         label: input.props.submitLabel,
@@ -55,18 +55,18 @@ export const CoursePersonalProjectTaskPageBase = (input: CoursePersonalProjectTa
         ]
 
     return (
-        <Tree
+        <Grammar
             contract="course-personal-project-task-page"
-            render={defineContractComponent("course-personal-project-task-page", {
-                header: defineContractComponent("centred-title-pair", {
-                    title: defineLeafComponent("heading", {}, () => (
+            render={createGrammarNode("course-personal-project-task-page", {
+                header: createGrammarNode("centred-title-pair", {
+                    title: createLeafNode("heading", {}, () => (
                         <Heading props={{ content: input.props.title, level: 1 }} isLoading={loading} />
                     )),
-                    description: defineLeafComponent("text", { size: "sm" }, () => (
+                    description: createLeafNode("text", { size: "sm" }, () => (
                         <Text props={{ content: input.props.description, size: "sm" }} isLoading={loading} />
                     )),
                 }),
-                controls: defineContractComponent("stacked-peer-controls", { control: controls }),
+                controls: createGrammarNode("stacked-peer-controls", { control: controls }),
             })}
         />
     )

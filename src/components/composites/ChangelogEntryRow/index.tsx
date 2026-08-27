@@ -1,10 +1,10 @@
 import { Badge, type BadgeTone } from "@/components/leaves/Badge"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { Text } from "@/components/leaves/Text"
 import { TextLink } from "@/components/leaves/TextLink"
 import {
-    defineContractComponent,
-    defineLeafComponent,
+    createGrammarNode,
+    createLeafNode,
     type CompositeProps,
 } from "@/components/contracts/props"
 
@@ -29,27 +29,27 @@ export type ChangelogEntryRowProps = CompositeProps<ChangelogEntryRowData, Chang
 
 /** Draw one changelog entry without owning the list surface or navigation. */
 export const ChangelogEntryRow = ({ props, on, isLoading = false }: ChangelogEntryRowProps) => {
-    const metaRow = defineContractComponent("date-category-row", {
-        date: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+    const metaRow = createGrammarNode("date-category-row", {
+        date: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
             <Text props={{ content: props.dateLabel, size: "xs", tone: "muted" }} isLoading={isLoading} />
         )),
-        category: props.categoryLabel === undefined ? undefined : defineLeafComponent("badge", {}, () => (
+        category: props.categoryLabel === undefined ? undefined : createLeafNode("badge", {}, () => (
             <Badge props={{ content: props.categoryLabel, tone: props.categoryTone }} isLoading={isLoading} />
         )),
     })
     const title = props.isAction === true && on?.open !== undefined
-        ? defineLeafComponent("text-link", { size: "sm" }, () => (
+        ? createLeafNode("text-link", { size: "sm" }, () => (
             <TextLink props={{ label: props.title ?? "", size: "sm" }} on={{ press: on.open }} />
         ))
-        : defineLeafComponent("text", { size: "sm" }, () => (
+        : createLeafNode("text", { size: "sm" }, () => (
             <Text props={{ content: props.title, size: "sm", weight: "medium" }} isLoading={isLoading} />
         ))
 
     return (
-        <Tree contract="changelog-entry-row" render={defineContractComponent("changelog-entry-row", {
+        <Grammar contract="changelog-entry-row" render={createGrammarNode("changelog-entry-row", {
             meta: metaRow,
             title,
-            body: props.body === undefined && !isLoading ? undefined : defineLeafComponent(
+            body: props.body === undefined && !isLoading ? undefined : createLeafNode(
                 "text",
                 { size: "xs", tone: "muted" },
                 () => <Text props={{ content: props.body, size: "xs", tone: "muted" }} isLoading={isLoading} />,

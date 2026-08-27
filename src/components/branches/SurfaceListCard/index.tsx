@@ -1,19 +1,20 @@
+import { CLASS_NAME_1, CLASS_NAME_2 } from './styles'
 import { Card } from "@heroui/react"
-import { Tree } from "@/components/branches/Tree"
+import { Grammar } from "@/components/branches/Grammar"
 import { Heading } from "@/components/leaves/Heading"
 import { Text } from "@/components/leaves/Text"
 import { Button } from "@/components/leaves/Button"
 import type { JoinedListContractKey } from "@/components/contracts"
-import { defineContractComponent, defineLeafComponent } from "@/components/contracts/props"
+import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
 import type {
     ContractRenderComponent,
-    DataValue,
-    LeafProps,
+    SerializableValue,
+    ComponentProps,
 } from "@/components/contracts/props"
 
 /** Copy and optional outcome drawn around a joined list surface. */
 export type SurfaceListCardData = {
-    readonly [key: string]: DataValue
+    readonly [key: string]: SerializableValue
     readonly label: string
     /** A supporting status or figure at the end of the list label line. */
     readonly fact?: string
@@ -49,7 +50,7 @@ export type SurfaceListCardProps<
     A extends SurfaceListCardActions = SurfaceListCardActions,
 > = {
     readonly contract: K
-    readonly render: ContractRenderComponent<NoInfer<K>, LeafProps<D, A>>
+    readonly render: ContractRenderComponent<NoInfer<K>, ComponentProps<D, A>>
     readonly props: D
     readonly on?: A
     readonly isLoading?: boolean
@@ -68,19 +69,17 @@ export const SurfaceListCard = <
     D extends SurfaceListCardData,
     A extends SurfaceListCardActions = SurfaceListCardActions,
 >(input: SurfaceListCardProps<K, D, A>) => {
-    const { props, on, render, isLoading = false } = input
-    const Content = render
-    const surfaceProps: SurfaceListCardData = props
+    const { props: surfaceProps, on, render: Content, isLoading = false } = input
     const label = surfaceProps.fact === undefined ? (
         <Heading props={{ content: surfaceProps.label, level: 3 }} />
     ) : (
-        <Tree
+        <Grammar
             contract="label-with-muted-fact-row"
-            render={defineContractComponent("label-with-muted-fact-row", {
-                label: defineLeafComponent("text", { size: "sm", weight: "semibold" }, () => (
+            render={createGrammarNode("label-with-muted-fact-row", {
+                label: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
                     <Text props={{ content: surfaceProps.label, size: "sm", weight: "semibold" }} isLoading={isLoading} />
                 )),
-                fact: defineLeafComponent("text", { size: "xs", tone: "muted" }, () => (
+                fact: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
                     <Text props={{ content: surfaceProps.fact, size: "xs", tone: "muted" }} isLoading={isLoading} />
                 )),
             })}
@@ -92,10 +91,10 @@ export const SurfaceListCard = <
     ) : renderDescriptionFooter(surfaceProps.description, isLoading)
 
     return (
-        <div data-component="SurfaceListCard" className="flex flex-col gap-3">
+        <div data-component="SurfaceListCard" className={CLASS_NAME_1}>
             {surfaceProps.isLabelHidden === true ? null : label}
             <Card
-                className="p-0"
+                className={CLASS_NAME_2}
                 data-component="SurfaceListCardSurface"
                 data-surface-context={surfaceProps.isNested === true ? "nested" : "page"}
                 data-verdict={surfaceProps.isVerdict === true ? "true" : "false"}
@@ -104,7 +103,7 @@ export const SurfaceListCard = <
                     className={surfaceProps.isVerdict === true ? "rounded-none p-0" : "p-0"}
                     data-component="SurfaceListCardBody"
                 >
-                    <Content props={props} on={on} isLoading={isLoading} />
+                    <Content props={surfaceProps} on={on} isLoading={isLoading} />
                 </Card.Content>
             </Card>
             {footer}

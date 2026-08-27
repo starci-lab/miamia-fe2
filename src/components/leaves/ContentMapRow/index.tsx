@@ -1,7 +1,7 @@
 import { Link as HeroLink } from "@heroui/react"
 import { Icon } from "@/components/leaves/Icon"
 import { Text } from "@/components/leaves/Text"
-import type { LeafProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `ContentMapRow`: one content in the course map, with its state and its length.
@@ -42,7 +42,7 @@ export type ContentMapRowActions = {
 }
 
 /** Props for {@link ContentMapRow}. */
-export type ContentMapRowProps = LeafProps<ContentMapRowData, ContentMapRowActions>
+export type ContentMapRowProps = ComponentProps<ContentMapRowData, ContentMapRowActions>
 
 const BASE_CLASSES = "flex w-full flex-row items-start gap-3 rounded-medium px-3 py-2 text-start [&>*:first-child]:shrink-0 [&>*:nth-child(2)]:min-w-0 [&>*:nth-child(2)]:grow [&>*:last-child]:shrink-0"
 const CURRENT_CLASSES = "bg-accent-soft text-accent-soft-foreground"

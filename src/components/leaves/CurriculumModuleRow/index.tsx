@@ -1,8 +1,9 @@
+import { CLASS_NAME_1, CLASS_NAME_2, CLASS_NAME_3 } from './styles'
 import { Badge } from "@/components/leaves/Badge"
 import { Icon } from "@/components/leaves/Icon"
 import { CurriculumLessonRow } from "@/components/leaves/CurriculumLessonRow"
-import { Tree } from "@/components/branches/Tree"
-import { defineContractComponent, defineLeafComponent, type LeafProps } from "@/components/contracts/props"
+import { Grammar } from "@/components/branches/Grammar"
+import { createGrammarNode, createLeafNode, type ComponentProps } from "@/components/contracts/props"
 
 /**
  * LEAF - `CurriculumModuleRow`: one course module, folded until asked for.
@@ -28,7 +29,7 @@ import { defineContractComponent, defineLeafComponent, type LeafProps } from "@/
  * THIS FILE OWNS THE SHELL, NOT THE LIST. Everything the disclosure reveals used to be a hand-built
  * `div` wrapping a `.map()` of hand-built rows - two structural arrangements nested inside a leaf,
  * which is exactly what `no-structural-arrangement-in-leaf` exists to catch. The lessons are now a
- * registry node (`curriculum-module-lesson-list`) drawn through `Tree`, so this file writes no
+ * registry node (`curriculum-module-lesson-list`) drawn through `Grammar`, so this file writes no
  * structural class for anything beyond its own one-line head; each lesson is `CurriculumLessonRow`,
  * a leaf in its own right.
  */
@@ -58,7 +59,7 @@ export type CurriculumModuleRowData = {
 }
 
 /** Props for {@link CurriculumModuleRow}. Three fixed slots, no fourth. */
-export type CurriculumModuleRowProps = LeafProps<CurriculumModuleRowData>
+export type CurriculumModuleRowProps = ComponentProps<CurriculumModuleRowData>
 
 const SUMMARY_CLASSES = "flex cursor-pointer list-none flex-row items-center gap-3 marker:content-none"
 const ROW_CLASSES = "flex flex-row items-center gap-3"
@@ -95,7 +96,7 @@ export const CurriculumModuleRow = (input: CurriculumModuleRowProps) => {
     const head = (
         <>
             {canDisclose ? (
-                <span className="shrink-0 text-muted transition-transform group-open:rotate-180">
+                <span className={CLASS_NAME_1}>
                     <Icon props={{ name: "disclosure", role: "chip" }} />
                 </span>
             ) : null}
@@ -108,7 +109,7 @@ export const CurriculumModuleRow = (input: CurriculumModuleRowProps) => {
                         <Badge props={{ content: input.props.levelLabel, tone: "success" }} isLoading={isLoading} />
                     )}
                     {input.props.previewLabel === undefined ? null : (
-                        <span className="text-xs leading-4 text-muted">{input.props.previewLabel}</span>
+                        <span className={CLASS_NAME_2}>{input.props.previewLabel}</span>
                     )}
                 </span>
             )}
@@ -136,13 +137,13 @@ export const CurriculumModuleRow = (input: CurriculumModuleRowProps) => {
             data-disclosing="true"
             data-lessons={lessons.length}
             open={input.props.isOpen ?? false}
-            className="group"
+            className={CLASS_NAME_3}
         >
             <summary className={SUMMARY_CLASSES}>{head}</summary>
-            <Tree
+            <Grammar
                 contract="curriculum-module-lesson-list"
-                render={defineContractComponent("curriculum-module-lesson-list", {
-                    lesson: lessons.map((lesson) => defineLeafComponent("curriculum-lesson-row", {}, () => (
+                render={createGrammarNode("curriculum-module-lesson-list", {
+                    lesson: lessons.map((lesson) => createLeafNode("curriculum-lesson-row", {}, () => (
                         <CurriculumLessonRow
                             props={{ title: lesson.title, isPreview: lesson.isPreview }}
                             isLoading={isLoading}
