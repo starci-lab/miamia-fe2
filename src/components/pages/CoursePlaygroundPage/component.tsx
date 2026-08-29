@@ -1,9 +1,9 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Heading } from "@/components/leaves/Heading"
 import { NavLink } from "@/components/leaves/NavLink"
 import { Text } from "@/components/leaves/Text"
-import { createCompositeNode, createGrammarNode, createLeafNode } from "@/components/contracts/props"
+import { renderComposite, layoutNode, renderLeaf } from "@/modules/types/layout"
 import type { PlaygroundSummary } from "@/modules/api/graphql/queries/query-playgrounds"
 
 /** Catalog states exposed by the pure playground hub. */
@@ -34,7 +34,7 @@ export const CoursePlaygroundPageBase = (input: CoursePlaygroundPageProps) => {
         ? Array.from({ length: 4 }, (_, index) => ({ id: `pending-${index}`, slug: `pending-${index}`, title: "", icon: null, stepCount: 0 }))
         : input.props.playgrounds
     const notice = input.state === "empty" || input.state === "failed"
-        ? createCompositeNode("empty-notice", {}, () => (
+        ? renderComposite("empty-notice", {}, () => (
             <EmptyNotice
                 props={{
                     message: input.state === "failed" ? input.props.failedText : input.props.emptyText,
@@ -46,16 +46,16 @@ export const CoursePlaygroundPageBase = (input: CoursePlaygroundPageProps) => {
         : undefined
 
     return (
-        <Grammar contract="course-playground-page" render={createGrammarNode("course-playground-page", {
-            header: createGrammarNode("page-header-stack", {
-                title: createLeafNode("heading", {}, () => (
+        <Grammar layout="course-playground-page" render={layoutNode("course-playground-page", {
+            header: layoutNode("page-header-stack", {
+                title: renderLeaf("heading", {}, () => (
                     <Heading props={{ content: input.props.title, level: 1 }} isLoading={loading} />
                 )),
             }),
-            description: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+            description: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                 <Text props={{ content: input.props.description, size: "sm", tone: "muted" }} isLoading={loading} />
             )),
-            playground: rows.map((playground) => createLeafNode("nav-link", { kind: "section" }, () => (
+            playground: rows.map((playground) => renderLeaf("nav-link", { kind: "section" }, () => (
                 <NavLink
                     props={{ label: `${playground.title} · ${playground.stepCount} ${input.props.stepLabel}`, kind: "section" }}
                     on={{ press: () => input.on.openSetup(playground.slug) }}
@@ -68,4 +68,3 @@ export const CoursePlaygroundPageBase = (input: CoursePlaygroundPageProps) => {
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "pure", domain: "learn" } as const

@@ -2,7 +2,7 @@ import { SurfaceCard } from "@/components/branches/SurfaceCard"
 import { PressableSurface } from "@/components/branches/PressableSurface"
 import { Badge } from "@/components/leaves/Badge"
 import { Text } from "@/components/leaves/Text"
-import { createGrammarNode, createLeafNode, type CompositeProps } from "@/components/contracts/props"
+import { layoutNode, renderLeaf, type CompositeProps } from "@/modules/types/layout"
 
 /** Resolved showcase facts for one pinned project. */
 export type ProfileProjectCardData = {
@@ -20,21 +20,21 @@ export type ProfileProjectCardProps = CompositeProps<ProfileProjectCardData, Pro
 
 /** One pinned-project tile; unlike a proof row, its tags and verification form a bounded showcase. */
 export const ProfileProjectCard = ({ props, on, isLoading = false }: ProfileProjectCardProps) => {
-    const content = createGrammarNode("profile-project-card", {
-        badge: createLeafNode("badge", {}, () => (
+    const content = layoutNode("profile-project-card", {
+        badge: renderLeaf("badge", {}, () => (
             <Badge props={{ content: props.verified ? "Verified by StarCi" : props.kind ?? "External", tone: props.verified ? "success" : "neutral" }} isLoading={isLoading} />
         )),
-        title: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
+        title: renderLeaf("text", { size: "sm", weight: "semibold" }, () => (
             <Text props={{ content: props.title, size: "sm", weight: "semibold" }} isLoading={isLoading} />
         )),
         ...(props.description === undefined ? {} : {
-            description: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+            description: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                 <Text props={{ content: props.description, size: "xs" }} isLoading={isLoading} />
             )),
         }),
         ...(props.technologies.length === 0 ? {} : {
-            tech: createGrammarNode("profile-project-tech-run", {
-                tech: props.technologies.map((technology) => createLeafNode("badge", {}, () => (
+            tech: layoutNode("profile-project-tech-run", {
+                tech: props.technologies.map((technology) => renderLeaf("badge", {}, () => (
                     <Badge props={{ content: technology }} isLoading={isLoading} />
                 ))),
             }),
@@ -46,9 +46,8 @@ export const ProfileProjectCard = ({ props, on, isLoading = false }: ProfileProj
      * same branch either way and only the press target differs.
      */
     return on?.press === undefined
-        ? <SurfaceCard contract="profile-project-card" render={content} />
-        : <PressableSurface contract="profile-project-card" render={content} label={props.title ?? "Project"} press={on.press} isRaised />
+        ? <SurfaceCard layout="profile-project-card" render={content} />
+        : <PressableSurface layout="profile-project-card" render={content} label={props.title ?? "Project"} press={on.press} isRaised />
 }
 
 /** Source-level tier marker. */
-export const meta = { shape: "composite", world: "pure" } as const

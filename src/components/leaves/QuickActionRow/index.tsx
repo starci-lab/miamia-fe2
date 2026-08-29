@@ -1,6 +1,6 @@
 import { Link as HeroLink } from "@heroui/react"
 import { Icon, type IconName } from "@/components/leaves/Icon"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `QuickActionRow`: one shortcut on the rail.
@@ -44,7 +44,7 @@ const ROW_CLASSES = "flex flex-row items-center gap-2 rounded-xl px-2 py-2 text-
  */
 export const QuickActionRow = ({ props, on }: QuickActionRowProps) => (
     <HeroLink
-        data-tier="leaf"
+
         data-component="QuickActionRow"
         data-part="quick-action"
         onPress={on?.press}
@@ -56,4 +56,3 @@ export const QuickActionRow = ({ props, on }: QuickActionRowProps) => (
 )
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

@@ -53,4 +53,3 @@ export const RouteShell = <P extends RouteFrameProps>(input: RouteShellProps<P>)
 }
 
 /** Source-level tier marker. */
-export const meta = { shape: "shell", world: "pure" } as const

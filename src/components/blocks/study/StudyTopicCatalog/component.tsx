@@ -1,5 +1,5 @@
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Badge } from "@/components/leaves/Badge"
 import { Button } from "@/components/leaves/Button"
@@ -7,7 +7,7 @@ import { ChoiceTabs } from "@/components/leaves/ChoiceTabs"
 import { Heading } from "@/components/leaves/Heading"
 import { SearchBox } from "@/components/leaves/SearchBox"
 import { Text } from "@/components/leaves/Text"
-import { createCompositeNode, createGrammarNode, createGrammarProjection, createLeafNode, type BlockProps } from "@/components/contracts/props"
+import { renderComposite, layoutNode, layoutContent, renderLeaf, type BlockProps } from "@/modules/types/layout"
 
 type StudyTopicCardData = { readonly id: string; readonly slug: string; readonly level: string; readonly title: string; readonly body: string; readonly fact: string; readonly actionLabel: string }
 type StudyTopicCatalogData = {
@@ -29,25 +29,24 @@ const emptyNoticeMessage = (state: StudyTopicCatalogProps["state"], props: Study
 export const StudyTopicCatalogBase = (input: StudyTopicCatalogProps) => {
     const loading = input.state === "pending"
     const notice = input.state === "failed" || input.state === "empty" || input.state === "filtered-empty"
-    return <Grammar contract="study-catalog-stack" render={createGrammarNode("study-catalog-stack", {
-        header: createGrammarNode("page-header-stack", {
-            title: createLeafNode("heading", {}, () => <Heading props={{ content: input.props.title, level: 1 }} />),
+    return <Grammar layout="study-catalog-stack" render={layoutNode("study-catalog-stack", {
+        header: layoutNode("page-header-stack", {
+            title: renderLeaf("heading", {}, () => <Heading props={{ content: input.props.title, level: 1 }} />),
         }),
-        description: createLeafNode("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: input.props.description, size: "sm", tone: "muted" }} />),
-        query: createLeafNode("search-box", {}, () => <SearchBox props={{ label: input.props.searchLabel, placeholder: input.props.searchPlaceholder, clearLabel: input.props.clearLabel }} on={{ search: input.on?.search }} />),
-        filter: createLeafNode("choice-tabs", {}, () => <ChoiceTabs props={{ label: input.props.filterLabel, selectedKey: input.props.selectedLevel, tabs: input.props.levels, variant: "primary" }} on={{ select: input.on?.selectLevel }} />),
-        ...(notice ? { notice: createCompositeNode("empty-notice", {}, () => <EmptyNotice props={{ icon: "course", message: emptyNoticeMessage(input.state, input.props), actionLabel: input.state === "failed" ? input.props.retry : undefined }} on={{ act: input.on?.retry }} />) } : {
-            topics: createGrammarNode("study-topic-grid", {
-                topic: input.props.topics.map((topic) => createGrammarProjection("study-topic-card", () => <SurfaceCard key={topic.id} contract="study-topic-card" render={createGrammarNode("study-topic-card", {
-                    level: createLeafNode("badge", {}, () => <Badge props={{ content: topic.level, tone: "accent" }} isLoading={loading} />),
-                    title: createLeafNode("heading", {}, () => <Heading props={{ content: topic.title, level: 2 }} isLoading={loading} />),
-                    body: createLeafNode("text", {}, () => <Text props={{ content: topic.body, tone: "muted" }} isLoading={loading} />),
-                    fact: createLeafNode("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: topic.fact, size: "sm", tone: "muted" }} isLoading={loading} />),
-                    action: createLeafNode("button", {}, () => <Button props={{ label: topic.actionLabel, variant: "primary", icon: "next", iconPlacement: "trailing" }} on={{ press: input.on?.[`open:${topic.id}`] }} isLoading={loading} />),
+        description: renderLeaf("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: input.props.description, size: "sm", tone: "muted" }} />),
+        query: renderLeaf("search-box", {}, () => <SearchBox props={{ label: input.props.searchLabel, placeholder: input.props.searchPlaceholder, clearLabel: input.props.clearLabel }} on={{ search: input.on?.search }} />),
+        filter: renderLeaf("choice-tabs", {}, () => <ChoiceTabs props={{ label: input.props.filterLabel, selectedKey: input.props.selectedLevel, tabs: input.props.levels, variant: "primary" }} on={{ select: input.on?.selectLevel }} />),
+        ...(notice ? { notice: renderComposite("empty-notice", {}, () => <EmptyNotice props={{ icon: "course", message: emptyNoticeMessage(input.state, input.props), actionLabel: input.state === "failed" ? input.props.retry : undefined }} on={{ act: input.on?.retry }} />) } : {
+            topics: layoutNode("study-topic-grid", {
+                topic: input.props.topics.map((topic) => layoutContent("study-topic-card", () => <SurfaceCard key={topic.id} layout="study-topic-card" render={layoutNode("study-topic-card", {
+                    level: renderLeaf("badge", {}, () => <Badge props={{ content: topic.level, tone: "accent" }} isLoading={loading} />),
+                    title: renderLeaf("heading", {}, () => <Heading props={{ content: topic.title, level: 2 }} isLoading={loading} />),
+                    body: renderLeaf("text", {}, () => <Text props={{ content: topic.body, tone: "muted" }} isLoading={loading} />),
+                    fact: renderLeaf("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: topic.fact, size: "sm", tone: "muted" }} isLoading={loading} />),
+                    action: renderLeaf("button", {}, () => <Button props={{ label: topic.actionLabel, variant: "primary", icon: "next", iconPlacement: "trailing" }} on={{ press: input.on?.[`open:${topic.id}`] }} isLoading={loading} />),
                 })} />)),
             }),
         }),
     })} />
 }
 /** Declares the pure Study catalogue block. */
-export const meta = { shape: "block", world: "pure", domain: "study" } as const

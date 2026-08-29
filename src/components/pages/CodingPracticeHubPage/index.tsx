@@ -135,4 +135,3 @@ export const CodingPracticeHubPage = () => {
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "connected", domain: "coding" } as const

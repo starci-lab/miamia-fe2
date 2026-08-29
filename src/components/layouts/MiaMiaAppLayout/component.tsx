@@ -1,8 +1,8 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { learnSpine, type LearnSpineActions, type LearnSpineData } from "@/components/blocks/learn/LearnSpine/component"
 import { NavLink } from "@/components/leaves/NavLink"
 import type { IconName } from "@/components/leaves/Icon"
-import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
+import { layoutNode, renderLeaf } from "@/modules/types/layout"
 import type { ComponentType } from "react"
 
 /** Enumerates destinations shared by desktop navigation and the mobile footbar. */
@@ -13,18 +13,18 @@ export type MiaMiaNavItem = { readonly id: MiaMiaDestination; readonly label: st
 export type MiaMiaAppLayoutData = { readonly spine: LearnSpineData; readonly mobileTabs: ReadonlyArray<MiaMiaNavItem> }
 /** Defines navigation actions exposed by the MiaMia shell. */
 export type MiaMiaAppLayoutActions = LearnSpineActions & { readonly openDestination?: (id: string) => void }
-/** Defines the pure MiaMia application layout contract. */
+/** Defines the pure MiaMia application layout layout. */
 export type MiaMiaAppLayoutProps = { readonly props: MiaMiaAppLayoutData; readonly on?: MiaMiaAppLayoutActions; readonly surface: ComponentType }
 
 /** Renders the desktop sidebar or mobile footbar around the active surface. */
 export const MiaMiaAppLayoutBase = (input: MiaMiaAppLayoutProps) => {
     const Surface = input.surface
     return (
-        <Grammar contract="learn-shell-frame" render={createGrammarNode("learn-shell-frame", {
+        <Grammar layout="learn-shell-frame" render={layoutNode("learn-shell-frame", {
             spine: learnSpine({ props: input.props.spine, on: { openRow: input.on?.openDestination } }),
-            body: createLeafNode("page", {}, () => <Surface />),
-            bar: createGrammarNode("learn-mobile-tab-bar", {
-                tab: input.props.mobileTabs.map((tab) => createLeafNode("nav-link", { kind: "tab" }, () => (
+            body: renderLeaf("page", {}, () => <Surface />),
+            bar: layoutNode("learn-mobile-tab-bar", {
+                tab: input.props.mobileTabs.map((tab) => renderLeaf("nav-link", { kind: "tab" }, () => (
                     <NavLink props={{ label: tab.label, icon: tab.icon, kind: "tab", isCurrent: tab.isCurrent }} on={{ press: () => input.on?.openDestination?.(tab.id) }} />
                 ))),
             }),
@@ -33,4 +33,3 @@ export const MiaMiaAppLayoutBase = (input: MiaMiaAppLayoutProps) => {
 }
 
 /** Declares the component architecture metadata. */
-export const meta = { shape: "layout", world: "pure", domain: "miamia" } as const

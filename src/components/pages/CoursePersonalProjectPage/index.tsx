@@ -96,4 +96,3 @@ export const CoursePersonalProjectPage = ({ displayId }: CoursePersonalProjectPa
 }
 
 /** Architectural identity for the connected personal-project dashboard twin. */
-export const meta = { world: "connected", domain: "learn" } as const

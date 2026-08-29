@@ -1,6 +1,6 @@
-import { CLASS_NAME_1, CLASS_NAME_2 } from './styles'
+import { CLASS_NAME_1, CLASS_NAME_2 } from "./classNames"
 import { Icon } from "@/components/leaves/Icon"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `CurriculumLessonRow`: one lesson inside a disclosed curriculum module.
@@ -34,7 +34,7 @@ const ROW_CLASSES = "flex flex-row items-center gap-2"
  */
 export const CurriculumLessonRow = ({ props }: CurriculumLessonRowProps) => (
     <div
-        data-tier="leaf"
+
         data-component="CurriculumLessonRow"
         className={ROW_CLASSES}
     >
@@ -48,4 +48,3 @@ export const CurriculumLessonRow = ({ props }: CurriculumLessonRowProps) => (
 )
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

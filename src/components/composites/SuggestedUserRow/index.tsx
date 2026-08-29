@@ -1,10 +1,10 @@
 import { Avatar } from "@/components/leaves/Avatar"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { Badge } from "@/components/leaves/Badge"
 import { Button } from "@/components/leaves/Button"
 import { Text } from "@/components/leaves/Text"
 import { TextLink } from "@/components/leaves/TextLink"
-import { createGrammarNode, createLeafNode, type CompositeProps } from "@/components/contracts/props"
+import { layoutNode, renderLeaf, type CompositeProps } from "@/modules/types/layout"
 
 /** Resolved identity, qualification and follow state for one suggested person. */
 export type SuggestedUserRowData = {
@@ -26,27 +26,27 @@ export type SuggestedUserRowProps = CompositeProps<SuggestedUserRowData, Suggest
 
 /** Draw one suggested identity with its optional badge and follow action. */
 export const SuggestedUserRow = ({ props, on, isLoading = false }: SuggestedUserRowProps) => {
-    const identity = createGrammarNode("name-over-handle", {
-        name: createLeafNode("text-link", { size: "sm" }, () => (
+    const identity = layoutNode("name-over-handle", {
+        name: renderLeaf("text-link", { size: "sm" }, () => (
             <TextLink props={{ label: props.name ?? "", size: "sm" }} on={{ press: on?.open }} />
         )),
-        handle: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+        handle: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
             <Text props={{ content: props.username, size: "xs", tone: "muted" }} isLoading={isLoading} />
         )),
     })
 
     return (
-        <Grammar contract="avatar-identity-badge-action-row" render={createGrammarNode("avatar-identity-badge-action-row", {
-            avatar: createLeafNode("avatar", {}, () => (
+        <Grammar layout="avatar-identity-badge-action-row" render={layoutNode("avatar-identity-badge-action-row", {
+            avatar: renderLeaf("avatar", {}, () => (
                 <Avatar props={{ name: props.name, src: props.avatar, size: "sm" }} isLoading={isLoading} />
             )),
             identity,
             ...(props.openToWork === true ? {
-                badge: createLeafNode("badge", {}, () => (
+                badge: renderLeaf("badge", {}, () => (
                     <Badge props={{ content: props.openToWorkLabel, tone: "success" }} />
                 )),
             } : {}),
-            action: createLeafNode("button", {}, () => (
+            action: renderLeaf("button", {}, () => (
                 <Button
                     props={{
                         label: props.isFollowing === true ? props.followingLabel : props.followLabel,
@@ -63,4 +63,3 @@ export const SuggestedUserRow = ({ props, on, isLoading = false }: SuggestedUser
 }
 
 /** Source-level tier marker for the pure suggested-person composition. */
-export const meta = { shape: "composite", world: "pure" } as const

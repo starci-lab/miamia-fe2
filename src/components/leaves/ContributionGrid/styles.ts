@@ -1,6 +1,0 @@
-export const CLASS_NAME_1 = "cursor-grab overflow-hidden active:cursor-grabbing"
-export const CLASS_NAME_2 = "flex w-max flex-row items-start gap-1"
-export const CLASS_NAME_3 = "flex w-8 shrink-0 flex-col gap-1 pt-5 pr-1"
-export const CLASS_NAME_4 = "h-3 text-xs leading-3 text-muted"
-export const CLASS_NAME_5 = "flex shrink-0 flex-col gap-1"
-export const CLASS_NAME_6 = "h-4 w-3 whitespace-nowrap text-xs text-muted"

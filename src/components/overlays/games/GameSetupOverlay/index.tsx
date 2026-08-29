@@ -31,4 +31,3 @@ export const GameSetupOverlay = ({ game, isOpen, onResolved, onCancelled }: Game
     }} onDismiss={onCancelled} />
 }
 /** Declares the setup state machine as a connected game overlay. */
-export const meta = { shape: "overlay", world: "connected", domain: "games" } as const

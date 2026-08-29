@@ -1,6 +1,6 @@
 import { ChoiceTabs } from "@/components/leaves/ChoiceTabs"
 import type { IconName } from "@/components/leaves/Icon"
-import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
+import { layoutNode, renderLeaf } from "@/modules/types/layout"
 
 /**
  * BLOCK - `ContentTabRow`: the content's two tab axes on one row.
@@ -75,17 +75,17 @@ const selectFace = (
 /**
  * Build the two-axis toolbar as validated content for `dual-tabs-toolbar`.
  *
- * It returns the contract's content rather than a node, so the page places the row where the page
+ * It returns the layout's content rather than a node, so the page places the row where the page
  * decides and the row keeps its own two selections - the split the dashboard's own tab row uses.
  *
  * @param props - {@link ContentTabRowData}
  * @param on - {@link ContentTabRowActions}
  */
 export const contentTabRow = (props: ContentTabRowData, on?: ContentTabRowActions) =>
-    createGrammarNode("dual-tabs-toolbar", {
+    layoutNode("dual-tabs-toolbar", {
         // The faces are a PANEL switch, so they take the segmented pill rather than the filter
         // underline: pressing one replaces what is being read rather than narrowing it.
-        leading: createLeafNode("choice-tabs", {}, () => (
+        leading: renderLeaf("choice-tabs", {}, () => (
             <ChoiceTabs
                 props={{
                     label: props.facesLabel,
@@ -100,7 +100,7 @@ export const contentTabRow = (props: ContentTabRowData, on?: ContentTabRowAction
                 on={{ select: (faceId) => selectFace(props.faces, on, faceId) }}
             />
         )),
-        trailing: createLeafNode("choice-tabs", {}, () => (
+        trailing: renderLeaf("choice-tabs", {}, () => (
             <ChoiceTabs
                 props={{
                     label: props.languagesLabel ?? "",
@@ -116,4 +116,3 @@ export const contentTabRow = (props: ContentTabRowData, on?: ContentTabRowAction
     })
 
 /** Source-level ownership marker. */
-export const meta = { world: "pure", domain: "learn" } as const

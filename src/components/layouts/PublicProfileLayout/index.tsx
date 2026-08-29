@@ -76,4 +76,3 @@ export const PublicProfileLayout = ({ content }: PublicProfileLayoutBoundaryProp
 export * from "./component"
 
 /** Source-level marker for the connected profile layout. */
-export const meta = { world: "connected", domain: "profile" } as const

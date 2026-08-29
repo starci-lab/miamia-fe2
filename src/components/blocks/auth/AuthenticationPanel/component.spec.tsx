@@ -88,13 +88,13 @@ describe("AuthenticationPanelBase", () => {
 
     it("separates independent credential blocks with the local gap", () => {
         const { container } = render(<AuthenticationPanelBase {...signUpProps} />)
-        const credentials = container.querySelector("[data-node='stacked-peer-controls']")
+        const credentials = container.querySelector(".layout-name-stacked-peer-controls")
 
         // The controls are small blocks of one function inside one block, so their seam
         // out-ranks the gap-3 each of them uses between its own label and control.
         expect(credentials?.className).toContain("gap-4")
         expect(credentials?.className).not.toContain("gap-2")
-        expect(container.querySelector("[data-node='label-field-hint']")?.className).toContain("gap-3")
+        expect(container.querySelector(".layout-name-label-field-hint")?.className).toContain("gap-3")
     })
     it("submits a code, resends and returns to another email", () => {
         const submitCode = vi.fn(); const resend = vi.fn(); const changeMode = vi.fn()

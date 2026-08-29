@@ -16,15 +16,15 @@ afterEach(cleanup)
 describe("WeeklyGoalsBase", () => {
     it("keeps six metric rows while the week is still resting", () => {
         const { container } = render(<WeeklyGoalsBase state="pending" props={{ label: "Weekly goals" }} />)
-        expect(container.querySelectorAll("[data-node=\"label-fact-over-progress\"]")).toHaveLength(6)
+        expect(container.querySelectorAll(".layout-name-label-fact-over-progress")).toHaveLength(6)
         expect(container.querySelectorAll(
-            "[data-node=\"label-fact-over-progress\"] [data-component=\"Text\"][data-loading=\"true\"]",
+            ".layout-name-label-fact-over-progress [data-component=\"Text\"][data-loading=\"true\"]",
         )).toHaveLength(12)
         expect(container.querySelectorAll(
-            "[data-node=\"label-fact-over-progress\"] [data-component=\"Progress\"][data-loading=\"true\"]",
+            ".layout-name-label-fact-over-progress [data-component=\"Progress\"][data-loading=\"true\"]",
         )).toHaveLength(6)
         expect(container.querySelector(
-            "[data-node=\"label-fact-over-progress\"] [data-component=\"Icon\"]",
+            ".layout-name-label-fact-over-progress [data-component=\"Icon\"]",
         )).toBeNull()
         expect(container.querySelector("[data-component=\"SeeMoreLink\"]")).toBeNull()
     })
@@ -47,11 +47,11 @@ describe("WeeklyGoalsBase", () => {
                 on={{ edit: () => {} }}
             />,
         )
-        const grid = container.querySelector("[data-node=\"bordered-goal-grid\"]")
+        const grid = container.querySelector(".layout-name-bordered-goal-grid")
         expect(grid?.className).toContain("grid-cols-2")
         expect(grid?.className).toContain("border")
         expect(screen.getByText("40% this week")).toBeTruthy()
-        const rows = container.querySelectorAll("[data-node=\"label-fact-over-progress\"]")
+        const rows = container.querySelectorAll(".layout-name-label-fact-over-progress")
         expect(rows).toHaveLength(6)
         expect(grid?.querySelector("[data-component=\"Icon\"]")).toBeNull()
     })

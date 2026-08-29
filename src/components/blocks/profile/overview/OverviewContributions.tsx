@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useTranslations } from "next-intl"
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
 import { ContributionCalendar } from "@/components/composites/ContributionCalendar"
-import { createCompositeNode, createGrammarNode } from "@/components/contracts/props"
+import { renderComposite, layoutNode } from "@/modules/types/layout"
 import { useOverviewEvidence } from "./useOverviewEvidence"
 import { usePublicWeeklyStats } from "./usePublicWeeklyStats"
 
@@ -18,8 +18,8 @@ export const OverviewContributions = () => {
     const days = calendar.data ?? []
     const total = days.reduce((sum, day) => sum + day.total, 0)
     const currentYear = new Date().getFullYear()
-    return <SurfaceCard props={{ label: t("profile.evidence.contributions.label") }} contract="contribution-calendar-card" render={createGrammarNode("contribution-calendar-card", {
-        calendar: createCompositeNode("contribution-calendar", {}, () => <ContributionCalendar
+    return <SurfaceCard props={{ label: t("profile.evidence.contributions.label") }} layout="contribution-calendar-card" render={layoutNode("contribution-calendar-card", {
+        calendar: renderComposite("contribution-calendar", {}, () => <ContributionCalendar
             isLoading={calendar.isLoading}
             props={{
                 year,

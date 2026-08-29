@@ -109,4 +109,3 @@ export const LeagueCard = () => {
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "connected", domain: "community" } as const

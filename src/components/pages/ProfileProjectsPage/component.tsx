@@ -1,8 +1,8 @@
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { EvidenceRow } from "@/components/composites/EvidenceRow"
 import { ProfileProjectCard } from "@/components/composites/ProfileProjectCard"
-import { createCompositeNode, createGrammarNode, createGrammarProjection } from "@/components/contracts/props"
+import { renderComposite, layoutNode, layoutContent } from "@/modules/types/layout"
 import type { ProfileCapstone, ProfilePinnedProject } from "@/modules/api/graphql/queries/types/profile-evidence"
 
 /** Independent request state retained by each profile proof family. */
@@ -25,20 +25,20 @@ export const ProfileProjectsPageBase = ({ pinned, capstones, on }: ProfileProjec
         ? Array.from({ length: 3 }, (_, index): ProfileCapstone => ({ courseGlobalId: `pending-${index}`, courseTitle: "", totalMilestones: 0, completedMilestones: 0, totalTasks: 0, completedTasks: 0, milestones: [] }))
         : capstones.data
     return (
-        <Grammar contract="profile-main" render={createGrammarNode("profile-main", {
+        <Grammar layout="profile-main" render={layoutNode("profile-main", {
             section: [
-                createGrammarProjection("label-row-over-card", () => (
-                    <SurfaceCard props={{ label: "Pinned projects", fact: pinned.state === "ready" ? `${pins.length} selected` : undefined, isFrameless: true }} contract="profile-project-card-grid" render={createGrammarNode("profile-project-card-grid", {
-                        card: pins.length > 0 ? pins.map((project) => createGrammarProjection("profile-project-card", () => (
+                layoutContent("label-row-over-card", () => (
+                    <SurfaceCard props={{ label: "Pinned projects", fact: pinned.state === "ready" ? `${pins.length} selected` : undefined, isFrameless: true }} layout="profile-project-card-grid" render={layoutNode("profile-project-card-grid", {
+                        card: pins.length > 0 ? pins.map((project) => layoutContent("profile-project-card", () => (
                             <ProfileProjectCard props={{ title: project.title, description: project.description ?? undefined, kind: project.type, technologies: project.techStack.slice(0, 3), verified: project.isVerified }} on={project.url ? { press: () => on.openPinned(project.url ?? "") } : undefined} isLoading={pinned.state === "pending"} />
-                        ))) : [createGrammarProjection("profile-project-card", () => (
+                        ))) : [layoutContent("profile-project-card", () => (
                             <ProfileProjectCard props={{ title: pinned.state === "error" ? "Pinned projects couldn't be loaded." : "No pinned projects yet.", technologies: [] }} />
                         ))],
                     })} />
                 )),
-                createGrammarProjection("label-row-over-card", () => (
-                    <SurfaceCard props={{ label: "Verified capstone work" }} contract="profile-evidence-list" render={createGrammarNode("profile-evidence-list", {
-                        evidence: capstoneRows.length > 0 ? capstoneRows.map((project) => createCompositeNode("evidence-row", {}, () => (
+                layoutContent("label-row-over-card", () => (
+                    <SurfaceCard props={{ label: "Verified capstone work" }} layout="profile-evidence-list" render={layoutNode("profile-evidence-list", {
+                        evidence: capstoneRows.length > 0 ? capstoneRows.map((project) => renderComposite("evidence-row", {}, () => (
                             <EvidenceRow props={{
                                 title: project.courseTitle,
                                 subtitle: `${project.completedMilestones}/${project.totalMilestones} milestones · ${project.completedTasks}/${project.totalTasks} tasks`,
@@ -46,7 +46,7 @@ export const ProfileProjectsPageBase = ({ pinned, capstones, on }: ProfileProjec
                                 factTone: "success",
                                 isPressable: true,
                             }} on={{ press: () => on.openCapstone(project.courseGlobalId) }} isLoading={capstones.state === "pending"} />
-                        ))) : [createCompositeNode("evidence-row", {}, () => (
+                        ))) : [renderComposite("evidence-row", {}, () => (
                             <EvidenceRow props={{ title: capstones.state === "error" ? "Capstone work couldn't be loaded." : "No verified capstone work yet." }} />
                         ))],
                     })} />
@@ -57,4 +57,3 @@ export const ProfileProjectsPageBase = ({ pinned, capstones, on }: ProfileProjec
 }
 
 /** Source-level tier marker. */
-export const meta = { world: "pure", domain: "profile" } as const

@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl"
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
 import { EvidenceRow } from "@/components/composites/EvidenceRow"
-import { createCompositeNode, createGrammarNode } from "@/components/contracts/props"
+import { renderComposite, layoutNode } from "@/modules/types/layout"
 import { useOverviewEvidence } from "./useOverviewEvidence"
 import { number, text } from "./shared"
 
@@ -16,8 +16,8 @@ export const OverviewCourses = () => {
     const resting: ReadonlyArray<Course> = Array.from({ length: 2 }, (_, index) => ({ globalId: `resting-${index}`, label: "", contentCompleted: 0, contentTotal: 0, challengeCompleted: 0, challengeTotal: 0, completed: 0, total: 0 }))
     const courses = request.isLoading ? resting : request.data ?? []
     const message = request.error ? t("evidence.error") : t("evidence.courses.empty")
-    return <SurfaceCard props={{ label: t("evidence.courses.label") }} contract="profile-evidence-list" render={createGrammarNode("profile-evidence-list", {
-        evidence: (courses.length > 0 ? courses : [{ ...resting[0], globalId: "state", label: message }]).map((course) => createCompositeNode("evidence-row", {}, () => (
+    return <SurfaceCard props={{ label: t("evidence.courses.label") }} layout="profile-evidence-list" render={layoutNode("profile-evidence-list", {
+        evidence: (courses.length > 0 ? courses : [{ ...resting[0], globalId: "state", label: message }]).map((course) => renderComposite("evidence-row", {}, () => (
             <EvidenceRow isLoading={request.isLoading} props={{ title: text(course.label), subtitle: request.isLoading || course.globalId === "state" ? undefined : `${number(course.contentCompleted)}/${number(course.contentTotal)} content · ${number(course.challengeCompleted)}/${number(course.challengeTotal)} challenges`, fact: request.isLoading || course.globalId === "state" ? undefined : `${number(course.completed)}/${number(course.total)}` }} />
         ))),
     })} />

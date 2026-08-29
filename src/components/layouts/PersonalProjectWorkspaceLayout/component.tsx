@@ -1,7 +1,7 @@
 import type { ComponentType } from "react"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { NavLink } from "@/components/leaves/NavLink"
-import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
+import { layoutNode, renderLeaf } from "@/modules/types/layout"
 
 /** One task destination retained in the personal-project workspace rail. */
 export type PersonalProjectWorkspaceMilestone = {
@@ -10,7 +10,7 @@ export type PersonalProjectWorkspaceMilestone = {
     readonly isCurrent?: boolean
 }
 
-/** Pure workspace frame data and routed surface contract. */
+/** Pure workspace frame data and routed surface layout. */
 export type PersonalProjectWorkspaceLayoutProps = {
     readonly milestones: ReadonlyArray<PersonalProjectWorkspaceMilestone>
     readonly surface: ComponentType
@@ -26,20 +26,19 @@ export const PersonalProjectWorkspaceLayoutBase = (input: PersonalProjectWorkspa
         : input.milestones
     return (
         <Grammar
-            contract="personal-project-workspace-frame"
-            render={createGrammarNode("personal-project-workspace-frame", {
-                milestone: milestones.map((milestone) => createLeafNode("nav-link", { kind: "section" }, () => (
+            layout="personal-project-workspace-frame"
+            render={layoutNode("personal-project-workspace-frame", {
+                milestone: milestones.map((milestone) => renderLeaf("nav-link", { kind: "section" }, () => (
                     <NavLink
                         props={{ label: milestone.label, kind: "section", isCurrent: milestone.isCurrent }}
                         on={{ press: () => input.onTask?.(milestone.id) }}
                         isLoading={input.isLoading}
                     />
                 ))),
-                body: createLeafNode("page", {}, () => <Surface />),
+                body: renderLeaf("page", {}, () => <Surface />),
             })}
         />
     )
 }
 
 /** Architectural identity for the pure personal-project layout twin. */
-export const meta = { shape: "layout", world: "pure", domain: "learn" } as const

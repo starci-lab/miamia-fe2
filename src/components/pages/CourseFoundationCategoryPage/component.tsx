@@ -1,9 +1,9 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Heading } from "@/components/leaves/Heading"
 import { NavLink } from "@/components/leaves/NavLink"
 import { SearchBox } from "@/components/leaves/SearchBox"
-import { createCompositeNode, createGrammarNode, createLeafNode } from "@/components/contracts/props"
+import { renderComposite, layoutNode, renderLeaf } from "@/modules/types/layout"
 import type { Foundation } from "@/modules/api/graphql/queries/query-foundations"
 
 type FoundationRow = Pick<Foundation, "id" | "displayId" | "title" | "description">
@@ -30,7 +30,7 @@ export const CourseFoundationCategoryPageBase = (input: CourseFoundationCategory
         ? Array.from({ length: 6 }, (_, index) => ({ id: `pending-${index}`, displayId: `pending-${index}`, title: "", description: null }))
         : input.props.foundations
     const notice = input.state === "empty" || input.state === "failed"
-        ? createCompositeNode("empty-notice", {}, () => (
+        ? renderComposite("empty-notice", {}, () => (
             <EmptyNotice
                 props={{
                     message: input.state === "failed" ? input.props.failed : input.props.empty,
@@ -42,19 +42,19 @@ export const CourseFoundationCategoryPageBase = (input: CourseFoundationCategory
         : undefined
 
     return (
-        <Grammar contract="course-foundation-category-page" render={createGrammarNode("course-foundation-category-page", {
-            header: createGrammarNode("page-header-stack", {
-                title: createLeafNode("heading", {}, () => (
+        <Grammar layout="course-foundation-category-page" render={layoutNode("course-foundation-category-page", {
+            header: layoutNode("page-header-stack", {
+                title: renderLeaf("heading", {}, () => (
                     <Heading props={{ content: input.props.title, level: 1 }} isLoading={loading} />
                 )),
             }),
-            search: createLeafNode("search-box", {}, () => (
+            search: renderLeaf("search-box", {}, () => (
                 <SearchBox
                     props={{ label: input.props.search, placeholder: input.props.search, clearLabel: input.props.clearSearch }}
                     on={{ search: input.on?.search }}
                 />
             )),
-            resource: rows.map((foundation) => createLeafNode("nav-link", { kind: "section" }, () => (
+            resource: rows.map((foundation) => renderLeaf("nav-link", { kind: "section" }, () => (
                 <NavLink
                     props={{
                         label: foundation.description === null ? foundation.title : `${foundation.title} · ${foundation.description}`,
@@ -70,4 +70,3 @@ export const CourseFoundationCategoryPageBase = (input: CourseFoundationCategory
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "pure", domain: "learn" } as const

@@ -1,5 +1,5 @@
 import { Icon, type IconName } from "@/components/leaves/Icon"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `Label`: the name of a box, tied to it.
@@ -31,11 +31,10 @@ const LABEL_CLASSES = "inline-flex items-center gap-2 text-sm font-medium"
  * @param input - {@link LabelProps}
  */
 export const Label = ({ props }: LabelProps) => (
-    <label data-tier="leaf" data-component="Label" htmlFor={props.htmlFor} className={LABEL_CLASSES}>
+    <label data-component="Label" htmlFor={props.htmlFor} className={LABEL_CLASSES}>
         {props.icon === undefined ? null : <Icon props={{ name: props.icon, role: "chip" }} />}
         {props.content}
     </label>
 )
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

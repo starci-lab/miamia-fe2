@@ -83,4 +83,3 @@ export const ProfileHero = () => {
 export * from "./component"
 
 /** Source-level marker for the connected profile block. */
-export const meta = { world: "connected", domain: "profile" } as const

@@ -1,10 +1,10 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { ActivityFeed, type ActivityFeedConnectedProps } from "@/components/blocks/dashboard/ActivityFeed"
 import { TrendingContents } from "@/components/blocks/dashboard/TrendingContents"
 import { Button } from "@/components/leaves/Button"
 import { Text } from "@/components/leaves/Text"
 import { DualTabsToolbar, type DualTabsToolbarProps } from "@/components/composites/DualTabsToolbar"
-import { createGrammarNode, createGrammarProjection, createLeafNode } from "@/components/contracts/props"
+import { layoutNode, layoutContent, renderLeaf } from "@/modules/types/layout"
 
 /** Settled controls, feed state and pagination state for Explore. */
 export type FeedExplorerData = {
@@ -29,22 +29,22 @@ export type FeedExplorerProps = { readonly props: FeedExplorerData; readonly on?
 
 /** Pure Explore feed arrangement. Requests and navigation stay in the connected half. */
 export const FeedExplorerBase = (input: FeedExplorerProps) => (
-    <Grammar contract="feed-explorer" render={createGrammarNode("feed-explorer", {
-        trending: createGrammarProjection("trending-content-list", () => <TrendingContents />),
-        stream: createGrammarNode("feed-stream", {
-            filters: createGrammarProjection("dual-tabs-toolbar", () => (
+    <Grammar layout="feed-explorer" render={layoutNode("feed-explorer", {
+        trending: layoutContent("trending-content-list", () => <TrendingContents />),
+        stream: layoutNode("feed-stream", {
+            filters: layoutContent("dual-tabs-toolbar", () => (
                 <DualTabsToolbar props={input.props.filters} on={{
                     selectLeading: input.on?.selectScope,
                     selectTrailing: input.on?.selectCategory,
                 }} />
             )),
-            feed: createGrammarProjection("activity-feed-result", () => (
+            feed: layoutContent("activity-feed-result", () => (
                 <ActivityFeed {...input.props.feed} on={input.on?.feed} />
             )),
-            paginationError: input.props.loadMoreError === undefined ? undefined : createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+            paginationError: input.props.loadMoreError === undefined ? undefined : renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                 <Text props={{ content: input.props.loadMoreError, size: "xs", tone: "muted" }} />
             )),
-            pagination: input.props.canLoadMore || input.props.loadMoreError !== undefined ? createLeafNode("button", {}, () => (
+            pagination: input.props.canLoadMore || input.props.loadMoreError !== undefined ? renderLeaf("button", {}, () => (
                 <Button
                     props={{ label: input.props.loadMoreError === undefined ? input.props.loadMoreLabel : input.props.retryLabel, size: "sm", variant: "ghost", isPending: input.props.isLoadingMore }}
                     on={{ press: input.props.loadMoreError === undefined ? input.on?.loadMore : input.on?.retryLoadMore }}
@@ -55,4 +55,3 @@ export const FeedExplorerBase = (input: FeedExplorerProps) => (
 )
 
 /** Source-level ownership marker for the pure social block. */
-export const meta = { world: "pure", domain: "social" } as const

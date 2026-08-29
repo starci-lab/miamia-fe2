@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Button } from "@/components/leaves/Button"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `ConfirmButton`: a destructive act that will not fire on one stray press.
@@ -90,4 +90,3 @@ export const ConfirmButton = ({ props, on }: ConfirmButtonProps) => {
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

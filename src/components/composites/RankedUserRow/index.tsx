@@ -1,4 +1,4 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { Avatar } from "@/components/leaves/Avatar"
 import { Badge } from "@/components/leaves/Badge"
 import { Button } from "@/components/leaves/Button"
@@ -7,11 +7,11 @@ import { RankMark } from "@/components/leaves/RankMark"
 import { Text } from "@/components/leaves/Text"
 import { TextLink } from "@/components/leaves/TextLink"
 import {
-    createGrammarNode,
-    createLeafNode,
+    layoutNode,
+    renderLeaf,
     type CompositeProps,
-} from "@/components/contracts/props"
-import type { ContractKey } from "@/components/contracts"
+} from "@/modules/types/layout"
+import type { LayoutKey } from "@/resources/visual-layouts"
 
 /** Semantic movement verdict carried by leaderboard data. */
 export type RankedUserVerdict = "success" | "danger"
@@ -46,7 +46,7 @@ export type RankedUserRowActions = {
     readonly follow?: () => void
 }
 
-const contractFor = (verdict?: RankedUserVerdict): ContractKey => {
+const layoutFor = (verdict?: RankedUserVerdict): LayoutKey => {
     if (verdict === "success") return "ranked-user-row-success-verdict"
     if (verdict === "danger") return "ranked-user-row-danger-verdict"
     return "ranked-user-row"
@@ -58,7 +58,7 @@ const contractFor = (verdict?: RankedUserVerdict): ContractKey => {
  */
 const movementCell = (showsMovement: boolean, isLoading: boolean, props: RankedUserRowData) => {
     if (showsMovement) {
-        return createLeafNode("rank-delta-caret", {}, () => (
+        return renderLeaf("rank-delta-caret", {}, () => (
             <RankDeltaCaret
                 props={{ delta: props.rankDelta, accessibleLabel: props.movementLabel }}
                 isLoading={isLoading}
@@ -66,11 +66,11 @@ const movementCell = (showsMovement: boolean, isLoading: boolean, props: RankedU
         ))
     }
     if (isLoading) {
-        return createLeafNode("badge", {}, () => (
+        return renderLeaf("badge", {}, () => (
             <Badge props={{ content: props.movementLabel, tone: "neutral" }} isLoading />
         ))
     }
-    return createLeafNode("text", {}, () => <Text props={{ content: undefined, size: "sm" }} />)
+    return renderLeaf("text", {}, () => <Text props={{ content: undefined, size: "sm" }} />)
 }
 
 /**
@@ -82,13 +82,13 @@ const movementCell = (showsMovement: boolean, isLoading: boolean, props: RankedU
  * cannot afford. The caret is fixed width and the sentence survives as the accessible label.
  */
 export const RankedUserRow = ({ props, on, isLoading = false }: CompositeProps<RankedUserRowData, RankedUserRowActions>) => {
-    const contract = contractFor(props.verdict)
+    const layout = layoutFor(props.verdict)
     const showsMovement = props.rankDelta !== undefined
     // Movement and follow are no longer rivals for one slot: the leaderboard page shows both, and
     // the dashboard preview shows neither a follow control nor the space one would take.
     const showsFollow = props.isMe !== true && props.followLabel !== undefined
     const name = isLoading || props.isMe === true
-        ? createLeafNode("text", {}, () => (
+        ? renderLeaf("text", {}, () => (
             <Text
                 props={{
                     content: props.name,
@@ -99,13 +99,13 @@ export const RankedUserRow = ({ props, on, isLoading = false }: CompositeProps<R
                 isLoading={isLoading}
             />
         ))
-        : createLeafNode("text-link", {}, () => (
+        : renderLeaf("text-link", {}, () => (
             <TextLink props={{ label: props.name ?? "", size: "sm" }} on={{ press: on?.open }} />
         ))
-    const identity = createGrammarNode("ranked-user-name-over-subtitle", {
+    const identity = layoutNode("ranked-user-name-over-subtitle", {
         name,
         ...((props.subtitle === undefined && !isLoading) ? {} : {
-            subtitle: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+            subtitle: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                 <Text props={{ content: props.subtitle, size: "xs", tone: "muted" }} isLoading={isLoading} />
             )),
         }),
@@ -120,7 +120,7 @@ export const RankedUserRow = ({ props, on, isLoading = false }: CompositeProps<R
      */
     const movement = movementCell(showsMovement, isLoading, props)
     const follow = showsFollow
-        ? createLeafNode("button", {}, () => (
+        ? renderLeaf("button", {}, () => (
             <Button
                 props={{
                     label: props.isFollowing === true
@@ -136,18 +136,18 @@ export const RankedUserRow = ({ props, on, isLoading = false }: CompositeProps<R
         ))
         : undefined
     return (
-        <Grammar contract={contract} render={createGrammarNode(contract, {
-            rank: createLeafNode("rank-mark", { placement: "row" }, () => (
+        <Grammar layout={layout} render={layoutNode(layout, {
+            rank: renderLeaf("rank-mark", { placement: "row" }, () => (
                 <RankMark
                     props={{ rank: props.rank, placement: "row", accessibleLabel: props.rankLabel }}
                     isLoading={isLoading}
                 />
             )),
-            avatar: createLeafNode("avatar", {}, () => (
+            avatar: renderLeaf("avatar", {}, () => (
                 <Avatar props={{ name: props.name, src: props.avatar ?? undefined, size: "sm" }} isLoading={isLoading} />
             )),
             identity,
-            points: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+            points: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                 <Text props={{ content: props.points, size: "xs", tone: "muted" }} isLoading={isLoading} />
             )),
             movement,
@@ -157,4 +157,3 @@ export const RankedUserRow = ({ props, on, isLoading = false }: CompositeProps<R
 }
 
 /** Source-level tier marker. */
-export const meta = { shape: "composite", world: "pure" } as const

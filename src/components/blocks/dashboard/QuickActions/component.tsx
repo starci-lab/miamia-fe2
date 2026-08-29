@@ -1,7 +1,7 @@
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
 import { QuickActionsList } from "@/components/leaves/QuickActionsList"
 import type { QuickActionItem } from "@/components/leaves/QuickActionsList"
-import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
+import { layoutNode, renderLeaf } from "@/modules/types/layout"
 
 /** Resolved quick-action data for the pure block half. */
 export type QuickActionsData = {
@@ -24,9 +24,9 @@ export type QuickActionsProps = {
 export const QuickActionsBase = (input: QuickActionsProps) => (
     <SurfaceCard
         props={{ label: input.props.label, isFrameless: true }}
-        contract="stacked-peer-controls"
-        render={createGrammarNode("stacked-peer-controls", {
-            control: [createLeafNode("quick-actions-list", {}, () => (
+        layout="stacked-peer-controls"
+        render={layoutNode("stacked-peer-controls", {
+            control: [renderLeaf("quick-actions-list", {}, () => (
                 <QuickActionsList
                     props={{ label: input.props.label, items: input.props.items }}
                     on={input.on}
@@ -37,4 +37,3 @@ export const QuickActionsBase = (input: QuickActionsProps) => (
 )
 
 /** Source-level tier marker for the presentational block half. */
-export const meta = { world: "pure", domain: "shell" } as const

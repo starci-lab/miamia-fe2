@@ -1,6 +1,6 @@
 import { Switch } from "@heroui/react"
 import { Icon } from "@/components/leaves/Icon"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /** Current appearance and accessible copy for the navbar switch. */
 export type ThemeSwitchData = {
@@ -19,7 +19,7 @@ export type ThemeSwitchProps = ComponentProps<ThemeSwitchData, ThemeSwitchAction
 /** Draw the same native HeroUI switch used by the legacy navbar. */
 export const ThemeSwitch = ({ props, on }: ThemeSwitchProps) => (
     <Switch
-        data-tier="leaf"
+
         data-component="ThemeSwitch"
         isSelected={props.isDark}
         onChange={on?.change}
@@ -40,4 +40,3 @@ export const ThemeSwitch = ({ props, on }: ThemeSwitchProps) => (
 )
 
 /** Source-level tier marker for the theme switch. */
-export const meta = { shape: "leaf", world: "pure" } as const

@@ -1,7 +1,7 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { Text } from "@/components/leaves/Text"
 import { TextLink } from "@/components/leaves/TextLink"
-import { createGrammarNode, createLeafNode, type CompositeProps } from "@/components/contracts/props"
+import { layoutNode, renderLeaf, type CompositeProps } from "@/modules/types/layout"
 
 /** Rank and title for one trending result. */
 export type TrendingContentRowData = {
@@ -17,15 +17,14 @@ export type TrendingContentRowProps = CompositeProps<TrendingContentRowData, Tre
 
 /** Draw one ranked actionable title; the first three ranks retain the legacy accent treatment. */
 export const TrendingContentRow = ({ props, on, isLoading = false }: TrendingContentRowProps) => (
-    <Grammar contract="rank-title-row" render={createGrammarNode("rank-title-row", {
-        rank: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
+    <Grammar layout="rank-title-row" render={layoutNode("rank-title-row", {
+        rank: renderLeaf("text", { size: "sm", weight: "semibold" }, () => (
             <Text props={{ content: props.rank, size: "sm", weight: "semibold", tone: props.isTopRank === true ? "accent" : "muted" }} isLoading={isLoading} />
         )),
-        title: createLeafNode("text-link", { size: "sm" }, () => (
+        title: renderLeaf("text-link", { size: "sm" }, () => (
             <TextLink props={{ label: props.title ?? "", size: "sm" }} on={{ press: on?.open }} />
         )),
     })} />
 )
 
 /** Source-level tier marker for the pure ranked-result composition. */
-export const meta = { shape: "composite", world: "pure" } as const

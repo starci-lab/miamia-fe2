@@ -1,10 +1,10 @@
-import { CLASS_NAME_1 } from './styles'
 "use client"
+import { CLASS_NAME_1 } from "./classNames"
 
 import { useEffect, useRef } from "react"
 import type * as Phaser from "phaser"
 import type { GameAnswerResult, GameCharacter, GameSnapshot, GameType } from "@/modules/games/types"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /** Snapshot data forwarded into one browser-only Phaser scene. */
 export type GameCanvasData = { readonly gameType: GameType; readonly character: GameCharacter; readonly snapshot?: GameSnapshot; readonly answerResult?: GameAnswerResult }
@@ -44,8 +44,7 @@ export const GameCanvas = ({ props, on }: GameCanvasProps) => {
     useEffect(() => { if (props.snapshot !== undefined && scene.current?.scene.isActive()) scene.current.applySnapshot(props.snapshot) }, [props.snapshot])
     useEffect(() => { if (props.answerResult !== undefined && scene.current?.scene.isActive()) scene.current.applyAnswerResult(props.answerResult) }, [props.answerResult])
     // vn-ok: The accessible label is localized Vietnamese runtime copy.
-    return <div ref={host} data-tier="leaf" data-component="GameCanvas" className={CLASS_NAME_1} aria-label={`Màn chơi ${props.character}`} />
+    return <div ref={host} data-component="GameCanvas" className={CLASS_NAME_1} aria-label={`Màn chơi ${props.character}`} />
 }
 
 /** Declares the Phaser canvas as a pure leaf. */
-export const meta = { shape: "leaf", world: "pure" } as const

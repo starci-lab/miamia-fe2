@@ -1,5 +1,5 @@
 import { Chip, skeletonVariants } from "@heroui/react"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `Badge`: a short figure or word set apart from the line it sits on.
@@ -46,7 +46,7 @@ export const Badge = ({ props, isLoading = false }: BadgeProps) => {
     const tone = props.tone ?? "neutral"
     return (
         <Chip
-            data-tier="leaf"
+
             data-component="Badge"
             data-tone={tone}
             data-loading={isLoading ? "true" : "false"}
@@ -62,4 +62,3 @@ export const Badge = ({ props, isLoading = false }: BadgeProps) => {
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

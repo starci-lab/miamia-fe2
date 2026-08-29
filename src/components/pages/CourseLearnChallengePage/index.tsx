@@ -123,4 +123,3 @@ export const CourseLearnChallengePage = (input: CourseLearnChallengePageProps) =
 }
 
 /** Architectural identity for the connected challenge twin. */
-export const meta = { world: "connected", domain: "learn" } as const

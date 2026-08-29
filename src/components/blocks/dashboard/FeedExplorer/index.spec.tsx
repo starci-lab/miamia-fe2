@@ -97,7 +97,7 @@ describe("FeedExplorer", () => {
         wire(feed({ data: undefined }))
 
         const { container } = render(<FeedExplorer />)
-        expect(container.querySelectorAll("[data-node=\"activity-day-group\"]")).toHaveLength(2)
+        expect(container.querySelectorAll(".layout-name-activity-day-group")).toHaveLength(2)
         expect(screen.queryByRole("button", { name: "loadMore" })).toBeNull()
         expect(screen.queryByText("feedFailed")).toBeNull()
     })
@@ -212,7 +212,7 @@ describe("FeedExplorer", () => {
         }))
 
         const { container } = render(<FeedExplorer />)
-        expect(container.querySelectorAll("[data-node=\"activity-actor-body-time-row\"]")).toHaveLength(2)
+        expect(container.querySelectorAll(".layout-name-activity-actor-body-time-row")).toHaveLength(2)
         expect(screen.getByText("ada")).toBeInTheDocument()
         expect(screen.getByText("grace")).toBeInTheDocument()
         // The cursor of the LAST page decides whether there is more, not the first.

@@ -1,7 +1,7 @@
-import { CLASS_NAME_1 } from './styles'
-import type { ComponentProps } from "@/components/contracts/props"
+import { CLASS_NAME_1 } from "./classNames"
+import type { ComponentProps } from "@/modules/types/layout"
 
-/** Intrinsic read-only document carried by the public-CV paper contract. */
+/** Intrinsic read-only document carried by the public-CV paper layout. */
 export type ProfileCvDocumentData = { readonly title: string, readonly src?: string }
 /** Input for the read-only public-CV document. */
 export type ProfileCvDocumentProps = ComponentProps<ProfileCvDocumentData>
@@ -9,7 +9,7 @@ export type ProfileCvDocumentProps = ComponentProps<ProfileCvDocumentData>
 /** Embed one compiled public CV without editor controls. */
 export const ProfileCvDocument = ({ props, isLoading = false }: ProfileCvDocumentProps) => (
     <iframe
-        data-tier="leaf"
+
         data-component="ProfileCvDocument"
         data-loading={isLoading ? "true" : "false"}
         title={props.title}
@@ -20,4 +20,3 @@ export const ProfileCvDocument = ({ props, isLoading = false }: ProfileCvDocumen
 )
 
 /** Source-level tier marker. */
-export const meta = { shape: "leaf", world: "pure" } as const

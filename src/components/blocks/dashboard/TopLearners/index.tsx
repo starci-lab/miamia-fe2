@@ -105,4 +105,3 @@ export const TopLearners = () => {
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "connected", domain: "community" } as const

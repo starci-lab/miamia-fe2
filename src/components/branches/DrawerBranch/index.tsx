@@ -1,8 +1,8 @@
-import { CLASS_NAME_1 } from './styles'
+import { CLASS_NAME_1 } from "./classNames"
 import { Drawer } from "@heroui/react"
-import { Grammar } from "@/components/branches/Grammar"
-import type { ContractKey } from "@/components/contracts"
-import type { ContractComponent } from "@/components/contracts/props"
+import { Grammar } from "@/components/layouts/Grammar"
+import type { LayoutKey } from "@/resources/visual-layouts"
+import type { LayoutValue } from "@/modules/types/layout"
 
 /**
  * BRANCH - `DrawerBranch`: the vendor's edge-anchored covering mechanics, wrapped once.
@@ -23,16 +23,16 @@ import type { ContractComponent } from "@/components/contracts/props"
  * `ModalBranch`, `DrawerBranch` and `DropdownBranch` - so the drawer was vocabulary before it was
  * written.
  *
- * SLOTS-4: it takes `{contract, render}`, exactly like `Grammar`, instead of an untyped `children`
+ * SLOTS-4: it takes `{layout, render}`, exactly like `Grammar`, instead of an untyped `children`
  * hole. A drawer owns focus trapping, Escape, backdrop dismissal, scroll locking and placement; the
- * content it covers is now always a checked contract identity rather than an arbitrary subtree.
+ * content it covers is now always a checked layout identity rather than an arbitrary subtree.
  *
  * BOUND SLOTS DRAW THROUGH `Grammar`, the one file that turns a key into an element (CONTRACT-7): the
- * vendor body hosts `<Grammar contract render />`, and the entry's own host lands INSIDE that body,
+ * vendor body hosts `<Grammar layout render />`, and the entry's own host lands INSIDE that body,
  * never ON it (CONTRACT-4).
  *
  * A PROJECTION HAS ALREADY DRAWN ITS OWN HOST. Routing it through `Grammar` a second time would open a
- * second host around content that already opened one - the same fault `Grammar`'s own `ContractContent`
+ * second host around content that already opened one - the same fault `Grammar`'s own `LayoutContent`
  * refuses for a projected SLOT, reproduced here for a projected ROOT. So a projection's `project()`
  * is called directly and its output is handed to the vendor body with no host in between.
  *
@@ -45,17 +45,17 @@ import type { ContractComponent } from "@/components/contracts/props"
 export type DrawerBranchSide = "left" | "right"
 
 /** Props for {@link DrawerBranch}. */
-export type DrawerBranchProps<K extends ContractKey> = {
+export type DrawerBranchProps<K extends LayoutKey> = {
     /** Whether the drawer is showing. Owned by whoever mounts it, never by the shell. */
     readonly isOpen: boolean
     /** The edge it opens from. Absent is `right`, which is where this product's basket lives. */
     readonly side?: DrawerBranchSide
     /** The already-resolved title. A drawer names itself; the interior does not repeat it. */
     readonly title: string
-    /** The registry key the interior must satisfy. */
-    readonly contract: K
-    /** Named content whose metadata and source body satisfy this exact contract. */
-    readonly render: ContractComponent<NoInfer<K>>
+    /** The catalog key the interior must satisfy. */
+    readonly layout: K
+    /** Named content whose metadata and source body satisfy this exact layout. */
+    readonly render: LayoutValue<NoInfer<K>>
     /** Every way out: the close control, Escape, and the backdrop. */
     readonly onDismiss: () => void
 }
@@ -65,7 +65,7 @@ export type DrawerBranchProps<K extends ContractKey> = {
  *
  * @param input - {@link DrawerBranchProps}
  */
-export const DrawerBranch = <const K extends ContractKey>(input: DrawerBranchProps<K>) => (
+export const DrawerBranch = <const K extends LayoutKey>(input: DrawerBranchProps<K>) => (
     <Drawer
         isOpen={input.isOpen}
         onOpenChange={(open) => {
@@ -74,7 +74,7 @@ export const DrawerBranch = <const K extends ContractKey>(input: DrawerBranchPro
     >
         <Drawer.Backdrop>
             <Drawer.Content placement={input.side ?? "right"}>
-                <Drawer.Dialog data-tier="branch" data-component="DrawerBranch">
+                <Drawer.Dialog data-component="DrawerBranch">
                     <Drawer.Header>
                         <Drawer.Heading>{input.title}</Drawer.Heading>
                     </Drawer.Header>
@@ -85,9 +85,9 @@ export const DrawerBranch = <const K extends ContractKey>(input: DrawerBranchPro
                      * same content twice and the two insets would drift apart.
                      */}
                     <Drawer.Body className={CLASS_NAME_1}>
-                        {input.render.kind === "projection"
+                        {input.render.kind === "content"
                             ? input.render.project()
-                            : <Grammar contract={input.contract} render={input.render} />}
+                            : <Grammar layout={input.layout} render={input.render} />}
                     </Drawer.Body>
                 </Drawer.Dialog>
             </Drawer.Content>
@@ -96,4 +96,3 @@ export const DrawerBranch = <const K extends ContractKey>(input: DrawerBranchPro
 )
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "branch", mechanics: true, world: "pure" } as const

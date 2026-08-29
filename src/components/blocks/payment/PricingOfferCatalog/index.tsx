@@ -28,4 +28,3 @@ export const PricingOfferCatalog = ({ selected, onSelect }: PricingOfferCatalogC
 }
 
 /** Declares the connected pricing block boundary. */
-export const meta = { shape: "block", world: "connected", domain: "payment" } as const

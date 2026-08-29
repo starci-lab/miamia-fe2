@@ -1,8 +1,8 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { Button } from "@/components/leaves/Button"
 import { Heading } from "@/components/leaves/Heading"
 import { Text } from "@/components/leaves/Text"
-import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
+import { layoutNode, renderLeaf } from "@/modules/types/layout"
 
 /** One setup choice presented to the learner. */
 export type MockInterviewSetupChoice = {
@@ -48,7 +48,7 @@ export type CourseMockInterviewSetupPageProps = {
 export const CourseMockInterviewSetupPageBase = (input: CourseMockInterviewSetupPageProps) => {
     const loading = input.state === "pending"
     const starting = input.state === "starting"
-    const level = input.props.levels.map((choice) => createLeafNode("button", {}, () => (
+    const level = input.props.levels.map((choice) => renderLeaf("button", {}, () => (
         <Button
             props={{
                 label: choice.label,
@@ -59,7 +59,7 @@ export const CourseMockInterviewSetupPageBase = (input: CourseMockInterviewSetup
             isLoading={loading}
         />
     )))
-    const mode = input.props.modes.map((choice) => createLeafNode("button", {}, () => (
+    const mode = input.props.modes.map((choice) => renderLeaf("button", {}, () => (
         <Button
             props={{
                 label: choice.label,
@@ -71,11 +71,11 @@ export const CourseMockInterviewSetupPageBase = (input: CourseMockInterviewSetup
         />
     )))
     const action = input.state === "failed" ? [
-        createLeafNode("button", {}, () => (
+        renderLeaf("button", {}, () => (
             <Button props={{ label: input.props.retryLabel, variant: "primary" }} on={{ press: input.on?.retry }} />
         )),
     ] : [
-        createLeafNode("button", {}, () => (
+        renderLeaf("button", {}, () => (
             <Button
                 props={{
                     label: input.props.startLabel,
@@ -88,7 +88,7 @@ export const CourseMockInterviewSetupPageBase = (input: CourseMockInterviewSetup
             />
         )),
         ...(input.state !== "resumable" ? [] : [
-            createLeafNode("button", {}, () => (
+            renderLeaf("button", {}, () => (
                 <Button props={{ label: input.props.resumeLabel, variant: "ghost" }} on={{ press: input.on?.resume }} />
             )),
         ]),
@@ -96,26 +96,26 @@ export const CourseMockInterviewSetupPageBase = (input: CourseMockInterviewSetup
 
     return (
         <Grammar
-            contract="course-mock-interview-setup-page"
-            render={createGrammarNode("course-mock-interview-setup-page", {
-                header: createGrammarNode("centred-title-pair", {
-                    title: createLeafNode("heading", {}, () => (
+            layout="course-mock-interview-setup-page"
+            render={layoutNode("course-mock-interview-setup-page", {
+                header: layoutNode("centred-title-pair", {
+                    title: renderLeaf("heading", {}, () => (
                         <Heading props={{ content: input.props.title, level: 1 }} isLoading={loading} />
                     )),
-                    description: createLeafNode("text", { size: "sm" }, () => (
+                    description: renderLeaf("text", { size: "sm" }, () => (
                         <Text props={{ content: input.props.description, size: "sm" }} isLoading={loading} />
                     )),
                 }),
-                levelLabel: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+                levelLabel: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                     <Text props={{ content: input.props.levelLabel, size: "sm", tone: "muted" }} isLoading={loading} />
                 )),
                 level,
-                modeLabel: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+                modeLabel: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                     <Text props={{ content: input.props.modeLabel, size: "sm", tone: "muted" }} isLoading={loading} />
                 )),
                 mode,
                 ...(input.props.status === undefined ? {} : {
-                    status: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+                    status: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                         <Text
                             props={{
                                 content: input.props.status,
@@ -133,4 +133,3 @@ export const CourseMockInterviewSetupPageBase = (input: CourseMockInterviewSetup
 }
 
 /** Source-level ownership marker for the pure setup twin. */
-export const meta = { world: "pure", domain: "learn" } as const

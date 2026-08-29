@@ -1,6 +1,6 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { ExtendedTabs, type ExtendedTab } from "@/components/leaves/ExtendedTabs"
-import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
+import { layoutNode, renderLeaf } from "@/modules/types/layout"
 
 /** Route-derived public-profile destinations resolved by the persistent layout. */
 export type ProfileTabsData = {
@@ -17,12 +17,11 @@ type ProfileTabsInput = { readonly props: ProfileTabsData, readonly on?: Profile
 
 /** Draw profile-owned route chrome without borrowing the global navbar owner. */
 export const ProfileTabsBase = (input: ProfileTabsInput) => (
-    <Grammar contract="underlined-tab-strip" render={createGrammarNode("underlined-tab-strip", {
-        tabs: createLeafNode("extended-tabs", {}, () => (
+    <Grammar layout="underlined-tab-strip" render={layoutNode("underlined-tab-strip", {
+        tabs: renderLeaf("extended-tabs", {}, () => (
             <ExtendedTabs props={input.props} on={{ select: input.on?.select }} />
         )),
     })} />
 )
 
 /** Source-level marker for the pure profile route-chrome block. */
-export const meta = { world: "pure", domain: "profile" } as const

@@ -10,7 +10,7 @@ describe("PlaygroundSessionLayoutBase", () => {
             <PlaygroundSessionLayoutBase state="ready" surface={Surface} failedLabel="Failed" retryLabel="Try again" />,
         )
 
-        expect(container.querySelector("[data-node=\"playground-session-frame\"]")).not.toBeNull()
+        expect(container.querySelector(".layout-name-playground-session-frame")).not.toBeNull()
         expect(screen.getByText("Routed playground surface")).toBeInTheDocument()
     })
 

@@ -13,4 +13,3 @@ export const ComingSoonOverlay = (input: ComingSoonOverlayConnectedProps) => {
 }
 
 /** Declares the component architecture metadata. */
-export const meta = { shape: "overlay", world: "connected", domain: "app" } as const

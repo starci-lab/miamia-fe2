@@ -45,4 +45,3 @@ export const MembershipCheckoutPanel = ({ onDismiss, returnUrl, cancelUrl }: Mem
 }
 
 /** Declares the component architecture metadata. */
-export const meta = { shape: "block", world: "connected", domain: "membership" } as const

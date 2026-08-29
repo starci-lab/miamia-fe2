@@ -157,4 +157,3 @@ export const CourseMockInterviewSetupPage = ({ displayId }: CourseMockInterviewS
 }
 
 /** Source-level ownership marker for the connected setup twin. */
-export const meta = { world: "connected", domain: "learn" } as const

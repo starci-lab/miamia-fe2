@@ -116,4 +116,3 @@ export const CourseHeadhuntingCompanyPage = ({ displayId, companyId }: CourseHea
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "connected", domain: "learn" } as const

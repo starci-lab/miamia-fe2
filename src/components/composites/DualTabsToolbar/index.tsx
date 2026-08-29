@@ -1,6 +1,6 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { ChoiceTabs, type ChoiceTabsData } from "@/components/leaves/ChoiceTabs"
-import { createGrammarNode, createLeafNode, type CompositeProps } from "@/components/contracts/props"
+import { layoutNode, renderLeaf, type CompositeProps } from "@/modules/types/layout"
 
 /** Two controlled peer-choice axes sharing one toolbar row. */
 export type DualTabsToolbarData = {
@@ -19,15 +19,14 @@ export type DualTabsToolbarProps = CompositeProps<DualTabsToolbarData, DualTabsT
 
 /** Draw two primary peer-choice axes on the same toolbar. */
 export const DualTabsToolbar = ({ props, on }: DualTabsToolbarProps) => (
-    <Grammar contract="dual-tabs-toolbar" render={createGrammarNode("dual-tabs-toolbar", {
-        leading: createLeafNode("choice-tabs", {}, () => (
+    <Grammar layout="dual-tabs-toolbar" render={layoutNode("dual-tabs-toolbar", {
+        leading: renderLeaf("choice-tabs", {}, () => (
             <ChoiceTabs props={{ ...props.leading, variant: "primary" }} on={{ select: on?.selectLeading }} />
         )),
-        trailing: createLeafNode("choice-tabs", {}, () => (
+        trailing: renderLeaf("choice-tabs", {}, () => (
             <ChoiceTabs props={{ ...props.trailing, variant: "primary" }} on={{ select: on?.selectTrailing }} />
         )),
     })} />
 )
 
 /** Source-level tier marker for the pure composite. */
-export const meta = { shape: "composite", world: "pure" } as const

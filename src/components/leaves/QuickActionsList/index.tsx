@@ -1,9 +1,9 @@
-import { CLASS_NAME_1, CLASS_NAME_2, CLASS_NAME_3 } from './styles'
 "use client"
+import { CLASS_NAME_1, CLASS_NAME_2, CLASS_NAME_3 } from "./classNames"
 
 import { ListBox } from "@heroui/react"
 import { Icon, type IconName } from "@/components/leaves/Icon"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /** One destination in the legacy quick-access ListBox. */
 export type QuickActionItem = {
@@ -29,7 +29,7 @@ export type QuickActionsListProps = ComponentProps<QuickActionsListData, QuickAc
 /** Draw the original native HeroUI ListBox chrome used by the legacy dashboard rail. */
 export const QuickActionsList = ({ props, on }: QuickActionsListProps) => (
     <ListBox
-        data-tier="leaf"
+
         data-component="QuickActionsList"
         aria-label={props.label}
         selectionMode="none"
@@ -51,4 +51,3 @@ export const QuickActionsList = ({ props, on }: QuickActionsListProps) => (
 )
 
 /** Source-level tier marker for the closed quick-access list. */
-export const meta = { shape: "leaf", world: "pure" } as const

@@ -42,10 +42,10 @@ describe("CartDrawerBase", () => {
             />,
         )
 
-        expect(document.querySelectorAll("[data-node=\"cart-line-row\"]")).toHaveLength(2)
+        expect(document.querySelectorAll(".layout-name-cart-line-row")).toHaveLength(2)
         expect(screen.getByText("System Design Mastery")).toBeInTheDocument()
         expect(screen.getByText("2.750.000 ₫")).toBeInTheDocument()
-        expect(document.querySelector("[data-node=\"order-summary-stack\"]")).not.toBeNull()
+        expect(document.querySelector(".layout-name-order-summary-stack")).not.toBeNull()
 
         fireEvent.click(screen.getByRole("button", { name: /Checkout/ }))
         expect(checkout).toHaveBeenCalledOnce()
@@ -58,7 +58,7 @@ describe("CartDrawerBase", () => {
             <CartDrawerBase state="ready" props={{ labels, isOpen: true, lines }} />,
         )
 
-        const column = document.querySelector("[data-node=\"cart-drawer-column\"]")
+        const column = document.querySelector(".layout-name-cart-drawer-column")
         expect(column?.querySelector("h1, h2, h3")).toBeNull()
         expect(column?.querySelector("[data-component=\"SurfaceCardSurface\"]")).toBeNull()
     })
@@ -69,7 +69,7 @@ describe("CartDrawerBase", () => {
             <CartDrawerBase state="pending" props={{ labels, isOpen: true }} on={{ checkout }} />,
         )
 
-        expect(document.querySelectorAll("[data-node=\"cart-line-row\"]")).toHaveLength(3)
+        expect(document.querySelectorAll(".layout-name-cart-line-row")).toHaveLength(3)
         const control = screen.getByRole("button", { name: /Checkout/ })
         expect(control).toBeDisabled()
         fireEvent.click(control)
@@ -83,8 +83,8 @@ describe("CartDrawerBase", () => {
         )
 
         expect(screen.getByText("Your basket is empty.")).toBeInTheDocument()
-        expect(document.querySelector("[data-node=\"cart-line-list\"]")).toBeNull()
-        expect(document.querySelector("[data-node=\"order-summary-stack\"]")).toBeNull()
+        expect(document.querySelector(".layout-name-cart-line-list")).toBeNull()
+        expect(document.querySelector(".layout-name-order-summary-stack")).toBeNull()
         expect(screen.queryByRole("button", { name: /Checkout/ })).not.toBeInTheDocument()
 
         fireEvent.click(screen.getByRole("button", { name: /Browse courses/ }))
@@ -109,7 +109,7 @@ describe("CartDrawerBase", () => {
             />,
         )
 
-        expect(document.querySelectorAll("[data-node=\"cart-line-row\"]")).toHaveLength(2)
+        expect(document.querySelectorAll(".layout-name-cart-line-row")).toHaveLength(2)
         expect(screen.getByText("System Design Mastery")).toBeInTheDocument()
         expect(screen.getAllByText("Unavailable").length).toBeGreaterThan(0)
     })

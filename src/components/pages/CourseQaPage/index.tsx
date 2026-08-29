@@ -130,4 +130,3 @@ export const CourseQaPage = ({ displayId }: CourseQaPageProps) => {
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "connected", domain: "learn" } as const

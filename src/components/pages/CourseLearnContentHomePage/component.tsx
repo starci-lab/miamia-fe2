@@ -1,8 +1,8 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { CurriculumModuleRow } from "@/components/leaves/CurriculumModuleRow"
 import { Heading } from "@/components/leaves/Heading"
 import { Text } from "@/components/leaves/Text"
-import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
+import { layoutNode, renderLeaf } from "@/modules/types/layout"
 import type { CourseModule } from "@/modules/api/graphql/queries/types/course"
 
 /** Resolved copy owned by the Modules landing page. */
@@ -28,18 +28,18 @@ export type CourseLearnContentHomeProps = {
 export const CourseLearnContentHomePageBase = (input: CourseLearnContentHomeProps) => {
     const loading = input.state === "pending"
     return (
-        <Grammar contract="course-learn-content-home-page" render={createGrammarNode("course-learn-content-home-page", {
-            title: createLeafNode("heading", {}, () => (
+        <Grammar layout="course-learn-content-home-page" render={layoutNode("course-learn-content-home-page", {
+            title: renderLeaf("heading", {}, () => (
                 <Heading props={{ content: input.title ?? input.labels.title, level: 1 }} isLoading={loading} />
             )),
-            description: createLeafNode("text", { size: "sm" }, () => (
+            description: renderLeaf("text", { size: "sm" }, () => (
                 <Text props={{ content: input.description ?? input.labels.description, size: "sm" }} isLoading={loading} />
             )),
-            modulesTitle: input.state === "failed" ? undefined : createLeafNode("heading", {}, () => (
+            modulesTitle: input.state === "failed" ? undefined : renderLeaf("heading", {}, () => (
                 <Heading props={{ content: input.labels.modules, level: 2 }} />
             )),
             module: input.state === "failed" ? [] : (input.modules ?? []).map((module) => (
-                createLeafNode("curriculum-module-row", {}, () => (
+                renderLeaf("curriculum-module-row", {}, () => (
                     <CurriculumModuleRow
                         props={{ title: module.title, levelLabel: module.contentTier, previewLabel: `${module.numContents}` }}
                         isLoading={loading}
@@ -51,4 +51,3 @@ export const CourseLearnContentHomePageBase = (input: CourseLearnContentHomeProp
 }
 
 /** Purity and ownership metadata for the Modules landing page twin. */
-export const meta = { world: "pure", domain: "learn" } as const

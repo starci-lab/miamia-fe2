@@ -1,10 +1,10 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { Text } from "@/components/leaves/Text"
 import {
-    createGrammarNode,
-    createLeafNode,
+    layoutNode,
+    renderLeaf,
     type BlockProps,
-} from "@/components/contracts/props"
+} from "@/modules/types/layout"
 
 /** One requirement a learner should already satisfy. */
 export type CoursePrerequisite = {
@@ -54,13 +54,13 @@ export const CoursePrerequisiteListBase = ({
         ? null
         :
         <Grammar
-            contract="course-prerequisite-list"
-            render={createGrammarNode("course-prerequisite-list", {
-                prerequisite: props.prerequisites.map((prerequisite, index) => createGrammarNode("course-prerequisite-row", {
-                    mark: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+            layout="course-prerequisite-list"
+            render={layoutNode("course-prerequisite-list", {
+                prerequisite: props.prerequisites.map((prerequisite, index) => layoutNode("course-prerequisite-row", {
+                    mark: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                         <Text props={{ content: `${index + 1}.`, size: "sm", tone: "muted" }} />
                     )),
-                    requirement: createLeafNode("text", { size: "sm" }, () => (
+                    requirement: renderLeaf("text", { size: "sm" }, () => (
                         <Text props={{ content: prerequisite.requirement, size: "sm" }} />
                     )),
                 })),
@@ -69,4 +69,3 @@ export const CoursePrerequisiteListBase = ({
 )
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "block", world: "pure" } as const

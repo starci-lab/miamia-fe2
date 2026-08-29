@@ -29,7 +29,7 @@ describe("CoursePlaygroundSetupPageBase", () => {
 
         fireEvent.click(screen.getByRole("button", { name: "Enter workspace" }))
 
-        expect(container.querySelector("[data-node=\"course-playground-setup-page\"]")).not.toBeNull()
+        expect(container.querySelector(".layout-name-course-playground-setup-page")).not.toBeNull()
         expect(screen.getByText("PAIR-123")).toBeInTheDocument()
         expect(props.on.enter).toHaveBeenCalledOnce()
     })

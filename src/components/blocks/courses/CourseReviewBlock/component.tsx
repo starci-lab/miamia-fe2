@@ -1,12 +1,12 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { Heading } from "@/components/leaves/Heading"
 import { Icon } from "@/components/leaves/Icon"
 import { Text } from "@/components/leaves/Text"
 import {
-    createGrammarNode,
-    createLeafNode,
+    layoutNode,
+    renderLeaf,
     type BlockProps,
-} from "@/components/contracts/props"
+} from "@/modules/types/layout"
 
 /** How many marks the scale carries. */
 const SCORE_SCALE = 5
@@ -77,34 +77,34 @@ export const CourseReviewBlockBase = ({
     }
     return (
         <Grammar
-            contract="course-review-block"
-            render={createGrammarNode("course-review-block", {
-                summary: createGrammarNode("course-review-summary", {
-                    score: createLeafNode("heading", {}, () => (
+            layout="course-review-block"
+            render={layoutNode("course-review-block", {
+                summary: layoutNode("course-review-summary", {
+                    score: renderLeaf("heading", {}, () => (
                         <Heading props={{ content: props.averageScore.toFixed(1), level: 3 }} />
                     )),
-                    scale: createGrammarNode("rating-star-run", {
-                        star: Array.from({ length: SCORE_SCALE }, () => createLeafNode("icon", {}, () => (
+                    scale: layoutNode("rating-star-run", {
+                        star: Array.from({ length: SCORE_SCALE }, () => renderLeaf("icon", {}, () => (
                             <Icon props={{ name: "star", role: "chip" }} />
                         ))),
                     }),
-                    count: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+                    count: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                         <Text props={{ content: props.countLabel, size: "sm", tone: "muted" }} />
                     )),
                 }),
-                list: createGrammarNode("course-review-list", {
-                    review: props.reviews.map((review) => createGrammarNode("course-review-row", {
-                        author: createGrammarNode("course-review-author-line", {
-                            name: createLeafNode("text", { size: "sm", weight: "medium" }, () => (
+                list: layoutNode("course-review-list", {
+                    review: props.reviews.map((review) => layoutNode("course-review-row", {
+                        author: layoutNode("course-review-author-line", {
+                            name: renderLeaf("text", { size: "sm", weight: "medium" }, () => (
                                 <Text props={{ content: review.author, size: "sm", weight: "medium" }} />
                             )),
-                            score: createLeafNode("text", { size: "xs" }, () => (
+                            score: renderLeaf("text", { size: "xs" }, () => (
                                 <Text props={{ content: `${review.score}/${SCORE_SCALE}`, size: "xs" }} />
                             )),
                         }),
                         body: review.body === undefined
                             ? undefined
-                            : createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+                            : renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                                 <Text props={{ content: review.body, size: "sm", tone: "muted" }} />
                             )),
                     })),
@@ -115,4 +115,3 @@ export const CourseReviewBlockBase = ({
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "block", world: "pure" } as const

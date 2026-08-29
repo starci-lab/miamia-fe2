@@ -6,7 +6,7 @@ import remarkParse from "remark-parse"
 import { unified } from "unified"
 import { Heading } from "@/components/leaves/Heading"
 import { CodeBlock } from "@/components/leaves/CodeBlock"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `Article`: the body of one content, as its author wrote it.
@@ -203,7 +203,7 @@ const block = (node: MarkdownNode, key: string): ReactNode => {
 export const Article = ({ props, isLoading = false }: ArticleProps) => {
     if (isLoading || props.body === undefined) {
         return (
-            <div data-tier="leaf" data-component="Article" data-resting="true" className={NODE_CLASSES.root}>
+            <div data-component="Article" data-resting="true" className={NODE_CLASSES.root}>
                 {RESTING_WIDTHS.map((width, index) => (
                     <span key={`resting-${index + 1}`} className={`${RESTING_LINE} ${width}`} />
                 ))}
@@ -212,11 +212,10 @@ export const Article = ({ props, isLoading = false }: ArticleProps) => {
     }
     const root = toNode(parser.parse(props.body))
     return (
-        <div data-tier="leaf" data-component="Article" className={NODE_CLASSES.root}>
+        <div data-component="Article" className={NODE_CLASSES.root}>
             {(root?.parts ?? []).map((node, index) => block(node, `${node.type}-${index}`))}
         </div>
     )
 }
 
 /** Source-level tier marker. */
-export const meta = { shape: "leaf", world: "pure" } as const

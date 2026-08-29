@@ -1,14 +1,14 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Button } from "@/components/leaves/Button"
 import { Heading } from "@/components/leaves/Heading"
 import { NavLink } from "@/components/leaves/NavLink"
 import { Text } from "@/components/leaves/Text"
 import {
-    createCompositeNode,
-    createGrammarNode,
-    createLeafNode,
-} from "@/components/contracts/props"
+    renderComposite,
+    layoutNode,
+    renderLeaf,
+} from "@/modules/types/layout"
 
 /** One settled deck row rendered by the review overview. */
 export type FlashcardReviewDeckRow = {
@@ -21,7 +21,7 @@ export type FlashcardReviewDeckRow = {
     readonly masteredCount: number
 }
 
-/** Pure review-overview contract after all live values and actions resolve. */
+/** Pure review-overview layout after all live values and actions resolve. */
 export type CourseFlashcardsReviewPageProps = {
     readonly state: "pending" | "ready" | "empty" | "failed"
     readonly props: {
@@ -63,29 +63,29 @@ const resolveDueAction = (
 ) => {
     const { resumeSessionId } = data
     if (resumeSessionId !== undefined) {
-        return createLeafNode("button", {}, () => (
+        return renderLeaf("button", {}, () => (
             <Button props={{ label: data.resumeLabel, variant: "primary" }} on={{ press: () => on.resume(resumeSessionId) }} />
         ))
     }
     if (data.dueCount === 0) return undefined
-    return createLeafNode("button", {}, () => (
+    return renderLeaf("button", {}, () => (
         <Button props={{ label: data.startLabel, variant: "primary" }} on={{ press: on.startDue }} />
     ))
 }
 
 /** Skeleton deck cards shown while the review overview is loading. */
 const pendingDeckCards = (data: CourseFlashcardsReviewPageProps["props"]) => (
-    Array.from({ length: 4 }, (_, index) => createGrammarNode("flashcard-review-deck-card", {
-        title: createLeafNode("heading", {}, () => (
+    Array.from({ length: 4 }, (_, index) => layoutNode("flashcard-review-deck-card", {
+        title: renderLeaf("heading", {}, () => (
             <Heading props={{ content: data.decksTitle, level: 3 }} isLoading />
         )),
-        description: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+        description: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
             <Text props={{ size: "sm", tone: "muted" }} isLoading />
         )),
-        facts: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+        facts: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
             <Text props={{ size: "xs" }} isLoading />
         )),
-        action: createLeafNode("button", {}, () => (
+        action: renderLeaf("button", {}, () => (
             <Button props={{ label: `${data.startLabel} ${index + 1}` }} isLoading />
         )),
     }))
@@ -96,14 +96,14 @@ const readyDeckCards = (
     data: CourseFlashcardsReviewPageProps["props"],
     on: CourseFlashcardsReviewPageProps["on"],
 ) => (
-    data.decks.map((deck) => createGrammarNode("flashcard-review-deck-card", {
-        title: createLeafNode("heading", {}, () => (
+    data.decks.map((deck) => layoutNode("flashcard-review-deck-card", {
+        title: renderLeaf("heading", {}, () => (
             <Heading props={{ content: deck.title, level: 3 }} />
         )),
-        description: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+        description: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
             <Text props={{ content: deck.description, size: "sm", tone: "muted" }} />
         )),
-        facts: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+        facts: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
             <Text
                 props={{
                     content: `${deck.cardCount} ${data.cardsLabel} · ${deck.dueCount} ${data.dueLabel} · ${deck.masteredCount} ${data.masteredLabel}`,
@@ -111,7 +111,7 @@ const readyDeckCards = (
                 }}
             />
         )),
-        action: createLeafNode("button", {}, () => (
+        action: renderLeaf("button", {}, () => (
             <Button props={{ label: data.startLabel, variant: "primary" }} on={{ press: () => on.startDeck(deck.id) }} />
         )),
     }))
@@ -134,26 +134,26 @@ export const CourseFlashcardsReviewPageBase = (input: CourseFlashcardsReviewPage
     const data = input.props
     const on = input.on
     const isLoading = state === "pending"
-    const header = createGrammarNode("centred-title-pair", {
-        title: createLeafNode("heading", {}, () => (
+    const header = layoutNode("centred-title-pair", {
+        title: renderLeaf("heading", {}, () => (
             <Heading props={{ content: data.title, level: 1 }} isLoading={isLoading} />
         )),
-        description: createLeafNode("text", { size: "sm" }, () => (
+        description: renderLeaf("text", { size: "sm" }, () => (
             <Text props={{ content: data.subtitle, size: "sm", tone: "muted" }} isLoading={isLoading} />
         )),
     })
-    const modes = createGrammarNode("flashcard-mode-tabs", {
+    const modes = layoutNode("flashcard-mode-tabs", {
         tab: [
-            createLeafNode("nav-link", { kind: "tab" }, () => (
+            renderLeaf("nav-link", { kind: "tab" }, () => (
                 <NavLink props={{ label: data.reviewLabel, kind: "tab", isCurrent: true }} />
             )),
-            createLeafNode("nav-link", { kind: "tab" }, () => (
+            renderLeaf("nav-link", { kind: "tab" }, () => (
                 <NavLink props={{ label: data.quizLabel, kind: "tab" }} on={{ press: on.openQuiz }} />
             )),
         ],
     })
     const notice = state === "failed" || state === "empty"
-        ? createCompositeNode("empty-notice", {}, () => (
+        ? renderComposite("empty-notice", {}, () => (
             <EmptyNotice
                 props={{
                     message: state === "failed" ? data.failedText : data.emptyText,
@@ -164,25 +164,25 @@ export const CourseFlashcardsReviewPageBase = (input: CourseFlashcardsReviewPage
         ))
         : undefined
     const due = state === "ready"
-        ? createGrammarNode("flashcard-review-due-card", {
-            title: createLeafNode("heading", {}, () => (
+        ? layoutNode("flashcard-review-due-card", {
+            title: renderLeaf("heading", {}, () => (
                 <Heading props={{ content: data.dueTitle, level: 2 }} />
             )),
-            description: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+            description: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                 <Text props={{ content: data.dueDescription, size: "sm", tone: "muted" }} />
             )),
-            fact: createLeafNode("text", { size: "sm", weight: "medium" }, () => (
+            fact: renderLeaf("text", { size: "sm", weight: "medium" }, () => (
                 <Text props={{ content: `${data.dueCount} ${data.dueLabel}`, size: "sm", weight: "medium" }} />
             )),
             action: resolveDueAction(data, on),
         })
         : undefined
     const stats = state === "ready"
-        ? createGrammarNode("centred-title-pair", {
-            title: createLeafNode("heading", {}, () => (
+        ? layoutNode("centred-title-pair", {
+            title: renderLeaf("heading", {}, () => (
                 <Heading props={{ content: data.statsTitle, level: 2 }} />
             )),
-            description: createLeafNode("text", { size: "sm" }, () => (
+            description: renderLeaf("text", { size: "sm" }, () => (
                 <Text props={{ content: `${data.streakText} · ${data.retentionText}`, size: "sm", tone: "muted" }} />
             )),
         })
@@ -190,13 +190,13 @@ export const CourseFlashcardsReviewPageBase = (input: CourseFlashcardsReviewPage
     const decks = resolveDeckCards(state, data, on)
 
     return (
-        <Grammar contract="course-flashcards-review-page" render={createGrammarNode("course-flashcards-review-page", {
+        <Grammar layout="course-flashcards-review-page" render={layoutNode("course-flashcards-review-page", {
             header,
             modes,
             due,
             stats,
             decksTitle: state === "ready" || state === "pending"
-                ? createLeafNode("heading", {}, () => (
+                ? renderLeaf("heading", {}, () => (
                     <Heading props={{ content: data.decksTitle, level: 2 }} isLoading={isLoading} />
                 ))
                 : undefined,
@@ -207,4 +207,3 @@ export const CourseFlashcardsReviewPageBase = (input: CourseFlashcardsReviewPage
 }
 
 /** Canon metadata for the pure page half. */
-export const meta = { world: "pure", domain: "learn" } as const

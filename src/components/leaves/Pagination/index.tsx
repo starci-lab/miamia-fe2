@@ -1,5 +1,5 @@
 import { Pagination as VendorPagination } from "@heroui/react"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `Pagination`: which page of a list is showing, and the way to another one.
@@ -76,7 +76,7 @@ export const Pagination = ({ props, on }: PaginationProps) => {
         if (next >= 1 && next <= total && next !== page) on?.change?.(next)
     }
     return (
-        <VendorPagination aria-label={props.label} data-tier="leaf" data-component="Pagination" data-page={page} data-total={total}>
+        <VendorPagination aria-label={props.label} data-component="Pagination" data-page={page} data-total={total}>
             <VendorPagination.Content>
                 <VendorPagination.Item>
                     <VendorPagination.Previous aria-label={props.previousLabel} isDisabled={page === 1} onPress={() => go(page - 1)}>
@@ -105,4 +105,3 @@ export const Pagination = ({ props, on }: PaginationProps) => {
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

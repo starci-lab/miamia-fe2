@@ -1,6 +1,6 @@
-import { CLASS_NAME_1, CLASS_NAME_2 } from './styles'
+import { CLASS_NAME_1, CLASS_NAME_2 } from "./classNames"
 import { skeletonVariants } from "@heroui/react"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `DayCell`: one day of a streak, as a dot with its weekday letter.
@@ -49,7 +49,7 @@ const dotClassName = (isLoading: boolean, active: boolean | undefined): string =
  */
 export const DayCell = ({ props, isLoading = false }: DayCellProps) => (
     <li
-        data-tier="leaf"
+
         data-component="DayCell"
         data-part="day"
         data-active={props.active === true ? "true" : "false"}
@@ -70,4 +70,3 @@ export const DayCell = ({ props, isLoading = false }: DayCellProps) => (
 )
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

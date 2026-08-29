@@ -1,5 +1,5 @@
 import { TextArea } from "@heroui/react"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `Textarea`: the box a reader writes prose into.
@@ -52,7 +52,7 @@ export type TextareaProps = ComponentProps<TextareaData, TextareaActions>
  */
 export const Textarea = ({ props, on }: TextareaProps) => (
     <TextArea
-        data-tier="leaf"
+
         data-component="Textarea"
         fullWidth
         id={props.id}
@@ -72,4 +72,3 @@ export const Textarea = ({ props, on }: TextareaProps) => (
 )
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

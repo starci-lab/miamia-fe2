@@ -5,14 +5,14 @@ import { Heading } from "@/components/leaves/Heading"
 import { SearchBox } from "@/components/leaves/SearchBox"
 import { Text } from "@/components/leaves/Text"
 import { SurfaceListCard, type SurfaceListCardData } from "@/components/branches/SurfaceListCard"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import {
-    createCompositeNode,
-    createGrammarNode,
-    createGrammarProjection,
-    createLeafNode,
+    renderComposite,
+    layoutNode,
+    layoutContent,
+    renderLeaf,
     type ComponentProps,
-} from "@/components/contracts/props"
+} from "@/modules/types/layout"
 import { Pagination } from "@/components/leaves/Pagination"
 import { CourseCatalogCard } from "@/components/blocks/courses/CourseCatalogCard"
 import { type CourseCatalogCardData } from "@/components/blocks/courses/CourseCatalogCard/component"
@@ -136,9 +136,9 @@ type CatalogLineListData = SurfaceListCardData & {
  */
 const CatalogLineListView = ({ props, on, isLoading = false }: ComponentProps<CatalogLineListData, CoursesCatalogPageActions>) => (
     <Grammar
-        contract="catalog-card-list"
-        render={createGrammarNode("catalog-card-list", {
-            course: props.courses.map((course) => createGrammarProjection("catalog-card-line", () => (
+        layout="catalog-card-list"
+        render={layoutNode("catalog-card-list", {
+            course: props.courses.map((course) => layoutContent("catalog-card-line", () => (
                 <CourseCatalogCard
                     state={isLoading ? "pending" : "ready"}
                     course={{ ...course, layout: "line" }}
@@ -150,8 +150,8 @@ const CatalogLineListView = ({ props, on, isLoading = false }: ComponentProps<Ca
     />
 )
 
-/** Stable component type branded for the exact list contract it implements. */
-const CatalogLineList = createGrammarNode("catalog-card-list", CatalogLineListView)
+/** Stable component type branded for the exact list layout it implements. */
+const CatalogLineList = layoutNode("catalog-card-list", CatalogLineListView)
 
 /**
  * Draw the catalog.
@@ -174,8 +174,8 @@ export const CoursesCatalogPageBase = (input: CoursesCatalogPageProps) => {
     // leaderboard reaches for it too. An earlier revision invented a second entry for the same
     // relationship and drew the trail as one `Text` with a hand-written separator, which is not a
     // breadcrumb: it announces as a sentence, offers no destination, and cannot be navigated.
-    const header = createGrammarNode("page-header-stack", {
-        trail: createLeafNode("breadcrumbs", {}, () => (
+    const header = layoutNode("page-header-stack", {
+        trail: renderLeaf("breadcrumbs", {}, () => (
             <Breadcrumbs
                 props={{
                     label: labels.title,
@@ -187,17 +187,17 @@ export const CoursesCatalogPageBase = (input: CoursesCatalogPageProps) => {
                 on={{ home: input.on?.goHome }}
             />
         )),
-        title: createLeafNode("heading", {}, () => (
+        title: renderLeaf("heading", {}, () => (
             <Heading props={{ content: labels.title, level: 1 }} />
         )),
     })
 
-    const toolbar = createGrammarNode("catalog-search-count-view-row", {
+    const toolbar = layoutNode("catalog-search-count-view-row", {
         // THE COUNT BELONGS TO THE FIELD THAT PRODUCED IT. Standing at the far end of the row it
         // read as a caption for the layout toggle beside it, and it arrived after first paint -
         // which reflowed the row under a control that had already measured its own position.
-        search: createGrammarNode("catalog-query-with-count", {
-            query: createLeafNode("search-box", {}, () => (
+        search: layoutNode("catalog-query-with-count", {
+            query: renderLeaf("search-box", {}, () => (
                 <SearchBox
                     props={{
                         placeholder: labels.searchPlaceholder,
@@ -208,7 +208,7 @@ export const CoursesCatalogPageBase = (input: CoursesCatalogPageProps) => {
                 />
             )),
             ...(input.props.countLabel === undefined ? {} : {
-                count: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+                count: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                     <Text props={{ content: input.props.countLabel, size: "sm", tone: "muted" }} />
                 )),
             }),
@@ -218,7 +218,7 @@ export const CoursesCatalogPageBase = (input: CoursesCatalogPageProps) => {
         // default by omission. The legacy catalog and the legacy league page both pass
         // `"primary"` here for the reason the legacy source states beside it: these tabs switch
         // the WHOLE panel rather than filtering the list under them, and a pill says so.
-        view: createLeafNode("choice-tabs", {}, () => (
+        view: renderLeaf("choice-tabs", {}, () => (
             <ChoiceTabs
                 props={{
                     label: labels.viewLabel,
@@ -247,7 +247,7 @@ export const CoursesCatalogPageBase = (input: CoursesCatalogPageProps) => {
      * owned-course labels, no progress phrasing and no resume action, because it no longer draws
      * any of them.
      */
-    const ownedGroup = createGrammarProjection("course-progress-list", () => <MyCoursesProgress />)
+    const ownedGroup = layoutContent("course-progress-list", () => <MyCoursesProgress />)
 
     /*
      * THE TOGGLE CHOOSES THE CONTAINER AND THE CARD TOGETHER, because it is one decision.
@@ -270,8 +270,8 @@ export const CoursesCatalogPageBase = (input: CoursesCatalogPageProps) => {
         />
     )
 
-    const discoverGroup = createGrammarNode("catalog-section-group", {
-        title: createLeafNode("heading", {}, () => (
+    const discoverGroup = layoutNode("catalog-section-group", {
+        title: renderLeaf("heading", {}, () => (
             <Heading props={{ content: labels.discoverTitle, level: 2 }} />
         )),
         /*
@@ -285,17 +285,17 @@ export const CoursesCatalogPageBase = (input: CoursesCatalogPageProps) => {
          * surface would otherwise say it a second time directly beneath it.
          */
         grid: isLine
-            ? createGrammarProjection("catalog-card-list", () => (
+            ? layoutContent("catalog-card-list", () => (
                 <SurfaceListCard
-                    contract="catalog-card-list"
+                    layout="catalog-card-list"
                     render={CatalogLineList}
                     props={{ label: labels.discoverTitle, isLabelHidden: true, courses: [...courses] }}
                     on={input.on}
                     isLoading={isLoading}
                 />
             ))
-            : createGrammarNode("catalog-card-grid", {
-                course: courses.map((course) => createGrammarProjection("catalog-card", card(course))),
+            : layoutNode("catalog-card-grid", {
+                course: courses.map((course) => layoutContent("catalog-card", card(course))),
             }),
     })
 
@@ -314,8 +314,8 @@ export const CoursesCatalogPageBase = (input: CoursesCatalogPageProps) => {
 
     return (
         <Grammar
-            contract="courses-catalog-page"
-            render={createGrammarNode("courses-catalog-page", {
+            layout="courses-catalog-page"
+            render={layoutNode("courses-catalog-page", {
                 header,
                 toolbar,
                 // An absent group is an ABSENT SLOT, not a slot holding null. The entry marks both
@@ -324,7 +324,7 @@ export const CoursesCatalogPageBase = (input: CoursesCatalogPageProps) => {
                 ...(showsNotice || input.props.hasOwned !== true ? {} : { owned: ownedGroup }),
                 ...(showsNotice ? {} : { discover: discoverGroup }),
                 ...(showsNotice ? {
-                    notice: createCompositeNode("empty-notice", {}, () => (
+                    notice: renderComposite("empty-notice", {}, () => (
                         <EmptyNotice
                             props={{
                                 icon: "course",
@@ -336,7 +336,7 @@ export const CoursesCatalogPageBase = (input: CoursesCatalogPageProps) => {
                     )),
                 } : {}),
                 ...(showsPager ? {
-                    pager: createLeafNode("pagination", {}, () => (
+                    pager: renderLeaf("pagination", {}, () => (
                         <Pagination
                             props={{
                                 label: labels.pageLabel,
@@ -355,4 +355,3 @@ export const CoursesCatalogPageBase = (input: CoursesCatalogPageProps) => {
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "pure", domain: "courses" } as const

@@ -37,8 +37,8 @@ describe("CourseFlashcardsReviewPageBase", () => {
         const input = makeInput()
         const { container } = render(<CourseFlashcardsReviewPageBase {...input} />)
 
-        expect(container.querySelector("[data-node=course-flashcards-review-page]")).toBeTruthy()
-        expect(container.querySelectorAll("[data-node=flashcard-review-deck-card]")).toHaveLength(1)
+        expect(container.querySelector(".layout-name-course-flashcards-review-page")).toBeTruthy()
+        expect(container.querySelectorAll(".layout-name-flashcard-review-deck-card")).toHaveLength(1)
         const startButtons = screen.getAllByRole("button", { name: "Start" })
         fireEvent.click(startButtons[0])
         fireEvent.click(startButtons[1])
@@ -46,7 +46,7 @@ describe("CourseFlashcardsReviewPageBase", () => {
         expect(input.on.startDeck).toHaveBeenCalledWith("deck-1")
     })
     it("renders pending skeletons and retryable failure or empty notices", () => {
-        const pending = { ...makeInput(), state: "pending" as const }; const { container } = render(<CourseFlashcardsReviewPageBase {...pending} />); expect(container.querySelectorAll("[data-node=flashcard-review-deck-card]")).toHaveLength(4)
+        const pending = { ...makeInput(), state: "pending" as const }; const { container } = render(<CourseFlashcardsReviewPageBase {...pending} />); expect(container.querySelectorAll(".layout-name-flashcard-review-deck-card")).toHaveLength(4)
         const failed = { ...makeInput(), state: "failed" as const }; render(<CourseFlashcardsReviewPageBase {...failed} />); fireEvent.click(screen.getByRole("button", { name: "Retry" })); expect(failed.on.retry).toHaveBeenCalledOnce()
         const empty = { ...makeInput(), state: "empty" as const }; render(<CourseFlashcardsReviewPageBase {...empty} />); expect(screen.getByText("Empty")).toBeInTheDocument()
     })

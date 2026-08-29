@@ -113,4 +113,3 @@ export const PlaygroundSessionLayout = (input: PlaygroundSessionLayoutProps) => 
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "connected", domain: "learn" } as const

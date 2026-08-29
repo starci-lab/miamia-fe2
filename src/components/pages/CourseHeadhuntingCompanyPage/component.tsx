@@ -1,5 +1,5 @@
 import { SurfaceListCard, type SurfaceListCardData } from "@/components/branches/SurfaceListCard"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Breadcrumbs, type BreadcrumbStep } from "@/components/leaves/Breadcrumbs"
 import { Button } from "@/components/leaves/Button"
@@ -7,13 +7,13 @@ import { Heading } from "@/components/leaves/Heading"
 import { Text } from "@/components/leaves/Text"
 import { TextLink } from "@/components/leaves/TextLink"
 import {
-    createCompositeNode,
-    createGrammarNode,
-    createGrammarProjection,
-    createLeafNode,
+    renderComposite,
+    layoutNode,
+    layoutContent,
+    renderLeaf,
     type BlockProps,
     type ComponentProps,
-} from "@/components/contracts/props"
+} from "@/modules/types/layout"
 import type { HeadhuntingDirectoryRow } from "@/components/pages/CourseHeadhuntingsPage/component"
 
 type CourseHeadhuntingCompanyPageData = {
@@ -57,8 +57,8 @@ const PENDING_CONSULTANT_ROWS: ReadonlyArray<HeadhuntingDirectoryRow> = Array.fr
 const ConsultantList = ({ props, on, isLoading = false }: ComponentProps<ConsultantListData, CourseHeadhuntingCompanyPageActions>) => {
     const rows = isLoading ? PENDING_CONSULTANT_ROWS : props.rows
     const steps = !isLoading && props.rows.length === 0
-        ? [createGrammarProjection("content-next-row", () => <EmptyNotice props={{ message: props.emptyMessage }} />)]
-        : rows.map((row) => createGrammarProjection("content-next-row", () => {
+        ? [layoutContent("content-next-row", () => <EmptyNotice props={{ message: props.emptyMessage }} />)]
+        : rows.map((row) => layoutContent("content-next-row", () => {
             const label = [row.label, row.meta, row.actionLabel].filter((part) => part !== undefined).join(" · ")
             const handler = row.isActionAvailable === true ? on?.[`contact:${row.id}`] : undefined
             return handler === undefined ? (
@@ -67,21 +67,21 @@ const ConsultantList = ({ props, on, isLoading = false }: ComponentProps<Consult
                 <TextLink props={{ label, size: "md" }} on={{ press: handler }} />
             )
         }))
-    return <Grammar contract="content-next-list" render={createGrammarNode("content-next-list", { step: steps })} />
+    return <Grammar layout="content-next-list" render={layoutNode("content-next-list", { step: steps })} />
 }
 
-const ConsultantListContent = createGrammarNode("content-next-list", ConsultantList)
+const ConsultantListContent = layoutNode("content-next-list", ConsultantList)
 
 /** Pure company profile with real consultant contact actions and no company-level apply. */
 export const CourseHeadhuntingCompanyPageBase = (input: CourseHeadhuntingCompanyPageProps) => {
     const isLoading = input.state === "pending"
-    const header = createGrammarNode("page-header-stack", {
-        trail: createLeafNode("breadcrumbs", {}, () => (
+    const header = layoutNode("page-header-stack", {
+        trail: renderLeaf("breadcrumbs", {}, () => (
             <Breadcrumbs props={{ steps: input.props.trail, label: input.props.title }} on={{ course: input.on?.course }} />
         )),
-        title: createLeafNode("heading", {}, () => <Heading props={{ content: input.props.title, level: 1 }} isLoading={isLoading} />),
+        title: renderLeaf("heading", {}, () => <Heading props={{ content: input.props.title, level: 1 }} isLoading={isLoading} />),
     })
-    const toolbar = createGrammarProjection("catalog-search-count-view-row", () => (
+    const toolbar = layoutContent("catalog-search-count-view-row", () => (
         <>
             <Button props={{ label: input.props.backLabel, variant: "ghost", size: "sm" }} on={{ press: input.on?.back }} />
             {input.props.contactLabel === undefined ? null : (
@@ -91,7 +91,7 @@ export const CourseHeadhuntingCompanyPageBase = (input: CourseHeadhuntingCompany
     ))
     const noticeMessage = input.state === "not-found" ? input.props.notFoundMessage : input.props.errorMessage
     const notice = input.state === "not-found" || input.state === "failed"
-        ? createCompositeNode("empty-notice", {}, () => (
+        ? renderComposite("empty-notice", {}, () => (
             <EmptyNotice
                 props={{
                     icon: input.state === "failed" ? "retry" : "talents",
@@ -104,16 +104,16 @@ export const CourseHeadhuntingCompanyPageBase = (input: CourseHeadhuntingCompany
         : undefined
 
     return (
-        <Grammar contract="course-headhunting-company-page" render={createGrammarNode("course-headhunting-company-page", {
+        <Grammar layout="course-headhunting-company-page" render={layoutNode("course-headhunting-company-page", {
             header,
             actions: toolbar,
             ...(notice === undefined ? {
-                profile: createGrammarProjection("catalog-section-group", () => (
+                profile: layoutContent("catalog-section-group", () => (
                     <>
                         {input.props.description === undefined ? null : <Text props={{ content: input.props.description, size: "md" }} isLoading={isLoading} />}
                         {input.props.address === undefined ? null : <Text props={{ content: input.props.address, size: "sm", tone: "muted" }} isLoading={isLoading} />}
                         <SurfaceListCard
-                            contract="content-next-list"
+                            layout="content-next-list"
                             render={ConsultantListContent}
                             props={{
                                 label: input.props.consultantsLabel,
@@ -131,4 +131,3 @@ export const CourseHeadhuntingCompanyPageBase = (input: CourseHeadhuntingCompany
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "pure", domain: "learn" } as const

@@ -1,5 +1,5 @@
 import { ListBox, Select as HeroSelect } from "@heroui/react"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `Select`: one choice out of a short closed set.
@@ -65,7 +65,7 @@ export const Select = ({ props, on }: SelectProps) => {
 
     return (
         <HeroSelect.Root<SelectOption, "single">
-            data-tier="leaf"
+
             data-component="Select"
             fullWidth
             id={props.id}
@@ -96,4 +96,3 @@ export const Select = ({ props, on }: SelectProps) => {
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

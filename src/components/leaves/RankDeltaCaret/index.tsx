@@ -1,5 +1,5 @@
 import { skeletonVariants } from "@heroui/react"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * TARGET PATH: src/components/leaves/RankDeltaCaret/index.tsx
@@ -34,7 +34,7 @@ type RankDeltaDirection = "up" | "down" | "flat"
 /**
  * One complete class string per direction, written out rather than assembled.
  *
- * A shared base plus an interpolated tone reads shorter, and it is exactly what the registry rule
+ * A shared base plus an interpolated tone reads shorter, and it is exactly what the catalog rule
  * refuses: the string a direction actually renders would then exist only while this component runs,
  * so nothing - no reader, no test, no tool that parses this file as text - can read it back. Each
  * entry therefore restates the fixed width, alignment and numerals that keep the column to its left
@@ -74,7 +74,7 @@ export const RankDeltaCaret = ({ props, isLoading = false }: RankDeltaCaretProps
     if (isLoading) {
         return (
             <span
-                data-tier="leaf"
+
                 data-component="RankDeltaCaret"
                 data-loading="true"
                 aria-hidden="true"
@@ -87,7 +87,7 @@ export const RankDeltaCaret = ({ props, isLoading = false }: RankDeltaCaretProps
     const magnitude = delta === 0 ? "" : String(Math.abs(delta))
     return (
         <span
-            data-tier="leaf"
+
             data-component="RankDeltaCaret"
             data-loading="false"
             data-direction={direction}
@@ -100,4 +100,3 @@ export const RankDeltaCaret = ({ props, isLoading = false }: RankDeltaCaretProps
 }
 
 /** Source-level tier marker. */
-export const meta = { shape: "leaf", world: "pure" } as const

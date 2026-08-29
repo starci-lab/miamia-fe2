@@ -4,7 +4,7 @@ import { IconTile } from "@/components/leaves/IconTile"
 import { Progress } from "@/components/leaves/Progress"
 import { StatusDot, type StatusDotTone } from "@/components/leaves/StatusDot"
 import { Text } from "@/components/leaves/Text"
-import { createGrammarNode, createLeafNode, type CompositeProps } from "@/components/contracts/props"
+import { layoutNode, renderLeaf, type CompositeProps } from "@/modules/types/layout"
 
 /** One semantic course-progress dimension. */
 export type CourseProgressDimension = {
@@ -37,41 +37,40 @@ export type CourseProgressRowProps = CompositeProps<CourseProgressRowData, Cours
 
 /** Draw one whole-row course destination with three inspectable progress dimensions. */
 export const CourseProgressRow = ({ props, on, isLoading = false }: CourseProgressRowProps) => {
-    const heading = createGrammarNode("course-progress-heading", {
-        title: createLeafNode("text", { size: "md", weight: "semibold" }, () => (
+    const heading = layoutNode("course-progress-heading", {
+        title: renderLeaf("text", { size: "md", weight: "semibold" }, () => (
             <Text props={{ content: props.title, size: "md", weight: "semibold", isPressLabel: true }} isLoading={isLoading} />
         )),
         ...(props.isTrial === true && !isLoading ? {
-            trial: createLeafNode("badge", {}, () => <Badge props={{ content: props.trialLabel, tone: "warning" }} />),
+            trial: renderLeaf("badge", {}, () => <Badge props={{ content: props.trialLabel, tone: "warning" }} />),
         } : {}),
-        percent: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+        percent: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
             <Text props={{ content: props.percentLabel, size: "xs", tone: "muted" }} isLoading={isLoading} />
         )),
     })
-    const progress = createGrammarNode("segmented-progress-track", {
-        segment: props.dimensions.map((dimension) => createLeafNode("progress", {}, () => (
+    const progress = layoutNode("segmented-progress-track", {
+        segment: props.dimensions.map((dimension) => renderLeaf("progress", {}, () => (
             <Progress props={{ value: dimension.percent, label: dimension.label }} isLoading={isLoading} />
         ))),
     })
-    const legend = createGrammarNode("progress-dimension-legend", {
-        dimension: props.dimensions.map((dimension) => createGrammarNode("status-dot-with-label", {
-            mark: createLeafNode("status-dot", {}, () => (
+    const legend = layoutNode("progress-dimension-legend", {
+        dimension: props.dimensions.map((dimension) => layoutNode("status-dot-with-label", {
+            mark: renderLeaf("status-dot", {}, () => (
                 <StatusDot props={{ tone: dimension.tone, label: dimension.label }} isLoading={isLoading} />
             )),
-            label: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+            label: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                 <Text props={{ content: `${dimension.label} · ${dimension.completed}/${dimension.total}`, size: "xs", tone: "muted" }} isLoading={isLoading} />
             )),
         })),
     })
-    const body = createGrammarNode("course-progress-body", { heading, progress, legend })
-    const content = createGrammarNode("course-progress-row", {
-        mark: createLeafNode("icon-tile", {}, () => (
+    const body = layoutNode("course-progress-body", { heading, progress, legend })
+    const content = layoutNode("course-progress-row", {
+        mark: renderLeaf("icon-tile", {}, () => (
             <IconTile props={{ icon: "course", image: props.cover, tone: "accent", size: "md" }} isLoading={isLoading} />
         )),
         body,
     })
-    return <PressableSurface contract="course-progress-row" hover="label" render={content} label={props.title ?? "Course"} press={on?.open} disabled={isLoading || props.isPending === true || props.isDisabled === true} />
+    return <PressableSurface layout="course-progress-row" hover="label" render={content} label={props.title ?? "Course"} press={on?.open} disabled={isLoading || props.isPending === true || props.isDisabled === true} />
 }
 
 /** Source-level tier marker. */
-export const meta = { shape: "composite", world: "pure" } as const

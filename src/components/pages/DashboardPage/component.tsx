@@ -1,5 +1,5 @@
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { ContinueLearning } from "@/components/blocks/dashboard/ContinueLearning"
 import { QuickActions } from "@/components/blocks/dashboard/QuickActions"
@@ -14,7 +14,7 @@ import { ChangelogList } from "@/components/blocks/dashboard/ChangelogList"
 import { ExploreTab } from "@/components/blocks/dashboard/ExploreTab"
 import { CoursesTab } from "@/components/blocks/dashboard/CoursesTab"
 import { CommunityTab } from "@/components/blocks/dashboard/CommunityTab"
-import { createCompositeNode, createGrammarNode, createGrammarProjection } from "@/components/contracts/props"
+import { renderComposite, layoutNode, layoutContent } from "@/modules/types/layout"
 
 /**
  * PAGE - `DashboardPage`, presentational half.
@@ -31,7 +31,7 @@ import { createCompositeNode, createGrammarNode, createGrammarProjection } from 
 
 /** Data required by the dashboard Grammar. */
 export type DashboardPageData = {
-    /** The panel selected by the navbar's original `?tab=` contract. */
+    /** The panel selected by the navbar's original `?tab=` layout. */
     readonly selectedTab: string
     readonly unavailableMessage: string
 }
@@ -53,42 +53,42 @@ export const DashboardPageBase = (input: DashboardPageProps) => {
      * they reach for once they have decided to move. Putting the destinations above the standing
      * makes the column answer a question nobody asked yet.
      */
-    const rail = createGrammarNode("dashboard-rail", {
+    const rail = layoutNode("dashboard-rail", {
         section: [
-            createGrammarProjection("stacked-stat-rows", () => <IdentityRail />),
-            createGrammarProjection("label-row-over-card", () => <QuickActions />),
+            layoutContent("stacked-stat-rows", () => <IdentityRail />),
+            layoutContent("label-row-over-card", () => <QuickActions />),
         ],
     })
 
     const resolveMain = () => {
         if (input.props.selectedTab === "explore") {
-            return createGrammarNode("dashboard-main", {
-                section: [createGrammarProjection("explore-main", () => <ExploreTab />)],
+            return layoutNode("dashboard-main", {
+                section: [layoutContent("explore-main", () => <ExploreTab />)],
             })
         }
         if (input.props.selectedTab === "courses") {
-            return createGrammarProjection("dashboard-tab-main", () => <CoursesTab />)
+            return layoutContent("dashboard-tab-main", () => <CoursesTab />)
         }
         if (input.props.selectedTab === "community") {
-            return createGrammarProjection("dashboard-tab-main", () => <CommunityTab />)
+            return layoutContent("dashboard-tab-main", () => <CommunityTab />)
         }
         if (input.props.selectedTab === "overview") {
-            return createGrammarNode("dashboard-main", {
+            return layoutNode("dashboard-main", {
                 section: [
-                    createGrammarProjection("label-row-over-card", () => <ContinueLearning />),
-                    createGrammarProjection("label-row-over-card", () => <DailyQuest />),
-                    createGrammarProjection("label-row-over-card", () => <StreakStrip />),
-                    createGrammarProjection("label-row-over-card", () => <WeeklyGoals />),
-                    createGrammarProjection("label-row-over-card", () => <JobReadinessWidget />),
-                    createGrammarProjection("label-row-over-card", () => <WeeklyChallengeCard />),
-                    createGrammarProjection("label-row-over-card", () => <OverviewContributions />),
-                    createGrammarProjection("label-row-over-card", () => <ChangelogList />),
+                    layoutContent("label-row-over-card", () => <ContinueLearning />),
+                    layoutContent("label-row-over-card", () => <DailyQuest />),
+                    layoutContent("label-row-over-card", () => <StreakStrip />),
+                    layoutContent("label-row-over-card", () => <WeeklyGoals />),
+                    layoutContent("label-row-over-card", () => <JobReadinessWidget />),
+                    layoutContent("label-row-over-card", () => <WeeklyChallengeCard />),
+                    layoutContent("label-row-over-card", () => <OverviewContributions />),
+                    layoutContent("label-row-over-card", () => <ChangelogList />),
                 ],
             })
         }
-        return createGrammarProjection("centred-empty-notice", () => (
-            <SurfaceCard contract="centred-empty-notice" render={createGrammarNode("centred-empty-notice", {
-                notice: createCompositeNode("empty-notice", {}, () => (
+        return layoutContent("centred-empty-notice", () => (
+            <SurfaceCard layout="centred-empty-notice" render={layoutNode("centred-empty-notice", {
+                notice: renderComposite("empty-notice", {}, () => (
                     <EmptyNotice props={{ icon: input.props.selectedTab === "community" ? "community" : "explore", message: input.props.unavailableMessage }} />
                 )),
             })} />
@@ -98,8 +98,8 @@ export const DashboardPageBase = (input: DashboardPageProps) => {
 
     return (
         <Grammar
-            contract="dashboard-rail-then-main"
-            render={createGrammarNode("dashboard-rail-then-main", {
+            layout="dashboard-rail-then-main"
+            render={layoutNode("dashboard-rail-then-main", {
                 rail,
                 main,
             })}
@@ -108,4 +108,3 @@ export const DashboardPageBase = (input: DashboardPageProps) => {
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { world: "pure", domain: "dashboard" } as const

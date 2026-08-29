@@ -3,7 +3,7 @@
 import { useCallback, useRef } from "react"
 import { AuthenticationPanel } from "@/components/blocks/auth/AuthenticationPanel"
 import type { AuthMode } from "@/components/blocks/auth/AuthenticationPanel/component"
-import { createGrammarProjection } from "@/components/contracts/props"
+import { layoutContent } from "@/modules/types/layout"
 import { SignInOverlayBase as SignInOverlayView } from "./component"
 
 /**
@@ -43,7 +43,7 @@ export const SignInOverlay = ({ isOpen, initialMode = "signIn", onDismiss }: Sig
         <SignInOverlayView
             isOpen={isOpen}
             onDismiss={onDismiss}
-            render={createGrammarProjection("centred-page-column", () => (
+            render={layoutContent("centred-page-column", () => (
                 /*
                  * Mounted only while the surface is open, not merely hidden with it. The panel
                  * runs the auth machine, and a second copy of every field id must not remain in
@@ -56,4 +56,3 @@ export const SignInOverlay = ({ isOpen, initialMode = "signIn", onDismiss }: Sig
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { world: "connected", domain: "auth" } as const

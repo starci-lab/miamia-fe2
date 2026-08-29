@@ -22,4 +22,3 @@ export const CourseLearnModulePage = ({ moduleId }: CourseLearnModulePageConnect
 }
 
 /** Connected ownership metadata for the module route. */
-export const meta = { world: "connected", domain: "learn" } as const

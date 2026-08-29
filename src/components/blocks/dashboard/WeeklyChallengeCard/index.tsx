@@ -82,4 +82,3 @@ export const WeeklyChallengeCard = () => {
 export * from "./component"
 
 /** Source-level tier marker for the connected dashboard block. */
-export const meta = { world: "connected", domain: "dashboard" } as const

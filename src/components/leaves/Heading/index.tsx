@@ -1,5 +1,5 @@
 import { Typography, skeletonVariants } from "@heroui/react"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `Heading`: the name of a thing, at a level of the document outline.
@@ -61,7 +61,7 @@ export const Heading = ({ props, isLoading = false }: HeadingProps) => {
     const level = props.level ?? 2
     return (
         <Typography.Heading
-            data-tier="leaf"
+
             data-component="Heading"
             data-level={level}
             data-loading={isLoading ? "true" : "false"}
@@ -75,4 +75,3 @@ export const Heading = ({ props, isLoading = false }: HeadingProps) => {
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

@@ -6,10 +6,10 @@ import { Button } from "@/components/leaves/Button"
 import { Text } from "@/components/leaves/Text"
 import type { DayCellData } from "@/components/leaves/DayCell"
 import {
-    createCompositeNode,
-    createGrammarNode,
-    createLeafNode,
-} from "@/components/contracts/props"
+    renderComposite,
+    layoutNode,
+    renderLeaf,
+} from "@/modules/types/layout"
 
 /**
  * BLOCK - `StreakStrip`, presentational half.
@@ -77,8 +77,8 @@ type StreakStripInput = StreakStripProps & { readonly on?: StreakStripActions }
 export const StreakStripBase = (input: StreakStripInput) => {
     if (input.state === "failed") {
         return (
-            <SurfaceCard props={{ label: input.props.label }} contract="empty-notice-card"
-                render={createGrammarNode("empty-notice-card", { notice: createCompositeNode("empty-notice", {}, () => <EmptyNotice
+            <SurfaceCard props={{ label: input.props.label }} layout="empty-notice-card"
+                render={layoutNode("empty-notice-card", { notice: renderComposite("empty-notice", {}, () => <EmptyNotice
                     props={{ icon: "streak", message: input.props.message, actionLabel: input.props.retryLabel }}
                     on={{ act: input.on?.retry }}
                 />) })} />
@@ -94,16 +94,16 @@ export const StreakStripBase = (input: StreakStripInput) => {
     const promptMessage = input.state === "ready" ? input.props.emptyMessage : input.props.message
 
     const outcome = showActiveCluster
-        ? createGrammarNode("streak-active-summary", {
-            current: createLeafNode("text", { size: "sm", weight: "medium" }, () => (
+        ? layoutNode("streak-active-summary", {
+            current: renderLeaf("text", { size: "sm", weight: "medium" }, () => (
                 <Text props={{ content: input.state === "ready" ? input.props.current : undefined, size: "sm", weight: "medium" }} isLoading={isLoading} />
             )),
-            record: createLeafNode("badge", {}, () => (
+            record: renderLeaf("badge", {}, () => (
                 <Badge props={{ content: input.state === "ready" ? input.props.record : "", tone: "accent" }} isLoading={isLoading} />
             )),
         })
-        : createGrammarNode("streak-empty-prompt", {
-            message: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+        : layoutNode("streak-empty-prompt", {
+            message: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                 <Text
                     props={{
                         content: promptMessage,
@@ -113,7 +113,7 @@ export const StreakStripBase = (input: StreakStripInput) => {
                     isLoading={isLoading}
                 />
             )),
-            action: createLeafNode("button", { size: "sm", variant: "primary" }, () => (
+            action: renderLeaf("button", { size: "sm", variant: "primary" }, () => (
                 <Button
                     props={{ label: input.props.actionLabel, size: "sm", variant: "primary" }}
                     on={{ press: input.on?.learn }}
@@ -125,10 +125,10 @@ export const StreakStripBase = (input: StreakStripInput) => {
     return (
         <SurfaceCard
             props={{ label: input.props.label }}
-            contract="streak-summary-card"
-            render={createGrammarNode("streak-summary-card", {
-                summary: createGrammarNode("streak-week-with-outcome", {
-                    week: createCompositeNode("streak-week-run", {}, () => (
+            layout="streak-summary-card"
+            render={layoutNode("streak-summary-card", {
+                summary: layoutNode("streak-week-with-outcome", {
+                    week: renderComposite("streak-week-run", {}, () => (
                         <StreakWeekRun
                             props={{ days }}
                             isLoading={isLoading}
@@ -137,11 +137,11 @@ export const StreakStripBase = (input: StreakStripInput) => {
                     outcome,
                 }),
                 ...(hasActivity && !activeToday && input.state === "ready" ? {
-                    nudge: createGrammarNode("streak-daily-nudge", {
-                        message: createLeafNode("text", { size: "sm", weight: "medium" }, () => (
+                    nudge: layoutNode("streak-daily-nudge", {
+                        message: renderLeaf("text", { size: "sm", weight: "medium" }, () => (
                             <Text props={{ content: input.props.nudge, size: "sm", weight: "medium" }} />
                         )),
-                        action: createLeafNode("button", { size: "sm", variant: "primary" }, () => (
+                        action: renderLeaf("button", { size: "sm", variant: "primary" }, () => (
                             <Button
                                 props={{ label: input.props.actionLabel, size: "sm", variant: "primary" }}
                                 on={{ press: input.on?.learn }}
@@ -156,4 +156,3 @@ export const StreakStripBase = (input: StreakStripInput) => {
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { world: "pure", domain: "streak" } as const

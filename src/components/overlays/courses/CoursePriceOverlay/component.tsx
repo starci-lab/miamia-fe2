@@ -1,6 +1,6 @@
 import { ModalBranch } from "@/components/branches/ModalBranch"
-import type { ContractKey } from "@/components/contracts"
-import type { ContractComponent } from "@/components/contracts/props"
+import type { LayoutKey } from "@/resources/visual-layouts"
+import type { LayoutValue } from "@/modules/types/layout"
 
 /**
  * OVERLAY - `CoursePriceOverlay`, presentational half.
@@ -22,11 +22,11 @@ import type { ContractComponent } from "@/components/contracts/props"
  */
 
 /** Props for {@link CoursePriceOverlayBase}. */
-export type CoursePriceOverlayProps<K extends ContractKey> = {
+export type CoursePriceOverlayProps<K extends LayoutKey> = {
     /** Whether the surface is on screen. Owned by whoever mounts it, never by the surface. */
     readonly isOpen: boolean
     /** Typed branch mounted inside the otherwise content-agnostic modal shell. */
-    readonly render: ContractComponent<K>
+    readonly render: LayoutValue<K>
     /** Every way out: the close control, Escape and the backdrop. */
     readonly onDismiss: () => void
 }
@@ -36,15 +36,14 @@ export type CoursePriceOverlayProps<K extends ContractKey> = {
  *
  * @param input - {@link CoursePriceOverlayProps}
  */
-export const CoursePriceOverlayBase = <const K extends ContractKey>(input: CoursePriceOverlayProps<K>) => (
+export const CoursePriceOverlayBase = <const K extends LayoutKey>(input: CoursePriceOverlayProps<K>) => (
     <ModalBranch
         isOpen={input.isOpen}
         size="sm"
-        contract={input.render.meta.contract}
+        layout={input.render.layout}
         render={input.render}
         onDismiss={input.onDismiss}
     />
 )
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "overlay", world: "pure", domain: "courses" } as const

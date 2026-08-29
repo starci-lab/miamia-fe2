@@ -1,10 +1,10 @@
 import { PressableSurface } from "@/components/branches/PressableSurface"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { Badge } from "@/components/leaves/Badge"
 import { Icon } from "@/components/leaves/Icon"
 import { Text } from "@/components/leaves/Text"
-import type { CompositeProps } from "@/components/contracts/props"
-import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
+import type { CompositeProps } from "@/modules/types/layout"
+import { layoutNode, renderLeaf } from "@/modules/types/layout"
 
 /** One reusable evidence row after product meaning and copy are resolved by its block. */
 export type EvidenceRowData = {
@@ -23,32 +23,31 @@ export type EvidenceRowProps = CompositeProps<EvidenceRowData, EvidenceRowAction
 
 /** Draw one proof title, qualifier and trailing fact with optional whole-row navigation. */
 export const EvidenceRow = ({ props, on, isLoading = false }: EvidenceRowProps) => {
-    const content = createGrammarNode("evidence-title-subtitle-fact-row", {
-        identity: createGrammarNode("evidence-title-over-subtitle", {
-            title: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
+    const content = layoutNode("evidence-title-subtitle-fact-row", {
+        identity: layoutNode("evidence-title-over-subtitle", {
+            title: renderLeaf("text", { size: "sm", weight: "semibold" }, () => (
                 <Text props={{ content: props.title, size: "sm", weight: "semibold" }} isLoading={isLoading} />
             )),
             ...(props.subtitle === undefined ? {} : {
-                subtitle: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+                subtitle: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                     <Text props={{ content: props.subtitle, size: "xs" }} isLoading={isLoading} />
                 )),
             }),
         }),
         ...(props.fact === undefined ? {} : {
-            fact: createLeafNode("badge", {}, () => (
+            fact: renderLeaf("badge", {}, () => (
                 <Badge props={{ content: props.fact, tone: props.factTone }} isLoading={isLoading} />
             )),
         }),
         ...(props.isPressable === true ? {
-            disclosure: createLeafNode("icon", {}, () => <Icon props={{ name: "disclosure", role: "chip" }} />),
+            disclosure: renderLeaf("icon", {}, () => <Icon props={{ name: "disclosure", role: "chip" }} />),
         } : {}),
     })
     return props.isPressable === true ? (
-        <PressableSurface contract="evidence-title-subtitle-fact-row" render={content} label={props.title ?? ""} press={on?.press} />
+        <PressableSurface layout="evidence-title-subtitle-fact-row" render={content} label={props.title ?? ""} press={on?.press} />
     ) : (
-        <Grammar contract="evidence-title-subtitle-fact-row" render={content} />
+        <Grammar layout="evidence-title-subtitle-fact-row" render={content} />
     )
 }
 
 /** Source-level marker for the pure evidence composite. */
-export const meta = { shape: "composite", world: "pure" } as const

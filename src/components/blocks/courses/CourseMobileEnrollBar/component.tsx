@@ -1,11 +1,11 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { Button } from "@/components/leaves/Button"
 import { Text } from "@/components/leaves/Text"
 import {
-    createGrammarNode,
-    createGrammarProjection,
-    createLeafNode,
-} from "@/components/contracts/props"
+    layoutNode,
+    layoutContent,
+    renderLeaf,
+} from "@/modules/types/layout"
 
 /**
  * BLOCK - `CourseMobileEnrollBar`: the buy decision, kept reachable on a narrow viewport.
@@ -69,15 +69,15 @@ export const CourseMobileEnrollBarBase = (input: CourseMobileEnrollBarProps) => 
     const isPricePending = input.state === "price-pending"
     return (
         <Grammar
-            contract="course-mobile-action-bar"
-            render={createGrammarNode("course-mobile-action-bar", {
-                price: createGrammarNode("price-discount-line", {
-                    price: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
+            layout="course-mobile-action-bar"
+            render={layoutNode("course-mobile-action-bar", {
+                price: layoutNode("price-discount-line", {
+                    price: renderLeaf("text", { size: "sm", weight: "semibold" }, () => (
                         <Text props={{ content: input.props.price, size: "sm", weight: "semibold" }} isLoading={isPricePending} />
                     )),
                     original: input.props.originalPrice === undefined || isPricePending
                         ? undefined
-                        : createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+                        : renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                             <Text props={{ content: input.props.originalPrice, size: "xs", tone: "muted", isSuperseded: true }} />
                         )),
                     // No discount in the pinned bar. The rail is where a reader compares; the bar is
@@ -85,7 +85,7 @@ export const CourseMobileEnrollBarBase = (input: CourseMobileEnrollBarProps) => 
                     // the one strip that must stay out of the way.
                     discount: undefined,
                 }),
-                action: createLeafNode("button", {}, () => (
+                action: renderLeaf("button", {}, () => (
                     <Button props={{ label: input.props.ctaLabel, variant: "primary", size: "sm" }} on={{ press: input.on?.act }} />
                 )),
             })}
@@ -95,7 +95,6 @@ export const CourseMobileEnrollBarBase = (input: CourseMobileEnrollBarProps) => 
 
 /** The bar, branded for the slot that holds it. See the rail for why this is a projection. */
 export const CourseMobileEnrollBar = (input: CourseMobileEnrollBarProps) =>
-    createGrammarProjection("course-mobile-action-bar", () => <CourseMobileEnrollBarBase {...input} />)
+    layoutContent("course-mobile-action-bar", () => <CourseMobileEnrollBarBase {...input} />)
 
 /** Source-level ownership marker. */
-export const meta = { world: "pure", domain: "courses" } as const

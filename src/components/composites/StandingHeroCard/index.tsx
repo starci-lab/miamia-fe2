@@ -4,11 +4,11 @@ import { Button } from "@/components/leaves/Button"
 import { Progress } from "@/components/leaves/Progress"
 import { Text } from "@/components/leaves/Text"
 import {
-    createCompositeNode,
-    createGrammarNode,
-    createLeafNode,
+    renderComposite,
+    layoutNode,
+    renderLeaf,
     type CompositeProps,
-} from "@/components/contracts/props"
+} from "@/modules/types/layout"
 
 /**
  * COMPOSITE - `StandingHeroCard`: the viewer's place, the distance to the next one, and the one
@@ -53,16 +53,16 @@ export type StandingHeroCardProps = CompositeProps<StandingHeroCardData, Standin
 export const StandingHeroCard = ({ props, on, isLoading = false }: StandingHeroCardProps) => {
     const progress = props.progress
     return (
-        <SurfaceCard contract="standing-hero-card" render={createGrammarNode("standing-hero-card", {
-            standing: createCompositeNode("leaderboard-standing-row", {}, () => (
+        <SurfaceCard layout="standing-hero-card" render={layoutNode("standing-hero-card", {
+            standing: renderComposite("leaderboard-standing-row", {}, () => (
                 <LeaderboardStandingRow props={props.standing} isLoading={isLoading} />
             )),
             ...(progress === undefined ? {} : {
-                goal: createGrammarNode("standing-goal-meter", {
-                    label: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+                goal: layoutNode("standing-goal-meter", {
+                    label: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                         <Text props={{ content: progress.label, size: "xs", tone: "muted" }} isLoading={isLoading} />
                     )),
-                    progress: createLeafNode("progress", {}, () => (
+                    progress: renderLeaf("progress", {}, () => (
                         <Progress
                             props={{
                                 value: Math.round(progress.ratio * 100),
@@ -73,7 +73,7 @@ export const StandingHeroCard = ({ props, on, isLoading = false }: StandingHeroC
                     )),
                 }),
             }),
-            action: createLeafNode("button", {}, () => (
+            action: renderLeaf("button", {}, () => (
                 <Button
                     props={{ label: props.ctaLabel, variant: "primary", size: "md" }}
                     on={{ press: on?.cta }}
@@ -85,4 +85,3 @@ export const StandingHeroCard = ({ props, on, isLoading = false }: StandingHeroC
 }
 
 /** Source-level tier marker. */
-export const meta = { shape: "composite", world: "pure" } as const

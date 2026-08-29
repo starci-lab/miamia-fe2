@@ -2,7 +2,7 @@
 
 import { ExamDownloadCheckoutPanel } from "@/components/blocks/payment/ExamDownloadCheckoutPanel"
 import type { ExamDownloadPackage } from "@/modules/api/graphql/queries/types/miamia-pricing"
-import { createGrammarProjection } from "@/components/contracts/props"
+import { layoutContent } from "@/modules/types/layout"
 import { ExamDownloadCheckoutOverlayBase } from "./component"
 
 /** Package facts and provider return destinations for the checkout modal. */
@@ -12,10 +12,9 @@ export const ExamDownloadCheckoutOverlay = (input: ExamDownloadCheckoutOverlayCo
     <ExamDownloadCheckoutOverlayBase
         isOpen={input.isOpen}
         onDismiss={input.onDismiss}
-        render={createGrammarProjection("purchase-checkout-panel", () => (
+        render={layoutContent("purchase-checkout-panel", () => (
             <ExamDownloadCheckoutPanel packageId={input.packageId} amount={input.amount} returnUrl={input.returnUrl} cancelUrl={input.cancelUrl} onDismiss={input.onDismiss} />
         ))}
     />
 )
 /** Declares the connected checkout overlay boundary. */
-export const meta = { shape: "overlay", world: "connected", domain: "payment" } as const

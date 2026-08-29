@@ -1,10 +1,10 @@
-import { CLASS_NAME_1 } from './styles'
 "use client"
+import { CLASS_NAME_1 } from "./classNames"
 
 import { useRef, useState, type ReactNode } from "react"
 import { InputGroup } from "@heroui/react"
 import { Icon } from "@/components/leaves/Icon"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `SearchBox`: the one field that lives in the bar.
@@ -125,7 +125,7 @@ export const SearchBox = ({ props, on }: SearchBoxProps) => {
     return (
         <form
             ref={formRef}
-            data-tier="leaf"
+
             data-component="SearchBox"
             role="search"
             className={CLASS_NAME_1}
@@ -155,4 +155,3 @@ export const SearchBox = ({ props, on }: SearchBoxProps) => {
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

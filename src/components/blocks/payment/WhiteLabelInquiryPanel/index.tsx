@@ -50,4 +50,3 @@ export const WhiteLabelInquiryPanel = ({ onDismiss, onPendingChange }: WhiteLabe
     return <WhiteLabelInquiryPanelBase state={state} values={values} errors={errors} copy={copy} onChange={change} onSubmit={run} onDismiss={onDismiss} />
 }
 /** Declares the connected inquiry block boundary. */
-export const meta = { shape: "block", world: "connected", domain: "payment" } as const

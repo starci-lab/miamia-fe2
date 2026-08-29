@@ -3,7 +3,7 @@ import {
     ContributionCalendar,
     type ContributionCalendarDay,
 } from "@/components/composites/ContributionCalendar"
-import { createCompositeNode, createGrammarNode } from "@/components/contracts/props"
+import { renderComposite, layoutNode } from "@/modules/types/layout"
 
 /** One calendar day with its already-resolved accessible label. */
 export type ContributionDay = ContributionCalendarDay
@@ -51,9 +51,9 @@ export const OverviewContributionsBase = (input: OverviewContributionsProps) => 
     return (
         <SurfaceCard
             props={{ label: input.props.label }}
-            contract="contribution-calendar-card"
-            render={createGrammarNode("contribution-calendar-card", {
-                calendar: createCompositeNode("contribution-calendar", {}, () => (
+            layout="contribution-calendar-card"
+            render={layoutNode("contribution-calendar-card", {
+                calendar: renderComposite("contribution-calendar", {}, () => (
                     <ContributionCalendar
                         props={{
                             year: input.props.year,
@@ -77,4 +77,3 @@ export const OverviewContributionsBase = (input: OverviewContributionsProps) => 
 }
 
 /** Source-level tier marker for the pure dashboard block. */
-export const meta = { world: "pure", domain: "dashboard" } as const

@@ -15,4 +15,3 @@ export const StudyPracticePage = ({ slug }: StudyPracticePageConnectedProps) => 
     return <><StudyPracticePageBase surface={Surface} /><SignInOverlay isOpen={signInOpen} onDismiss={() => setSignInOpen(false)} /></>
 }
 /** Declares the connected Study practice page. */
-export const meta = { shape: "page", world: "connected", domain: "study" } as const

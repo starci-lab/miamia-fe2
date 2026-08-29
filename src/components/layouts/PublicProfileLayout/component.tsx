@@ -1,14 +1,14 @@
 import type { ComponentType } from "react"
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { ProfileHero } from "@/components/blocks/profile/ProfileHero"
 import { ProfileTabsBase as ProfileTabsView, type ProfileTabsData } from "@/components/blocks/profile/ProfileTabs"
 import {
-    createCompositeNode,
-    createGrammarNode,
-    createGrammarProjection,
-} from "@/components/contracts/props"
+    renderComposite,
+    layoutNode,
+    layoutContent,
+} from "@/modules/types/layout"
 
 /** Screen-level situations settled by the persistent public-profile layout. */
 export type PublicProfileLayoutProps = {
@@ -38,9 +38,9 @@ export const PublicProfileLayoutBase = (input: PublicProfileLayoutProps) => {
     if (input.state === "failed") {
         return (
             <SurfaceCard
-                contract="centred-empty-notice"
-                render={createGrammarNode("centred-empty-notice", {
-                    notice: createCompositeNode("empty-notice", {}, () => (
+                layout="centred-empty-notice"
+                render={layoutNode("centred-empty-notice", {
+                    notice: renderComposite("empty-notice", {}, () => (
                         <EmptyNotice
                             props={{ icon: "retry", message: input.props.failedMessage, actionLabel: input.props.retryLabel }}
                             on={{ act: input.on.retry }}
@@ -54,9 +54,9 @@ export const PublicProfileLayoutBase = (input: PublicProfileLayoutProps) => {
     if (input.state === "not-found") {
         return (
             <SurfaceCard
-                contract="centred-empty-notice"
-                render={createGrammarNode("centred-empty-notice", {
-                    notice: createCompositeNode("empty-notice", {}, () => (
+                layout="centred-empty-notice"
+                render={layoutNode("centred-empty-notice", {
+                    notice: renderComposite("empty-notice", {}, () => (
                         <EmptyNotice
                             props={{ icon: "account", message: input.props.notFoundMessage, actionLabel: input.props.homeLabel }}
                             on={{ act: input.on.home }}
@@ -69,16 +69,16 @@ export const PublicProfileLayoutBase = (input: PublicProfileLayoutProps) => {
 
     if (input.state === "locked") {
         return (
-            <Grammar contract="profile-page-measure" render={createGrammarNode("profile-page-measure", {
-                inset: createGrammarNode("profile-page-inset", {
-                    shell: createGrammarNode("profile-rail-container", {
-                        split: createGrammarNode("profile-rail-then-main", {
-                            rail: createGrammarNode("profile-identity-rail", {
-                                hero: createGrammarProjection("profile-hero-rail", () => <ProfileHero />),
+            <Grammar layout="profile-page-measure" render={layoutNode("profile-page-measure", {
+                inset: layoutNode("profile-page-inset", {
+                    shell: layoutNode("profile-rail-container", {
+                        split: layoutNode("profile-rail-then-main", {
+                            rail: layoutNode("profile-identity-rail", {
+                                hero: layoutContent("profile-hero-rail", () => <ProfileHero />),
                             }),
-                            main: createGrammarProjection("centred-empty-notice", () => (
-                                <SurfaceCard contract="centred-empty-notice" render={createGrammarNode("centred-empty-notice", {
-                                    notice: createCompositeNode("empty-notice", {}, () => (
+                            main: layoutContent("centred-empty-notice", () => (
+                                <SurfaceCard layout="centred-empty-notice" render={layoutNode("centred-empty-notice", {
+                                    notice: renderComposite("empty-notice", {}, () => (
                                         <EmptyNotice
                                             props={{
                                                 icon: "password",
@@ -99,18 +99,18 @@ export const PublicProfileLayoutBase = (input: PublicProfileLayoutProps) => {
     }
 
     return (
-        <Grammar contract="profile-tabs-over-body" render={createGrammarNode("profile-tabs-over-body", {
-            tabs: createGrammarProjection("underlined-tab-strip", () => (
+        <Grammar layout="profile-tabs-over-body" render={layoutNode("profile-tabs-over-body", {
+            tabs: layoutContent("underlined-tab-strip", () => (
                 <ProfileTabsView props={input.props.tabs} on={{ select: input.on.selectTab }} />
             )),
-            body: createGrammarNode("profile-page-measure", {
-                inset: createGrammarNode("profile-page-inset", {
-                    shell: createGrammarNode("profile-rail-container", {
-                        split: createGrammarNode("profile-rail-then-main", {
-                            rail: createGrammarNode("profile-identity-rail", {
-                                hero: createGrammarProjection("profile-hero-rail", () => <ProfileHero />),
+            body: layoutNode("profile-page-measure", {
+                inset: layoutNode("profile-page-inset", {
+                    shell: layoutNode("profile-rail-container", {
+                        split: layoutNode("profile-rail-then-main", {
+                            rail: layoutNode("profile-identity-rail", {
+                                hero: layoutContent("profile-hero-rail", () => <ProfileHero />),
                             }),
-                            main: createGrammarProjection("profile-main", () => <Body />),
+                            main: layoutContent("profile-main", () => <Body />),
                         }),
                     }),
                 }),
@@ -120,4 +120,3 @@ export const PublicProfileLayoutBase = (input: PublicProfileLayoutProps) => {
 }
 
 /** Source-level marker for the pure profile layout. */
-export const meta = { world: "pure", domain: "profile" } as const

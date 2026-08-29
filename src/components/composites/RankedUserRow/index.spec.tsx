@@ -17,7 +17,7 @@ describe("RankedUserRow", () => {
             movementLabel: "Up 1",
             verdict: "success",
         }} />)
-        const successRow = success.container.querySelector("[data-node=\"ranked-user-row-success-verdict\"]")
+        const successRow = success.container.querySelector(".layout-name-ranked-user-row-success-verdict")
         expect(successRow?.className).toContain("inset-shadow-[2px_0_0_0_var(--success)]")
         expect(successRow?.className).not.toMatch(/\bborder\b/)
         success.unmount()
@@ -31,7 +31,7 @@ describe("RankedUserRow", () => {
             movementLabel: "Down 2",
             verdict: "danger",
         }} />)
-        const dangerRow = danger.container.querySelector("[data-node=\"ranked-user-row-danger-verdict\"]")
+        const dangerRow = danger.container.querySelector(".layout-name-ranked-user-row-danger-verdict")
         expect(dangerRow?.className).toContain("inset-shadow-[2px_0_0_0_var(--danger)]")
         expect(dangerRow?.className).not.toMatch(/\bborder\b/)
     })

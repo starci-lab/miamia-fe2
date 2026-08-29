@@ -53,4 +53,3 @@ export const ProfileWrappedPage = () => {
 
 export * from "./component"
 /** Source-level connected page marker. */
-export const meta = { world: "connected", domain: "profile" } as const

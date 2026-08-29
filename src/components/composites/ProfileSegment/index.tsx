@@ -1,6 +1,6 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { Text } from "@/components/leaves/Text"
-import { createGrammarNode, createLeafNode, type CompositeProps } from "@/components/contracts/props"
+import { layoutNode, renderLeaf, type CompositeProps } from "@/modules/types/layout"
 
 /** Resolved caption for one distribution segment. */
 export type ProfileSegmentData = { readonly label?: string }
@@ -9,10 +9,9 @@ export type ProfileSegmentProps = CompositeProps<ProfileSegmentData>
 
 /** Draw one share inside a joined distribution run. */
 export const ProfileSegment = ({ props, isLoading = false }: ProfileSegmentProps) => (
-    <Grammar contract="profile-segment-piece" render={createGrammarNode("profile-segment-piece", {
-        value: createLeafNode("text", { size: "xs", tone: "muted" }, () => <Text props={{ content: props.label, size: "xs", tone: "muted" }} isLoading={isLoading} />),
+    <Grammar layout="profile-segment-piece" render={layoutNode("profile-segment-piece", {
+        value: renderLeaf("text", { size: "xs", tone: "muted" }, () => <Text props={{ content: props.label, size: "xs", tone: "muted" }} isLoading={isLoading} />),
     })} />
 )
 
 /** Source-level tier marker. */
-export const meta = { shape: "composite", world: "pure" } as const

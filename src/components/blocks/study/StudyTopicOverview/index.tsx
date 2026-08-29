@@ -50,4 +50,3 @@ export const StudyTopicOverview = ({ slug, onStartPractice, onBack }: StudyTopic
     )
 }
 /** Declares the connected Study topic block. */
-export const meta = { shape: "block", world: "connected", domain: "study" } as const

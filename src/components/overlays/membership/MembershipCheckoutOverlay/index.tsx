@@ -1,7 +1,7 @@
 "use client"
 
 import { MembershipCheckoutPanel } from "@/components/blocks/membership/MembershipCheckoutPanel"
-import { createGrammarProjection } from "@/components/contracts/props"
+import { layoutContent } from "@/modules/types/layout"
 import { MembershipCheckoutOverlayBase } from "./component"
 
 /** Defines visibility and dismissal for the connected checkout overlay. */
@@ -12,10 +12,9 @@ export const MembershipCheckoutOverlay = ({ isOpen, onDismiss, returnUrl, cancel
     <MembershipCheckoutOverlayBase
         isOpen={isOpen}
         onDismiss={onDismiss}
-        render={createGrammarProjection("purchase-checkout-panel", () => (
+        render={layoutContent("purchase-checkout-panel", () => (
             <MembershipCheckoutPanel onDismiss={onDismiss} returnUrl={returnUrl} cancelUrl={cancelUrl} />
         ))}
     />
 )
 /** Declares the component architecture metadata. */
-export const meta = { shape: "overlay", world: "connected", domain: "membership" } as const

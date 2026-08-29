@@ -1,4 +1,4 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Heading } from "@/components/leaves/Heading"
@@ -6,11 +6,11 @@ import { Progress } from "@/components/leaves/Progress"
 import { SeeMoreLink } from "@/components/leaves/SeeMoreLink"
 import { Text } from "@/components/leaves/Text"
 import {
-    createCompositeNode,
-    createGrammarNode,
-    createGrammarProjection,
-    createLeafNode,
-} from "@/components/contracts/props"
+    renderComposite,
+    layoutNode,
+    layoutContent,
+    renderLeaf,
+} from "@/modules/types/layout"
 import type { LearnMobileView } from "@/components/layouts/LearnShellLayout/component"
 
 /** The settled loading situation of the Today route. */
@@ -73,14 +73,14 @@ const resumeCard = (
     item: CourseLearnTodayItem,
     open: CourseLearnTodayActions["open"],
     isLoading = false,
-) => createGrammarNode("resume-item-card", {
-    title: createLeafNode("text", { size: "md", weight: "medium" }, () => (
+) => layoutNode("resume-item-card", {
+    title: renderLeaf("text", { size: "md", weight: "medium" }, () => (
         <Text props={{ content: item.title, size: "md", weight: "medium" }} isLoading={isLoading} />
     )),
-    kind: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+    kind: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
         <Text props={{ content: item.kind, size: "sm", tone: "muted" }} isLoading={isLoading} />
     )),
-    resume: createLeafNode("see-more-link", {}, () => (
+    resume: renderLeaf("see-more-link", {}, () => (
         <SeeMoreLink props={{ label: item.actionLabel }} on={{ press: () => open?.(item.id) }} isLoading={isLoading} />
     )),
 })
@@ -101,18 +101,18 @@ export const CourseLearnTodayPageBase = (input: CourseLearnTodayPageProps) => {
 
     return (
         <Grammar
-            contract="course-learn-today-page"
-            render={createGrammarNode("course-learn-today-page", {
-                header: createGrammarNode("page-header-stack", {
-                    title: createLeafNode("heading", {}, () => (
+            layout="course-learn-today-page"
+            render={layoutNode("course-learn-today-page", {
+                header: layoutNode("page-header-stack", {
+                    title: renderLeaf("heading", {}, () => (
                         <Heading props={{ content: input.props.title, level: 1 }} />
                     )),
                 }),
-                subtitle: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+                subtitle: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                     <Text props={{ content: input.props.subtitle, size: "sm", tone: "muted" }} />
                 )),
                 ...(notice === undefined ? {} : {
-                    notice: createCompositeNode("empty-notice", {}, () => (
+                    notice: renderComposite("empty-notice", {}, () => (
                         <EmptyNotice
                             props={{ icon: input.state === "failed" ? "retry" : "course", ...notice }}
                             on={{ act: input.on?.retry }}
@@ -120,20 +120,20 @@ export const CourseLearnTodayPageBase = (input: CourseLearnTodayPageProps) => {
                     )),
                 }),
                 ...(!showToday || notice !== undefined ? {} : {
-                    primary: createGrammarProjection("resume-item-card", () => (
+                    primary: layoutContent("resume-item-card", () => (
                         <SurfaceCard
-                            contract="resume-item-card"
+                            layout="resume-item-card"
                             props={{ label: input.props.primaryLabel }}
                             render={resumeCard(input.props.primary ?? placeholder, input.on?.open, isLoading)}
                             isLoading={isLoading}
                         />
                     )),
                     ...(!isLoading && input.props.secondary.length === 0 ? {} : {
-                        secondary: createGrammarProjection("resume-card-grid", () => (
+                        secondary: layoutContent("resume-card-grid", () => (
                             <SurfaceCard
-                                contract="resume-card-grid"
+                                layout="resume-card-grid"
                                 props={{ label: input.props.secondaryLabel, isFrameless: true }}
-                                render={createGrammarNode("resume-card-grid", {
+                                render={layoutNode("resume-card-grid", {
                                     card: isLoading
                                         ? [resumeCard(placeholder, input.on?.open, true)]
                                         : input.props.secondary.map((item) => resumeCard(item, input.on?.open)),
@@ -143,9 +143,9 @@ export const CourseLearnTodayPageBase = (input: CourseLearnTodayPageProps) => {
                     }),
                 }),
                 ...(!showCourse || notice !== undefined ? {} : {
-                    course: createGrammarProjection("resume-item-card", () => (
+                    course: layoutContent("resume-item-card", () => (
                         <SurfaceCard
-                            contract="resume-item-card"
+                            layout="resume-item-card"
                             props={{ label: input.props.courseLabel }}
                             render={resumeCard(input.props.course, input.on?.open, isLoading)}
                             isLoading={isLoading}
@@ -153,20 +153,20 @@ export const CourseLearnTodayPageBase = (input: CourseLearnTodayPageProps) => {
                     )),
                 }),
                 ...(!showProgress || notice !== undefined ? {} : {
-                    progress: createGrammarProjection("label-fact-over-progress", () => (
+                    progress: layoutContent("label-fact-over-progress", () => (
                         <SurfaceCard
-                            contract="label-fact-over-progress"
+                            layout="label-fact-over-progress"
                             props={{ label: input.props.progressLabel }}
-                            render={createGrammarNode("label-fact-over-progress", {
-                                line: createGrammarNode("label-with-muted-fact-row", {
-                                    label: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
+                            render={layoutNode("label-fact-over-progress", {
+                                line: layoutNode("label-with-muted-fact-row", {
+                                    label: renderLeaf("text", { size: "sm", weight: "semibold" }, () => (
                                         <Text props={{ content: input.props.progressLabel, size: "sm", weight: "semibold" }} isLoading={isLoading} />
                                     )),
-                                    fact: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+                                    fact: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                                         <Text props={{ content: input.props.progressFact, size: "xs", tone: "muted" }} isLoading={isLoading} />
                                     )),
                                 }),
-                                progress: createLeafNode("progress", {}, () => (
+                                progress: renderLeaf("progress", {}, () => (
                                     <Progress props={{ label: input.props.progressLabel, value: input.props.progressValue }} isLoading={isLoading} />
                                 )),
                             })}
@@ -179,4 +179,3 @@ export const CourseLearnTodayPageBase = (input: CourseLearnTodayPageProps) => {
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "pure", domain: "learn" } as const

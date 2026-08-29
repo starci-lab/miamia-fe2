@@ -38,8 +38,8 @@ describe("CourseFlashcardResultPageBase", () => {
         const input = makeInput()
         const { container } = render(<CourseFlashcardResultPageBase {...input} />)
 
-        expect(container.querySelector("[data-node=course-flashcard-result-page]")).toBeTruthy()
-        expect(container.querySelectorAll("[data-node=flashcard-result-stat]")).toHaveLength(4)
+        expect(container.querySelector(".layout-name-course-flashcard-result-page")).toBeTruthy()
+        expect(container.querySelectorAll(".layout-name-flashcard-result-stat")).toHaveLength(4)
         expect(screen.getByText("75%")).toBeTruthy()
         expect(screen.getByText("Redis")).toBeTruthy()
         expect(screen.getByText("1")).toBeTruthy()

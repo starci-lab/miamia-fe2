@@ -1,6 +1,6 @@
 import { Icon as IconifyIcon } from "@iconify/react"
 import { skeletonVariants } from "@heroui/react"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /** Where the closed rank artwork is being used. */
 export type RankMarkPlacement = "standing" | "row"
@@ -44,7 +44,7 @@ export const RankMark = ({ props, isLoading = false }: RankMarkProps) => {
     if (isLoading || props.rank === undefined) {
         return (
             <span
-                data-tier="leaf"
+
                 data-component="RankMark"
                 data-placement={placement}
                 data-loading="true"
@@ -55,7 +55,7 @@ export const RankMark = ({ props, isLoading = false }: RankMarkProps) => {
     }
     return (
         <IconifyIcon
-            data-tier="leaf"
+
             data-component="RankMark"
             data-placement={placement}
             data-loading="false"
@@ -67,4 +67,3 @@ export const RankMark = ({ props, isLoading = false }: RankMarkProps) => {
 }
 
 /** Source-level tier marker. */
-export const meta = { shape: "leaf", world: "pure" } as const

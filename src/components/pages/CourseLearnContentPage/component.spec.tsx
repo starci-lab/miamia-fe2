@@ -51,9 +51,9 @@ describe("CourseLearnContentPageBase", () => {
             <CourseLearnContentPageBase state="ready" props={props} />,
         )
 
-        expect(container.querySelector("[data-node=content-map-panel]")).not.toBeNull()
-        expect(container.querySelector("[data-node=learn-content-page]")).not.toBeNull()
-        expect(container.querySelector("[data-node=content-outline-rail]")).not.toBeNull()
+        expect(container.querySelector(".layout-name-content-map-panel")).not.toBeNull()
+        expect(container.querySelector(".layout-name-learn-content-page")).not.toBeNull()
+        expect(container.querySelector(".layout-name-content-outline-rail")).not.toBeNull()
 
         const cases = [
             ["contents", "content-map-panel"],
@@ -64,10 +64,10 @@ describe("CourseLearnContentPageBase", () => {
             rerender(
                 <CourseLearnContentPageBase state="ready" props={{ ...props, mobileView }} />,
             )
-            expect(container.firstElementChild?.getAttribute("data-node")).toBe(node)
-            expect(container.querySelectorAll("[data-node=content-map-panel]")).toHaveLength(mobileView === "contents" ? 1 : 0)
-            expect(container.querySelectorAll("[data-node=learn-content-page]")).toHaveLength(mobileView === "lesson" ? 1 : 0)
-            expect(container.querySelectorAll("[data-node=content-outline-rail]")).toHaveLength(mobileView === "outline" ? 1 : 0)
+            expect(container.firstElementChild?.className).toContain(`layout-name-${node}`)
+            expect(container.querySelectorAll(".layout-name-content-map-panel")).toHaveLength(mobileView === "contents" ? 1 : 0)
+            expect(container.querySelectorAll(".layout-name-learn-content-page")).toHaveLength(mobileView === "lesson" ? 1 : 0)
+            expect(container.querySelectorAll(".layout-name-content-outline-rail")).toHaveLength(mobileView === "outline" ? 1 : 0)
         }
     })
 
@@ -143,8 +143,8 @@ describe("CourseLearnContentPageBase", () => {
             />,
         )
 
-        expect(container.querySelector("[data-node=content-reader-footer]")).toBeTruthy()
-        expect(container.querySelector("[data-node=content-discussion-panel]")).toBeTruthy()
+        expect(container.querySelector(".layout-name-content-reader-footer")).toBeTruthy()
+        expect(container.querySelector(".layout-name-content-discussion-panel")).toBeTruthy()
         expect(screen.getByText("Helpful context")).toBeInTheDocument()
         fireEvent.click(screen.getByRole("button", { name: "Post comment" }))
         expect(submitDiscussion).toHaveBeenCalledTimes(1)
@@ -153,7 +153,7 @@ describe("CourseLearnContentPageBase", () => {
     it("keeps a locked preview inside its paper and omits reading actions", () => {
         const { container } = render(<CourseLearnContentPageBase state="locked" props={{ labels, title: "Locked lesson", body: "Preview", noticeMessage: "Unlock this lesson" }} />)
         expect(screen.getByText("Unlock this lesson")).toBeInTheDocument()
-        expect(container.querySelector("[data-node=content-reader-footer]")).toBeNull()
+        expect(container.querySelector(".layout-name-content-reader-footer")).toBeNull()
     })
 })
 

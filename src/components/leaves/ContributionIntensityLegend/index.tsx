@@ -1,5 +1,5 @@
-import { CLASS_NAME_1 } from './styles'
-import type { ComponentProps } from "@/components/contracts/props"
+import { CLASS_NAME_1 } from "./classNames"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /** Resolved copy around the fixed five-step contribution scale. */
 export type ContributionIntensityLegendData = {
@@ -30,4 +30,3 @@ export const ContributionIntensityLegend = ({ props, isLoading = false }: Contri
 )
 
 /** Source-level tier marker for the intrinsic contribution legend. */
-export const meta = { shape: "leaf", world: "pure" } as const

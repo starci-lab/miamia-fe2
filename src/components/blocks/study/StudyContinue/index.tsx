@@ -72,4 +72,3 @@ export const StudyContinue = ({ onBrowse, onResumeTopic }: StudyContinueConnecte
     )
 }
 /** Declares the connected Study resume block. */
-export const meta = { shape: "block", world: "connected", domain: "study" } as const

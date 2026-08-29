@@ -1,9 +1,9 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Button } from "@/components/leaves/Button"
 import { Heading } from "@/components/leaves/Heading"
 import { Text } from "@/components/leaves/Text"
-import { createCompositeNode, createGrammarNode, createLeafNode } from "@/components/contracts/props"
+import { renderComposite, layoutNode, renderLeaf } from "@/modules/types/layout"
 import type { Playground } from "@/modules/api/graphql/queries/query-playground"
 
 /** Setup and agent-pairing states exposed by the pure setup page. */
@@ -40,7 +40,7 @@ export const CoursePlaygroundSetupPageBase = (input: CoursePlaygroundSetupPagePr
     const failed = input.state === "failed"
     const paired = input.state === "paired" || input.state === "ready"
     const notice = failed
-        ? createCompositeNode("empty-notice", {}, () => (
+        ? renderComposite("empty-notice", {}, () => (
             <EmptyNotice
                 props={{ message: input.props.failedText, actionLabel: input.props.retryLabel }}
                 on={{ act: input.on.retry }}
@@ -50,14 +50,14 @@ export const CoursePlaygroundSetupPageBase = (input: CoursePlaygroundSetupPagePr
     const resolveActions = () => {
         if (failed) return undefined
         if (paired) {
-            return [createLeafNode("button", {}, () => (
+            return [renderLeaf("button", {}, () => (
                 <Button
                     props={{ label: input.props.enterLabel, variant: "primary", disabled: input.state !== "ready" }}
                     on={{ press: input.on.enter }}
                 />
             ))]
         }
-        return [createLeafNode("button", {}, () => (
+        return [renderLeaf("button", {}, () => (
             <Button
                 props={{
                     label: input.state === "starting" ? input.props.startingLabel : input.props.startLabel,
@@ -72,37 +72,37 @@ export const CoursePlaygroundSetupPageBase = (input: CoursePlaygroundSetupPagePr
     const actions = resolveActions()
 
     return (
-        <Grammar contract="course-playground-setup-page" render={createGrammarNode("course-playground-setup-page", {
-            header: createGrammarNode("page-header-stack", {
-                title: createLeafNode("heading", {}, () => (
+        <Grammar layout="course-playground-setup-page" render={layoutNode("course-playground-setup-page", {
+            header: layoutNode("page-header-stack", {
+                title: renderLeaf("heading", {}, () => (
                     <Heading
                         props={{ content: input.props.playground?.title ?? input.props.titleFallback, level: 1 }}
                         isLoading={loading}
                     />
                 )),
             }),
-            description: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+            description: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                 <Text
                     props={{ content: input.props.playground?.description ?? "", size: "sm", tone: "muted" }}
                     isLoading={loading}
                 />
             )),
             ...(!failed ? {
-                preparationTitle: createLeafNode("heading", {}, () => (
+                preparationTitle: renderLeaf("heading", {}, () => (
                     <Heading props={{ content: input.props.preparationTitle, level: 2 }} isLoading={loading} />
                 )),
-                preparationStep: input.props.preparationSteps.map((step, index) => createLeafNode("text", { size: "sm" }, () => (
+                preparationStep: input.props.preparationSteps.map((step, index) => renderLeaf("text", { size: "sm" }, () => (
                     <Text props={{ content: `${index + 1}. ${step}`, size: "sm" }} isLoading={loading} />
                 ))),
             } : {}),
             ...(paired ? {
-                pairingLabel: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+                pairingLabel: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                     <Text props={{ content: input.props.pairingLabel, size: "xs", tone: "muted" }} />
                 )),
-                pairingCode: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
+                pairingCode: renderLeaf("text", { size: "sm", weight: "semibold" }, () => (
                     <Text props={{ content: input.props.pairingCode, size: "sm", weight: "semibold" }} />
                 )),
-                status: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+                status: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                     <Text
                         props={{
                             content: input.state === "ready" ? input.props.readyLabel : input.props.waitingLabel,
@@ -120,4 +120,3 @@ export const CoursePlaygroundSetupPageBase = (input: CoursePlaygroundSetupPagePr
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "pure", domain: "learn" } as const

@@ -1,5 +1,5 @@
 import { SurfaceListCard, type SurfaceListCardActions, type SurfaceListCardData } from "@/components/branches/SurfaceListCard"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Podium, type PodiumEntryData } from "@/components/composites/Podium"
 import { RankedUserRow, type RankedUserRowData } from "@/components/composites/RankedUserRow"
@@ -10,12 +10,12 @@ import { Breadcrumbs, type BreadcrumbStep } from "@/components/leaves/Breadcrumb
 import { Heading } from "@/components/leaves/Heading"
 import { Text } from "@/components/leaves/Text"
 import {
-    createGrammarNode,
-    createGrammarProjection,
-    createLeafNode,
+    layoutNode,
+    layoutContent,
+    renderLeaf,
     type BlockProps,
     type ComponentProps,
-} from "@/components/contracts/props"
+} from "@/modules/types/layout"
 
 /** The two competitions this page can show. */
 export type LeagueScope = "weekly" | "global"
@@ -73,7 +73,7 @@ type LeagueListData = SurfaceListCardData & {
 /**
  * The rows, inside the node that makes them a list.
  *
- * `SurfaceListCard` does NOT draw the contract node - it takes the key for typing and leaves the
+ * `SurfaceListCard` does NOT draw the layout node - it takes the key for typing and leaves the
  * drawing to whatever it renders. Returning a bare fragment here is what removed the separators and
  * the row inset from this page while the dashboard, which wraps the same rows in `Grammar`, kept them:
  * every one of those classes lives on the `ranked-user-list` entry and on nothing else.
@@ -82,7 +82,7 @@ type LeagueListData = SurfaceListCardData & {
  * rows, the gap marker, and the pinned viewer row - and the `user` slot admits ranked rows only.
  */
 const LeagueListView = ({ props, on, isLoading = false }: ComponentProps<LeagueListData, SurfaceListCardActions>) => (
-    <Grammar contract="ranked-user-followable-list" render={createGrammarProjection("ranked-user-followable-list", () => (
+    <Grammar layout="ranked-user-followable-list" render={layoutContent("ranked-user-followable-list", () => (
         <>
             {props.rows.map((row) => (
                 <RankedUserRow
@@ -93,8 +93,8 @@ const LeagueListView = ({ props, on, isLoading = false }: ComponentProps<LeagueL
                 />
             ))}
             {props.ellipsisLabel === undefined ? null : (
-                <Grammar contract="ranked-user-ellipsis-row" render={createGrammarNode("ranked-user-ellipsis-row", {
-                    label: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+                <Grammar layout="ranked-user-ellipsis-row" render={layoutNode("ranked-user-ellipsis-row", {
+                    label: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                         <Text props={{ content: props.ellipsisLabel, size: "xs", tone: "muted" }} />
                     )),
                 })} />
@@ -106,7 +106,7 @@ const LeagueListView = ({ props, on, isLoading = false }: ComponentProps<LeagueL
     ))} />
 )
 
-const LeagueListContent = createGrammarNode("ranked-user-followable-list", LeagueListView)
+const LeagueListContent = layoutNode("ranked-user-followable-list", LeagueListView)
 
 /**
  * PAGE - `LeaguePage`, presentational half.
@@ -118,8 +118,8 @@ const LeagueListContent = createGrammarNode("ranked-user-followable-list", Leagu
 export const LeaguePageBase = (input: LeaguePageProps) => {
     const isLoading = input.state === "pending"
     const board = input.props.board
-    const scope = createGrammarNode("scope-switch-row", {
-        tabs: createLeafNode("choice-tabs", {}, () => (
+    const scope = layoutNode("scope-switch-row", {
+        tabs: renderLeaf("choice-tabs", {}, () => (
             <ChoiceTabs
                 props={{
                     label: input.props.scopeLabel,
@@ -134,24 +134,24 @@ export const LeaguePageBase = (input: LeaguePageProps) => {
             />
         )),
     })
-    const header = createGrammarNode("page-header-stack", {
-        trail: createLeafNode("breadcrumbs", {}, () => (
+    const header = layoutNode("page-header-stack", {
+        trail: renderLeaf("breadcrumbs", {}, () => (
             <Breadcrumbs
                 props={{ steps: input.props.trail, label: input.props.title }}
                 on={{ home: input.on?.goHome }}
             />
         )),
-        title: createLeafNode("heading", {}, () => (
+        title: renderLeaf("heading", {}, () => (
             <Heading props={{ content: input.props.title, level: 1 }} />
         )),
     })
 
     if (input.state === "empty" || input.state === "failed") {
         return (
-            <Grammar contract="league-page-column" render={createGrammarNode("league-page-column", {
+            <Grammar layout="league-page-column" render={layoutNode("league-page-column", {
                 header,
                 scope,
-                board: createGrammarProjection("league-board-stack", () => (
+                board: layoutContent("league-board-stack", () => (
                     <EmptyNotice
                         props={{
                             icon: "league",
@@ -169,11 +169,11 @@ export const LeaguePageBase = (input: LeaguePageProps) => {
     }
 
     return (
-        <Grammar contract="league-page-column" render={createGrammarNode("league-page-column", {
+        <Grammar layout="league-page-column" render={layoutNode("league-page-column", {
             header,
             scope,
-            board: createGrammarNode("league-board-stack", {
-                hero: createGrammarProjection("standing-hero-card", () => (
+            board: layoutNode("league-board-stack", {
+                hero: layoutContent("standing-hero-card", () => (
                     <StandingHeroCard
                         props={{
                             standing: board.standing,
@@ -185,7 +185,7 @@ export const LeaguePageBase = (input: LeaguePageProps) => {
                         isLoading={isLoading}
                     />
                 )),
-                podium: createGrammarProjection("podium", () => (
+                podium: layoutContent("podium", () => (
                     <Podium
                         props={{
                             entries: board.podium,
@@ -199,9 +199,9 @@ export const LeaguePageBase = (input: LeaguePageProps) => {
                 // there is, this list draws NOTHING rather than an empty notice: the page has just
                 // said who is here, and a second panel explaining that nobody else is would be the
                 // screen contradicting itself one gap lower.
-                list: createGrammarProjection("ranked-user-followable-list", () => (board.rows.length === 0 && board.selfRow === undefined ? null : (
+                list: layoutContent("ranked-user-followable-list", () => (board.rows.length === 0 && board.selfRow === undefined ? null : (
                     <SurfaceListCard
-                        contract="ranked-user-followable-list"
+                        layout="ranked-user-followable-list"
                         render={LeagueListContent}
                         props={{
                             label: board.listLabel,
@@ -221,4 +221,3 @@ export const LeaguePageBase = (input: LeaguePageProps) => {
 }
 
 /** Source-level tier marker. */
-export const meta = { world: "pure", domain: "community" } as const

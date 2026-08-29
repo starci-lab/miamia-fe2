@@ -1,11 +1,11 @@
 import type { ReactNode } from "react"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { ShellNav } from "@/components/layouts/ShellNav"
 import {
-    createGrammarNode,
-    createGrammarProjection,
-    createLeafNode,
-} from "@/components/contracts/props"
+    layoutNode,
+    layoutContent,
+    renderLeaf,
+} from "@/modules/types/layout"
 
 /** Props for the dashboard route family layout. */
 type DashboardLayoutProps = {
@@ -24,14 +24,14 @@ type DashboardLayoutProps = {
  */
 const DashboardLayout = ({ children }: DashboardLayoutProps) => (
     <Grammar
-        contract="nav-over-body-page"
-        render={createGrammarNode("nav-over-body-page", {
-            navigation: createGrammarProjection("double-navbar", () => <ShellNav />),
-            body: createGrammarProjection("routed-page-main", () => (
+        layout="nav-over-body-page"
+        render={layoutNode("nav-over-body-page", {
+            navigation: layoutContent("double-navbar", () => <ShellNav />),
+            body: layoutContent("routed-page-main", () => (
                 <Grammar
-                    contract="routed-page-main"
-                    render={createGrammarNode("routed-page-main", {
-                        page: createLeafNode("page", {}, () => children),
+                    layout="routed-page-main"
+                    render={layoutNode("routed-page-main", {
+                        page: renderLeaf("page", {}, () => children),
                     })}
                 />
             )),

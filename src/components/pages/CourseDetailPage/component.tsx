@@ -1,6 +1,6 @@
-import { CONTRACTS } from "@/components/contracts"
+import { LAYOUTS } from "@/resources/visual-layouts"
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { SurfaceListCard, type SurfaceListCardData } from "@/components/branches/SurfaceListCard"
 import { CoursePrerequisiteListBase as CoursePrerequisiteListLeaf, type CoursePrerequisite } from "@/components/blocks/courses/CoursePrerequisiteList/component"
 import { CourseReviewBlockBase as CourseReviewBlockView, type CourseReview } from "@/components/blocks/courses/CourseReviewBlock/component"
@@ -11,11 +11,11 @@ import { Heading } from "@/components/leaves/Heading"
 import { Text } from "@/components/leaves/Text"
 import { CurriculumModuleRow, type CurriculumLesson } from "@/components/leaves/CurriculumModuleRow"
 import {
-    createGrammarNode,
-    createGrammarProjection,
-    createLeafNode,
+    layoutNode,
+    layoutContent,
+    renderLeaf,
     type ComponentProps,
-} from "@/components/contracts/props"
+} from "@/modules/types/layout"
 import {
     CoursePricingRail,
     type CoursePricingRailData,
@@ -33,7 +33,7 @@ import { CourseMobileEnrollBar } from "@/components/blocks/courses/CourseMobileE
  * named production render's, unchanged. What this direction adds is that every region now SAYS what
  * it is - the trail is a `nav`, the narrative and its two regions are `section`s, the buy box is an
  * `aside`, the promises are a `ul` of `li`, the curriculum is an `ol` of `li` - and it says so in
- * the registry entry rather than here.
+ * the catalog entry rather than here.
  *
  * NOTHING IN THIS FILE CHOOSES AN ELEMENT. Every node below is a key; the entry behind it names the
  * tag. That is the property being reviewed, so a call site able to override it would defeat the
@@ -193,46 +193,46 @@ export type CourseDetailPageProps = {
 /**
  * How many resting rows each run shows while its values are unknown.
  *
- * Read out of the ENTRIES rather than written here. `restingCount` is the number the contract
+ * Read out of the ENTRIES rather than written here. `restingCount` is the number the layout
  * already states, and a second copy in this file is a number that can drift from it silently - the
  * skeleton would keep claiming five modules after the entry had settled on three.
  */
 const RESTING = {
-    stats: CONTRACTS["course-signal-board"].children.signal.restingCount,
-    promises: CONTRACTS["course-promise-list"].children.promise.restingCount,
-    modules: CONTRACTS["course-module-list"].children.module.restingCount,
-    prerequisites: CONTRACTS["course-prerequisite-list"].children.prerequisite.restingCount,
-    faqs: CONTRACTS["course-faq-list"].children.faq.restingCount,
+    stats: LAYOUTS["course-signal-board"].children.signal.restingCount,
+    promises: LAYOUTS["course-promise-list"].children.promise.restingCount,
+    modules: LAYOUTS["course-module-list"].children.module.restingCount,
+    prerequisites: LAYOUTS["course-prerequisite-list"].children.prerequisite.restingCount,
+    faqs: LAYOUTS["course-faq-list"].children.faq.restingCount,
 }
 
-/** Draw one signal through the surface contract matching its approved emphasis. */
+/** Draw one signal through the surface layout matching its approved emphasis. */
 const courseSignalCard = (stat: CourseStat, isLoading: boolean) => {
     const slots = {
-        label: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+        label: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
             <Text props={{ content: stat.label, size: "xs", tone: "muted" }} isLoading={isLoading} />
         )),
-        value: createLeafNode("text", { size: "md", weight: "semibold" }, () => (
+        value: renderLeaf("text", { size: "md", weight: "semibold" }, () => (
             <Text props={{ content: stat.value, size: "md", weight: "semibold" }} isLoading={isLoading} />
         )),
     }
 
     if (stat.emphasis === "accent") {
-        return createGrammarProjection("course-signal-card-accent", () => (
-            <SurfaceCard contract="course-signal-card-accent" render={createGrammarNode("course-signal-card-accent", slots)} />
+        return layoutContent("course-signal-card-accent", () => (
+            <SurfaceCard layout="course-signal-card-accent" render={layoutNode("course-signal-card-accent", slots)} />
         ))
     }
     if (stat.emphasis === "success") {
-        return createGrammarProjection("course-signal-card-success", () => (
-            <SurfaceCard contract="course-signal-card-success" render={createGrammarNode("course-signal-card-success", slots)} />
+        return layoutContent("course-signal-card-success", () => (
+            <SurfaceCard layout="course-signal-card-success" render={layoutNode("course-signal-card-success", slots)} />
         ))
     }
     if (stat.emphasis === "warning") {
-        return createGrammarProjection("course-signal-card-warning", () => (
-            <SurfaceCard contract="course-signal-card-warning" render={createGrammarNode("course-signal-card-warning", slots)} />
+        return layoutContent("course-signal-card-warning", () => (
+            <SurfaceCard layout="course-signal-card-warning" render={layoutNode("course-signal-card-warning", slots)} />
         ))
     }
-    return createGrammarProjection("course-signal-card-neutral", () => (
-        <SurfaceCard contract="course-signal-card-neutral" render={createGrammarNode("course-signal-card-neutral", slots)} />
+    return layoutContent("course-signal-card-neutral", () => (
+        <SurfaceCard layout="course-signal-card-neutral" render={layoutNode("course-signal-card-neutral", slots)} />
     ))
 }
 
@@ -265,13 +265,13 @@ type CourseFaqListData = SurfaceListCardData & {
 /** The unordered run of promises, drawn inside the surface branch's body. */
 const CoursePromiseListView = ({ props, isLoading = false }: ComponentProps<CoursePromiseListData>) => (
     <Grammar
-        contract="course-promise-list"
-        render={createGrammarNode("course-promise-list", {
-            promise: props.promises.map((line) => createGrammarNode("course-promise-row", {
-                mark: createLeafNode("text", { size: "sm" }, () => (
+        layout="course-promise-list"
+        render={layoutNode("course-promise-list", {
+            promise: props.promises.map((line) => layoutNode("course-promise-row", {
+                mark: renderLeaf("text", { size: "sm" }, () => (
                     <Text props={{ icon: "complete", content: "", size: "sm", tone: "accent" }} />
                 )),
-                promise: createLeafNode("text", { size: "sm" }, () => (
+                promise: renderLeaf("text", { size: "sm" }, () => (
                     <Text props={{ content: line, size: "sm" }} isLoading={isLoading} />
                 )),
             })),
@@ -279,8 +279,8 @@ const CoursePromiseListView = ({ props, isLoading = false }: ComponentProps<Cour
     />
 )
 
-/** Stable component type branded for the exact promise contract it implements. */
-const CoursePromiseList = createGrammarNode("course-promise-list", CoursePromiseListView)
+/** Stable component type branded for the exact promise layout it implements. */
+const CoursePromiseList = layoutNode("course-promise-list", CoursePromiseListView)
 
 /** What the prerequisite list draws inside the surface branch body. */
 type CoursePrerequisiteListData = SurfaceListCardData & {
@@ -293,16 +293,16 @@ const CoursePrerequisiteListView = ({ props }: ComponentProps<CoursePrerequisite
     <CoursePrerequisiteListLeaf state="required" props={{ prerequisites: props.prerequisites }} />
 )
 
-/** Stable component type branded for the exact prerequisite contract it implements. */
-const CoursePrerequisiteList = createGrammarNode("course-prerequisite-list", CoursePrerequisiteListView)
+/** Stable component type branded for the exact prerequisite layout it implements. */
+const CoursePrerequisiteList = layoutNode("course-prerequisite-list", CoursePrerequisiteListView)
 
 /** The ordered run of modules, drawn inside the surface branch's body. */
 const CourseModuleListView = ({ props, isLoading = false }: ComponentProps<CourseModuleListData>) => (
     <Grammar
-        contract="course-module-list"
-        render={createGrammarNode("course-module-list", {
-            module: props.modules.map((module) => createGrammarNode("course-module-row", {
-                module: createLeafNode("curriculum-module-row", {}, () => (
+        layout="course-module-list"
+        render={layoutNode("course-module-list", {
+            module: props.modules.map((module) => layoutNode("course-module-row", {
+                module: renderLeaf("curriculum-module-row", {}, () => (
                     <CurriculumModuleRow
                         props={{
                             title: module.title,
@@ -318,8 +318,8 @@ const CourseModuleListView = ({ props, isLoading = false }: ComponentProps<Cours
     />
 )
 
-/** Stable component type branded for the exact curriculum contract it implements. */
-const CourseModuleList = createGrammarNode("course-module-list", CourseModuleListView)
+/** Stable component type branded for the exact curriculum layout it implements. */
+const CourseModuleList = layoutNode("course-module-list", CourseModuleListView)
 
 /** The unordered FAQ run, drawn inside the existing joined-list surface. */
 const CourseFaqListView = ({ props, isLoading = false }: ComponentProps<CourseFaqListData>) => {
@@ -328,13 +328,13 @@ const CourseFaqListView = ({ props, isLoading = false }: ComponentProps<CourseFa
         : props.faqs
     return (
         <Grammar
-            contract="course-faq-list"
-            render={createGrammarNode("course-faq-list", {
-                faq: rows.map((faq) => createGrammarNode("course-faq-row", {
-                    question: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
+            layout="course-faq-list"
+            render={layoutNode("course-faq-list", {
+                faq: rows.map((faq) => layoutNode("course-faq-row", {
+                    question: renderLeaf("text", { size: "sm", weight: "semibold" }, () => (
                         <Text props={{ content: faq.question, size: "sm", weight: "semibold" }} isLoading={isLoading} />
                     )),
-                    answer: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+                    answer: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                         <Text props={{ content: faq.answer, size: "sm", tone: "muted" }} isLoading={isLoading} />
                     )),
                 })),
@@ -343,8 +343,8 @@ const CourseFaqListView = ({ props, isLoading = false }: ComponentProps<CourseFa
     )
 }
 
-/** Stable component type branded for the exact FAQ contract it implements. */
-const CourseFaqList = createGrammarNode("course-faq-list", CourseFaqListView)
+/** Stable component type branded for the exact FAQ layout it implements. */
+const CourseFaqList = layoutNode("course-faq-list", CourseFaqListView)
 
 /**
  * Draw the course landing.
@@ -397,8 +397,8 @@ export const CourseDetailPageBase = (input: CourseDetailPageProps) => {
         ? Array.from({ length: RESTING.faqs }, (_unused, index) => ({ id: `resting-${index + 1}`, question: "", answer: "" }))
         : input.props.faqs ?? []
 
-    const hero = createGrammarNode("course-hero", {
-        trail: createLeafNode("breadcrumbs", {}, () => (
+    const hero = layoutNode("course-hero", {
+        trail: renderLeaf("breadcrumbs", {}, () => (
             <Breadcrumbs
                 props={{
                     label: input.props.labels.breadcrumbLabel,
@@ -412,37 +412,37 @@ export const CourseDetailPageBase = (input: CourseDetailPageProps) => {
                 isLoading={isLoading}
             />
         )),
-        heading: createGrammarNode("course-hero-heading", {
-            identity: createGrammarNode("course-hero-title-stack", {
-                title: createLeafNode("heading", {}, () => (
+        heading: layoutNode("course-hero-heading", {
+            identity: layoutNode("course-hero-title-stack", {
+                title: renderLeaf("heading", {}, () => (
                     <Heading props={{ content: input.props.title, level: 1 }} isLoading={isLoading} />
                 )),
-                tagline: createLeafNode("text", { size: "sm" }, () => (
+                tagline: renderLeaf("text", { size: "sm" }, () => (
                     <Text props={{ content: input.props.tagline, size: "sm" }} isLoading={isLoading} />
                 )),
             }),
             rating: isLoading || (input.props.reviewTotal ?? 0) === 0 || input.props.averageScore === undefined
                 ? undefined
-                : createGrammarNode("course-hero-rating", {
-                    score: createLeafNode("heading", {}, () => (
+                : layoutNode("course-hero-rating", {
+                    score: renderLeaf("heading", {}, () => (
                         <Heading props={{ content: input.props.averageScore?.toFixed(1), level: 2 }} />
                     )),
-                    count: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+                    count: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                         <Text props={{ content: input.props.labels.reviewCount, icon: "star", size: "xs", tone: "muted" }} />
                     )),
                 }),
         }),
-        evidence: createGrammarNode("course-signal-board", {
+        evidence: layoutNode("course-signal-board", {
             signal: stats.map((stat) => courseSignalCard(stat, isLoading)),
         }),
         section: [
-            createGrammarNode("course-section", {
-                title: createLeafNode("heading", {}, () => (
+            layoutNode("course-section", {
+                title: renderLeaf("heading", {}, () => (
                     <Heading props={{ content: input.props.labels.valuePropsTitle, level: 2 }} />
                 )),
-                body: createGrammarProjection("course-promise-list", () => (
+                body: layoutContent("course-promise-list", () => (
                     <SurfaceListCard
-                        contract="course-promise-list"
+                        layout="course-promise-list"
                         render={CoursePromiseList}
                         props={{
                             label: input.props.labels.valuePropsTitle,
@@ -453,13 +453,13 @@ export const CourseDetailPageBase = (input: CourseDetailPageProps) => {
                     />
                 )),
             }),
-            createGrammarNode("course-section", {
-                title: createLeafNode("heading", {}, () => (
+            layoutNode("course-section", {
+                title: renderLeaf("heading", {}, () => (
                     <Heading props={{ content: input.props.labels.prerequisitesTitle, level: 2 }} />
                 )),
-                body: createGrammarProjection("course-prerequisite-list", () => (
+                body: layoutContent("course-prerequisite-list", () => (
                     <SurfaceListCard
-                        contract="course-prerequisite-list"
+                        layout="course-prerequisite-list"
                         render={CoursePrerequisiteList}
                         props={{
                             label: input.props.labels.prerequisitesTitle,
@@ -470,13 +470,13 @@ export const CourseDetailPageBase = (input: CourseDetailPageProps) => {
                     />
                 )),
             }),
-            createGrammarNode("course-section", {
-                title: createLeafNode("heading", {}, () => (
+            layoutNode("course-section", {
+                title: renderLeaf("heading", {}, () => (
                     <Heading props={{ content: input.props.labels.curriculumTitle, level: 2 }} />
                 )),
-                body: createGrammarProjection("course-module-list", () => (
+                body: layoutContent("course-module-list", () => (
                     <SurfaceListCard
-                        contract="course-module-list"
+                        layout="course-module-list"
                         render={CourseModuleList}
                         props={{
                             label: input.props.labels.curriculumTitle,
@@ -487,11 +487,11 @@ export const CourseDetailPageBase = (input: CourseDetailPageProps) => {
                     />
                 )),
             }),
-            createGrammarNode("course-section", {
-                title: createLeafNode("heading", {}, () => (
+            layoutNode("course-section", {
+                title: renderLeaf("heading", {}, () => (
                     <Heading props={{ content: input.props.labels.reviewsTitle, level: 2 }} />
                 )),
-                body: createGrammarProjection("course-review-block", () => (
+                body: layoutContent("course-review-block", () => (
                     <CourseReviewBlockView
                         state={(input.props.reviewTotal ?? 0) === 0 ? "unrated" : "rated"}
                         props={{
@@ -504,13 +504,13 @@ export const CourseDetailPageBase = (input: CourseDetailPageProps) => {
                     />
                 )),
             }),
-            createGrammarNode("course-section", {
-                title: createLeafNode("heading", {}, () => (
+            layoutNode("course-section", {
+                title: renderLeaf("heading", {}, () => (
                     <Heading props={{ content: input.props.labels.faqTitle, level: 2 }} />
                 )),
-                body: createGrammarProjection("course-faq-list", () => (
+                body: layoutContent("course-faq-list", () => (
                     <SurfaceListCard
-                        contract="course-faq-list"
+                        layout="course-faq-list"
                         render={CourseFaqList}
                         props={{
                             label: input.props.labels.faqTitle,
@@ -527,10 +527,10 @@ export const CourseDetailPageBase = (input: CourseDetailPageProps) => {
 
     return (
         <Grammar
-            contract="course-detail-page"
-            render={createGrammarNode("course-detail-page", {
-                navigation: createGrammarNode("course-section-navigation", {
-                    tabs: createLeafNode("choice-tabs", {}, () => (
+            layout="course-detail-page"
+            render={layoutNode("course-detail-page", {
+                navigation: layoutNode("course-section-navigation", {
+                    tabs: renderLeaf("choice-tabs", {}, () => (
                         <ChoiceTabs
                             props={{
                                 label: input.props.labels.sectionTabsLabel,
@@ -546,7 +546,7 @@ export const CourseDetailPageBase = (input: CourseDetailPageProps) => {
                         />
                     )),
                 }),
-                body: createGrammarNode("main-then-rail", {
+                body: layoutNode("main-then-rail", {
                     main: hero,
                     rail: CoursePricingRail({
                         state: input.props.railState ?? "ready",
@@ -569,4 +569,3 @@ export const CourseDetailPageBase = (input: CourseDetailPageProps) => {
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "pure", domain: "courses" } as const

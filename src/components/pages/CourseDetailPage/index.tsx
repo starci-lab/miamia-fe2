@@ -43,7 +43,7 @@ const resolveSectionScrollTarget = (
     section: CourseDetailSection,
     sections: NodeListOf<HTMLElement>,
 ): HTMLElement | null => {
-    if (section === "overview") return document.querySelector<HTMLElement>("[data-node=\"course-hero-heading\"]")
+    if (section === "overview") return document.querySelector<HTMLElement>(".layout-name-course-hero-heading")
     if (section === "curriculum") return sections.item(2)
     if (section === "reviews") return sections.item(3)
     return sections.item(4)
@@ -111,7 +111,7 @@ export const CourseDetailPage = (input: CourseDetailPageProps) => {
 
     const selectSection = (section: CourseDetailSection) => {
         setSelectedSection(section)
-        const sections = document.querySelectorAll<HTMLElement>("[data-node=\"course-section\"]")
+        const sections = document.querySelectorAll<HTMLElement>(".layout-name-course-section")
         const target = resolveSectionScrollTarget(section, sections)
         target?.scrollIntoView({ behavior: "smooth", block: "start" })
     }
@@ -233,4 +233,3 @@ export const CourseDetailPage = (input: CourseDetailPageProps) => {
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "connected", domain: "courses" } as const

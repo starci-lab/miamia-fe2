@@ -3,7 +3,7 @@ import { LabelledProgressRow } from "@/components/composites/LabelledProgressRow
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Text } from "@/components/leaves/Text"
 import type { LabelledProgressRowData } from "@/components/composites/LabelledProgressRow"
-import { createCompositeNode, createGrammarNode, createLeafNode } from "@/components/contracts/props"
+import { renderComposite, layoutNode, renderLeaf } from "@/modules/types/layout"
 
 /**
  * BLOCK - `WeeklyGoals`, presentational half.
@@ -73,8 +73,8 @@ type WeeklyGoalsInput = WeeklyGoalsProps & { readonly on?: WeeklyGoalsActions }
 export const WeeklyGoalsBase = (input: WeeklyGoalsInput) => {
     if (input.state === "failed") {
         return (
-            <SurfaceCard props={{ label: input.props.label }} contract="empty-notice-card"
-                render={createGrammarNode("empty-notice-card", { notice: createCompositeNode("empty-notice", {}, () => <EmptyNotice
+            <SurfaceCard props={{ label: input.props.label }} layout="empty-notice-card"
+                render={layoutNode("empty-notice-card", { notice: renderComposite("empty-notice", {}, () => <EmptyNotice
                     props={{ icon: "league", message: input.props.message, actionLabel: input.props.retryLabel }}
                     on={{ act: input.on?.retry }}
                 />) })} />
@@ -93,9 +93,9 @@ export const WeeklyGoalsBase = (input: WeeklyGoalsInput) => {
             }}
             on={{ seeMore: input.on?.edit }}
             isLoading={isLoading}
-            contract="weekly-goals-card"
-            render={createGrammarNode("weekly-goals-card", {
-                summary: createLeafNode("text", { size: "sm", weight: "medium" }, () => (
+            layout="weekly-goals-card"
+            render={layoutNode("weekly-goals-card", {
+                summary: renderLeaf("text", { size: "sm", weight: "medium" }, () => (
                     <Text
                         props={{
                             content: input.state === "ready" ? input.props.summary : undefined,
@@ -105,9 +105,9 @@ export const WeeklyGoalsBase = (input: WeeklyGoalsInput) => {
                         isLoading={isLoading}
                     />
                 )),
-                goals: createGrammarNode("bordered-goal-grid", {
+                goals: layoutNode("bordered-goal-grid", {
                     goal: (input.state === "ready" ? input.props.rows : RESTING_ROWS).map((row) => (
-                        createCompositeNode("labelled-progress-row", {}, () => (
+                        renderComposite("labelled-progress-row", {}, () => (
                             <LabelledProgressRow props={row} isLoading={isLoading} />
                         ))
                     )),
@@ -118,4 +118,3 @@ export const WeeklyGoalsBase = (input: WeeklyGoalsInput) => {
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { world: "pure", domain: "kpi" } as const

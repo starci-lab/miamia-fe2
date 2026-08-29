@@ -62,7 +62,7 @@ describe("StreakStripBase", () => {
             />,
         )
 
-        expect(container.querySelector("[data-node=\"streak-active-summary\"] [data-component=\"Icon\"]")).toBeNull()
+        expect(container.querySelector(".layout-name-streak-active-summary [data-component=\"Icon\"]")).toBeNull()
     })
 
     it("rests the same seven-day prompt shape while pending", () => {

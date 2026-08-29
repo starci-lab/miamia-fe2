@@ -26,7 +26,7 @@ describe("CoursePricingRailBase", () => {
         expect(document.querySelector("[data-component=\"SurfaceCardSurface\"]")).toBeTruthy()
         expect(screen.getAllByText("Early")).toHaveLength(2)
         expect(screen.getByText("100 seats left in Early")).toBeInTheDocument()
-        expect(document.querySelectorAll("[data-node=\"course-pricing-phase-card\"]")).toHaveLength(3)
+        expect(document.querySelectorAll(".layout-name-course-pricing-phase-card")).toHaveLength(3)
         fireEvent.click(screen.getByRole("button", { name: "Enrol now" }))
         expect(act).toHaveBeenCalledOnce()
     })

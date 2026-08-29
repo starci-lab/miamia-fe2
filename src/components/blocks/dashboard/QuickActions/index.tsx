@@ -57,4 +57,3 @@ export const QuickActions = () => {
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { world: "connected", domain: "shell" } as const

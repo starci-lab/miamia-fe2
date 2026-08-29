@@ -1,11 +1,11 @@
-import { CONTRACTS } from "@/components/contracts"
+import { LAYOUTS } from "@/resources/visual-layouts"
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
 import { SurfaceListCard, type SurfaceListCardData } from "@/components/branches/SurfaceListCard"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { ActivityRow, type ActivityRowData } from "@/components/composites/ActivityRow"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Text } from "@/components/leaves/Text"
-import { createCompositeNode, createGrammarNode, createGrammarProjection, createLeafNode, type ComponentProps } from "@/components/contracts/props"
+import { renderComposite, layoutNode, layoutContent, renderLeaf, type ComponentProps } from "@/modules/types/layout"
 import type { ReactionType } from "@/modules/api/graphql/queries/types/reactions"
 
 /** One local-calendar group in the activity stream. */
@@ -23,11 +23,11 @@ export type ActivityFeedActions = { readonly [key: string]: ((reaction?: Reactio
 export type ActivityFeedProps = { readonly state: "pending" | "filteredEmpty" | "platformEmpty" | "failed" | "ready"; readonly props: ActivityFeedData; readonly on?: ActivityFeedActions }
 type ActivityListData = SurfaceListCardData & { readonly rows: ReadonlyArray<ActivityRowData> }
 
-const ROW_COUNT = CONTRACTS["activity-feed-list"].children.activity.restingCount
+const ROW_COUNT = LAYOUTS["activity-feed-list"].children.activity.restingCount
 const ActivityListView = ({ props, on, isLoading = false }: ComponentProps<ActivityListData, ActivityFeedActions>) => {
     const rows = isLoading ? Array.from({ length: ROW_COUNT }, (_, index) => ({ id: `resting-${index}` })) : props.rows
-    return <Grammar contract="activity-feed-list" render={createGrammarNode("activity-feed-list", {
-        activity: rows.map((row) => createCompositeNode("activity-row", {}, () => (
+    return <Grammar layout="activity-feed-list" render={layoutNode("activity-feed-list", {
+        activity: rows.map((row) => renderComposite("activity-row", {}, () => (
             <ActivityRow props={row} on={{
                 openActor: on?.[`actor:${row.id}`],
                 openTarget: on?.[`target:${row.id}`],
@@ -36,15 +36,15 @@ const ActivityListView = ({ props, on, isLoading = false }: ComponentProps<Activ
         ))),
     })} />
 }
-const ActivityList = createGrammarNode("activity-feed-list", ActivityListView)
+const ActivityList = layoutNode("activity-feed-list", ActivityListView)
 
 /** Draw local-day joined activity lists or one explicit result notice. */
 export const ActivityFeedBase = (input: ActivityFeedProps) => {
     if (input.state === "filteredEmpty" || input.state === "platformEmpty" || input.state === "failed") {
-        return <Grammar contract="activity-feed-result" render={createGrammarNode("activity-feed-result", {
-            notice: createGrammarProjection("empty-notice-card", () => (
-                <SurfaceCard props={{ label: "" }} contract="empty-notice-card" render={createGrammarNode("empty-notice-card", {
-                    notice: createCompositeNode("empty-notice", {}, () => (
+        return <Grammar layout="activity-feed-result" render={layoutNode("activity-feed-result", {
+            notice: layoutContent("empty-notice-card", () => (
+                <SurfaceCard props={{ label: "" }} layout="empty-notice-card" render={layoutNode("empty-notice-card", {
+                    notice: renderComposite("empty-notice", {}, () => (
                         <EmptyNotice props={{
                             message: input.props.message,
                             description: input.props.description,
@@ -58,15 +58,15 @@ export const ActivityFeedBase = (input: ActivityFeedProps) => {
     const days = input.state === "pending"
         ? Array.from({ length: 2 }, (_, index) => ({ id: `resting-day-${index}`, label: "", rows: [] }))
         : input.props.days
-    return <Grammar contract="activity-feed-result" render={createGrammarNode("activity-feed-result", {
-        day: days.map((day) => createGrammarProjection("activity-day-group", () => (
-            <Grammar contract="activity-day-group" render={createGrammarNode("activity-day-group", {
-                subtitle: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+    return <Grammar layout="activity-feed-result" render={layoutNode("activity-feed-result", {
+        day: days.map((day) => layoutContent("activity-day-group", () => (
+            <Grammar layout="activity-day-group" render={layoutNode("activity-day-group", {
+                subtitle: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                     <Text props={{ content: day.label, size: "sm", tone: "muted" }} isLoading={input.state === "pending"} />
                 )),
-                list: createGrammarProjection("activity-feed-list", () => (
+                list: layoutContent("activity-feed-list", () => (
                     <SurfaceListCard
-                        contract="activity-feed-list"
+                        layout="activity-feed-list"
                         render={ActivityList}
                         props={{ label: day.label, rows: day.rows, isLabelHidden: true }}
                         on={input.on}
@@ -78,4 +78,3 @@ export const ActivityFeedBase = (input: ActivityFeedProps) => {
     })} />
 }
 /** Source-level ownership marker for the pure social block. */
-export const meta = { world: "pure", domain: "social" } as const

@@ -1,12 +1,12 @@
 import { Badge } from "@/components/leaves/Badge"
 import { Button } from "@/components/leaves/Button"
 import { CodeBlock } from "@/components/leaves/CodeBlock"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import {
-    createGrammarNode,
-    createLeafNode,
+    layoutNode,
+    renderLeaf,
     type BlockProps,
-} from "@/components/contracts/props"
+} from "@/modules/types/layout"
 import { CodeEditor, type EditorTelemetry } from "@/components/leaves/CodeEditor"
 import { Select, type SelectOption } from "@/components/leaves/Select"
 
@@ -100,8 +100,8 @@ export const SolutionEditorBase = (input: SolutionEditorProps) => {
     const isBusy = input.state === "submitting"
     const testcases = input.props.testcases ?? []
 
-    const toolbar = createGrammarNode("editor-toolbar-row", {
-        language: createLeafNode("select", {}, () => (
+    const toolbar = layoutNode("editor-toolbar-row", {
+        language: renderLeaf("select", {}, () => (
             <Select
                 props={{
                     id: LANGUAGE_ID,
@@ -114,14 +114,14 @@ export const SolutionEditorBase = (input: SolutionEditorProps) => {
                 on={{ select: input.on?.changeLanguage }}
             />
         )),
-        actions: createGrammarNode("catalog-card-action-row", {
-            cart: createLeafNode("button", {}, () => (
+        actions: layoutNode("catalog-card-action-row", {
+            cart: renderLeaf("button", {}, () => (
                 <Button
                     props={{ label: labels.run, size: "sm", variant: "outline", disabled: isBusy }}
                     on={{ press: input.on?.run }}
                 />
             )),
-            open: createLeafNode("button", {}, () => (
+            open: renderLeaf("button", {}, () => (
                 <Button
                     props={{
                         label: isBusy ? labels.submitting : labels.submit,
@@ -140,10 +140,10 @@ export const SolutionEditorBase = (input: SolutionEditorProps) => {
 
     return (
         <Grammar
-            contract="editor-over-console"
-            render={createGrammarNode("editor-over-console", {
+            layout="editor-over-console"
+            render={layoutNode("editor-over-console", {
                 toolbar,
-                editor: createLeafNode("code-editor", {}, () => (
+                editor: renderLeaf("code-editor", {}, () => (
                     <CodeEditor
                         props={{
                             id: EDITOR_ID,
@@ -159,9 +159,9 @@ export const SolutionEditorBase = (input: SolutionEditorProps) => {
                     />
                 )),
                 ...(testcases.length === 0 ? {} : {
-                    console: createGrammarNode("judge-console", {
-                        cases: createGrammarNode("testcase-chip-run", {
-                            testcase: testcases.map((testcase) => createLeafNode("badge", {}, () => (
+                    console: layoutNode("judge-console", {
+                        cases: layoutNode("testcase-chip-run", {
+                            testcase: testcases.map((testcase) => renderLeaf("badge", {}, () => (
                                 <Badge
                                     props={{
                                         content: testcase.label,
@@ -171,7 +171,7 @@ export const SolutionEditorBase = (input: SolutionEditorProps) => {
                             ))),
                         }),
                         ...(input.props.compilerMessage === undefined ? {} : {
-                            message: createLeafNode("code-block", {}, () => (
+                            message: renderLeaf("code-block", {}, () => (
                                 <CodeBlock props={{ code: input.props.compilerMessage ?? "" }} />
                             )),
                         }),
@@ -183,4 +183,3 @@ export const SolutionEditorBase = (input: SolutionEditorProps) => {
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "pure", domain: "coding" } as const

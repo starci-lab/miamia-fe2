@@ -1,5 +1,5 @@
 import { skeletonVariants } from "@heroui/react"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /** Semantic states represented by a compact legend mark. */
 export type StatusDotTone = "accent" | "success" | "warning" | "danger"
@@ -19,7 +19,7 @@ const RESTING = skeletonVariants({ animationType: "shimmer" }).base()
 /** Draw one semantic legend mark; the adjacent visible label carries its wording. */
 export const StatusDot = ({ props, isLoading = false }: StatusDotProps) => (
     <span
-        data-tier="leaf"
+
         data-component="StatusDot"
         data-tone={props.tone}
         aria-label={isLoading ? undefined : props.label}
@@ -29,4 +29,3 @@ export const StatusDot = ({ props, isLoading = false }: StatusDotProps) => (
 )
 
 /** Source-level tier marker. */
-export const meta = { shape: "leaf", world: "pure" } as const

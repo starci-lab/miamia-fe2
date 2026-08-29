@@ -1,5 +1,5 @@
 import { ProgressBar, skeletonVariants } from "@heroui/react"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `Progress`: how far along something is, as a bar.
@@ -42,7 +42,7 @@ export const Progress = ({ props, isLoading = false }: ProgressProps) => {
     if (isLoading) {
         return (
             <span
-                data-tier="leaf"
+
                 data-component="Progress"
                 data-loading="true"
                 aria-hidden
@@ -53,7 +53,7 @@ export const Progress = ({ props, isLoading = false }: ProgressProps) => {
 
     return (
         <ProgressBar
-            data-tier="leaf"
+
             data-component="Progress"
             data-loading="false"
             aria-label={props.label}
@@ -72,4 +72,3 @@ export const Progress = ({ props, isLoading = false }: ProgressProps) => {
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

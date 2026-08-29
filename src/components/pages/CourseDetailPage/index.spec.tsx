@@ -17,9 +17,9 @@ describe("CourseDetailPage route", () => {
     it("renders a resolved course and wires navigation, section scrolling and enrolment", () => {
         m.query.data = { ...course, displayId: "course", description: "Learn", currentPhase: "early", originalPrice: 100000, pricingPhases: [{ id: "phase", phase: "early", price: 80000, slotAvailable: 3, orderIndex: 1 }], modules: [{ id: "module", title: "Module", orderIndex: 1, contentTier: "core", contents: [{ id: "content", minutesRead: 120, numChallenges: 2 }], previewContents: [{ id: "preview", text: "Preview", orderIndex: 1 }] }, { id: "module-2", title: "Module 2", orderIndex: 2, contentTier: "core", contents: [], previewContents: [] }], valuePropositions: [{ id: "value", text: "Build" , orderIndex: 1 }], prerequisites: [{ id: "prereq", text: "Basics", orderIndex: 1 }], qnas: [{ id: "faq", question: "Q", answer: "A", orderIndex: 1 }], isEnrolled: true }
         m.reviews.data = { averageScore: 4.5, total: 2, nodes: [{ id: "review", userId: "Ada", score: 5, body: "Great" }] }
-        const sectionNodes = Array.from({ length: 5 }, () => { const node = document.createElement("div"); node.dataset.node = "course-section"; node.scrollIntoView = vi.fn(); document.body.append(node); return node })
+        const sectionNodes = Array.from({ length: 5 }, () => { const node = document.createElement("div"); node.className = "layout-name-course-section"; node.scrollIntoView = vi.fn(); document.body.append(node); return node })
         render(<CourseDetailPage displayId="course" />)
-        const hero = document.createElement("div"); hero.dataset.node = "course-hero-heading"; hero.scrollIntoView = vi.fn(); document.body.append(hero)
+        const hero = document.createElement("div"); hero.className = "layout-name-course-hero-heading"; hero.scrollIntoView = vi.fn(); document.body.append(hero)
         fireEvent.click(screen.getByText("act")); fireEvent.click(screen.getByText("home")); fireEvent.click(screen.getByText("courses")); fireEvent.click(screen.getByText("overview")); fireEvent.click(screen.getByText("curriculum")); fireEvent.click(screen.getByText("reviews")); fireEvent.click(screen.getByText("faq"))
         expect(m.push).toHaveBeenCalledWith("/courses/course/learn")
         expect(m.push).toHaveBeenCalledWith("/"); expect(m.push).toHaveBeenCalledWith("/courses")

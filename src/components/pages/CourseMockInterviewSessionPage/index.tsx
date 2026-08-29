@@ -401,4 +401,3 @@ export const CourseMockInterviewSessionPage = ({ displayId, sessionId }: CourseM
 }
 
 /** Source-level ownership marker for the connected session twin. */
-export const meta = { world: "connected", domain: "learn" } as const

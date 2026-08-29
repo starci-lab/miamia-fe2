@@ -3,9 +3,9 @@ import { describe, expect, it } from "vitest"
 import { ProfilePublicCvPageBase } from "./component"
 
 describe("ProfilePublicCvPageBase", () => {
-    it("uses the same paper contract while resting and ready", () => {
+    it("uses the same paper layout while resting and ready", () => {
         const resting = render(<ProfilePublicCvPageBase state="pending" props={{ label: "Public CV", message: "", title: "CV", editLabel: "Edit CV", retryLabel: "Retry", isSelf: false }} />)
-        expect(resting.container.querySelector("[data-node='profile-cv-paper']")).toBeInTheDocument()
+        expect(resting.container.querySelector(".layout-name-profile-cv-paper")).toBeInTheDocument()
         resting.unmount()
         const ready = render(<ProfilePublicCvPageBase state="ready" props={{ label: "Public CV", message: "", title: "CV", pdfUrl: "https://example.com/cv.pdf", editLabel: "Edit CV", retryLabel: "Retry", isSelf: true }} />)
         expect(ready.container.querySelector("iframe[src='https://example.com/cv.pdf']")).toBeInTheDocument()

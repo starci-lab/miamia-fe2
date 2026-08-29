@@ -1,22 +1,21 @@
 import { ModalBranch } from "@/components/branches/ModalBranch"
-import type { ContractKey } from "@/components/contracts"
-import type { ContractComponent } from "@/components/contracts/props"
+import type { LayoutKey } from "@/resources/visual-layouts"
+import type { LayoutValue } from "@/modules/types/layout"
 
 /** Defines visibility, panel content and dismissal for the checkout overlay. */
-export type MembershipCheckoutOverlayProps<K extends ContractKey> = {
+export type MembershipCheckoutOverlayProps<K extends LayoutKey> = {
     readonly isOpen: boolean
-    readonly render: ContractComponent<K>
+    readonly render: LayoutValue<K>
     readonly onDismiss: () => void
 }
 /** Renders the pure membership checkout dialog shell. */
-export const MembershipCheckoutOverlayBase = <const K extends ContractKey>(input: MembershipCheckoutOverlayProps<K>) => (
+export const MembershipCheckoutOverlayBase = <const K extends LayoutKey>(input: MembershipCheckoutOverlayProps<K>) => (
     <ModalBranch
         isOpen={input.isOpen}
         size="sm"
-        contract={input.render.meta.contract}
+        layout={input.render.layout}
         render={input.render}
         onDismiss={input.onDismiss}
     />
 )
 /** Declares the component architecture metadata. */
-export const meta = { shape: "overlay", world: "pure", domain: "membership" } as const

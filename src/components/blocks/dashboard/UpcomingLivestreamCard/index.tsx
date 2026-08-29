@@ -59,4 +59,3 @@ export const UpcomingLivestreamCard = () => {
     )
 }
 /** Source-level ownership marker. */
-export const meta = { world: "connected", domain: "courses" } as const

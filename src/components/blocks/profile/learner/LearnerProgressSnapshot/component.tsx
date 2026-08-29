@@ -1,11 +1,11 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
 import { ProfileMetric } from "@/components/composites/ProfileMetric"
 import { LabelledProgressRow } from "@/components/composites/LabelledProgressRow"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
-import { createCompositeNode, createGrammarNode, createGrammarProjection } from "@/components/contracts/props"
+import { renderComposite, layoutNode, layoutContent } from "@/modules/types/layout"
 
-/** Stateful private-progress contract consumed by the pure snapshot block. */
+/** Stateful private-progress layout consumed by the pure snapshot block. */
 export type LearnerProgressSnapshotProps = {
     readonly state: "pending" | "ready" | "failed"
     readonly props: {
@@ -24,22 +24,22 @@ export type LearnerProgressSnapshotProps = {
 /** Renders authenticated totals without exposing them to a visitor route. */
 export const LearnerProgressSnapshot = (input: LearnerProgressSnapshotProps) => {
     const loading = input.state === "pending"
-    const metrics = createGrammarNode("profile-metric-ribbon", {
-        metric: input.props.metricLabels.map((label, index) => createCompositeNode("profile-metric", {}, () => (
+    const metrics = layoutNode("profile-metric-ribbon", {
+        metric: input.props.metricLabels.map((label, index) => renderComposite("profile-metric", {}, () => (
             <ProfileMetric props={{ label, value: input.props.metricValues?.[index] }} isLoading={loading} />
         ))),
     })
     return (
         <SurfaceCard
             props={{ label: input.props.title }}
-            contract="learner-progress-snapshot"
-            render={createGrammarNode("learner-progress-snapshot", {
+            layout="learner-progress-snapshot"
+            render={layoutNode("learner-progress-snapshot", {
                 metrics,
-                level: createCompositeNode("labelled-progress-row", {}, () => (
+                level: renderComposite("labelled-progress-row", {}, () => (
                     <LabelledProgressRow props={{ id: "level", title: input.props.levelLabel, percent: input.props.levelPercent, percentText: input.props.levelFact }} isLoading={loading} />
                 )),
-                ...(input.state === "failed" ? { notice: createGrammarProjection("centred-empty-notice", () => (
-                    <Grammar contract="centred-empty-notice" render={createGrammarNode("centred-empty-notice", { notice: createCompositeNode("empty-notice", {}, () => <EmptyNotice props={{ message: input.props.failedMessage, actionLabel: input.props.retryLabel }} on={{ act: input.on?.retry }} />) })} />
+                ...(input.state === "failed" ? { notice: layoutContent("centred-empty-notice", () => (
+                    <Grammar layout="centred-empty-notice" render={layoutNode("centred-empty-notice", { notice: renderComposite("empty-notice", {}, () => <EmptyNotice props={{ message: input.props.failedMessage, actionLabel: input.props.retryLabel }} on={{ act: input.on?.retry }} />) })} />
                 )) } : {}),
             })}
         />
@@ -47,4 +47,3 @@ export const LearnerProgressSnapshot = (input: LearnerProgressSnapshotProps) => 
 }
 
 /** Source-level block marker. */
-export const meta = { shape: "block", world: "pure", domain: "profile" } as const

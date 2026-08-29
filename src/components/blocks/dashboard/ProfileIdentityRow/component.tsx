@@ -29,4 +29,3 @@ export const ProfileIdentityRowBase = (input: ProfileIdentityRowProps) => {
 }
 
 /** Source-level tier marker for the pure dashboard identity block. */
-export const meta = { world: "pure", domain: "identity" } as const

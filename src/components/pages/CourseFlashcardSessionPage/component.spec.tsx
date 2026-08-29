@@ -43,8 +43,8 @@ describe("CourseFlashcardSessionPageBase", () => {
         const input = makeInput("review")
         const { container } = render(<CourseFlashcardSessionPageBase {...input} />)
 
-        expect(container.querySelector("[data-node=course-flashcard-session-page]")).toBeTruthy()
-        expect(container.querySelector("[data-node=flashcard-session-card]")).toBeTruthy()
+        expect(container.querySelector(".layout-name-course-flashcard-session-page")).toBeTruthy()
+        expect(container.querySelector(".layout-name-flashcard-session-card")).toBeTruthy()
         fireEvent.click(screen.getByRole("button", { name: "Good" }))
         expect(input.on.rate).toHaveBeenCalledWith(2)
     })

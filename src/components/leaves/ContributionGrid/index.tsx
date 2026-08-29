@@ -1,9 +1,9 @@
-import { CLASS_NAME_1, CLASS_NAME_2, CLASS_NAME_3, CLASS_NAME_4, CLASS_NAME_5, CLASS_NAME_6 } from './styles'
 "use client"
+import { CLASS_NAME_1, CLASS_NAME_2, CLASS_NAME_3, CLASS_NAME_4, CLASS_NAME_5, CLASS_NAME_6 } from "./classNames"
 
 import { useRef } from "react"
 import { motion } from "framer-motion"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /** One contribution day with its already-resolved accessible description. */
 export type ContributionGridDay = {
@@ -122,4 +122,3 @@ export const ContributionGrid = ({ props, isLoading = false }: ContributionGridP
 }
 
 /** Source-level tier marker for the intrinsic contribution plot. */
-export const meta = { shape: "leaf", world: "pure" } as const

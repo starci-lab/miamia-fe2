@@ -36,7 +36,7 @@ describe("CourseFoundationResourcePageBase", () => {
 
         fireEvent.click(screen.getByRole("button", { name: "Practice in Playground" }))
 
-        expect(container.querySelector("[data-node=\"course-foundation-resource-page\"]")).not.toBeNull()
+        expect(container.querySelector(".layout-name-course-foundation-resource-page")).not.toBeNull()
         expect(screen.getByRole("heading", { name: "Container runtime" })).toBeInTheDocument()
         expect(screen.getByText("Server-authored body")).toBeInTheDocument()
         expect(openPlayground).toHaveBeenCalledOnce()

@@ -1,5 +1,5 @@
-import { Grammar } from "@/components/branches/Grammar"
-import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
+import { Grammar } from "@/components/layouts/Grammar"
+import { layoutNode, renderLeaf } from "@/modules/types/layout"
 import { Button } from "@/components/leaves/Button"
 import { Heading } from "@/components/leaves/Heading"
 import { Text } from "@/components/leaves/Text"
@@ -27,21 +27,21 @@ export const CoursePersonalProjectTaskPageBase = (input: CoursePersonalProjectTa
     const failed = input.state === "failed"
     const controls = failed
         ? [
-            createLeafNode("text", {}, () => (
+            renderLeaf("text", {}, () => (
                 <Text props={{ content: input.props.notice, live: "assertive" }} />
             )),
-            createLeafNode("button", {}, () => (
+            renderLeaf("button", {}, () => (
                 <Button props={{ label: input.props.retryLabel }} on={{ press: input.on?.retry }} />
             )),
         ]
         : [
-            createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+            renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                 <Text
                     props={{ content: input.props.scoreLabel, size: "sm", tone: "muted" }}
                     isLoading={loading}
                 />
             )),
-            createLeafNode("button", {}, () => (
+            renderLeaf("button", {}, () => (
                 <Button
                     props={{
                         label: input.props.submitLabel,
@@ -56,21 +56,20 @@ export const CoursePersonalProjectTaskPageBase = (input: CoursePersonalProjectTa
 
     return (
         <Grammar
-            contract="course-personal-project-task-page"
-            render={createGrammarNode("course-personal-project-task-page", {
-                header: createGrammarNode("centred-title-pair", {
-                    title: createLeafNode("heading", {}, () => (
+            layout="course-personal-project-task-page"
+            render={layoutNode("course-personal-project-task-page", {
+                header: layoutNode("centred-title-pair", {
+                    title: renderLeaf("heading", {}, () => (
                         <Heading props={{ content: input.props.title, level: 1 }} isLoading={loading} />
                     )),
-                    description: createLeafNode("text", { size: "sm" }, () => (
+                    description: renderLeaf("text", { size: "sm" }, () => (
                         <Text props={{ content: input.props.description, size: "sm" }} isLoading={loading} />
                     )),
                 }),
-                controls: createGrammarNode("stacked-peer-controls", { control: controls }),
+                controls: layoutNode("stacked-peer-controls", { control: controls }),
             })}
         />
     )
 }
 
 /** Architectural identity for the pure task page twin. */
-export const meta = { world: "pure", domain: "learn" } as const

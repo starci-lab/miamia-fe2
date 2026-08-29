@@ -29,8 +29,8 @@ describe("ContentDiscussionPanelBase", () => {
             <ContentDiscussionPanelBase state="ready" props={props} on={{ changeDraft, submit }} />,
         )
 
-        expect(container.querySelector("[data-node=content-discussion-panel]")).toBeTruthy()
-        expect(container.querySelector("[data-node=content-discussion-list]")).toBeTruthy()
+        expect(container.querySelector(".layout-name-content-discussion-panel")).toBeTruthy()
+        expect(container.querySelector(".layout-name-content-discussion-list")).toBeTruthy()
         expect(screen.getByText("How does this work?")).toBeInTheDocument()
         fireEvent.change(screen.getByLabelText("Comment"), { target: { value: "Next question" } })
         fireEvent.click(screen.getByRole("button", { name: "Post comment" }))

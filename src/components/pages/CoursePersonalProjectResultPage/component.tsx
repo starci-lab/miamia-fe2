@@ -1,5 +1,5 @@
-import { Grammar } from "@/components/branches/Grammar"
-import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
+import { Grammar } from "@/components/layouts/Grammar"
+import { layoutNode, renderLeaf } from "@/modules/types/layout"
 import { Button } from "@/components/leaves/Button"
 import { Heading } from "@/components/leaves/Heading"
 import { Text } from "@/components/leaves/Text"
@@ -31,15 +31,15 @@ export const CoursePersonalProjectResultPageBase = (input: CoursePersonalProject
     const loading = input.state === "pending"
     const attempts = input.state === "ready"
         ? [
-            createLeafNode("text", {}, () => (
+            renderLeaf("text", {}, () => (
                 <Text props={{ content: input.props.attemptsLabel, weight: "semibold" }} />
             )),
-            ...input.props.attempts.map((attempt) => createLeafNode("text", {}, () => (
+            ...input.props.attempts.map((attempt) => renderLeaf("text", {}, () => (
                 <Text props={{ content: attempt.label }} />
             ))),
         ]
         : [
-            createLeafNode("text", {}, () => (
+            renderLeaf("text", {}, () => (
                 <Text
                     props={{
                         content: input.props.notice,
@@ -51,10 +51,10 @@ export const CoursePersonalProjectResultPageBase = (input: CoursePersonalProject
         ]
     const feedback = input.state === "ready"
         ? [
-            createLeafNode("text", {}, () => (
+            renderLeaf("text", {}, () => (
                 <Text props={{ content: input.props.feedbackLabel, weight: "semibold" }} />
             )),
-            ...input.props.feedbacks.map((feedback) => createLeafNode("text", {}, () => (
+            ...input.props.feedbacks.map((feedback) => renderLeaf("text", {}, () => (
                 <Text props={{ content: feedback.label }} />
             ))),
         ]
@@ -62,22 +62,22 @@ export const CoursePersonalProjectResultPageBase = (input: CoursePersonalProject
 
     return (
         <Grammar
-            contract="course-personal-project-result-page"
-            render={createGrammarNode("course-personal-project-result-page", {
-                header: createGrammarNode("centred-title-pair", {
-                    title: createLeafNode("heading", {}, () => (
+            layout="course-personal-project-result-page"
+            render={layoutNode("course-personal-project-result-page", {
+                header: layoutNode("centred-title-pair", {
+                    title: renderLeaf("heading", {}, () => (
                         <Heading props={{ content: input.props.title, level: 1 }} isLoading={loading} />
                     )),
-                    description: createLeafNode("text", { size: "sm" }, () => (
+                    description: renderLeaf("text", { size: "sm" }, () => (
                         <Text props={{ content: input.props.description, size: "sm" }} isLoading={loading} />
                     )),
                 }),
-                attempts: createGrammarNode("stacked-peer-controls", { control: attempts }),
+                attempts: layoutNode("stacked-peer-controls", { control: attempts }),
                 ...(feedback === undefined ? {} : {
-                    feedback: createGrammarNode("stacked-peer-controls", { control: feedback }),
+                    feedback: layoutNode("stacked-peer-controls", { control: feedback }),
                 }),
                 ...(loading ? {} : {
-                    action: createLeafNode("button", {}, () => (
+                    action: renderLeaf("button", {}, () => (
                         <Button
                             props={{ label: input.props.retryTaskLabel }}
                             on={{ press: input.on?.retryTask }}
@@ -90,4 +90,3 @@ export const CoursePersonalProjectResultPageBase = (input: CoursePersonalProject
 }
 
 /** Architectural identity for the pure result page twin. */
-export const meta = { world: "pure", domain: "learn" } as const

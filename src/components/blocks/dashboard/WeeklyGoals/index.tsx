@@ -144,4 +144,3 @@ export const WeeklyGoals = () => {
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { world: "connected", domain: "kpi" } as const

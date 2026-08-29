@@ -5,7 +5,7 @@ import { cpp } from "@codemirror/lang-cpp"
 import { java } from "@codemirror/lang-java"
 import { javascript } from "@codemirror/lang-javascript"
 import { python } from "@codemirror/lang-python"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `CodeEditor`: the surface a solution is written on.
@@ -136,7 +136,7 @@ export const CodeEditor = ({ props, on }: CodeEditorProps) => {
 
     return (
         <div
-            data-tier="leaf"
+
             data-component="CodeEditor"
             data-language={props.language}
             className={HOST_CLASSES}
@@ -156,4 +156,3 @@ export const CodeEditor = ({ props, on }: CodeEditorProps) => {
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

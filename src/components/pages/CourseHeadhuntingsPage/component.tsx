@@ -1,5 +1,5 @@
 import { SurfaceListCard, type SurfaceListCardData } from "@/components/branches/SurfaceListCard"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Breadcrumbs, type BreadcrumbStep } from "@/components/leaves/Breadcrumbs"
 import { Heading } from "@/components/leaves/Heading"
@@ -7,13 +7,13 @@ import { SearchBox } from "@/components/leaves/SearchBox"
 import { Text } from "@/components/leaves/Text"
 import { TextLink } from "@/components/leaves/TextLink"
 import {
-    createCompositeNode,
-    createGrammarNode,
-    createGrammarProjection,
-    createLeafNode,
+    renderComposite,
+    layoutNode,
+    layoutContent,
+    renderLeaf,
     type BlockProps,
     type ComponentProps,
-} from "@/components/contracts/props"
+} from "@/modules/types/layout"
 
 /** One company destination or consultant contact line in the directory. */
 export type HeadhuntingDirectoryRow = {
@@ -66,9 +66,9 @@ const resolveDirectoryHandler = (row: HeadhuntingDirectoryRow, on?: CourseHeadhu
 }
 
 const DirectoryList = ({ props, on, isLoading = false }: ComponentProps<DirectoryListData, CourseHeadhuntingsPageActions>) => (
-    <Grammar contract="content-next-list" render={createGrammarNode("content-next-list", {
+    <Grammar layout="content-next-list" render={layoutNode("content-next-list", {
         step: (isLoading ? PENDING_DIRECTORY_ROWS : props.rows)
-            .map((row) => createGrammarProjection("content-next-row", () => {
+            .map((row) => layoutContent("content-next-row", () => {
                 const label = [row.label, row.meta, row.actionLabel].filter((part) => part !== undefined).join(" · ")
                 const handler = resolveDirectoryHandler(row, on)
                 return handler === undefined ? (
@@ -80,18 +80,18 @@ const DirectoryList = ({ props, on, isLoading = false }: ComponentProps<Director
     })} />
 )
 
-const DirectoryListContent = createGrammarNode("content-next-list", DirectoryList)
+const DirectoryListContent = layoutNode("content-next-list", DirectoryList)
 
 /** Pure company search plus consultant contact directory. */
 export const CourseHeadhuntingsPageBase = (input: CourseHeadhuntingsPageProps) => {
     const isLoading = input.state === "pending"
-    const header = createGrammarNode("page-header-stack", {
-        trail: createLeafNode("breadcrumbs", {}, () => (
+    const header = layoutNode("page-header-stack", {
+        trail: renderLeaf("breadcrumbs", {}, () => (
             <Breadcrumbs props={{ steps: input.props.trail, label: input.props.title }} on={{ course: input.on?.course as (() => void) | undefined }} />
         )),
-        title: createLeafNode("heading", {}, () => <Heading props={{ content: input.props.title, level: 1 }} />),
+        title: renderLeaf("heading", {}, () => <Heading props={{ content: input.props.title, level: 1 }} />),
     })
-    const toolbar = createGrammarProjection("catalog-search-count-view-row", () => (
+    const toolbar = layoutContent("catalog-search-count-view-row", () => (
         <SearchBox
             props={{
                 placeholder: input.props.searchPlaceholder,
@@ -102,7 +102,7 @@ export const CourseHeadhuntingsPageBase = (input: CourseHeadhuntingsPageProps) =
         />
     ))
     const notice = input.state === "failed" || input.state === "empty"
-        ? createCompositeNode("empty-notice", {}, () => (
+        ? renderComposite("empty-notice", {}, () => (
             <EmptyNotice
                 props={{
                     icon: input.state === "failed" ? "retry" : "talents",
@@ -115,14 +115,14 @@ export const CourseHeadhuntingsPageBase = (input: CourseHeadhuntingsPageProps) =
         : undefined
 
     return (
-        <Grammar contract="course-headhuntings-page" render={createGrammarNode("course-headhuntings-page", {
+        <Grammar layout="course-headhuntings-page" render={layoutNode("course-headhuntings-page", {
             header,
             search: toolbar,
             ...(notice === undefined ? {
-                directories: createGrammarProjection("catalog-section-group", () => (
+                directories: layoutContent("catalog-section-group", () => (
                     <>
                         <SurfaceListCard
-                            contract="content-next-list"
+                            layout="content-next-list"
                             render={DirectoryListContent}
                             props={{ label: input.props.companiesLabel, rows: input.props.companies }}
                             on={input.on}
@@ -130,7 +130,7 @@ export const CourseHeadhuntingsPageBase = (input: CourseHeadhuntingsPageProps) =
                         />
                         {input.props.consultants.length === 0 && !isLoading ? null : (
                             <SurfaceListCard
-                                contract="content-next-list"
+                                layout="content-next-list"
                                 render={DirectoryListContent}
                                 props={{ label: input.props.consultantsLabel, rows: input.props.consultants }}
                                 on={input.on}
@@ -145,4 +145,3 @@ export const CourseHeadhuntingsPageBase = (input: CourseHeadhuntingsPageProps) =
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "pure", domain: "learn" } as const

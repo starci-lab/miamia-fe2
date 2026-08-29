@@ -1,6 +1,6 @@
 import { Checkbox as HeroCheckbox } from "@heroui/react"
 import { TextLink } from "@/components/leaves/TextLink"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `Checkbox`: a choice the reader makes about the form around it.
@@ -51,7 +51,7 @@ const ROOT_CLASSES = "flex flex-row items-center gap-2 text-sm"
  */
 export const Checkbox = ({ props, on }: CheckboxProps) => (
     <HeroCheckbox
-        data-tier="leaf"
+
         data-component="Checkbox"
         data-selected={props.isSelected ? "true" : "false"}
         aria-label={props.label}
@@ -84,4 +84,3 @@ export const Checkbox = ({ props, on }: CheckboxProps) => (
 )
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

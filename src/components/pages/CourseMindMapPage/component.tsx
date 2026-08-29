@@ -1,11 +1,11 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Button } from "@/components/leaves/Button"
 import { Heading } from "@/components/leaves/Heading"
 import { NavLink } from "@/components/leaves/NavLink"
 import { SearchBox } from "@/components/leaves/SearchBox"
 import { Text } from "@/components/leaves/Text"
-import { createCompositeNode, createGrammarNode, createLeafNode } from "@/components/contracts/props"
+import { renderComposite, layoutNode, renderLeaf } from "@/modules/types/layout"
 
 /** Query states exposed by the pure course concept map. */
 export type CourseMindMapPageState = "pending" | "ready" | "empty" | "failed"
@@ -65,7 +65,7 @@ export const CourseMindMapPageBase = (input: CourseMindMapPageProps) => {
     const selected = input.props.nodes.find((node) => node.id === input.props.selectedId)
     const noResults = input.state === "ready" && input.props.nodes.length === 0
     const notice = input.state === "empty" || input.state === "failed" || noResults
-        ? createCompositeNode("empty-notice", {}, () => (
+        ? renderComposite("empty-notice", {}, () => (
             <EmptyNotice
                 props={{
                     message: deriveNoticeMessage(
@@ -83,16 +83,16 @@ export const CourseMindMapPageBase = (input: CourseMindMapPageProps) => {
         : undefined
 
     return (
-        <Grammar contract="course-mind-map-page" render={createGrammarNode("course-mind-map-page", {
-            header: createGrammarNode("page-header-stack", {
-                title: createLeafNode("heading", {}, () => (
+        <Grammar layout="course-mind-map-page" render={layoutNode("course-mind-map-page", {
+            header: layoutNode("page-header-stack", {
+                title: renderLeaf("heading", {}, () => (
                     <Heading props={{ content: input.props.title, level: 1 }} isLoading={loading} />
                 )),
             }),
-            description: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+            description: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                 <Text props={{ content: input.props.description, size: "sm", tone: "muted" }} isLoading={loading} />
             )),
-            search: createLeafNode("search-box", {}, () => (
+            search: renderLeaf("search-box", {}, () => (
                 <SearchBox
                     props={{
                         label: input.props.searchLabel,
@@ -102,10 +102,10 @@ export const CourseMindMapPageBase = (input: CourseMindMapPageProps) => {
                     on={{ search: input.on.search }}
                 />
             )),
-            graphFact: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+            graphFact: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                 <Text props={{ content: input.props.graphFact, size: "xs", tone: "muted" }} isLoading={loading} />
             )),
-            node: input.props.nodes.map((node) => createLeafNode("nav-link", { kind: "section" }, () => (
+            node: input.props.nodes.map((node) => renderLeaf("nav-link", { kind: "section" }, () => (
                 <NavLink
                     props={{
                         label: node.detail === undefined ? node.label : `${node.label} · ${node.detail}`,
@@ -117,12 +117,12 @@ export const CourseMindMapPageBase = (input: CourseMindMapPageProps) => {
                 />
             ))),
             ...(selected?.detail === undefined ? {} : {
-                selection: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+                selection: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                     <Text props={{ content: selected.detail, size: "sm", tone: "muted" }} />
                 )),
             }),
             ...(selected?.canOpen !== true ? {} : {
-                open: createLeafNode("button", {}, () => (
+                open: renderLeaf("button", {}, () => (
                     <Button props={{ label: input.props.openLabel, variant: "primary" }} on={{ press: () => input.on.openContent(selected.id) }} />
                 )),
             }),
@@ -132,4 +132,3 @@ export const CourseMindMapPageBase = (input: CourseMindMapPageProps) => {
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "pure", domain: "learn" } as const

@@ -31,4 +31,3 @@ export const StreakStatRow = () => {
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { world: "connected", domain: "identity" } as const

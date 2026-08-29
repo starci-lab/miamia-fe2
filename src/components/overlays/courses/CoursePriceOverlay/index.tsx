@@ -6,7 +6,7 @@ import {
     type CoursePriceDetailState,
     type CoursePriceLine,
 } from "@/components/blocks/courses/CoursePriceDetail/component"
-import { createGrammarProjection } from "@/components/contracts/props"
+import { layoutContent } from "@/modules/types/layout"
 import { useQueryCoursePricePreviewSwr } from "@/hooks"
 import { isPersonalPrice } from "@/modules/utils/course-price"
 import { CoursePriceOverlayBase } from "./component"
@@ -114,7 +114,7 @@ export const CoursePriceOverlay = ({ courseId, title, isOpen, onDismiss }: Cours
         <CoursePriceOverlayBase
             isOpen={isOpen}
             onDismiss={onDismiss}
-            render={createGrammarProjection("course-price-detail-stack", () => (
+            render={layoutContent("course-price-detail-stack", () => (
                 <CoursePriceDetailBase
                     state={state}
                     props={{
@@ -131,4 +131,3 @@ export const CoursePriceOverlay = ({ courseId, title, isOpen, onDismiss }: Cours
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { world: "connected", domain: "courses" } as const

@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest"
 import { CoursePlaygroundPageBase } from "./component"
 
 describe("CoursePlaygroundPageBase", () => {
-    it("renders the backend catalog through its canonical contract", () => {
+    it("renders the backend catalog through its canonical layout", () => {
         const openSetup = vi.fn()
         const { container } = render(
             <CoursePlaygroundPageBase
@@ -23,7 +23,7 @@ describe("CoursePlaygroundPageBase", () => {
 
         fireEvent.click(screen.getByRole("link", { name: "Docker lab · 3 guided steps" }))
 
-        expect(container.querySelector("[data-node=\"course-playground-page\"]")).not.toBeNull()
+        expect(container.querySelector(".layout-name-course-playground-page")).not.toBeNull()
         expect(openSetup).toHaveBeenCalledWith("docker")
     })
 })

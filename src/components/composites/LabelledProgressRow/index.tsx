@@ -1,8 +1,8 @@
 import { Text } from "@/components/leaves/Text"
 import { Progress } from "@/components/leaves/Progress"
-import type { CompositeProps } from "@/components/contracts/props"
-import { Grammar } from "@/components/branches/Grammar"
-import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
+import type { CompositeProps } from "@/modules/types/layout"
+import { Grammar } from "@/components/layouts/Grammar"
+import { layoutNode, renderLeaf } from "@/modules/types/layout"
 
 /**
  * COMPOSITE - `LabelledProgressRow`: a name, how far along it is, and the bar that shows it.
@@ -41,16 +41,15 @@ export type LabelledProgressRowProps = CompositeProps<LabelledProgressRowData>
  * @param input - {@link LabelledProgressRowProps}
  */
 export const LabelledProgressRow = ({ props, isLoading = false }: LabelledProgressRowProps) => {
-    const line = createGrammarNode("label-with-muted-fact-row", {
-        label: createLeafNode("text", { size: "sm", weight: "semibold" }, () => <Text props={{ content: props.title, size: "sm", weight: "semibold" }} isLoading={isLoading} />),
-        fact: createLeafNode("text", { size: "xs", tone: "muted" }, () => <Text props={{ content: props.percentText, size: "xs" }} isLoading={isLoading} />),
+    const line = layoutNode("label-with-muted-fact-row", {
+        label: renderLeaf("text", { size: "sm", weight: "semibold" }, () => <Text props={{ content: props.title, size: "sm", weight: "semibold" }} isLoading={isLoading} />),
+        fact: renderLeaf("text", { size: "xs", tone: "muted" }, () => <Text props={{ content: props.percentText, size: "xs" }} isLoading={isLoading} />),
     })
-    const content = createGrammarNode("label-fact-over-progress", {
+    const content = layoutNode("label-fact-over-progress", {
         line,
-        progress: createLeafNode("progress", {}, () => <Progress props={{ value: props.percent, label: props.title ?? "" }} isLoading={isLoading} />),
+        progress: renderLeaf("progress", {}, () => <Progress props={{ value: props.percent, label: props.title ?? "" }} isLoading={isLoading} />),
     })
-    return <Grammar contract="label-fact-over-progress" render={content} />
+    return <Grammar layout="label-fact-over-progress" render={content} />
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "composite", world: "pure" } as const

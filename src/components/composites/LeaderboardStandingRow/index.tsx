@@ -1,8 +1,8 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { Badge } from "@/components/leaves/Badge"
 import { LeagueTile } from "@/components/leaves/LeagueTile"
 import { Text } from "@/components/leaves/Text"
-import { createGrammarNode, createLeafNode, type CompositeProps } from "@/components/contracts/props"
+import { layoutNode, renderLeaf, type CompositeProps } from "@/modules/types/layout"
 
 /** Resolved viewer-standing summary. */
 export type LeaderboardStandingRowData = {
@@ -23,26 +23,25 @@ export type LeaderboardStandingRowData = {
  * so the row reads the same whether or not a fact exists.
  */
 export const LeaderboardStandingRow = ({ props, isLoading = false }: CompositeProps<LeaderboardStandingRowData>) => (
-    <Grammar contract="leaderboard-standing-row" render={createGrammarNode("leaderboard-standing-row", {
-        mark: createLeafNode("league-tile", {}, () => (
+    <Grammar layout="leaderboard-standing-row" render={layoutNode("leaderboard-standing-row", {
+        mark: renderLeaf("league-tile", {}, () => (
             <LeagueTile
                 props={{ rank: props.rank, accessibleLabel: props.rankLabel }}
                 isLoading={isLoading}
             />
         )),
-        body: createGrammarNode("evidence-title-over-subtitle", {
-            title: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
+        body: layoutNode("evidence-title-over-subtitle", {
+            title: renderLeaf("text", { size: "sm", weight: "semibold" }, () => (
                 <Text props={{ content: props.title, size: "sm", weight: "semibold" }} isLoading={isLoading} />
             )),
-            subtitle: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+            subtitle: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                 <Text props={{ content: props.subtitle, size: "xs", tone: "muted" }} isLoading={isLoading} />
             )),
         }),
         ...(props.fact === undefined ? {} : {
-            fact: createLeafNode("badge", {}, () => <Badge props={{ content: props.fact, tone: "warning" }} />),
+            fact: renderLeaf("badge", {}, () => <Badge props={{ content: props.fact, tone: "warning" }} />),
         }),
     })} />
 )
 
 /** Source-level tier marker. */
-export const meta = { shape: "composite", world: "pure" } as const

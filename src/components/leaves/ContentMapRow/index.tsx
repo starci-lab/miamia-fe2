@@ -1,7 +1,7 @@
 import { Link as HeroLink } from "@heroui/react"
 import { Icon } from "@/components/leaves/Icon"
 import { Text } from "@/components/leaves/Text"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `ContentMapRow`: one content in the course map, with its state and its length.
@@ -54,7 +54,7 @@ const CURRENT_CLASSES = "bg-accent-soft text-accent-soft-foreground"
  */
 export const ContentMapRow = ({ props, on, isLoading = false }: ContentMapRowProps) => (
     <HeroLink
-        data-tier="leaf"
+
         data-component="ContentMapRow"
         data-current={props.isCurrent === true ? "true" : "false"}
         aria-current={props.isCurrent === true ? "page" : undefined}
@@ -68,4 +68,3 @@ export const ContentMapRow = ({ props, on, isLoading = false }: ContentMapRowPro
 )
 
 /** Source-level tier marker. */
-export const meta = { shape: "leaf", world: "pure" } as const

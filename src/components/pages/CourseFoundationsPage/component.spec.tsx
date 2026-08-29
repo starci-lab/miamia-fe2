@@ -36,7 +36,7 @@ describe("CourseFoundationsPageBase", () => {
         fireEvent.change(screen.getByRole("searchbox", { name: "Search categories" }), { target: { value: "container" } })
         fireEvent.submit(screen.getByRole("search"))
 
-        expect(container.querySelector("[data-node=\"course-foundations-page\"]")).not.toBeNull()
+        expect(container.querySelector(".layout-name-course-foundations-page")).not.toBeNull()
         expect(openCategory).toHaveBeenCalledWith("category-1")
         expect(search).toHaveBeenCalledWith("container")
     })

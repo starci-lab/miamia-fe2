@@ -115,4 +115,3 @@ export const CourseMindMapPage = ({ displayId }: CourseMindMapPageProps) => {
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "connected", domain: "learn" } as const

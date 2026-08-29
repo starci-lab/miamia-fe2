@@ -5,8 +5,8 @@ import { MyCoursesProgress } from "@/components/blocks/dashboard/MyCoursesProgre
 import { RecommendedCourses } from "@/components/blocks/dashboard/RecommendedCourses"
 import { UpcomingLivestreamCard } from "@/components/blocks/dashboard/UpcomingLivestreamCard"
 import { CoursePriceOverlay } from "@/components/overlays/courses/CoursePriceOverlay"
-import { createGrammarNode, createGrammarProjection } from "@/components/contracts/props"
-import { Grammar } from "@/components/branches/Grammar"
+import { layoutNode, layoutContent } from "@/modules/types/layout"
+import { Grammar } from "@/components/layouts/Grammar"
 
 /**
  * Orchestrate the three legacy learning blocks in fixed order.
@@ -23,14 +23,14 @@ export const CoursesTab = () => {
     return (
         <>
             <Grammar
-                contract="dashboard-tab-main"
-                render={createGrammarNode("dashboard-tab-main", {
+                layout="dashboard-tab-main"
+                render={layoutNode("dashboard-tab-main", {
                     section: [
-                        createGrammarProjection("label-row-over-card", () => <MyCoursesProgress />),
-                        createGrammarProjection("label-row-over-card", () => (
+                        layoutContent("label-row-over-card", () => <MyCoursesProgress />),
+                        layoutContent("label-row-over-card", () => (
                             <RecommendedCourses onOpenPriceDetail={setPricedCourseId} />
                         )),
-                        createGrammarProjection("label-row-over-card", () => <UpcomingLivestreamCard />),
+                        layoutContent("label-row-over-card", () => <UpcomingLivestreamCard />),
                     ],
                 })}
             />
@@ -44,4 +44,3 @@ export const CoursesTab = () => {
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "pure", domain: "courses" } as const

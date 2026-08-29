@@ -1,7 +1,7 @@
-import { CLASS_NAME_1, CLASS_NAME_2, CLASS_NAME_3 } from './styles'
+import { CLASS_NAME_1, CLASS_NAME_2, CLASS_NAME_3 } from "./classNames"
 import { Button, Kbd } from "@heroui/react"
 import { Icon } from "@/components/leaves/Icon"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /** Copy shown by the navbar's input-looking press target. */
 export type PressableInputLikeData = {
@@ -24,7 +24,7 @@ export type PressableInputLikeProps = ComponentProps<PressableInputLikeData, Pre
  */
 export const PressableInputLike = ({ props, on }: PressableInputLikeProps) => (
     <Button
-        data-tier="leaf"
+
         data-component="PressableInputLike"
         variant="outline"
         aria-label={props.label}
@@ -40,4 +40,3 @@ export const PressableInputLike = ({ props, on }: PressableInputLikeProps) => (
 )
 
 /** Source-level tier marker for the input-looking control. */
-export const meta = { shape: "leaf", world: "pure" } as const

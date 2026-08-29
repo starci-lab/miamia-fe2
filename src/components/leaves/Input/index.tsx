@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Input as HeroInput, skeletonVariants } from "@heroui/react"
 import { Icon } from "@/components/leaves/Icon"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `Input`: the box a reader types into.
@@ -84,7 +84,7 @@ export const Input = ({ props, on, isLoading = false }: InputProps) => {
     const isSecret = (props.kind ?? "text") === "password" || props.kind === "newPassword"
     const revealLabel = isRevealed ? props.hideLabel : props.revealLabel
     return (
-        <span data-tier="leaf" data-component="Input" className={BOX_CLASSES}>
+        <span data-component="Input" className={BOX_CLASSES}>
             <HeroInput
                 data-kind={props.kind ?? "text"}
                 data-loading={isLoading ? "true" : "false"}
@@ -118,4 +118,3 @@ export const Input = ({ props, on, isLoading = false }: InputProps) => {
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

@@ -63,4 +63,3 @@ export const ExamCatalog = (input: ExamCatalogConnectedProps) => {
 }
 
 /** Source-level block marker. */
-export const meta = { shape: "block", world: "connected", domain: "exam" } as const

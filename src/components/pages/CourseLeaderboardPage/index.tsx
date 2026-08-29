@@ -153,4 +153,3 @@ export const CourseLeaderboardPage = ({ displayId }: CourseLeaderboardPageProps)
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "connected", domain: "learn" } as const

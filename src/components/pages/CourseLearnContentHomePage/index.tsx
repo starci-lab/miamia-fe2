@@ -40,4 +40,3 @@ export const CourseLearnContentHomePage = ({ displayId }: CourseLearnContentHome
 }
 
 /** Connected ownership metadata for the Modules landing route. */
-export const meta = { world: "connected", domain: "learn" } as const

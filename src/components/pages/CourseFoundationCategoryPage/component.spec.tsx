@@ -36,7 +36,7 @@ describe("CourseFoundationCategoryPageBase", () => {
 
         fireEvent.click(screen.getByRole("link", { name: "Container runtime · Backend-owned description" }))
 
-        expect(container.querySelector("[data-node=\"course-foundation-category-page\"]")).not.toBeNull()
+        expect(container.querySelector(".layout-name-course-foundation-category-page")).not.toBeNull()
         expect(openResource).toHaveBeenCalledWith("container-runtime")
     })
 })

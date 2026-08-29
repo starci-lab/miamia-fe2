@@ -1,10 +1,10 @@
-import { CLASS_NAME_1, CLASS_NAME_2, CLASS_NAME_3, CLASS_NAME_4 } from './styles'
 "use client"
+import { CLASS_NAME_1, CLASS_NAME_2, CLASS_NAME_3, CLASS_NAME_4 } from "./classNames"
 
 import { useEffect, useRef, useState } from "react"
 import { Button as HeroButton, cn } from "@heroui/react"
 import { AnimatePresence, motion } from "framer-motion"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 import { ReactionType } from "@/modules/api/graphql/queries/types/reactions"
 
 /** Localized copy for the fixed StarCi reaction vocabulary. */
@@ -90,7 +90,7 @@ export const ReactionPicker = ({ props, on }: ReactionPickerProps) => {
 
     if (on?.select === undefined) {
         if (props.count <= 0) return null
-        return <div data-tier="leaf" data-component="ReactionPicker" className={CLASS_NAME_1}>
+        return <div data-component="ReactionPicker" className={CLASS_NAME_1}>
             {selectedLabel === undefined || props.selected === null || props.selected === undefined
                 ? null
                 : <ReactionImage type={props.selected} size="summary" />}
@@ -103,7 +103,7 @@ export const ReactionPicker = ({ props, on }: ReactionPickerProps) => {
         setIsOpen(false)
     }
 
-    return <div ref={rootRef} data-tier="leaf" data-component="ReactionPicker" className={CLASS_NAME_2}>
+    return <div ref={rootRef} data-component="ReactionPicker" className={CLASS_NAME_2}>
         <HeroButton
             variant="tertiary"
             size="sm"
@@ -151,4 +151,3 @@ export const ReactionPicker = ({ props, on }: ReactionPickerProps) => {
 }
 
 /** Source-level tier marker for the intrinsic reaction control. */
-export const meta = { shape: "leaf", world: "pure" } as const

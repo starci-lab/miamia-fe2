@@ -64,14 +64,14 @@ describe("DailyQuestBase", () => {
         const { container } = render(
             <DailyQuestBase state="open" props={{ label: "Today's quest", tasks, rewardLine: "x" }} />,
         )
-        expect(container.querySelectorAll("[data-node=\"task-mark-title-fact-row\"]")).toHaveLength(2)
+        expect(container.querySelectorAll(".layout-name-task-mark-title-fact-row")).toHaveLength(2)
         const surface = container.querySelector("[data-component=\"SurfaceListCardSurface\"]")
         expect(container.querySelectorAll("[data-component=\"SurfaceListCardSurface\"]")).toHaveLength(1)
         expect(surface?.className).toContain("p-0")
         const body = container.querySelector("[data-component=\"SurfaceListCardBody\"]")
         expect(body?.className).toContain("p-0")
-        const list = container.querySelector("[data-node=\"marked-row-list\"]")
-        expect(container.querySelectorAll("[data-node=\"marked-row-list\"]")).toHaveLength(1)
+        const list = container.querySelector(".layout-name-marked-row-list")
+        expect(container.querySelectorAll(".layout-name-marked-row-list")).toHaveLength(1)
         expect(list?.className).toContain("divide-y")
         expect(list?.className).toContain("divide-separator")
         expect(list?.className).toContain("p-0")
@@ -79,10 +79,10 @@ describe("DailyQuestBase", () => {
         expect(list?.className).toContain("[&>*]:py-3")
         expect(list?.className).toContain("[&>*:first-child]:pt-4")
         expect(list?.className).toContain("[&>*:last-child]:pb-4")
-        expect(list?.querySelectorAll(":scope > [data-node=\"task-mark-title-fact-row\"]")).toHaveLength(2)
-        expect(container.querySelector("[data-node=\"task-mark-title-fact-row\"]")?.className).not.toMatch(/\bp-/)
+        expect(list?.querySelectorAll(":scope > .layout-name-task-mark-title-fact-row")).toHaveLength(2)
+        expect(container.querySelector(".layout-name-task-mark-title-fact-row")?.className).not.toMatch(/\bp-/)
         expect(container.querySelector("[data-component=\"SurfaceListCard\"]")?.className).toContain("gap-3")
-        expect(container.querySelector("[data-node=\"title-with-end-action\"]")).toBeNull()
+        expect(container.querySelector(".layout-name-title-with-end-action")).toBeNull()
     })
 
     it("uses the semantic completion icon only for completed tasks", () => {
@@ -95,7 +95,7 @@ describe("DailyQuestBase", () => {
         )
         expect(container.querySelectorAll("svg.text-success-soft-foreground")).toHaveLength(1)
         const pending = container.querySelector(
-            "[data-node=\"task-mark-title-fact-row\"]:not(:has(svg.text-success-soft-foreground))",
+            ".layout-name-task-mark-title-fact-row:not(:has(svg.text-success-soft-foreground))",
         )
         expect(pending).not.toBeNull()
         expect(pending?.querySelector("svg")).not.toBeNull()
@@ -105,12 +105,12 @@ describe("DailyQuestBase", () => {
     it("keeps the card its own size while the day is still on its way", () => {
         const { container } = render(<DailyQuestBase state="pending" props={{ label: "Today's quest" }} />)
         // Resting rows stand in for real ones so the card does not jump when they land.
-        expect(container.querySelectorAll("[data-node=\"task-mark-title-fact-row\"]")).toHaveLength(5)
+        expect(container.querySelectorAll(".layout-name-task-mark-title-fact-row")).toHaveLength(5)
         const restingTitles = container.querySelectorAll(
-            "[data-node=\"task-mark-title-fact-row\"] [data-component=\"Text\"][data-size=\"md\"][data-loading=\"true\"]",
+            ".layout-name-task-mark-title-fact-row [data-component=\"Text\"][data-size=\"md\"][data-loading=\"true\"]",
         )
         const restingFacts = container.querySelectorAll(
-            "[data-node=\"task-mark-title-fact-row\"] [data-component=\"Text\"][data-size=\"xs\"][data-loading=\"true\"]",
+            ".layout-name-task-mark-title-fact-row [data-component=\"Text\"][data-size=\"xs\"][data-loading=\"true\"]",
         )
         expect(restingTitles).toHaveLength(5)
         expect(restingFacts).toHaveLength(5)

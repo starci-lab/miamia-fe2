@@ -62,4 +62,3 @@ export const WhoToFollow = () => {
     return <WhoToFollowBase state={query.data === undefined ? "pending" : "ready"} props={{ label: t("whoToFollow"), users }} on={on} />
 }
 /** Source-level ownership marker for the connected social block. */
-export const meta = { world: "connected", domain: "social" } as const

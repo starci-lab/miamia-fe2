@@ -1,8 +1,8 @@
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { EvidenceRow } from "@/components/composites/EvidenceRow"
 import { Text } from "@/components/leaves/Text"
-import { createCompositeNode, createGrammarNode, createGrammarProjection, createLeafNode } from "@/components/contracts/props"
+import { renderComposite, layoutNode, layoutContent, renderLeaf } from "@/modules/types/layout"
 import type { ProfileSolvedChallenge } from "@/modules/api/graphql/queries/types/profile-evidence"
 import type { EvidenceState } from "@/components/pages/ProfileProjectsPage/component"
 
@@ -42,19 +42,19 @@ export const ProfileChallengesPageBase = ({ strength, submissions, on }: Profile
         ...(strength.data?.xp == null ? [] : [{ id: "xp", figure: strength.data.xp.toLocaleString(), label: "XP" }]),
     ]
     return (
-        <Grammar contract="profile-main" render={createGrammarNode("profile-main", {
+        <Grammar layout="profile-main" render={layoutNode("profile-main", {
             section: [
-                createGrammarProjection("label-row-over-card", () => (
-                    <SurfaceCard props={{ label: "Challenge strength" }} contract="profile-proof-metrics" render={createGrammarNode("profile-proof-metrics", {
-                        metric: resolveProofMetricRows(strength.state, metrics).map((metric) => createGrammarNode("profile-proof-metric", {
-                            figure: createLeafNode("text", {}, () => <Text props={{ content: metric.figure, weight: "semibold" }} isLoading={strength.state === "pending"} />),
-                            label: createLeafNode("text", { size: "xs", tone: "muted" }, () => <Text props={{ content: metric.label, size: "xs" }} isLoading={strength.state === "pending"} />),
+                layoutContent("label-row-over-card", () => (
+                    <SurfaceCard props={{ label: "Challenge strength" }} layout="profile-proof-metrics" render={layoutNode("profile-proof-metrics", {
+                        metric: resolveProofMetricRows(strength.state, metrics).map((metric) => layoutNode("profile-proof-metric", {
+                            figure: renderLeaf("text", {}, () => <Text props={{ content: metric.figure, weight: "semibold" }} isLoading={strength.state === "pending"} />),
+                            label: renderLeaf("text", { size: "xs", tone: "muted" }, () => <Text props={{ content: metric.label, size: "xs" }} isLoading={strength.state === "pending"} />),
                         })),
                     })} />
                 )),
-                createGrammarProjection("label-row-over-card", () => (
-                    <SurfaceCard props={{ label: "Passed submissions", fact: submissions.state === "ready" ? "Search and filter" : undefined }} contract="profile-evidence-list" render={createGrammarNode("profile-evidence-list", {
-                        evidence: rows.length > 0 ? rows.map((submission) => createCompositeNode("evidence-row", {}, () => (
+                layoutContent("label-row-over-card", () => (
+                    <SurfaceCard props={{ label: "Passed submissions", fact: submissions.state === "ready" ? "Search and filter" : undefined }} layout="profile-evidence-list" render={layoutNode("profile-evidence-list", {
+                        evidence: rows.length > 0 ? rows.map((submission) => renderComposite("evidence-row", {}, () => (
                             <EvidenceRow props={{
                                 title: submission.title,
                                 subtitle: [submission.courseTitle, submission.selectedLang, submission.passedAt ? formatDate(submission.passedAt) : undefined].filter(Boolean).join(" · "),
@@ -62,7 +62,7 @@ export const ProfileChallengesPageBase = ({ strength, submissions, on }: Profile
                                 factTone: "success",
                                 isPressable: Boolean(submission.courseGlobalId ?? submission.courseSlug),
                             }} on={{ press: () => on.openCourse(submission.courseGlobalId ?? submission.courseSlug ?? "") }} isLoading={submissions.state === "pending"} />
-                        ))) : [createCompositeNode("evidence-row", {}, () => (
+                        ))) : [renderComposite("evidence-row", {}, () => (
                             <EvidenceRow props={{ title: submissions.state === "error" ? "Passed submissions couldn't be loaded." : "No challenges passed yet.", subtitle: submissions.state === "error" ? "Try this section again later." : "Passed graded challenges appear here." }} />
                         ))],
                     })} />
@@ -73,4 +73,3 @@ export const ProfileChallengesPageBase = ({ strength, submissions, on }: Profile
 }
 
 /** Source-level tier marker. */
-export const meta = { world: "pure", domain: "profile" } as const

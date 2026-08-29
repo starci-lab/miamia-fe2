@@ -2,13 +2,13 @@ import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Icon } from "@/components/leaves/Icon"
 import { Text } from "@/components/leaves/Text"
 import { PressableSurface } from "@/components/branches/PressableSurface"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import {
-    createGrammarNode,
-    createGrammarProjection,
-    createLeafNode,
+    layoutNode,
+    layoutContent,
+    renderLeaf,
     type BlockProps,
-} from "@/components/contracts/props"
+} from "@/modules/types/layout"
 
 /**
  * BLOCK - `CodingProblemList`: the problems of one topic, and which of them are done.
@@ -117,17 +117,17 @@ export const CodingProblemListBase = (input: CodingProblemListProps) => {
 
     return (
         <Grammar
-            contract="marked-row-list"
-            render={createGrammarNode("marked-row-list", {
-                row: problems.map((problem) => createGrammarProjection("task-mark-title-fact-row", () => (
+            layout="marked-row-list"
+            render={layoutNode("marked-row-list", {
+                row: problems.map((problem) => layoutContent("task-mark-title-fact-row", () => (
                     <PressableSurface
-                        contract="task-mark-title-fact-row"
+                        layout="task-mark-title-fact-row"
                         label={problem.label}
                         press={() => input.on?.open?.(problem.slug)}
                         hover="surface"
                         disabled={isLoading}
-                        render={createGrammarNode("task-mark-title-fact-row", {
-                            mark: createLeafNode("icon", {}, () => (
+                        render={layoutNode("task-mark-title-fact-row", {
+                            mark: renderLeaf("icon", {}, () => (
                                 <Icon
                                     props={{
                                         name: problem.isSolved ? "complete" : "pending",
@@ -136,10 +136,10 @@ export const CodingProblemListBase = (input: CodingProblemListProps) => {
                                     isLoading={isLoading}
                                 />
                             )),
-                            title: createLeafNode("text", {}, () => (
+                            title: renderLeaf("text", {}, () => (
                                 <Text props={{ content: problem.title }} isLoading={isLoading} />
                             )),
-                            fact: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+                            fact: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                                 <Text
                                     props={{ content: problem.fact, size: "xs", tone: "muted" }}
                                     isLoading={isLoading}
@@ -154,4 +154,3 @@ export const CodingProblemListBase = (input: CodingProblemListProps) => {
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "pure", domain: "coding" } as const

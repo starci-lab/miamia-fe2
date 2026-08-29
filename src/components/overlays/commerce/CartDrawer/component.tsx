@@ -1,11 +1,11 @@
 import { Button } from "@/components/leaves/Button"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import {
-    createCompositeNode,
-    createGrammarNode,
-    createGrammarProjection,
-    createLeafNode,
-} from "@/components/contracts/props"
+    renderComposite,
+    layoutNode,
+    layoutContent,
+    renderLeaf,
+} from "@/modules/types/layout"
 import { DrawerBranch } from "@/components/branches/DrawerBranch"
 import { CartLine } from "@/components/blocks/commerce/CartLine"
 import { type CartLineData } from "@/components/blocks/commerce/CartLine/component"
@@ -125,17 +125,17 @@ export const CartDrawerBase = (input: CartDrawerProps) => {
         <DrawerBranch
             isOpen={input.props.isOpen}
             title={labels.title}
-            contract="cart-drawer-column"
-            render={createGrammarNode("cart-drawer-column", {
+            layout="cart-drawer-column"
+            render={layoutNode("cart-drawer-column", {
                 ...(showsNotice ? {} : {
-                    lines: createGrammarNode("cart-line-list", {
-                        line: lines.map((line) => createGrammarProjection("cart-line-row", () => (
+                    lines: layoutNode("cart-line-list", {
+                        line: lines.map((line) => layoutContent("cart-line-row", () => (
                             <CartLine state={isLoading ? "pending" : "ready"} line={line} />
                         ))),
                     }),
                 }),
                 ...(showsNotice ? {} : {
-                    summary: createGrammarProjection("order-summary-stack", () => (
+                    summary: layoutContent("order-summary-stack", () => (
                         <OrderSummaryView
                             state={resolveOrderSummaryState(isLoading, input.props.hasPricingFailed === true)}
                             props={{
@@ -148,15 +148,15 @@ export const CartDrawerBase = (input: CartDrawerProps) => {
                     )),
                 }),
                 ...(showsNotice ? {} : {
-                    actions: createGrammarNode("stacked-peer-controls", {
+                    actions: layoutNode("stacked-peer-controls", {
                         control: [
-                            createLeafNode("button", {}, () => (
+                            renderLeaf("button", {}, () => (
                                 <Button
                                     props={{ label: labels.checkout, variant: "primary", disabled: isLoading }}
                                     on={{ press: input.on?.checkout }}
                                 />
                             )),
-                            createLeafNode("button", {}, () => (
+                            renderLeaf("button", {}, () => (
                                 <Button
                                     props={{ label: labels.viewFullCart, variant: "secondary" }}
                                     on={{ press: input.on?.viewFullCart }}
@@ -166,7 +166,7 @@ export const CartDrawerBase = (input: CartDrawerProps) => {
                     }),
                 }),
                 ...(showsNotice ? {
-                    notice: createCompositeNode("empty-notice", {}, () => (
+                    notice: renderComposite("empty-notice", {}, () => (
                         <EmptyNotice
                             props={{
                                 icon: "cart",
@@ -190,4 +190,3 @@ export const CartDrawerBase = (input: CartDrawerProps) => {
 }
 
 /** Source-level ownership marker. */
-export const meta = { shape: "overlay", world: "pure", domain: "commerce" } as const

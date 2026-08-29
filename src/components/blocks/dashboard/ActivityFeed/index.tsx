@@ -119,4 +119,3 @@ export const ActivityFeed = (input: ActivityFeedConnectedProps) => {
     }} on={input.on} />
 }
 /** Source-level ownership marker for the connected social block. */
-export const meta = { world: "connected", domain: "social" } as const

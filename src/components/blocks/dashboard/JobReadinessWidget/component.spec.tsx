@@ -32,16 +32,16 @@ describe("JobReadinessWidgetBase", () => {
         expect(container.querySelector("[data-component=\"SurfaceListCard\"]")).toBeInTheDocument()
         expect(container.querySelector("[data-component=\"SurfaceListCardSurface\"]")).toHaveAttribute("data-surface-context", "nested")
         expect(container.querySelector("[data-component=\"SurfaceListCard\"] [data-component=\"Heading\"]")).toBeNull()
-        expect(container.querySelector("[data-node=\"job-readiness-list\"]")?.className).toContain("divide-y")
-        expect(container.querySelectorAll("[data-node=\"label-fact-over-progress\"]")).toHaveLength(2)
+        expect(container.querySelector(".layout-name-job-readiness-list")?.className).toContain("divide-y")
+        expect(container.querySelectorAll(".layout-name-label-fact-over-progress")).toHaveLength(2)
         fireEvent.click(screen.getByRole("button", { name: "Complete CV review" }))
         expect(act).toHaveBeenCalledOnce()
     })
 
     it("rests with all three legacy pillar rows", () => {
         const { container } = render(<JobReadinessWidgetBase state="pending" props={frame} />)
-        expect(container.querySelectorAll("[data-node=\"label-fact-over-progress\"]")).toHaveLength(3)
-        expect(container.querySelector("[data-node=\"job-readiness-list\"]")).toBeInTheDocument()
+        expect(container.querySelectorAll(".layout-name-label-fact-over-progress")).toHaveLength(3)
+        expect(container.querySelector(".layout-name-job-readiness-list")).toBeInTheDocument()
         expect(container.querySelector("[data-component=\"Button\"][data-loading=\"true\"]")).toBeInTheDocument()
     })
 

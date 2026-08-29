@@ -1,4 +1,4 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { LabelledProgressRow } from "@/components/composites/LabelledProgressRow"
 import { Article } from "@/components/leaves/Article"
@@ -7,7 +7,7 @@ import { ConfirmButton } from "@/components/leaves/ConfirmButton"
 import { Heading } from "@/components/leaves/Heading"
 import { SingleChoice, type SingleChoiceOptionData } from "@/components/leaves/SingleChoice"
 import { Text } from "@/components/leaves/Text"
-import { createCompositeNode, createGrammarNode, createLeafNode, type BlockProps } from "@/components/contracts/props"
+import { renderComposite, layoutNode, renderLeaf, type BlockProps } from "@/modules/types/layout"
 
 /** Summarizes the learner's graded performance for one skill. */
 export type ExamSkillSummary = { readonly id: string; readonly title: string; readonly percent: number; readonly percentText: string }
@@ -23,83 +23,82 @@ export type ExamSessionData = {
 }
 /** Defines the learner actions supported by the exam session. */
 export type ExamSessionActions = { readonly selectAnswer?: (id: string) => void; readonly previous?: () => void; readonly forward?: () => void; readonly submit?: () => void; readonly exit?: () => void; readonly retry?: () => void; readonly back?: () => void }
-/** Defines the stateful contract consumed by the pure exam-session block. */
+/** Defines the stateful layout consumed by the pure exam-session block. */
 export type ExamSessionProps = BlockProps<"loading" | "failed" | "ready" | "submitting" | "graded", ExamSessionData> & { readonly on?: ExamSessionActions }
 
-const factRow = (label: string, value: string) => createGrammarNode("label-with-muted-fact-row", {
-    label: createLeafNode("text", { size: "sm", weight: "semibold" }, () => <Text props={{ content: label, size: "sm", weight: "semibold" }} />),
-    fact: createLeafNode("text", { size: "xs", tone: "muted" }, () => <Text props={{ content: value, size: "xs" }} />),
+const factRow = (label: string, value: string) => layoutNode("label-with-muted-fact-row", {
+    label: renderLeaf("text", { size: "sm", weight: "semibold" }, () => <Text props={{ content: label, size: "sm", weight: "semibold" }} />),
+    fact: renderLeaf("text", { size: "xs", tone: "muted" }, () => <Text props={{ content: value, size: "xs" }} />),
 })
 
 /** Renders the pure exam runner and graded-result states. */
 export const ExamSessionBase = (input: ExamSessionProps) => {
-    const header = createGrammarNode("exam-session-header", {
-        title: createGrammarNode("title-with-baseline-fact", {
-            title: createLeafNode("heading", {}, () => <Heading props={{ content: input.props.title, level: 1 }} />),
-            fact: createLeafNode("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: input.props.positionLabel, size: "sm", tone: "muted" }} />),
+    const header = layoutNode("exam-session-header", {
+        title: layoutNode("title-with-baseline-fact", {
+            title: renderLeaf("heading", {}, () => <Heading props={{ content: input.props.title, level: 1 }} />),
+            fact: renderLeaf("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: input.props.positionLabel, size: "sm", tone: "muted" }} />),
         }),
-        exit: createLeafNode("confirm-button", {}, () => <ConfirmButton props={{ label: input.props.exitLabel, confirmLabel: input.props.exitConfirmLabel, disabled: input.state === "submitting" }} on={{ confirm: input.on?.exit }} />),
+        exit: renderLeaf("confirm-button", {}, () => <ConfirmButton props={{ label: input.props.exitLabel, confirmLabel: input.props.exitConfirmLabel, disabled: input.state === "submitting" }} on={{ confirm: input.on?.exit }} />),
     })
     if (input.state === "loading" || input.state === "failed") {
-        return <Grammar contract="exam-session-page" render={createGrammarNode("exam-session-page", {
+        return <Grammar layout="exam-session-page" render={layoutNode("exam-session-page", {
             header,
-            body: createGrammarNode("exam-state-notice", {
-                notice: createCompositeNode("empty-notice", {}, () => <EmptyNotice props={{ icon: "review", message: input.state === "loading" ? input.props.loadingMessage : input.props.failedMessage, actionLabel: input.state === "failed" ? input.props.retryLabel : undefined }} on={{ act: input.on?.retry }} />),
+            body: layoutNode("exam-state-notice", {
+                notice: renderComposite("empty-notice", {}, () => <EmptyNotice props={{ icon: "review", message: input.state === "loading" ? input.props.loadingMessage : input.props.failedMessage, actionLabel: input.state === "failed" ? input.props.retryLabel : undefined }} on={{ act: input.on?.retry }} />),
             }),
         })} />
     }
     if (input.state === "graded") {
-        return <Grammar contract="exam-session-page" render={createGrammarNode("exam-session-page", {
+        return <Grammar layout="exam-session-page" render={layoutNode("exam-session-page", {
             header,
-            body: createGrammarNode("exam-result-summary", {
-                score: createGrammarNode("premium-value-band", {
-                    copy: createGrammarNode("premium-copy-stack", {
-                        title: createLeafNode("heading", {}, () => <Heading props={{ content: input.props.resultTitle, level: 2 }} />),
-                        body: createLeafNode("text", {}, () => <Text props={{ content: `${input.props.scoreText} · ${input.props.scoreBody}` }} />),
+            body: layoutNode("exam-result-summary", {
+                score: layoutNode("premium-value-band", {
+                    copy: layoutNode("premium-copy-stack", {
+                        title: renderLeaf("heading", {}, () => <Heading props={{ content: input.props.resultTitle, level: 2 }} />),
+                        body: renderLeaf("text", {}, () => <Text props={{ content: `${input.props.scoreText} · ${input.props.scoreBody}` }} />),
                     }),
                 }),
                 ...(input.props.skills.length === 0 ? {} : {
-                    skills: createGrammarNode("exam-skill-list", {
-                        title: createLeafNode("heading", {}, () => <Heading props={{ content: input.props.skillTitle, level: 2 }} />),
-                        skill: input.props.skills.map((skill) => createCompositeNode("labelled-progress-row", {}, () => <LabelledProgressRow key={skill.id} props={skill} />)),
+                    skills: layoutNode("exam-skill-list", {
+                        title: renderLeaf("heading", {}, () => <Heading props={{ content: input.props.skillTitle, level: 2 }} />),
+                        skill: input.props.skills.map((skill) => renderComposite("labelled-progress-row", {}, () => <LabelledProgressRow key={skill.id} props={skill} />)),
                     }),
                 }),
-                answers: createGrammarNode("exam-answer-review-list", {
-                    answer: input.props.reviews.map((review) => createGrammarNode("exam-answer-review", {
-                        title: createGrammarNode("title-with-baseline-fact", {
-                            title: createLeafNode("heading", {}, () => <Heading props={{ content: review.number, level: 3 }} />),
-                            fact: createLeafNode("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: review.verdict, size: "sm", tone: "muted" }} />),
+                answers: layoutNode("exam-answer-review-list", {
+                    answer: input.props.reviews.map((review) => layoutNode("exam-answer-review", {
+                        title: layoutNode("title-with-baseline-fact", {
+                            title: renderLeaf("heading", {}, () => <Heading props={{ content: review.number, level: 3 }} />),
+                            fact: renderLeaf("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: review.verdict, size: "sm", tone: "muted" }} />),
                         }),
-                        stem: createLeafNode("text", {}, () => <Text props={{ content: review.stem }} />),
+                        stem: renderLeaf("text", {}, () => <Text props={{ content: review.stem }} />),
                         selected: factRow(review.selectedLabel, review.selected),
                         correct: factRow(review.correctLabel, review.correct),
-                        ...(review.explanation === undefined ? {} : { explanation: createLeafNode("article", {}, () => <Article props={{ body: review.explanation }} />) }),
+                        ...(review.explanation === undefined ? {} : { explanation: renderLeaf("article", {}, () => <Article props={{ body: review.explanation }} />) }),
                     })),
                 }),
-                actions: createGrammarNode("exam-session-actions", {
-                    progress: createLeafNode("text", {}, () => <Text props={{ content: input.props.scoreText, size: "sm", tone: "muted" }} />),
-                    forward: createLeafNode("button", {}, () => <Button props={{ label: input.props.backLabel, variant: "primary" }} on={{ press: input.on?.back }} />),
+                actions: layoutNode("exam-session-actions", {
+                    progress: renderLeaf("text", {}, () => <Text props={{ content: input.props.scoreText, size: "sm", tone: "muted" }} />),
+                    forward: renderLeaf("button", {}, () => <Button props={{ label: input.props.backLabel, variant: "primary" }} on={{ press: input.on?.back }} />),
                 }),
             }),
         })} />
     }
-    return <Grammar contract="exam-session-page" render={createGrammarNode("exam-session-page", {
+    return <Grammar layout="exam-session-page" render={layoutNode("exam-session-page", {
         header,
-        body: createGrammarNode("exam-passage-question", {
-            ...(input.props.passage === undefined ? {} : { passage: createLeafNode("article", {}, () => <Article props={{ body: input.props.passage }} />) }),
-            question: createGrammarNode("exam-question-card", {
-                eyebrow: createLeafNode("text", {}, () => <Text props={{ content: input.props.questionLabel, size: "sm", tone: "accent" }} />),
-                stem: createLeafNode("heading", {}, () => <Heading props={{ content: input.props.stem, level: 2 }} />),
-                answer: createLeafNode("single-choice", {}, () => <SingleChoice props={{ label: input.props.questionLabel, name: "exam-answer", options: input.props.options, selectedKey: input.props.selectedKey, disabled: input.state === "submitting" }} on={{ select: input.on?.selectAnswer }} />),
+        body: layoutNode("exam-passage-question", {
+            ...(input.props.passage === undefined ? {} : { passage: renderLeaf("article", {}, () => <Article props={{ body: input.props.passage }} />) }),
+            question: layoutNode("exam-question-card", {
+                eyebrow: renderLeaf("text", {}, () => <Text props={{ content: input.props.questionLabel, size: "sm", tone: "accent" }} />),
+                stem: renderLeaf("heading", {}, () => <Heading props={{ content: input.props.stem, level: 2 }} />),
+                answer: renderLeaf("single-choice", {}, () => <SingleChoice props={{ label: input.props.questionLabel, name: "exam-answer", options: input.props.options, selectedKey: input.props.selectedKey, disabled: input.state === "submitting" }} on={{ select: input.on?.selectAnswer }} />),
             }),
         }),
-        actions: createGrammarNode("exam-session-actions", {
-            previous: createLeafNode("button", {}, () => <Button props={{ label: input.props.previousLabel, variant: "ghost" }} on={{ press: input.on?.previous }} />),
-            progress: createLeafNode("text", {}, () => <Text props={{ content: input.props.positionLabel, size: "sm", tone: "muted" }} />),
-            forward: createLeafNode("button", {}, () => <Button props={{ label: input.props.isLast ? input.props.submitLabel : input.props.nextLabel, variant: "primary", isPending: input.state === "submitting" }} on={{ press: input.props.isLast ? input.on?.submit : input.on?.forward }} />),
+        actions: layoutNode("exam-session-actions", {
+            previous: renderLeaf("button", {}, () => <Button props={{ label: input.props.previousLabel, variant: "ghost" }} on={{ press: input.on?.previous }} />),
+            progress: renderLeaf("text", {}, () => <Text props={{ content: input.props.positionLabel, size: "sm", tone: "muted" }} />),
+            forward: renderLeaf("button", {}, () => <Button props={{ label: input.props.isLast ? input.props.submitLabel : input.props.nextLabel, variant: "primary", isPending: input.state === "submitting" }} on={{ press: input.props.isLast ? input.on?.submit : input.on?.forward }} />),
         }),
     })} />
 }
 
 /** Declares the component architecture metadata. */
-export const meta = { shape: "block", world: "pure", domain: "exam" } as const

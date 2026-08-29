@@ -2,7 +2,7 @@ import { SurfaceCard } from "@/components/branches/SurfaceCard"
 import { Text } from "@/components/leaves/Text"
 import { SeeMoreLink } from "@/components/leaves/SeeMoreLink"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
-import { createCompositeNode, createGrammarNode, createGrammarProjection, createLeafNode } from "@/components/contracts/props"
+import { renderComposite, layoutNode, layoutContent, renderLeaf } from "@/modules/types/layout"
 
 /**
  * BLOCK - `ContinueLearning`, presentational half.
@@ -75,18 +75,18 @@ const renderResumeCard = (
     resumeLabel: string | undefined,
     isLoading: boolean,
     onResume: ((id: string) => void) | undefined,
-) => createGrammarProjection("resume-item-card", () => (
+) => layoutContent("resume-item-card", () => (
     // THE CARD'S GROUND IS THE BRANCH'S, NOT THE ENTRY'S. The item is one surface inside a
     // frameless section, so the surface branch draws it here and the entry keeps only the way
     // its three lines stand together.
-    <SurfaceCard contract="resume-item-card" render={createGrammarNode("resume-item-card", {
-        kind: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+    <SurfaceCard layout="resume-item-card" render={layoutNode("resume-item-card", {
+        kind: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
             <Text
                 props={{ content: item?.kindLabel, size: "sm", tone: "muted" }}
                 isLoading={isLoading}
             />
         )),
-        title: createLeafNode("text", { size: "md", weight: "medium" }, () => (
+        title: renderLeaf("text", { size: "md", weight: "medium" }, () => (
             <Text
                 props={{ content: item?.title, size: "md", weight: "medium" }}
                 isLoading={isLoading}
@@ -94,7 +94,7 @@ const renderResumeCard = (
         )),
         // A resting card has no destination yet, so it has no dead way out.
         ...(item === undefined || resumeLabel === undefined ? {} : {
-            resume: createLeafNode("see-more-link", {}, () => (
+            resume: renderLeaf("see-more-link", {}, () => (
                 <SeeMoreLink
                     props={{ label: resumeLabel }}
                     on={{ press: () => onResume?.(item.id) }}
@@ -137,9 +137,9 @@ type ContinueLearningInput = ContinueLearningProps & { readonly on?: ContinueLea
 export const ContinueLearningBase = (input: ContinueLearningInput) => {
     if (input.state === "onboarding" || input.state === "empty" || input.state === "failed") {
         return (
-            <SurfaceCard props={{ label: input.props.label }} contract="empty-notice-card"
-                render={createGrammarNode("empty-notice-card", {
-                    notice: createCompositeNode("empty-notice", {}, () => (
+            <SurfaceCard props={{ label: input.props.label }} layout="empty-notice-card"
+                render={layoutNode("empty-notice-card", {
+                    notice: renderComposite("empty-notice", {}, () => (
                         <EmptyNotice
                             props={{
                                 icon: "course",
@@ -165,7 +165,7 @@ export const ContinueLearningBase = (input: ContinueLearningInput) => {
         items: ReadonlyArray<ResumeItem | undefined>,
         resumeLabel: string | undefined,
         isLoading: boolean,
-    ) => createGrammarNode("resume-card-grid", {
+    ) => layoutNode("resume-card-grid", {
         card: items.map((item) => renderResumeCard(item, resumeLabel, isLoading, input.on?.resume)),
     })
 
@@ -173,7 +173,7 @@ export const ContinueLearningBase = (input: ContinueLearningInput) => {
         return (
             <SurfaceCard
                 props={{ label: input.props.label, isFrameless: true }}
-                contract="resume-card-grid"
+                layout="resume-card-grid"
                 render={run(Array.from({ length: RESTING_ITEMS }, () => undefined), undefined, true)}
                 isLoading
             />
@@ -183,11 +183,10 @@ export const ContinueLearningBase = (input: ContinueLearningInput) => {
     return (
         <SurfaceCard
             props={{ label: input.props.label, isFrameless: true }}
-            contract="resume-card-grid"
+            layout="resume-card-grid"
             render={run(input.props.items, input.props.resumeLabel, false)}
         />
     )
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { world: "pure", domain: "dashboard" } as const

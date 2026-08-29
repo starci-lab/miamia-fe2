@@ -4,13 +4,13 @@
 /*
  * The ONLY stylesheet in the app, and the ONLY place a colour is written down.
  *
- * Every structure on screen is drawn by a registry entry in
- * `src/components/contracts/shapes.ts`; every leaf is drawn by an atom that wraps a HeroUI
+ * Every structure on screen is drawn by a visual layout entry in
+ * `src/resources/visual-layouts.ts`; every leaf is drawn by an atom that wraps a HeroUI
  * primitive. Neither of them names a colour: they name a TOKEN - `bg-surface`, `text-muted`,
  * `border-border` - and the token resolves here.
  *
  * MiaMia reuses the shared frontend structure and changes identity only through these semantic
- * token values. Components and contracts remain free of product-specific colour declarations.
+ * token values. Components and shared primitives remain free of product-specific colour declarations.
  *
  * The names are HeroUI's, deliberately. The vendor's own components resolve their fills,
  * foregrounds and focus rings from exactly these variables, so a `Chip` nobody styled comes out
@@ -376,39 +376,39 @@ body {
     font-weight: 800 !important;
 }
 
-/* Contract nodes without a vendor surface still receive the same approved hierarchy globally. */
-[data-node="premium-value-band"] {
+/* Visual layout nodes without a vendor surface still receive the same approved hierarchy globally. */
+.layout-name-premium-value-band {
     border: 2px solid var(--sticker-outline) !important;
     border-radius: 1.375rem !important;
     background: var(--warning) !important;
     box-shadow: var(--sticker-shadow-sm) !important;
 }
 
-[data-node="page-header-stack"] .typography--h1 {
+.layout-name-page-header-stack .typography--h1 {
     font-size: 1.75rem !important;
     font-weight: 900 !important;
     letter-spacing: -0.03em !important;
 }
 
-[data-node="exam-paper-card"] .typography--h3 {
+.layout-name-exam-paper-card .typography--h3 {
     font-size: 1rem !important;
     font-weight: 800 !important;
 }
 
-[data-node="learn-nav-row"] .link {
+.layout-name-learn-nav-row .link {
     border: 1.5px solid transparent;
     border-radius: 0.8125rem;
     font-weight: 700;
 }
 
-[data-node="learn-nav-row"] .link[class*="bg-accent-soft"] {
+.layout-name-learn-nav-row .link[class*="bg-accent-soft"] {
     border-color: var(--sticker-outline);
     background: var(--accent) !important;
     box-shadow: var(--sticker-shadow-xs);
     color: var(--accent-foreground) !important;
 }
 
-[data-node="learn-mobile-tab-bar"] .link[class*="border-accent"] {
+.layout-name-learn-mobile-tab-bar .link[class*="border-accent"] {
     border: 1.5px solid var(--sticker-outline);
     border-radius: 0.8125rem;
     background: var(--accent);
@@ -419,11 +419,11 @@ body {
 /* The approved Study direction is hero-first: its primary learning move is the pink sticker,
  * while progress remains a quieter evidence surface below it. Structure stays in the contract;
  * this product identity belongs with MiaMia's other semantic-node skin overrides. */
-[data-node="study-resume-hero"] {
+.layout-name-study-resume-hero {
     background: var(--accent-soft);
 }
 
-[data-node="study-resume-hero"] .typography--h1 {
+.layout-name-study-resume-hero .typography--h1 {
     font-size: clamp(1.75rem, 3vw, 2.5rem) !important;
     font-weight: 900 !important;
     letter-spacing: -0.035em !important;

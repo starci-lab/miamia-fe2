@@ -1,10 +1,10 @@
-import { CONTRACTS } from "@/components/contracts"
+import { LAYOUTS } from "@/resources/visual-layouts"
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
 import { SurfaceListCard, type SurfaceListCardData } from "@/components/branches/SurfaceListCard"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { CourseProgressRow, type CourseProgressRowData } from "@/components/composites/CourseProgressRow"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
-import { createCompositeNode, createGrammarNode, type ComponentProps } from "@/components/contracts/props"
+import { renderComposite, layoutNode, type ComponentProps } from "@/modules/types/layout"
 
 /** Resolved frame and rows for enrolled-course progress. */
 export type MyCoursesProgressData = SurfaceListCardData & {
@@ -22,7 +22,7 @@ export type MyCoursesProgressProps = {
     readonly on?: MyCoursesProgressActions
 }
 
-const COUNT = CONTRACTS["course-progress-list"].children.course.restingCount
+const COUNT = LAYOUTS["course-progress-list"].children.course.restingCount
 const CourseListView = ({ props, on, isLoading = false }: ComponentProps<MyCoursesProgressData, MyCoursesProgressActions>) => {
     const rows = isLoading ? Array.from({ length: COUNT }, (_, index): CourseProgressRowData => ({
         id: `resting-${index}`,
@@ -32,27 +32,27 @@ const CourseListView = ({ props, on, isLoading = false }: ComponentProps<MyCours
             { id: "milestone", label: "", completed: 0, total: 0, percent: 0, tone: "warning" },
         ],
     })) : props.rows
-    return <Grammar contract="course-progress-list" render={createGrammarNode("course-progress-list", {
-        course: rows.map((row) => createCompositeNode("course-progress-row", {}, () => (
+    return <Grammar layout="course-progress-list" render={layoutNode("course-progress-list", {
+        course: rows.map((row) => renderComposite("course-progress-row", {}, () => (
             <CourseProgressRow props={row} on={{ open: on?.[`open:${row.id}`] }} isLoading={isLoading} />
         ))),
     })} />
 }
-const CourseList = createGrammarNode("course-progress-list", CourseListView)
+const CourseList = layoutNode("course-progress-list", CourseListView)
 
 /** Draw enrolled-course progress, keeping every request outcome local to the block. */
 export const MyCoursesProgressBase = (input: MyCoursesProgressProps) => {
     if (input.state === "empty" || input.state === "failed") {
         const message = input.state === "empty" ? input.props.emptyMessage : input.props.errorMessage
-        return <SurfaceCard props={{ label: input.props.label }} contract="empty-notice-card" render={createGrammarNode("empty-notice-card", {
-            notice: createCompositeNode("empty-notice", {}, () => <EmptyNotice
+        return <SurfaceCard props={{ label: input.props.label }} layout="empty-notice-card" render={layoutNode("empty-notice-card", {
+            notice: renderComposite("empty-notice", {}, () => <EmptyNotice
                 props={{ icon: "course", message: message ?? "", actionLabel: input.props.retryLabel }}
                 on={{ act: input.on?.retry }}
             />),
         })} />
     }
     return <SurfaceListCard
-        contract="course-progress-list"
+        layout="course-progress-list"
         render={CourseList}
         props={input.props}
         on={input.on}
@@ -61,4 +61,3 @@ export const MyCoursesProgressBase = (input: MyCoursesProgressProps) => {
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "pure", domain: "courses" } as const

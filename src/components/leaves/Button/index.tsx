@@ -1,7 +1,7 @@
-import { CLASS_NAME_1 } from './styles'
+import { CLASS_NAME_1 } from "./classNames"
 import { Button as HeroButton, skeletonVariants, Spinner } from "@heroui/react"
 import { Icon, type IconName } from "@/components/leaves/Icon"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `Button`: the thing a reader presses.
@@ -116,7 +116,7 @@ export const Button = ({ props, on, isLoading = false }: ButtonProps) => {
     const glyph = renderGlyph()
     return (
         <HeroButton
-            data-tier="leaf"
+
             data-component="Button"
             data-variant={variant}
             data-size={size}
@@ -141,4 +141,3 @@ export const Button = ({ props, on, isLoading = false }: ButtonProps) => {
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

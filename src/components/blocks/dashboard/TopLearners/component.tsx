@@ -1,16 +1,16 @@
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
 import { SurfaceListCard, type SurfaceListCardData } from "@/components/branches/SurfaceListCard"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { LeaderboardStandingRow, type LeaderboardStandingRowData } from "@/components/composites/LeaderboardStandingRow"
 import { RankedUserRow, type RankedUserRowData } from "@/components/composites/RankedUserRow"
-import { CONTRACTS } from "@/components/contracts"
+import { LAYOUTS } from "@/resources/visual-layouts"
 import {
-    createCompositeNode,
-    createGrammarNode,
-    createGrammarProjection,
+    renderComposite,
+    layoutNode,
+    layoutContent,
     type ComponentProps,
-} from "@/components/contracts/props"
+} from "@/modules/types/layout"
 
 /** Resolved global standing and ranked rows. */
 export type TopLearnersData = {
@@ -43,11 +43,11 @@ type TopLearnersListActions = {
     readonly [key: string]: (() => void) | undefined
 }
 
-const ROW_COUNT = CONTRACTS["ranked-user-list"].children.user.restingCount
+const ROW_COUNT = LAYOUTS["ranked-user-list"].children.user.restingCount
 
 const TopLearnersListContentView = ({ props, on, isLoading = false }: ComponentProps<TopLearnersListData, TopLearnersListActions>) => (
-    <Grammar contract="ranked-user-list" render={createGrammarNode("ranked-user-list", {
-        user: props.rows.map((row) => createCompositeNode("ranked-user-row", {}, () => (
+    <Grammar layout="ranked-user-list" render={layoutNode("ranked-user-list", {
+        user: props.rows.map((row) => renderComposite("ranked-user-row", {}, () => (
             <RankedUserRow
                 props={row}
                 on={{ open: on?.[`open:${row.id}`], follow: on?.[`follow:${row.id}`] }}
@@ -57,7 +57,7 @@ const TopLearnersListContentView = ({ props, on, isLoading = false }: ComponentP
     })} />
 )
 
-const TopLearnersListContent = createGrammarNode("ranked-user-list", TopLearnersListContentView)
+const TopLearnersListContent = layoutNode("ranked-user-list", TopLearnersListContentView)
 
 /** Draw the global leaderboard and local follow outcomes. */
 export const TopLearnersBase = (input: TopLearnersProps) => {
@@ -66,9 +66,9 @@ export const TopLearnersBase = (input: TopLearnersProps) => {
         return (
             <SurfaceCard
                 props={{ label: input.props.label }}
-                contract="empty-notice-card"
-                render={createGrammarNode("empty-notice-card", {
-                    notice: createCompositeNode("empty-notice", {}, () => (
+                layout="empty-notice-card"
+                render={layoutNode("empty-notice-card", {
+                    notice: renderComposite("empty-notice", {}, () => (
                         <EmptyNotice
                             props={{
                                 icon: "league",
@@ -90,9 +90,9 @@ export const TopLearnersBase = (input: TopLearnersProps) => {
             followLabel: "",
         }))
         : input.props.rows
-    const list = createGrammarProjection("ranked-user-list", () => (
+    const list = layoutContent("ranked-user-list", () => (
         <SurfaceListCard
-            contract="ranked-user-list"
+            layout="ranked-user-list"
             render={TopLearnersListContent}
             props={{
                 label: input.props.label,
@@ -108,9 +108,9 @@ export const TopLearnersBase = (input: TopLearnersProps) => {
         <SurfaceCard
             props={{ label: input.props.label, seeMoreLabel: input.props.seeMoreLabel }}
             on={{ seeMore: input.on?.seeMore }}
-            contract="leaderboard-card"
-            render={createGrammarNode("leaderboard-card", {
-                standing: createCompositeNode("leaderboard-standing-row", {}, () => (
+            layout="leaderboard-card"
+            render={layoutNode("leaderboard-card", {
+                standing: renderComposite("leaderboard-standing-row", {}, () => (
                     <LeaderboardStandingRow props={input.props.standing} isLoading={isLoading} />
                 )),
                 list,
@@ -121,4 +121,3 @@ export const TopLearnersBase = (input: TopLearnersProps) => {
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "pure", domain: "community" } as const

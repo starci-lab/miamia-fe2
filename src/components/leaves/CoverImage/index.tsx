@@ -1,6 +1,6 @@
-import { CLASS_NAME_1 } from './styles'
+import { CLASS_NAME_1 } from "./classNames"
 import { skeletonVariants } from "@heroui/react"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `CoverImage`: one course's artwork, at a fixed aspect.
@@ -58,7 +58,7 @@ export const CoverImage = ({ props, isLoading = false }: CoverImageProps) => {
     if (isLoading) {
         return (
             <div
-                data-tier="leaf"
+
                 data-component="CoverImage"
                 data-ratio={ratio}
                 data-loading="true"
@@ -69,7 +69,7 @@ export const CoverImage = ({ props, isLoading = false }: CoverImageProps) => {
     const source = props.src ?? null
     return (
         <div
-            data-tier="leaf"
+
             data-component="CoverImage"
             data-ratio={ratio}
             data-loading="false"
@@ -91,4 +91,3 @@ export const CoverImage = ({ props, isLoading = false }: CoverImageProps) => {
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

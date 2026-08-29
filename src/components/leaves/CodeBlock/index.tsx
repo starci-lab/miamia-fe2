@@ -1,4 +1,4 @@
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `CodeBlock`: a run of code, set apart from the prose around it.
@@ -44,11 +44,10 @@ const CODE_CLASSES = "w-full min-w-0 overflow-x-auto whitespace-pre-wrap break-w
  * @param input - {@link CodeBlockProps}
  */
 export const CodeBlock = ({ props }: CodeBlockProps) => (
-    <div data-tier="leaf" data-component="CodeBlock" className={FRAME_CLASSES}>
+    <div data-component="CodeBlock" className={FRAME_CLASSES}>
         {props.language === undefined ? null : <span className={LANGUAGE_CLASSES}>{props.language}</span>}
         <pre className={CODE_CLASSES}><code>{props.code}</code></pre>
     </div>
 )
 
 /** Source-level tier marker. */
-export const meta = { shape: "leaf", world: "pure" } as const

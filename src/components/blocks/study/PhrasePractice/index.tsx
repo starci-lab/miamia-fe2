@@ -131,4 +131,3 @@ export const PhrasePractice = ({ slug, onRequireSignIn, onExit }: PhrasePractice
     )
 }
 /** Declares the connected phrase-practice block. */
-export const meta = { shape: "block", world: "connected", domain: "study" } as const

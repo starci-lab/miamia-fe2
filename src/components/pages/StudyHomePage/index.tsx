@@ -17,4 +17,3 @@ export const StudyHomePage = () => {
 }
 
 /** Declares the connected Study landing page. */
-export const meta = { shape: "page", world: "connected", domain: "study" } as const

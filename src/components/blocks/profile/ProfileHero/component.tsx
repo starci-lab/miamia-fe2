@@ -1,4 +1,4 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { Avatar } from "@/components/leaves/Avatar"
 import { Badge } from "@/components/leaves/Badge"
 import { Button } from "@/components/leaves/Button"
@@ -7,9 +7,9 @@ import { IconButton } from "@/components/leaves/IconButton"
 import { Link } from "@/components/leaves/Link"
 import { Text } from "@/components/leaves/Text"
 import {
-    createGrammarNode,
-    createLeafNode,
-} from "@/components/contracts/props"
+    layoutNode,
+    renderLeaf,
+} from "@/modules/types/layout"
 
 /** Resolved public identity drawn by the profile rail. */
 export type ProfileHeroData = {
@@ -49,76 +49,75 @@ export const ProfileHeroBase = (input: ProfileHeroProps) => {
     const isLoading = input.state === "pending"
     const factValues = [input.props.location, input.props.workMode].filter((value): value is string => Boolean(value))
     const meta = [
-        input.props.githubUrl === undefined ? undefined : createLeafNode("link", {}, () => (
+        input.props.githubUrl === undefined ? undefined : renderLeaf("link", {}, () => (
             <Link props={{ label: "GitHub", externalHref: input.props.githubUrl, icon: "github" }} />
         )),
-        input.props.linkedinUrl === undefined ? undefined : createLeafNode("link", {}, () => (
+        input.props.linkedinUrl === undefined ? undefined : renderLeaf("link", {}, () => (
             <Link props={{ label: "LinkedIn", externalHref: input.props.linkedinUrl }} />
         )),
-        input.props.websiteUrl === undefined ? undefined : createLeafNode("link", {}, () => (
+        input.props.websiteUrl === undefined ? undefined : renderLeaf("link", {}, () => (
             <Link props={{ label: input.props.websiteUrl ?? "", externalHref: input.props.websiteUrl, icon: "explore" }} />
         )),
-        createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+        renderLeaf("text", { size: "xs", tone: "muted" }, () => (
             <Text props={{ content: input.props.joinedLabel, size: "xs" }} isLoading={isLoading} />
         )),
     ].filter((item): item is NonNullable<typeof item> => item !== undefined)
 
     return (
         <Grammar
-            contract="profile-hero-rail"
-            render={createGrammarNode("profile-hero-rail", {
-                avatar: createLeafNode("avatar", {}, () => (
+            layout="profile-hero-rail"
+            render={layoutNode("profile-hero-rail", {
+                avatar: renderLeaf("avatar", {}, () => (
                     <Avatar props={{ name: input.props.name, src: input.props.avatar, size: "lg" }} isLoading={isLoading} />
                 )),
-                identity: createGrammarNode("profile-name-role-stack", {
-                    name: createLeafNode("heading", {}, () => (
+                identity: layoutNode("profile-name-role-stack", {
+                    name: renderLeaf("heading", {}, () => (
                         <Heading props={{ content: input.props.name, level: 2 }} isLoading={isLoading} />
                     )),
-                    handle: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+                    handle: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                         <Text props={{ content: `@${input.props.handle}`, size: "xs" }} isLoading={isLoading} />
                     )),
                     ...(input.props.role === undefined ? {} : {
-                        role: createLeafNode("text", { size: "sm" }, () => (
+                        role: renderLeaf("text", { size: "sm" }, () => (
                             <Text props={{ content: input.props.role, size: "sm", weight: "medium" }} isLoading={isLoading} />
                         )),
                     }),
                 }),
                 ...(input.props.bio === undefined ? {} : {
-                    bio: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+                    bio: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                         <Text props={{ content: input.props.bio, size: "sm", tone: "muted" }} isLoading={isLoading} />
                     )),
                 }),
                 ...(factValues.length === 0 ? {} : {
-                    facts: createGrammarNode("profile-fact-run", {
-                        fact: factValues.map((fact) => createLeafNode("badge", {}, () => (
+                    facts: layoutNode("profile-fact-run", {
+                        fact: factValues.map((fact) => renderLeaf("badge", {}, () => (
                             <Badge props={{ content: fact }} isLoading={isLoading} />
                         ))),
                     }),
                 }),
-                proof: createGrammarNode("profile-proof-row", {
+                proof: layoutNode("profile-proof-row", {
                     fact: [input.props.followerLabel, input.props.followingLabel].map((fact) => (
-                        createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
+                        renderLeaf("text", { size: "sm", weight: "semibold" }, () => (
                             <Text props={{ content: fact, size: "sm", weight: "semibold" }} isLoading={isLoading} />
                         ))
                     )),
                 }),
-                actions: createGrammarNode("profile-action-row", {
-                    primary: createLeafNode("button", {}, () => (
+                actions: layoutNode("profile-action-row", {
+                    primary: renderLeaf("button", {}, () => (
                         <Button
                             props={{ label: input.props.primaryLabel, variant: "primary", isPending: input.props.primaryPending }}
                             on={{ press: input.on?.primary }}
                             isLoading={isLoading}
                         />
                     )),
-                    share: createLeafNode("icon-button", {}, () => (
+                    share: renderLeaf("icon-button", {}, () => (
                         <IconButton props={{ icon: "send", label: input.props.shareLabel }} on={{ press: input.on?.share }} />
                     )),
                 }),
-                meta: createGrammarNode("profile-meta-list", { item: meta }),
+                meta: layoutNode("profile-meta-list", { item: meta }),
             })}
         />
     )
 }
 
 /** Source-level marker for the pure profile block. */
-export const meta = { world: "pure", domain: "profile" } as const

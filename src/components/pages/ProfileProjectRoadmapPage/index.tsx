@@ -26,4 +26,3 @@ export const ProfileProjectRoadmapPage = () => {
 }
 export * from "./component"
 /** Source-level tier marker. */
-export const meta = { world: "connected", domain: "profile" } as const

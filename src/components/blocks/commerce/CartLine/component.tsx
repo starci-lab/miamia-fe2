@@ -2,12 +2,12 @@ import { Badge } from "@/components/leaves/Badge"
 import { CoverImage } from "@/components/leaves/CoverImage"
 import { IconButton } from "@/components/leaves/IconButton"
 import { Text } from "@/components/leaves/Text"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import {
-    createGrammarNode,
-    createLeafNode,
+    layoutNode,
+    renderLeaf,
     type BlockProps,
-} from "@/components/contracts/props"
+} from "@/modules/types/layout"
 
 /**
  * BLOCK - `CartLine`: one course already in the basket, and the one way to change your mind.
@@ -20,7 +20,7 @@ import {
  * caller accepts its declared slot props rather than redrawing them.
  *
  * THE IDENTITY STACK IS `evidence-title-over-subtitle`, the same entry the leaderboard row and the
- * livestream row already reach for. Five name-over-subtitle stacks exist in the registry; a sixth
+ * livestream row already reach for. Five name-over-subtitle stacks exist in the catalog; a sixth
  * for a basket would be the same relationship under a sixth name.
  *
  * THE REMOVAL IS A GLYPH, and that is the one product decision this block makes on its own. It is
@@ -73,23 +73,23 @@ export const CartLineBase = (input: CartLineProps) => {
 
     return (
         <Grammar
-            contract="cart-line-row"
-            render={createGrammarNode("cart-line-row", {
-                cover: createLeafNode("cover-image", {}, () => (
+            layout="cart-line-row"
+            render={layoutNode("cart-line-row", {
+                cover: renderLeaf("cover-image", {}, () => (
                     <CoverImage
                         props={{ src: input.props.cover ?? null, alt: "", ratio: "wide" }}
                         isLoading={isLoading}
                     />
                 )),
-                identity: createGrammarNode("evidence-title-over-subtitle", {
-                    title: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
+                identity: layoutNode("evidence-title-over-subtitle", {
+                    title: renderLeaf("text", { size: "sm", weight: "semibold" }, () => (
                         <Text
                             props={{ content: input.props.title, size: "sm", weight: "semibold" }}
                             isLoading={isLoading}
                         />
                     )),
                     ...(input.props.tier === undefined ? {} : {
-                        subtitle: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+                        subtitle: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                             <Text
                                 props={{ content: input.props.tier, size: "xs", tone: "muted" }}
                                 isLoading={isLoading}
@@ -97,8 +97,8 @@ export const CartLineBase = (input: CartLineProps) => {
                         )),
                     }),
                 }),
-                price: createGrammarNode("price-discount-line", {
-                    price: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
+                price: layoutNode("price-discount-line", {
+                    price: renderLeaf("text", { size: "sm", weight: "semibold" }, () => (
                         <Text
                             props={{ content: input.props.price, size: "sm", weight: "semibold" }}
                             isLoading={isLoading}
@@ -108,7 +108,7 @@ export const CartLineBase = (input: CartLineProps) => {
                     // original price and no discount, and a struck price beside the payable one
                     // with nothing struck out of it is a rule through a number that is still true.
                     ...(input.props.originalPrice === undefined ? {} : {
-                        original: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+                        original: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                             <Text
                                 props={{
                                     content: input.props.originalPrice,
@@ -124,7 +124,7 @@ export const CartLineBase = (input: CartLineProps) => {
                         )),
                     }),
                     ...(input.props.discountLabel === undefined ? {} : {
-                        discount: createLeafNode("badge", {}, () => (
+                        discount: renderLeaf("badge", {}, () => (
                             <Badge
                                 props={{ content: input.props.discountLabel, tone: "success" }}
                                 isLoading={isLoading}
@@ -135,7 +135,7 @@ export const CartLineBase = (input: CartLineProps) => {
                 // THE CONTROL IS DISABLED WHILE ITS OWN REMOVAL IS IN FLIGHT, not while any line's
                 // is. A basket where removing one course froze every other row would report a
                 // whole-list operation for a single-row one.
-                remove: createLeafNode("icon-button", {}, () => (
+                remove: renderLeaf("icon-button", {}, () => (
                     <IconButton
                         props={{ icon: "close", label: input.props.removeLabel }}
                         on={{ press: input.state === "removing" ? undefined : input.on?.remove }}
@@ -147,4 +147,3 @@ export const CartLineBase = (input: CartLineProps) => {
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "pure", domain: "commerce" } as const

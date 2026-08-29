@@ -1,16 +1,16 @@
-import { CLASS_NAME_1, CLASS_NAME_2, CLASS_NAME_3 } from './styles'
+import { CLASS_NAME_1, CLASS_NAME_2, CLASS_NAME_3 } from "./classNames"
 import { Badge } from "@/components/leaves/Badge"
 import { Icon } from "@/components/leaves/Icon"
 import { CurriculumLessonRow } from "@/components/leaves/CurriculumLessonRow"
-import { Grammar } from "@/components/branches/Grammar"
-import { createGrammarNode, createLeafNode, type ComponentProps } from "@/components/contracts/props"
+import { Grammar } from "@/components/layouts/Grammar"
+import { layoutNode, renderLeaf, type ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `CurriculumModuleRow`: one course module, folded until asked for.
  *
  * Target path: `src/components/leaves/CurriculumModuleRow/index.tsx`.
  *
- * WHY A LEAF AND NOT A CONTRACT. `ContractHost` does not admit `details`, and it should not: a
+ * WHY A LEAF AND NOT A CONTRACT. `LayoutHost` does not admit `details`, and it should not: a
  * disclosure is an intrinsic CONTROL with its own open state, not a shape that holds other shapes.
  * There is also no accordion branch in this repository, and HeroUI 3.2.1 ships no Accordion,
  * Collapsible or Disclosure - checked before this file was written rather than assumed. So the
@@ -29,7 +29,7 @@ import { createGrammarNode, createLeafNode, type ComponentProps } from "@/compon
  * THIS FILE OWNS THE SHELL, NOT THE LIST. Everything the disclosure reveals used to be a hand-built
  * `div` wrapping a `.map()` of hand-built rows - two structural arrangements nested inside a leaf,
  * which is exactly what `no-structural-arrangement-in-leaf` exists to catch. The lessons are now a
- * registry node (`curriculum-module-lesson-list`) drawn through `Grammar`, so this file writes no
+ * catalog node (`curriculum-module-lesson-list`) drawn through `Grammar`, so this file writes no
  * structural class for anything beyond its own one-line head; each lesson is `CurriculumLessonRow`,
  * a leaf in its own right.
  */
@@ -119,7 +119,7 @@ export const CurriculumModuleRow = (input: CurriculumModuleRowProps) => {
     if (!canDisclose) {
         return (
             <div
-                data-tier="leaf"
+
                 data-component="CurriculumModuleRow"
                 data-disclosing="false"
                 data-loading={isLoading ? "true" : "false"}
@@ -132,7 +132,7 @@ export const CurriculumModuleRow = (input: CurriculumModuleRowProps) => {
 
     return (
         <details
-            data-tier="leaf"
+
             data-component="CurriculumModuleRow"
             data-disclosing="true"
             data-lessons={lessons.length}
@@ -141,9 +141,9 @@ export const CurriculumModuleRow = (input: CurriculumModuleRowProps) => {
         >
             <summary className={SUMMARY_CLASSES}>{head}</summary>
             <Grammar
-                contract="curriculum-module-lesson-list"
-                render={createGrammarNode("curriculum-module-lesson-list", {
-                    lesson: lessons.map((lesson) => createLeafNode("curriculum-lesson-row", {}, () => (
+                layout="curriculum-module-lesson-list"
+                render={layoutNode("curriculum-module-lesson-list", {
+                    lesson: lessons.map((lesson) => renderLeaf("curriculum-lesson-row", {}, () => (
                         <CurriculumLessonRow
                             props={{ title: lesson.title, isPreview: lesson.isPreview }}
                             isLoading={isLoading}
@@ -156,4 +156,3 @@ export const CurriculumModuleRow = (input: CurriculumModuleRowProps) => {
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

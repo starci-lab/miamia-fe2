@@ -120,4 +120,3 @@ export const CourseFlashcardResultPage = ({ displayId, sessionId, mode }: Course
 }
 
 /** Canon metadata for the connected page half. */
-export const meta = { world: "connected", domain: "learn" } as const

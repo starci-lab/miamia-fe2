@@ -1,8 +1,7 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { LeagueCard } from "@/components/blocks/dashboard/LeagueCard"
 import { TopLearners } from "@/components/blocks/dashboard/TopLearners"
-import { createGrammarNode,createGrammarProjection } from "@/components/contracts/props"
+import { layoutNode,layoutContent } from "@/modules/types/layout"
 /** Orchestrate weekly and global competition blocks in legacy order. */
-export const CommunityTab=()=> <Grammar contract="dashboard-tab-main" render={createGrammarNode("dashboard-tab-main",{section:[createGrammarProjection("label-row-over-card",()=> <LeagueCard/>),createGrammarProjection("label-row-over-card",()=> <TopLearners/>)]})}/>
+export const CommunityTab=()=> <Grammar layout="dashboard-tab-main" render={layoutNode("dashboard-tab-main",{section:[layoutContent("label-row-over-card",()=> <LeagueCard/>),layoutContent("label-row-over-card",()=> <TopLearners/>)]})}/>
 /** Source-level ownership marker. */
-export const meta={world:"pure",domain:"community"} as const

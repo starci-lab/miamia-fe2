@@ -1,10 +1,10 @@
 import { DayCell, type DayCellData } from "@/components/leaves/DayCell"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import {
-    createGrammarNode,
-    createLeafNode,
+    layoutNode,
+    renderLeaf,
     type CompositeProps,
-} from "@/components/contracts/props"
+} from "@/modules/types/layout"
 
 /**
  * COMPOSITE - `StreakWeekRun`: the last seven days, as one run of columns.
@@ -43,9 +43,9 @@ export type StreakWeekRunProps = CompositeProps<StreakWeekRunData>
  * @param input - {@link StreakWeekRunProps}
  */
 export const StreakWeekRun = ({ props, isLoading = false }: StreakWeekRunProps) => (
-    <Grammar contract="streak-week-run" render={createGrammarNode("streak-week-run", {
+    <Grammar layout="streak-week-run" render={layoutNode("streak-week-run", {
         day: (isLoading ? RESTING_WEEK : (props.days ?? RESTING_WEEK)).map((day) => (
-            createLeafNode("day-cell", {}, () => (
+            renderLeaf("day-cell", {}, () => (
                 <DayCell key={day.id} props={day} isLoading={isLoading} />
             ))
         )),
@@ -53,4 +53,3 @@ export const StreakWeekRun = ({ props, isLoading = false }: StreakWeekRunProps) 
 )
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "composite", world: "pure" } as const

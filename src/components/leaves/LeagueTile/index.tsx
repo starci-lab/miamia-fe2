@@ -1,6 +1,6 @@
 import { skeletonVariants } from "@heroui/react"
 import { RankMark } from "@/components/leaves/RankMark"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `LeagueTile`: the viewer's own place, on a plate of its own.
@@ -48,7 +48,7 @@ export const LeagueTile = ({ props, isLoading = false }: LeagueTileProps) => {
     if (isLoading) {
         return (
             <span
-                data-tier="leaf"
+
                 data-component="LeagueTile"
                 data-loading="true"
                 aria-hidden="true"
@@ -58,7 +58,7 @@ export const LeagueTile = ({ props, isLoading = false }: LeagueTileProps) => {
     }
     return (
         <span
-            data-tier="leaf"
+
             data-component="LeagueTile"
             data-loading="false"
             className={PLATE_CLASSES}
@@ -69,4 +69,3 @@ export const LeagueTile = ({ props, isLoading = false }: LeagueTileProps) => {
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

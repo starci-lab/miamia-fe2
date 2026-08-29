@@ -1,6 +1,6 @@
 import { Link as HeroLink } from "@heroui/react"
 import { Icon, type IconName } from "@/components/leaves/Icon"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `NavLink`: one destination in the bar, or one tab under it.
@@ -80,7 +80,7 @@ export const NavLink = ({ props, on }: NavLinkProps) => {
     const isCurrent = props.isCurrent === true
     return (
         <HeroLink
-            data-tier="leaf"
+
             data-component="NavLink"
             data-kind={props.kind ?? "route"}
             data-current={isCurrent ? "true" : "false"}
@@ -95,4 +95,3 @@ export const NavLink = ({ props, on }: NavLinkProps) => {
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

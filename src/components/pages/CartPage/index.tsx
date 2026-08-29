@@ -199,4 +199,3 @@ export const CartPage = () => {
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "connected", domain: "commerce" } as const

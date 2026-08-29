@@ -34,7 +34,7 @@ const DATE_FORMAT = new Intl.DateTimeFormat(DATE_LOCALE, { dateStyle: "medium", 
 /**
  * Keep the settled zero-activity state shaped like a real week even if an incomplete payload omits
  * its day array. The backend normally supplies these seven dates; this fallback protects the visual
- * contract instead of turning missing optional content into a different tree.
+ * layout instead of turning missing optional content into a different tree.
  */
 const emptyWeek = (): ReadonlyArray<DayCellData> => {
     const today = new Date()
@@ -122,4 +122,3 @@ export const StreakStrip = () => {
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { world: "connected", domain: "streak" } as const

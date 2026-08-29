@@ -22,4 +22,3 @@ export const StreakStatRowBase = (input: StreakStatRowProps) => input.state === 
 )
 
 /** Source-level tier marker for the presentational block half. */
-export const meta = { world: "pure", domain: "identity" } as const

@@ -92,7 +92,7 @@ describe("CourseDetailPageBase", () => {
 
     it("keeps five signal cells while course data is pending", () => {
         render(<CourseDetailPageBase state="pending" props={{ labels, selectedSection: "overview" }} />)
-        expect(document.querySelectorAll("[data-node^=\"course-signal-card-\"]")).toHaveLength(5)
+        expect(document.querySelectorAll("[class*=\"layout-name-course-signal-card-\"]")).toHaveLength(5)
         expect(screen.getByRole("tab", { name: "Learner outcomes" })).toBeInTheDocument()
     })
 

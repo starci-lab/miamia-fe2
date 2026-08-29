@@ -24,7 +24,7 @@ describe("CourseLearnChallengeResultPageBase", () => {
     it("rests the result surface while grading is pending", () => {
         const { container } = render(<CourseLearnChallengeResultPageBase state="pending" props={baseProps} />)
 
-        expect(container.querySelector("[data-node=course-learn-challenge-result-page]")).toBeTruthy()
+        expect(container.querySelector(".layout-name-course-learn-challenge-result-page")).toBeTruthy()
         expect(container.querySelector("h1")).toHaveAttribute("data-loading", "true")
         expect(screen.getByRole("button", { name: "Retry challenge" })).toBeDisabled()
         expect(screen.getByRole("button", { name: "Next content" })).toBeDisabled()

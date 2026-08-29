@@ -29,4 +29,3 @@ export const ExamSessionPage = ({ slug }: ExamSessionPageConnectedProps) => {
 }
 
 /** Declares the component architecture metadata. */
-export const meta = { shape: "page", world: "connected", domain: "exam" } as const

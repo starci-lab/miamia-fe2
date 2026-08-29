@@ -1,5 +1,5 @@
-import { Grammar } from "@/components/branches/Grammar"
-import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
+import { Grammar } from "@/components/layouts/Grammar"
+import { layoutNode, renderLeaf } from "@/modules/types/layout"
 import { Button } from "@/components/leaves/Button"
 import { Heading } from "@/components/leaves/Heading"
 import { Text } from "@/components/leaves/Text"
@@ -41,53 +41,53 @@ export const CourseLearnChallengeResultPageBase = (input: CourseLearnChallengeRe
     const deriveControls = () => {
         if (input.state === "failed") {
             return [
-                createLeafNode("text", {}, () => (
+                renderLeaf("text", {}, () => (
                     <Text props={{ content: input.props.notice, live: "assertive" }} />
                 )),
-                createLeafNode("button", {}, () => (
+                renderLeaf("button", {}, () => (
                     <Button props={{ label: input.props.reloadLabel }} on={{ press: input.on?.reload }} />
                 )),
             ]
         }
         if (input.state === "pending") {
             return [
-                createLeafNode("button", {}, () => (
+                renderLeaf("button", {}, () => (
                     <Button props={{ label: input.props.retryLabel }} isLoading />
                 )),
-                createLeafNode("button", {}, () => (
+                renderLeaf("button", {}, () => (
                     <Button props={{ label: input.props.nextLabel, variant: "primary" }} isLoading />
                 )),
             ]
         }
         return [
             ...(input.props.shortFeedback === undefined ? [] : [
-                createLeafNode("text", {}, () => (
+                renderLeaf("text", {}, () => (
                     <Text props={{ content: input.props.shortFeedback }} isLoading={loading} />
                 )),
             ]),
             ...input.props.feedbacks.flatMap((feedback) => [
-                createLeafNode("text", { weight: "semibold" }, () => (
+                renderLeaf("text", { weight: "semibold" }, () => (
                     <Text props={{ content: feedback.message, weight: "semibold" }} />
                 )),
-                createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+                renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                     <Text props={{ content: feedback.severity, size: "sm", tone: "muted" }} />
                 )),
                 ...(feedback.detail === undefined ? [] : [
-                    createLeafNode("text", {}, () => <Text props={{ content: feedback.detail }} />),
+                    renderLeaf("text", {}, () => <Text props={{ content: feedback.detail }} />),
                 ]),
                 ...(feedback.location === undefined ? [] : [
-                    createLeafNode("text", { size: "sm" }, () => (
+                    renderLeaf("text", { size: "sm" }, () => (
                         <Text props={{ content: feedback.location, size: "sm" }} />
                     )),
                 ]),
                 ...(feedback.suggestion === undefined ? [] : [
-                    createLeafNode("text", {}, () => <Text props={{ content: feedback.suggestion }} />),
+                    renderLeaf("text", {}, () => <Text props={{ content: feedback.suggestion }} />),
                 ]),
             ]),
-            createLeafNode("button", {}, () => (
+            renderLeaf("button", {}, () => (
                 <Button props={{ label: input.props.retryLabel }} on={{ press: input.on?.retry }} isLoading={loading} />
             )),
-            createLeafNode("button", {}, () => (
+            renderLeaf("button", {}, () => (
                 <Button
                     props={{ label: input.props.nextLabel, variant: "primary" }}
                     on={{ press: input.on?.next }}
@@ -100,27 +100,26 @@ export const CourseLearnChallengeResultPageBase = (input: CourseLearnChallengeRe
 
     return (
         <Grammar
-            contract="course-learn-challenge-result-page"
-            render={createGrammarNode("course-learn-challenge-result-page", {
-                header: createGrammarNode("centred-title-pair", {
-                    title: createLeafNode("heading", {}, () => (
+            layout="course-learn-challenge-result-page"
+            render={layoutNode("course-learn-challenge-result-page", {
+                header: layoutNode("centred-title-pair", {
+                    title: renderLeaf("heading", {}, () => (
                         <Heading props={{ content: input.props.title, level: 1 }} isLoading={loading} />
                     )),
-                    description: createLeafNode("text", { size: "sm" }, () => (
+                    description: renderLeaf("text", { size: "sm" }, () => (
                         <Text props={{ content: input.props.description, size: "sm" }} isLoading={loading} />
                     )),
                 }),
-                score: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+                score: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                     <Text
                         props={{ content: input.props.scoreLine, size: "sm", tone: "muted" }}
                         isLoading={loading}
                     />
                 )),
-                body: createGrammarNode("stacked-peer-controls", { control: controls }),
+                body: layoutNode("stacked-peer-controls", { control: controls }),
             })}
         />
     )
 }
 
 /** Architectural identity for the pure result twin. */
-export const meta = { world: "pure", domain: "learn" } as const

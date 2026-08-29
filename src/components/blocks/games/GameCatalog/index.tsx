@@ -5,4 +5,3 @@ export type GameCatalogProps = { readonly onPickGame: (game: GameId) => void }
 // vn-ok: These two strings are localized Vietnamese runtime copy.
 export const GameCatalog = ({ onPickGame }: GameCatalogProps) => <GameCatalogBase state="ready" props={{ title: "Chọn một trò để bắt đầu", games: GAME_CATALOG, actionLabel: "Thiết lập ván" }} on={{ pick: onPickGame }} />
 /** Declares the catalog binder as a connected game block. */
-export const meta = { shape: "block", world: "connected", domain: "games" } as const

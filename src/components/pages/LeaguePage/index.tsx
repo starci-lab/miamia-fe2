@@ -356,4 +356,3 @@ export const LeaguePage = () => {
 }
 
 /** Source-level tier marker. */
-export const meta = { world: "connected", domain: "community" } as const

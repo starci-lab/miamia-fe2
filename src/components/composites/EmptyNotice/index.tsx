@@ -2,9 +2,9 @@ import { IconTile } from "@/components/leaves/IconTile"
 import { Text } from "@/components/leaves/Text"
 import { Button } from "@/components/leaves/Button"
 import type { IconName } from "@/components/leaves/Icon"
-import type { CompositeProps } from "@/components/contracts/props"
-import { Grammar } from "@/components/branches/Grammar"
-import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
+import type { CompositeProps } from "@/modules/types/layout"
+import { Grammar } from "@/components/layouts/Grammar"
+import { layoutNode, renderLeaf } from "@/modules/types/layout"
 
 /**
  * COMPOSITE - `EmptyNotice`: what a region says when it settled with nothing in it.
@@ -49,20 +49,19 @@ export type EmptyNoticeProps = CompositeProps<EmptyNoticeData, EmptyNoticeAction
  */
 export const EmptyNotice = ({ props, on }: EmptyNoticeProps) => {
     const icon = props.icon
-    const content = createGrammarNode("empty-notice-stack", {
-        mark: icon === undefined ? undefined : createLeafNode("icon-tile", {}, () => (
+    const content = layoutNode("empty-notice-stack", {
+        mark: icon === undefined ? undefined : renderLeaf("icon-tile", {}, () => (
             <IconTile props={{ icon, tone: "neutral", size: "md" }} />
         )),
-        message: createLeafNode("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: props.message, tone: "muted", size: "sm" }} />),
-        description: props.description === undefined ? undefined : createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+        message: renderLeaf("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: props.message, tone: "muted", size: "sm" }} />),
+        description: props.description === undefined ? undefined : renderLeaf("text", { size: "xs", tone: "muted" }, () => (
             <Text props={{ content: props.description, tone: "muted", size: "xs" }} />
         )),
-        action: props.actionLabel === undefined ? undefined : createLeafNode("button", {}, () => (
+        action: props.actionLabel === undefined ? undefined : renderLeaf("button", {}, () => (
             <Button props={{ label: props.actionLabel ?? "", variant: "secondary", size: "sm", icon: "retry" }} on={{ press: on?.act }} />
         )),
     })
-    return <Grammar contract="empty-notice-stack" render={content} />
+    return <Grammar layout="empty-notice-stack" render={content} />
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "composite", world: "pure" } as const

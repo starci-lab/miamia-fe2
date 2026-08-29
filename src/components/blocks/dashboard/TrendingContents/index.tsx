@@ -26,4 +26,3 @@ export const TrendingContents = () => {
     return <TrendingContentsBase state={query.data === undefined ? "pending" : "ready"} props={{ label: t("trending"), items }} on={on} />
 }
 /** Source-level ownership marker for the connected discovery block. */
-export const meta = { world: "connected", domain: "discovery" } as const

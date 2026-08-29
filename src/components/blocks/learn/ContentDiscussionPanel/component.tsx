@@ -1,11 +1,11 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import {
-    createCompositeNode,
-    createGrammarNode,
-    createLeafNode,
+    renderComposite,
+    layoutNode,
+    renderLeaf,
     type BlockProps,
-} from "@/components/contracts/props"
+} from "@/modules/types/layout"
 import { Button } from "@/components/leaves/Button"
 import { Heading } from "@/components/leaves/Heading"
 import { Text } from "@/components/leaves/Text"
@@ -66,18 +66,18 @@ export const ContentDiscussionPanelBase = (input: ContentDiscussionPanelProps) =
     const comments = isLoading ? PENDING_COMMENTS : input.props.comments
     const canCompose = input.state === "ready" || input.state === "empty" || isSubmitting
 
-    const list = createGrammarNode("content-discussion-list", {
-        comment: comments.map((comment) => createGrammarNode("content-discussion-comment-row", {
-            author: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
+    const list = layoutNode("content-discussion-list", {
+        comment: comments.map((comment) => layoutNode("content-discussion-comment-row", {
+            author: renderLeaf("text", { size: "sm", weight: "semibold" }, () => (
                 <Text
                     props={{ content: comment.author, size: "sm", weight: "semibold" }}
                     isLoading={isLoading}
                 />
             )),
-            meta: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+            meta: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                 <Text props={{ content: comment.meta, size: "xs", tone: "muted" }} isLoading={isLoading} />
             )),
-            body: createLeafNode("text", { size: "sm" }, () => (
+            body: renderLeaf("text", { size: "sm" }, () => (
                 <Text props={{ content: comment.body, size: "sm" }} isLoading={isLoading} />
             )),
         })),
@@ -85,13 +85,13 @@ export const ContentDiscussionPanelBase = (input: ContentDiscussionPanelProps) =
 
     return (
         <Grammar
-            contract="content-discussion-panel"
-            render={createGrammarNode("content-discussion-panel", {
-                title: createLeafNode("heading", {}, () => (
+            layout="content-discussion-panel"
+            render={layoutNode("content-discussion-panel", {
+                title: renderLeaf("heading", {}, () => (
                     <Heading props={{ content: input.props.labels.title, level: 2 }} />
                 )),
                 ...(canCompose ? {
-                    composer: createLeafNode("textarea", {}, () => (
+                    composer: renderLeaf("textarea", {}, () => (
                         <Textarea
                             key={input.props.draftKey}
                             props={{
@@ -106,7 +106,7 @@ export const ContentDiscussionPanelBase = (input: ContentDiscussionPanelProps) =
                             on={{ change: input.on?.changeDraft }}
                         />
                     )),
-                    submit: createLeafNode("button", {}, () => (
+                    submit: renderLeaf("button", {}, () => (
                         <Button
                             props={{
                                 label: isSubmitting ? input.props.labels.submitting : input.props.labels.submit,
@@ -120,7 +120,7 @@ export const ContentDiscussionPanelBase = (input: ContentDiscussionPanelProps) =
                     )),
                 } : {}),
                 ...(input.state === "failed" || input.state === "empty" ? {
-                    notice: createCompositeNode("empty-notice", {}, () => (
+                    notice: renderComposite("empty-notice", {}, () => (
                         <EmptyNotice
                             props={{
                                 icon: input.state === "failed" ? "retry" : "community",
@@ -140,4 +140,3 @@ export const ContentDiscussionPanelBase = (input: ContentDiscussionPanelProps) =
 }
 
 /** Architectural identity for the pure discussion block. */
-export const meta = { world: "pure", domain: "learn" } as const

@@ -34,7 +34,7 @@ describe("authentication screen", () => {
     it("places the auth block in one centred form card", () => {
         const { container } = render(<AuthenticationPage />)
 
-        const page = container.querySelector("[data-node='centred-authentication-page']")
+        const page = container.querySelector(".layout-name-centred-authentication-page")
         const card = page?.querySelector("[data-component='SurfaceFormCard']")
         expect(page?.classList.contains("min-h-screen")).toBe(true)
         expect(card?.querySelector("[data-part='panel']")?.textContent).toBe("Authentication")

@@ -1,13 +1,13 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { Heading } from "@/components/leaves/Heading"
 import { StatRow } from "@/components/composites/StatRow"
 import { Text } from "@/components/leaves/Text"
 import {
-    createCompositeNode,
-    createGrammarNode,
-    createLeafNode,
+    renderComposite,
+    layoutNode,
+    renderLeaf,
     type BlockProps,
-} from "@/components/contracts/props"
+} from "@/modules/types/layout"
 
 /**
  * BLOCK - `CoursePriceDetail`: why this course costs this learner this much.
@@ -76,18 +76,18 @@ export const CoursePriceDetailBase = (input: CoursePriceDetailProps) => {
 
     return (
         <Grammar
-            contract="course-price-detail-stack"
-            render={createGrammarNode("course-price-detail-stack", {
-                title: createLeafNode("heading", {}, () => (
+            layout="course-price-detail-stack"
+            render={layoutNode("course-price-detail-stack", {
+                title: renderLeaf("heading", {}, () => (
                     <Heading props={{ content: input.props.title, level: 2 }} isLoading={isLoading} />
                 )),
                 ...(input.state === "unavailable" ? {
-                    notice: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+                    notice: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                         <Text props={{ content: input.props.unavailableMessage, size: "sm", tone: "muted" }} />
                     )),
                 } : {
-                    reckoning: createGrammarNode("stacked-stat-rows", {
-                        stat: lines.map((line) => createCompositeNode("stat-row", {}, () => (
+                    reckoning: layoutNode("stacked-stat-rows", {
+                        stat: lines.map((line) => renderComposite("stat-row", {}, () => (
                             <StatRow
                                 props={{
                                     icon: LINE_ICONS[line.id] ?? "cart",
@@ -100,12 +100,12 @@ export const CoursePriceDetailBase = (input: CoursePriceDetailProps) => {
                     }),
                 }),
                 ...(input.props.reason === undefined ? {} : {
-                    reason: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+                    reason: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                         <Text props={{ content: input.props.reason, size: "sm", tone: "muted" }} isLoading={isLoading} />
                     )),
                 }),
                 ...(input.props.forwardLook === undefined ? {} : {
-                    forward: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+                    forward: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                         <Text props={{ content: input.props.forwardLook, size: "sm", tone: "muted" }} isLoading={isLoading} />
                     )),
                 }),
@@ -115,4 +115,3 @@ export const CoursePriceDetailBase = (input: CoursePriceDetailProps) => {
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "pure", domain: "courses" } as const

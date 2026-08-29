@@ -12,4 +12,3 @@ export const StudyCatalogPage = () => {
     return <StudyCatalogPageBase surface={Surface} />
 }
 /** Declares the connected Study catalogue page. */
-export const meta = { shape: "page", world: "connected", domain: "study" } as const

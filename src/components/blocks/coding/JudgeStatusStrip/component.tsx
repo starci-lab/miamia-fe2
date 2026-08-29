@@ -1,12 +1,12 @@
 import { Button } from "@/components/leaves/Button"
 import { StatusDot, type StatusDotTone } from "@/components/leaves/StatusDot"
 import { Text } from "@/components/leaves/Text"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import {
-    createGrammarNode,
-    createLeafNode,
+    layoutNode,
+    renderLeaf,
     type BlockProps,
-} from "@/components/contracts/props"
+} from "@/modules/types/layout"
 
 /**
  * BLOCK - `JudgeStatusStrip`: what the judge is saying, in one place that never moves.
@@ -95,9 +95,9 @@ export type JudgeStatusStripProps =
  */
 export const JudgeStatusStripBase = (input: JudgeStatusStripProps) => (
     <Grammar
-        contract="judge-status-strip"
-        render={createGrammarNode("judge-status-strip", {
-            mark: createLeafNode("status-dot", {}, () => (
+        layout="judge-status-strip"
+        render={layoutNode("judge-status-strip", {
+            mark: renderLeaf("status-dot", {}, () => (
                 <StatusDot
                     props={{
                         tone: VERDICT_TONE[input.state],
@@ -105,14 +105,14 @@ export const JudgeStatusStripBase = (input: JudgeStatusStripProps) => (
                     }}
                 />
             )),
-            verdict: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
+            verdict: renderLeaf("text", { size: "sm", weight: "semibold" }, () => (
                 <Text props={{ content: input.props.verdictLabel, size: "sm", weight: "semibold" }} />
             )),
-            detail: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+            detail: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                 <Text props={{ content: input.props.detailLabel, size: "xs", tone: "muted" }} />
             )),
             ...(input.props.actionLabel === undefined ? {} : {
-                action: createLeafNode("button", {}, () => (
+                action: renderLeaf("button", {}, () => (
                     <Button
                         props={{
                             label: input.props.actionLabel ?? "",
@@ -129,4 +129,3 @@ export const JudgeStatusStripBase = (input: JudgeStatusStripProps) => (
 )
 
 /** Source-level ownership marker. */
-export const meta = { world: "pure", domain: "coding" } as const

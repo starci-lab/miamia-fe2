@@ -1,17 +1,17 @@
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
 import { SurfaceListCard, type SurfaceListCardData } from "@/components/branches/SurfaceListCard"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { LabelledProgressRow } from "@/components/composites/LabelledProgressRow"
 import { Button } from "@/components/leaves/Button"
 import { Text } from "@/components/leaves/Text"
 import {
-    createCompositeNode,
-    createGrammarNode,
-    createGrammarProjection,
-    createLeafNode,
+    renderComposite,
+    layoutNode,
+    layoutContent,
+    renderLeaf,
     type ComponentProps,
-} from "@/components/contracts/props"
+} from "@/modules/types/layout"
 
 /** Readiness band already resolved by product policy. */
 export type JobReadinessBand = "needsWork" | "building" | "jobReady"
@@ -66,8 +66,8 @@ type JobReadinessListData = SurfaceListCardData & {
 /** Render only the peer pillars; the enclosing readiness card owns summary and action. */
 const JobReadinessListContent = ({ props, isLoading = false }: ComponentProps<JobReadinessListData>) => {
     return (
-        <Grammar contract="job-readiness-list" render={createGrammarNode("job-readiness-list", {
-            row: props.metrics.map((metric) => createCompositeNode("labelled-progress-row", {}, () => (
+        <Grammar layout="job-readiness-list" render={layoutNode("job-readiness-list", {
+            row: props.metrics.map((metric) => renderComposite("labelled-progress-row", {}, () => (
                 <LabelledProgressRow
                     props={{ id: metric.id, title: metric.label, percent: metric.score, percentText: metric.scoreLabel }}
                     isLoading={isLoading}
@@ -77,7 +77,7 @@ const JobReadinessListContent = ({ props, isLoading = false }: ComponentProps<Jo
     )
 }
 
-const JobReadinessList = createGrammarNode("job-readiness-list", JobReadinessListContent)
+const JobReadinessList = layoutNode("job-readiness-list", JobReadinessListContent)
 
 /** Draw the learner's strongest-track readiness without owning routing or fetching. */
 export const JobReadinessWidgetBase = (input: JobReadinessWidgetProps) => {
@@ -86,9 +86,9 @@ export const JobReadinessWidgetBase = (input: JobReadinessWidgetProps) => {
         return (
             <SurfaceCard
                 props={{ label: input.props.label }}
-                contract="empty-notice-card"
-                render={createGrammarNode("empty-notice-card", {
-                    notice: createCompositeNode("empty-notice", {}, () => (
+                layout="empty-notice-card"
+                render={layoutNode("empty-notice-card", {
+                    notice: renderComposite("empty-notice", {}, () => (
                         <EmptyNotice
                             props={{
                                 icon: "jobs",
@@ -109,9 +109,9 @@ export const JobReadinessWidgetBase = (input: JobReadinessWidgetProps) => {
         input.props.depthScore === undefined ? input.props.courseTitle : `${input.props.depthScore} · ${input.props.courseTitle ?? ""}`
     )
 
-    const metricsList = createGrammarProjection("job-readiness-list", () => (
+    const metricsList = layoutContent("job-readiness-list", () => (
         <SurfaceListCard
-            contract="job-readiness-list"
+            layout="job-readiness-list"
             render={JobReadinessList}
             props={{
                 label: headline ?? "",
@@ -126,17 +126,17 @@ export const JobReadinessWidgetBase = (input: JobReadinessWidgetProps) => {
     return (
         <SurfaceCard
             props={{ label: input.props.label }}
-            contract="job-readiness-card"
+            layout="job-readiness-card"
             isLoading={isLoading}
-            render={createGrammarNode("job-readiness-card", {
+            render={layoutNode("job-readiness-card", {
                 ...(input.props.percentileLabel === undefined && !isLoading ? {} : {
-                    percentile: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+                    percentile: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                         <Text props={{ content: input.props.percentileLabel, size: "xs", tone: "muted" }} isLoading={isLoading} />
                     )),
                 }),
                 metrics: metricsList,
                 ...(input.props.actionLabel === undefined && !isLoading ? {} : {
-                    action: createLeafNode("button", {}, () => (
+                    action: renderLeaf("button", {}, () => (
                         <Button
                             props={{ label: input.props.actionLabel ?? "", size: "sm", variant: "primary" }}
                             on={{ press: input.on?.act }}
@@ -150,4 +150,3 @@ export const JobReadinessWidgetBase = (input: JobReadinessWidgetProps) => {
 }
 
 /** Source-level tier marker for the pure dashboard block. */
-export const meta = { world: "pure", domain: "dashboard" } as const

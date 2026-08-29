@@ -17,4 +17,3 @@ export const ProfileViewSwitch = (input: ProfileViewSwitchProps) => (
 )
 
 /** Source-level block marker. */
-export const meta = { shape: "block", world: "pure", domain: "profile" } as const

@@ -50,4 +50,3 @@ export const CourseFoundationsPage = ({ displayId }: CourseFoundationsPageProps)
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "connected", domain: "learn" } as const

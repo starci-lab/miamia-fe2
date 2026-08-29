@@ -1,13 +1,13 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { ChoiceTabs } from "@/components/leaves/ChoiceTabs"
 import { ContributionGrid } from "@/components/leaves/ContributionGrid"
 import { ContributionIntensityLegend } from "@/components/leaves/ContributionIntensityLegend"
 import { Text } from "@/components/leaves/Text"
 import {
-    createGrammarNode,
-    createLeafNode,
+    layoutNode,
+    renderLeaf,
     type CompositeProps,
-} from "@/components/contracts/props"
+} from "@/modules/types/layout"
 
 /** One contribution day with an accessible, already-resolved description. */
 export type ContributionCalendarDay = {
@@ -39,11 +39,11 @@ export type ContributionCalendarProps = CompositeProps<ContributionCalendarData,
 
 /** Draw the fixed year summary, intrinsic plot and its reading key. */
 export const ContributionCalendar = ({ props, on, isLoading = false }: ContributionCalendarProps) => {
-    const heading = createGrammarNode("contribution-calendar-heading-row", {
-        total: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+    const heading = layoutNode("contribution-calendar-heading-row", {
+        total: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
             <Text props={{ content: props.totalLabel, size: "xs", tone: "muted" }} isLoading={isLoading} />
         )),
-        years: createLeafNode("choice-tabs", {}, () => (
+        years: renderLeaf("choice-tabs", {}, () => (
             <ChoiceTabs
                 props={{
                     label: props.totalLabel ?? "",
@@ -54,20 +54,20 @@ export const ContributionCalendar = ({ props, on, isLoading = false }: Contribut
             />
         )),
     })
-    const footer = createGrammarNode("contribution-calendar-footer-row", {
-        streak: createLeafNode("text", { size: "sm" }, () => (
+    const footer = layoutNode("contribution-calendar-footer-row", {
+        streak: renderLeaf("text", { size: "sm" }, () => (
             <Text props={{ content: props.streakLabel, size: "sm" }} isLoading={isLoading} />
         )),
-        intensity: createLeafNode("contribution-intensity-legend", {}, () => (
+        intensity: renderLeaf("contribution-intensity-legend", {}, () => (
             <ContributionIntensityLegend
                 props={{ lessLabel: props.lessLabel, moreLabel: props.moreLabel }}
                 isLoading={isLoading}
             />
         )),
     })
-    const content = createGrammarNode("contribution-calendar-stack", {
+    const content = layoutNode("contribution-calendar-stack", {
         heading,
-        grid: createLeafNode("contribution-grid", {}, () => (
+        grid: renderLeaf("contribution-grid", {}, () => (
             <ContributionGrid
                 props={{
                     year: props.year,
@@ -81,8 +81,7 @@ export const ContributionCalendar = ({ props, on, isLoading = false }: Contribut
         footer,
     })
 
-    return <Grammar contract="contribution-calendar-stack" render={content} />
+    return <Grammar layout="contribution-calendar-stack" render={content} />
 }
 
 /** Source-level tier marker for the fixed contribution calendar composition. */
-export const meta = { shape: "composite", world: "pure" } as const

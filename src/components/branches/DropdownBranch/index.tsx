@@ -1,4 +1,4 @@
-import { CLASS_NAME_1 } from './styles'
+import { CLASS_NAME_1 } from "./classNames"
 import type { ReactNode } from "react"
 import { Dropdown } from "@heroui/react"
 import { Icon, type IconName } from "@/components/leaves/Icon"
@@ -76,4 +76,3 @@ export const DropdownBranch = <const I extends string>(input: DropdownBranchProp
 )
 
 /** Source-level tier marker for the content-agnostic dropdown mechanics. */
-export const meta = { shape: "branch", mechanics: true, world: "pure" } as const

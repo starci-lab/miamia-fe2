@@ -1,14 +1,14 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { Avatar } from "@/components/leaves/Avatar"
 import { PodiumStep, type PodiumPlace } from "@/components/leaves/PodiumStep"
 import { RankMark } from "@/components/leaves/RankMark"
 import { Text } from "@/components/leaves/Text"
 import {
-    createCompositeNode,
-    createGrammarNode,
-    createLeafNode,
+    renderComposite,
+    layoutNode,
+    renderLeaf,
     type CompositeProps,
-} from "@/components/contracts/props"
+} from "@/modules/types/layout"
 
 /**
  * COMPOSITE - `Podium`: the top three, arranged so the ranking is the picture.
@@ -18,7 +18,7 @@ import {
  * rows with different numbers would be the wrong sentence in the right grammar.
  *
  * READING ORDER IS NOT VISUAL ORDER. Places are emitted best-first, so anyone reading in sequence
- * hears first, second, third. The 2-1-3 dais is produced by the `podium` contract's own nth-child
+ * hears first, second, third. The 2-1-3 dais is produced by the `podium` layout's own nth-child
  * ordering, because "champion in the middle" is a fact about the dais rather than about whoever
  * happens to be standing on it.
  */
@@ -49,7 +49,7 @@ export type PodiumData = {
 /** Props for {@link Podium}. */
 export type PodiumProps = CompositeProps<PodiumData>
 
-/** Places are emitted best-first; the `podium` contract turns this into the 2-1-3 dais. */
+/** Places are emitted best-first; the `podium` layout turns this into the 2-1-3 dais. */
 const PLACES: ReadonlyArray<PodiumPlace> = [1, 2, 3]
 
 /** Resolves the displayed name for one finisher, appending the viewer suffix when it is the viewer. */
@@ -67,21 +67,21 @@ export const Podium = ({ props, isLoading = false }: PodiumProps) => {
         const entry = byRank.get(rank)
         if (entry === undefined && !isLoading) return []
         const name = nameFor(entry, props.meLabel, props.anonymousLabel)
-        return [createCompositeNode("podium-place", {}, () => (
-            <Grammar contract="podium-place" render={createGrammarNode("podium-place", {
-                mark: createLeafNode("rank-mark", { placement: "row" }, () => (
+        return [renderComposite("podium-place", {}, () => (
+            <Grammar layout="podium-place" render={layoutNode("podium-place", {
+                mark: renderLeaf("rank-mark", { placement: "row" }, () => (
                     <RankMark
                         props={{ rank, placement: "row", accessibleLabel: entry?.rankLabel }}
                         isLoading={isLoading}
                     />
                 )),
-                avatar: createLeafNode("avatar", {}, () => (
+                avatar: renderLeaf("avatar", {}, () => (
                     <Avatar
                         props={{ name, src: entry?.avatar ?? undefined, size: rank === 1 ? "lg" : "md" }}
                         isLoading={isLoading}
                     />
                 )),
-                name: createLeafNode("text", {}, () => (
+                name: renderLeaf("text", {}, () => (
                     <Text
                         props={{
                             content: name,
@@ -92,17 +92,16 @@ export const Podium = ({ props, isLoading = false }: PodiumProps) => {
                         isLoading={isLoading}
                     />
                 )),
-                points: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+                points: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                     <Text props={{ content: entry?.pointsLabel, size: "xs", tone: "muted" }} isLoading={isLoading} />
                 )),
-                step: createLeafNode("podium-step", {}, () => (
+                step: renderLeaf("podium-step", {}, () => (
                     <PodiumStep props={{ place: rank }} isLoading={isLoading} />
                 )),
             })} />
         ))]
     })
-    return <Grammar contract="podium" render={createGrammarNode("podium", { place })} />
+    return <Grammar layout="podium" render={layoutNode("podium", { place })} />
 }
 
 /** Source-level tier marker. */
-export const meta = { shape: "composite", world: "pure" } as const

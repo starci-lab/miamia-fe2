@@ -1,7 +1,7 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { SurfaceFormCard } from "@/components/branches/SurfaceFormCard"
 import { AuthenticationPanel } from "@/components/blocks/auth/AuthenticationPanel"
-import { createGrammarNode, createGrammarProjection } from "@/components/contracts/props"
+import { layoutNode, layoutContent } from "@/modules/types/layout"
 
 /** What the authentication page reports. */
 export type AuthenticationPageActions = {
@@ -20,18 +20,18 @@ export type AuthenticationPageProps = {
  * @param input - {@link AuthenticationPageProps}
  */
 export const AuthenticationPageBase = ({ on }: AuthenticationPageProps) => {
-    const cardContent = createGrammarNode("authentication-panel-card", {
-        panel: createGrammarProjection("centred-page-column", () => (
+    const cardContent = layoutNode("authentication-panel-card", {
+        panel: layoutContent("centred-page-column", () => (
             <AuthenticationPanel onSignedIn={on?.signedIn} />
         )),
     })
 
     return (
         <Grammar
-            contract="centred-authentication-page"
-            render={createGrammarNode("centred-authentication-page", {
-                surface: createGrammarProjection("authentication-panel-card", () => (
-                    <SurfaceFormCard contract="authentication-panel-card" render={cardContent} />
+            layout="centred-authentication-page"
+            render={layoutNode("centred-authentication-page", {
+                surface: layoutContent("authentication-panel-card", () => (
+                    <SurfaceFormCard layout="authentication-panel-card" render={cardContent} />
                 )),
             })}
         />
@@ -39,4 +39,3 @@ export const AuthenticationPageBase = ({ on }: AuthenticationPageProps) => {
 }
 
 /** Source-level tier marker for the authentication page. */
-export const meta = { world: "pure", domain: "auth" } as const

@@ -151,4 +151,3 @@ export const CartDrawer = ({ isOpen, onDismiss }: CartDrawerProps) => {
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "connected", domain: "commerce" } as const

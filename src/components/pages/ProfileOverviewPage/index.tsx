@@ -31,7 +31,7 @@ const resolveLevelPercent = (progressData: LevelProgress | null | undefined): nu
     return Math.min(100, Math.round((progressData.xpIntoLevel / progressData.xpForNextLevel) * 100))
 }
 
-/** Connects the selected profile audience to owner-only learning contracts. */
+/** Connects the selected profile audience to owner-only learning layouts. */
 export const ProfileOverviewPage = () => {
     const t = useTranslations("profile.learning")
     const params = useParams<{ username?: string }>()
@@ -84,4 +84,3 @@ export const ProfileOverviewPage = () => {
 
 export * from "./component"
 /** Source-level connected page marker. */
-export const meta = { world: "connected", domain: "profile" } as const

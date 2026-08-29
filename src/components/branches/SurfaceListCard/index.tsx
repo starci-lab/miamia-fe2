@@ -1,16 +1,16 @@
-import { CLASS_NAME_1, CLASS_NAME_2 } from './styles'
+import { CLASS_NAME_1, CLASS_NAME_2 } from "./classNames"
 import { Card } from "@heroui/react"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { Heading } from "@/components/leaves/Heading"
 import { Text } from "@/components/leaves/Text"
 import { Button } from "@/components/leaves/Button"
-import type { JoinedListContractKey } from "@/components/contracts"
-import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
+import type { JoinedListLayoutKey } from "@/resources/visual-layouts"
+import { layoutNode, renderLeaf } from "@/modules/types/layout"
 import type {
-    ContractRenderComponent,
+    LayoutComponentType,
     SerializableValue,
     ComponentProps,
-} from "@/components/contracts/props"
+} from "@/modules/types/layout"
 
 /** Copy and optional outcome drawn around a joined list surface. */
 export type SurfaceListCardData = {
@@ -31,7 +31,7 @@ export type SurfaceListCardData = {
      * last rows, so a straight two-pixel band at the top of the list gets shaved into a curve by
      * the surface above it - and the list, not the row, is the only thing that can stop that.
      *
-     * It cannot square the ROW. That radius lives on the row's own contract, and a branch reaching
+     * It cannot square the ROW. That radius lives on the row's own layout, and a branch reaching
      * down to restyle a child would make this card the row's second owner.
      */
     readonly isVerdict?: boolean
@@ -43,14 +43,14 @@ export type SurfaceListCardActions = {
     readonly act?: () => void
 }
 
-/** Contract-bound props for the joined-list surface branch. */
+/** Layout-bound props for the joined-list surface branch. */
 export type SurfaceListCardProps<
-    K extends JoinedListContractKey,
+    K extends JoinedListLayoutKey,
     D extends SurfaceListCardData,
     A extends SurfaceListCardActions = SurfaceListCardActions,
 > = {
-    readonly contract: K
-    readonly render: ContractRenderComponent<NoInfer<K>, ComponentProps<D, A>>
+    readonly layout: K
+    readonly render: LayoutComponentType<NoInfer<K>, ComponentProps<D, A>>
     readonly props: D
     readonly on?: A
     readonly isLoading?: boolean
@@ -61,11 +61,11 @@ const renderDescriptionFooter = (description: string | undefined, isLoading: boo
     description === undefined ? null : <Text props={{ content: description, size: "xs", tone: "muted" }} isLoading={isLoading} />
 
 /**
- * Draw a labelled, joined list. The list contract owns the admitted row identity and count;
+ * Draw a labelled, joined list. The list layout owns the admitted row identity and count;
  * this branch owns only the label above it and the whole-list outcome below it.
  */
 export const SurfaceListCard = <
-    const K extends JoinedListContractKey,
+    const K extends JoinedListLayoutKey,
     D extends SurfaceListCardData,
     A extends SurfaceListCardActions = SurfaceListCardActions,
 >(input: SurfaceListCardProps<K, D, A>) => {
@@ -74,12 +74,12 @@ export const SurfaceListCard = <
         <Heading props={{ content: surfaceProps.label, level: 3 }} />
     ) : (
         <Grammar
-            contract="label-with-muted-fact-row"
-            render={createGrammarNode("label-with-muted-fact-row", {
-                label: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
+            layout="label-with-muted-fact-row"
+            render={layoutNode("label-with-muted-fact-row", {
+                label: renderLeaf("text", { size: "sm", weight: "semibold" }, () => (
                     <Text props={{ content: surfaceProps.label, size: "sm", weight: "semibold" }} isLoading={isLoading} />
                 )),
-                fact: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+                fact: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                     <Text props={{ content: surfaceProps.fact, size: "xs", tone: "muted" }} isLoading={isLoading} />
                 )),
             })}
@@ -112,4 +112,3 @@ export const SurfaceListCard = <
 }
 
 /** Source-level tier marker for the joined-list branch. */
-export const meta = { shape: "branch", world: "pure" } as const

@@ -13,7 +13,7 @@ describe("ContinueLearningBase", () => {
                 props={{
                     label: "Continue learning",
                     resumeLabel: "Resume",
-                    items: [{ id: "lesson-one", title: "Input contracts", kindLabel: "Lesson" }],
+                    items: [{ id: "lesson-one", title: "Input layouts", kindLabel: "Lesson" }],
                 }}
             />,
         )

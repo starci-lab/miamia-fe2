@@ -1,9 +1,9 @@
 import { Text } from "@/components/leaves/Text"
 import { Input, type InputKind } from "@/components/leaves/Input"
 import { Label } from "@/components/leaves/Label"
-import type { CompositeProps } from "@/components/contracts/props"
-import { Grammar } from "@/components/branches/Grammar"
-import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
+import type { CompositeProps } from "@/modules/types/layout"
+import { Grammar } from "@/components/layouts/Grammar"
+import { layoutNode, renderLeaf } from "@/modules/types/layout"
 
 /**
  * COMPOSITE - `Field`: one labelled box, with its hint or its refusal underneath.
@@ -65,9 +65,9 @@ export type FieldProps = CompositeProps<FieldData, FieldActions>
  * @param input - {@link FieldProps}
  */
 export const Field = ({ props, on, isLoading = false }: FieldProps) => {
-    const content = createGrammarNode("label-field-hint", {
-        label: createLeafNode("label", {}, () => <Label props={{ htmlFor: props.id, content: props.label }} />),
-        field: createLeafNode("input", {}, () => (
+    const content = layoutNode("label-field-hint", {
+        label: renderLeaf("label", {}, () => <Label props={{ htmlFor: props.id, content: props.label }} />),
+        field: renderLeaf("input", {}, () => (
             <Input
                 props={{
                     id: props.id,
@@ -84,12 +84,11 @@ export const Field = ({ props, on, isLoading = false }: FieldProps) => {
                 isLoading={isLoading}
             />
         )),
-        hint: props.hint === undefined ? undefined : createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+        hint: props.hint === undefined ? undefined : renderLeaf("text", { size: "xs", tone: "muted" }, () => (
             <Text props={{ id: `${props.id}-hint`, content: props.hint, size: "xs", live: props.isInvalid === true ? "assertive" : "off" }} />
         )),
     })
-    return <Grammar contract="label-field-hint" render={content} />
+    return <Grammar layout="label-field-hint" render={content} />
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "composite", world: "pure" } as const

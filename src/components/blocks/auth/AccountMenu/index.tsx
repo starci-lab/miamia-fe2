@@ -10,4 +10,3 @@ import { AccountMenuBase, type AccountMenuProps } from "./component"
 export const AccountMenu = (input: AccountMenuProps) => <AccountMenuBase {...input} />
 
 /** Source-level tier marker for the account-menu block. */
-export const meta = { shape: "block", world: "pure", domain: "auth" } as const

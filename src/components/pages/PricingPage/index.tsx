@@ -66,4 +66,3 @@ export const PricingPage = () => {
     </>
 }
 /** Declares the connected pricing page boundary. */
-export const meta = { shape: "page", world: "connected", domain: "payment" } as const

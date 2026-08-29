@@ -34,4 +34,3 @@ export const ExamDownloadCheckoutPanel = ({ packageId, returnUrl, cancelUrl, onD
     return <ExamDownloadCheckoutPanelBase state={state} props={{ title: t(`${packageId}.title`), body: t(`${packageId}.body`), price: t("price", { price: new Intl.NumberFormat("vi-VN").format(amount) }), benefits: [t(`${packageId}.benefitOne`), t(`${packageId}.benefitTwo`), t(`${packageId}.benefitThree`)], checkoutLabel: t("pay"), cancelLabel: t("cancel"), errorMessage: t("failed") }} on={{ checkout: run, retry: run, dismiss: onDismiss }} />
 }
 /** Declares the connected payment block boundary. */
-export const meta = { shape: "block", world: "connected", domain: "payment" } as const

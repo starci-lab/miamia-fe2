@@ -20,7 +20,7 @@ describe("LearnShellLayoutBase", () => {
         )
 
         expect(screen.getByText("Reader surface")).toBeTruthy()
-        expect(container.querySelector("[data-node=learn-spine-column]")).not.toBeNull()
+        expect(container.querySelector(".layout-name-learn-spine-column")).not.toBeNull()
     })
 
     it("removes course furniture for a focused full-bleed session", () => {
@@ -29,7 +29,7 @@ describe("LearnShellLayoutBase", () => {
         )
 
         expect(screen.getByText("Reader surface")).toBeTruthy()
-        expect(container.querySelector("[data-node=learn-spine-column]")).toBeNull()
+        expect(container.querySelector(".layout-name-learn-spine-column")).toBeNull()
     })
 
     it("reports mobile view changes through the dedicated action", () => {

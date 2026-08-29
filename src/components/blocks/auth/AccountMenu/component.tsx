@@ -59,4 +59,3 @@ export const AccountMenuBase = (input: AccountMenuProps) => (
 )
 
 /** Source-level tier marker for the pure account-menu block half. */
-export const meta = { shape: "block", world: "pure", domain: "auth" } as const

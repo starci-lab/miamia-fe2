@@ -1,9 +1,9 @@
 import { Avatar } from "@/components/leaves/Avatar"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { ReactionPicker, type ReactionLabels } from "@/components/leaves/ReactionPicker"
 import { Text } from "@/components/leaves/Text"
 import { TextLink } from "@/components/leaves/TextLink"
-import { createGrammarNode, createLeafNode, type CompositeProps } from "@/components/contracts/props"
+import { layoutNode, renderLeaf, type CompositeProps } from "@/modules/types/layout"
 import type { ReactionType } from "@/modules/api/graphql/queries/types/reactions"
 
 /** Resolved actor, event and reaction state drawn by one activity row. */
@@ -29,23 +29,23 @@ export type ActivityRowProps = CompositeProps<ActivityRowData, ActivityRowAction
 /** Draw one actor sentence, its optional reaction and quiet timestamp. */
 export const ActivityRow = ({ props, on, isLoading = false }: ActivityRowProps) => {
     const reactionLabels = props.reactionLabels
-    const sentence = createGrammarNode("activity-actor-action-target-sentence", {
-        actor: createLeafNode("text-link", { size: "sm" }, () => (
+    const sentence = layoutNode("activity-actor-action-target-sentence", {
+        actor: renderLeaf("text-link", { size: "sm" }, () => (
             <TextLink props={{ label: props.actor ?? "", size: "sm" }} on={{ press: on?.openActor }} />
         )),
-        action: createLeafNode("text", { size: "sm" }, () => (
+        action: renderLeaf("text", { size: "sm" }, () => (
             <Text props={{ content: props.action, size: "sm" }} isLoading={isLoading} />
         )),
         ...(props.target === undefined ? {} : {
-            target: createLeafNode("text-link", { size: "sm" }, () => (
+            target: renderLeaf("text-link", { size: "sm" }, () => (
                 <TextLink props={{ label: props.target ?? "", size: "sm" }} on={{ press: on?.openTarget }} />
             )),
         }),
     })
-    const body = createGrammarNode("activity-sentence-over-reaction", {
+    const body = layoutNode("activity-sentence-over-reaction", {
         sentence,
         ...(props.reactionLabel === undefined || reactionLabels === undefined ? {} : {
-            reaction: createLeafNode("reaction-picker", {}, () => (
+            reaction: renderLeaf("reaction-picker", {}, () => (
                 <ReactionPicker props={{
                     label: props.reactionLabel ?? "",
                     count: props.reactionCount ?? 0,
@@ -58,12 +58,12 @@ export const ActivityRow = ({ props, on, isLoading = false }: ActivityRowProps) 
     })
 
     return (
-        <Grammar contract="activity-actor-body-time-row" render={createGrammarNode("activity-actor-body-time-row", {
-            avatar: createLeafNode("avatar", {}, () => (
+        <Grammar layout="activity-actor-body-time-row" render={layoutNode("activity-actor-body-time-row", {
+            avatar: renderLeaf("avatar", {}, () => (
                 <Avatar props={{ name: props.actor, src: props.avatar, size: "sm" }} isLoading={isLoading} />
             )),
             body,
-            time: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+            time: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                 <Text props={{ content: props.time, size: "xs", tone: "muted" }} isLoading={isLoading} />
             )),
         })} />
@@ -71,4 +71,3 @@ export const ActivityRow = ({ props, on, isLoading = false }: ActivityRowProps) 
 }
 
 /** Source-level tier marker for the pure activity-row composition. */
-export const meta = { shape: "composite", world: "pure" } as const

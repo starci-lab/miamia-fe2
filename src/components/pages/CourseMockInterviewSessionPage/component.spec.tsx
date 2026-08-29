@@ -35,7 +35,7 @@ describe("CourseMockInterviewSessionPageBase", () => {
         expect(answer).toHaveBeenCalledWith("New answer")
         expect(finish).toHaveBeenCalledOnce()
         expect(screen.getByText("How would you invalidate stale entries?")).toBeTruthy()
-        expect(container.querySelector("[data-node=\"course-mock-interview-session-page\"]")).toBeTruthy()
+        expect(container.querySelector(".layout-name-course-mock-interview-session-page")).toBeTruthy()
     })
     it("renders streaming abort and failed retry actions with a code workspace", () => {
         const abort = vi.fn(); const retry = vi.fn()

@@ -1,7 +1,7 @@
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
-import { Grammar } from "@/components/branches/Grammar"
-import type { ContractKey } from "@/components/contracts"
-import type { ContractComponent } from "@/components/contracts/props"
+import { Grammar } from "@/components/layouts/Grammar"
+import type { LayoutKey } from "@/resources/visual-layouts"
+import type { LayoutValue } from "@/modules/types/layout"
 
 /**
  * BRANCH - `PressableSurface`: the control around a node that opens something.
@@ -26,10 +26,10 @@ import type { ContractComponent } from "@/components/contracts/props"
 /** Which part of the surface answers a hover. */
 export type PressableSurfaceHover = "label" | "surface"
 
-/** Props for a contract-owned node wrapped in one native press target. */
-export type PressableSurfaceProps<K extends ContractKey> = {
-    readonly contract: K
-    readonly render: ContractComponent<NoInfer<K>>
+/** Props for a layout-owned node wrapped in one native press target. */
+export type PressableSurfaceProps<K extends LayoutKey> = {
+    readonly layout: K
+    readonly render: LayoutValue<NoInfer<K>>
     /** The accessible name of the destination. */
     readonly label: string
     readonly press?: () => void
@@ -65,12 +65,12 @@ const LABEL_HOVER_CLASSES = `${BASE_CLASSES} group`
 const SURFACE_HOVER_CLASSES = `${BASE_CLASSES} hover:opacity-80`
 
 /**
- * Wrap validated contract content in one press target.
+ * Wrap validated layout content in one press target.
  *
  * @param input - {@link PressableSurfaceProps}
  */
-export const PressableSurface = <const K extends ContractKey>({
-    contract,
+export const PressableSurface = <const K extends LayoutKey>({
+    layout,
     render,
     label,
     press,
@@ -89,10 +89,9 @@ export const PressableSurface = <const K extends ContractKey>({
             className={hover === "label" ? LABEL_HOVER_CLASSES : SURFACE_HOVER_CLASSES}
         >
             {isRaised
-                ? <SurfaceCard contract={contract} render={render} />
-                : <Grammar contract={contract} render={render} />}
+                ? <SurfaceCard layout={layout} render={render} />
+                : <Grammar layout={layout} render={render} />}
         </button>
     )
 
-/** Source-level tier marker for the press target that wraps a contract node. */
-export const meta = { shape: "branch", world: "pure" } as const
+/** Source-level tier marker for the press target that wraps a layout node. */

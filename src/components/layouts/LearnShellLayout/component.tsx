@@ -1,5 +1,5 @@
-import { Grammar } from "@/components/branches/Grammar"
-import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
+import { Grammar } from "@/components/layouts/Grammar"
+import { layoutNode, renderLeaf } from "@/modules/types/layout"
 import { learnSpine, type LearnSpineActions, type LearnSpineData } from "@/components/blocks/learn/LearnSpine/component"
 import { NavLink } from "@/components/leaves/NavLink"
 import type { IconName } from "@/components/leaves/Icon"
@@ -82,15 +82,15 @@ export const LearnShellLayoutBase = (input: LearnShellLayoutProps) => {
     const Surface = input.surface
     return (
         <Grammar
-            contract="learn-shell-frame"
-            render={createGrammarNode("learn-shell-frame", {
+            layout="learn-shell-frame"
+            render={layoutNode("learn-shell-frame", {
                 ...(input.props.isFullBleed ? {} : {
                     spine: learnSpine({ props: input.props.spine, on: input.on, isLoading: input.isLoading ?? false }),
                 }),
-                body: createLeafNode("page", {}, () => <Surface />),
+                body: renderLeaf("page", {}, () => <Surface />),
                 ...((input.props.mobileTabs ?? []).length === 0 ? {} : {
-                    bar: createGrammarNode("learn-mobile-tab-bar", {
-                        tab: (input.props.mobileTabs ?? []).map((tab) => createLeafNode("nav-link", { kind: "tab" }, () => (
+                    bar: layoutNode("learn-mobile-tab-bar", {
+                        tab: (input.props.mobileTabs ?? []).map((tab) => renderLeaf("nav-link", { kind: "tab" }, () => (
                             <NavLink
                                 props={{ label: tab.label, icon: tab.icon, kind: "tab", isCurrent: tab.isCurrent }}
                                 on={{ press: () => input.on?.openMobileTab?.(tab.id) }}
@@ -104,4 +104,3 @@ export const LearnShellLayoutBase = (input: LearnShellLayoutProps) => {
 }
 
 /** Source-level tier marker. */
-export const meta = { shape: "layout", world: "pure", domain: "learn" } as const

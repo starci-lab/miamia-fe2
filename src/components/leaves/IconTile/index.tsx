@@ -1,6 +1,6 @@
 import { skeletonVariants } from "@heroui/react"
 import { Icon, type IconName } from "@/components/leaves/Icon"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `IconTile`: a glyph on a filled plate, for the one mark that leads a row.
@@ -94,7 +94,7 @@ export const IconTile = ({ props, isLoading = false }: IconTileProps) => {
     const showsImage = !isLoading && props.image !== undefined && props.image !== null && props.image !== ""
     return (
         <span
-            data-tier="leaf"
+
             data-component="IconTile"
             data-tone={tone}
             data-size={size}
@@ -113,4 +113,3 @@ export const IconTile = ({ props, isLoading = false }: IconTileProps) => {
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

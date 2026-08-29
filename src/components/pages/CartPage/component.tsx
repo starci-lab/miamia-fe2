@@ -4,13 +4,13 @@ import { ConfirmButton } from "@/components/leaves/ConfirmButton"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Heading } from "@/components/leaves/Heading"
 import { Text } from "@/components/leaves/Text"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import {
-    createCompositeNode,
-    createGrammarNode,
-    createGrammarProjection,
-    createLeafNode,
-} from "@/components/contracts/props"
+    renderComposite,
+    layoutNode,
+    layoutContent,
+    renderLeaf,
+} from "@/modules/types/layout"
 import { CartLine } from "@/components/blocks/commerce/CartLine"
 import { type CartLineData } from "@/components/blocks/commerce/CartLine/component"
 import { OrderSummaryBase, type OrderSummaryLabels } from "@/components/blocks/commerce/OrderSummary/component"
@@ -127,8 +127,8 @@ export const CartPageBase = (input: CartPageProps) => {
     )
     const lines = isLoading ? restingLines : input.props.lines ?? []
 
-    const header = createGrammarNode("page-header-stack", {
-        trail: createLeafNode("breadcrumbs", {}, () => (
+    const header = layoutNode("page-header-stack", {
+        trail: renderLeaf("breadcrumbs", {}, () => (
             <Breadcrumbs
                 props={{
                     label: labels.title,
@@ -140,18 +140,18 @@ export const CartPageBase = (input: CartPageProps) => {
                 on={{ home: input.on?.goHome }}
             />
         )),
-        title: createLeafNode("heading", {}, () => (
+        title: renderLeaf("heading", {}, () => (
             <Heading props={{ content: labels.title, level: 1 }} />
         )),
     })
 
-    const lineList = createGrammarNode("cart-line-list", {
-        line: lines.map((line) => createGrammarProjection("cart-line-row", () => (
+    const lineList = layoutNode("cart-line-list", {
+        line: lines.map((line) => layoutContent("cart-line-row", () => (
             <CartLine state={isLoading ? "pending" : "ready"} line={line} />
         ))),
     })
 
-    const summary = createGrammarProjection("order-summary-stack", () => (
+    const summary = layoutContent("order-summary-stack", () => (
         <OrderSummaryBase
             state={deriveSummaryState(isLoading, input.props.hasPricingFailed === true)}
             props={{
@@ -165,8 +165,8 @@ export const CartPageBase = (input: CartPageProps) => {
 
     return (
         <Grammar
-            contract="cart-page-column"
-            render={createGrammarNode("cart-page-column", {
+            layout="cart-page-column"
+            render={layoutNode("cart-page-column", {
                 header,
                 ...(showsNotice ? {} : { lines: lineList }),
                 ...(showsNotice ? {} : { summary }),
@@ -175,14 +175,14 @@ export const CartPageBase = (input: CartPageProps) => {
                 // naming a figure the summary beside it cannot show is the page disagreeing with
                 // itself.
                 ...(showsNotice || isLoading || input.props.hasPricingFailed === true ? {} : {
-                    hint: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+                    hint: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                         <Text props={{ content: labels.installmentHint, size: "sm", tone: "muted" }} />
                     )),
                 }),
                 ...(showsNotice ? {} : {
-                    actions: createGrammarNode("stacked-peer-controls", {
+                    actions: layoutNode("stacked-peer-controls", {
                         control: [
-                            createLeafNode("button", {}, () => (
+                            renderLeaf("button", {}, () => (
                                 <Button
                                     props={{ label: labels.checkout, variant: "primary", disabled: isLoading }}
                                     on={{ press: input.on?.checkout }}
@@ -194,7 +194,7 @@ export const CartPageBase = (input: CartPageProps) => {
                             // destructive action needs confirmation. Undoing this one means
                             // re-adding every course by hand, and it sits directly beneath the
                             // press the reader actually came for.
-                            createLeafNode("confirm-button", {}, () => (
+                            renderLeaf("confirm-button", {}, () => (
                                 <ConfirmButton
                                     props={{
                                         label: labels.clearAll,
@@ -208,7 +208,7 @@ export const CartPageBase = (input: CartPageProps) => {
                     }),
                 }),
                 ...(showsNotice ? {
-                    notice: createCompositeNode("empty-notice", {}, () => (
+                    notice: renderComposite("empty-notice", {}, () => (
                         <EmptyNotice
                             props={{
                                 icon: "cart",
@@ -231,4 +231,3 @@ export const CartPageBase = (input: CartPageProps) => {
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "pure", domain: "commerce" } as const

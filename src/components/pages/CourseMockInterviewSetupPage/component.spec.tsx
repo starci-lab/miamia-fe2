@@ -24,6 +24,6 @@ describe("CourseMockInterviewSetupPageBase", () => {
         fireEvent.click(screen.getByText("Resume interview"))
         expect(resume).toHaveBeenCalledOnce()
         expect(screen.getByText("Session available")).toBeTruthy()
-        expect(container.querySelector("[data-node=\"course-mock-interview-setup-page\"]")).toBeTruthy()
+        expect(container.querySelector(".layout-name-course-mock-interview-setup-page")).toBeTruthy()
     })
 })

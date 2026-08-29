@@ -1,5 +1,5 @@
 import { SurfaceListCard, type SurfaceListCardData } from "@/components/branches/SurfaceListCard"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Podium, type PodiumEntryData } from "@/components/composites/Podium"
 import { RankedUserRow, type RankedUserRowData } from "@/components/composites/RankedUserRow"
@@ -9,12 +9,12 @@ import { ChoiceTabs } from "@/components/leaves/ChoiceTabs"
 import { Heading } from "@/components/leaves/Heading"
 import { Text } from "@/components/leaves/Text"
 import {
-    createGrammarNode,
-    createGrammarProjection,
-    createLeafNode,
+    layoutNode,
+    layoutContent,
+    renderLeaf,
     type BlockProps,
     type ComponentProps,
-} from "@/components/contracts/props"
+} from "@/modules/types/layout"
 
 /** The four backend-derived score lenses supported by the course board. */
 export type CourseLeaderboardCategory = "total" | "challenge" | "reading" | "milestone"
@@ -75,12 +75,12 @@ type CourseLeaderboardListData = SurfaceListCardData & {
 }
 
 const CourseLeaderboardList = ({ props, isLoading = false }: ComponentProps<CourseLeaderboardListData>) => (
-    <Grammar contract="ranked-user-list" render={createGrammarProjection("ranked-user-list", () => (
+    <Grammar layout="ranked-user-list" render={layoutContent("ranked-user-list", () => (
         <>
             {props.rows.map((row) => <RankedUserRow key={row.id} props={row} isLoading={isLoading} />)}
             {props.ellipsisLabel === undefined ? null : (
-                <Grammar contract="ranked-user-ellipsis-row" render={createGrammarNode("ranked-user-ellipsis-row", {
-                    label: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+                <Grammar layout="ranked-user-ellipsis-row" render={layoutNode("ranked-user-ellipsis-row", {
+                    label: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                         <Text props={{ content: props.ellipsisLabel, size: "xs", tone: "muted" }} />
                     )),
                 })} />
@@ -90,20 +90,20 @@ const CourseLeaderboardList = ({ props, isLoading = false }: ComponentProps<Cour
     ))} />
 )
 
-const CourseLeaderboardListContent = createGrammarNode("ranked-user-list", CourseLeaderboardList)
+const CourseLeaderboardListContent = layoutNode("ranked-user-list", CourseLeaderboardList)
 
 /** Pure course leaderboard with category, viewer standing, snapshot time and honest data states. */
 export const CourseLeaderboardPageBase = (input: CourseLeaderboardPageProps) => {
     const isLoading = input.state === "pending"
     const board = input.props.board
-    const header = createGrammarNode("page-header-stack", {
-        trail: createLeafNode("breadcrumbs", {}, () => (
+    const header = layoutNode("page-header-stack", {
+        trail: renderLeaf("breadcrumbs", {}, () => (
             <Breadcrumbs props={{ steps: input.props.trail, label: input.props.title }} on={{ course: input.on?.course }} />
         )),
-        title: createLeafNode("heading", {}, () => <Heading props={{ content: input.props.title, level: 1 }} />),
+        title: renderLeaf("heading", {}, () => <Heading props={{ content: input.props.title, level: 1 }} />),
     })
-    const category = createGrammarNode("scope-switch-row", {
-        tabs: createLeafNode("choice-tabs", {}, () => (
+    const category = layoutNode("scope-switch-row", {
+        tabs: renderLeaf("choice-tabs", {}, () => (
             <ChoiceTabs
                 props={{
                     label: input.props.categoryLabel,
@@ -118,10 +118,10 @@ export const CourseLeaderboardPageBase = (input: CourseLeaderboardPageProps) => 
 
     if (input.state === "empty" || input.state === "failed") {
         return (
-            <Grammar contract="league-page-column" render={createGrammarNode("league-page-column", {
+            <Grammar layout="league-page-column" render={layoutNode("league-page-column", {
                 header,
                 scope: category,
-                board: createGrammarProjection("league-board-stack", () => (
+                board: layoutContent("league-board-stack", () => (
                     <EmptyNotice
                         props={{
                             icon: "league",
@@ -136,11 +136,11 @@ export const CourseLeaderboardPageBase = (input: CourseLeaderboardPageProps) => 
     }
 
     return (
-        <Grammar contract="league-page-column" render={createGrammarNode("league-page-column", {
+        <Grammar layout="league-page-column" render={layoutNode("league-page-column", {
             header,
             scope: category,
-            board: createGrammarNode("league-board-stack", {
-                hero: createGrammarProjection("standing-hero-card", () => (
+            board: layoutNode("league-board-stack", {
+                hero: layoutContent("standing-hero-card", () => (
                     <StandingHeroCard
                         props={{
                             standing: board.standing,
@@ -151,7 +151,7 @@ export const CourseLeaderboardPageBase = (input: CourseLeaderboardPageProps) => 
                         isLoading={isLoading}
                     />
                 )),
-                podium: createGrammarProjection("podium", () => (
+                podium: layoutContent("podium", () => (
                     <Podium
                         props={{
                             entries: board.podium,
@@ -161,9 +161,9 @@ export const CourseLeaderboardPageBase = (input: CourseLeaderboardPageProps) => 
                         isLoading={isLoading}
                     />
                 )),
-                list: createGrammarProjection("ranked-user-followable-list", () => (
+                list: layoutContent("ranked-user-followable-list", () => (
                     <SurfaceListCard
-                        contract="ranked-user-list"
+                        layout="ranked-user-list"
                         render={CourseLeaderboardListContent}
                         props={{
                             label: input.props.listLabel,
@@ -181,4 +181,3 @@ export const CourseLeaderboardPageBase = (input: CourseLeaderboardPageProps) => 
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "pure", domain: "learn" } as const

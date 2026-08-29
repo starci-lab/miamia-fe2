@@ -1,6 +1,6 @@
 import { skeletonVariants } from "@heroui/react"
 import { Icon, type IconName } from "@/components/leaves/Icon"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `Text`: one line of resolved copy, at one of two weights of attention.
@@ -138,7 +138,7 @@ export const Text = ({ props, isLoading = false }: TextProps) => {
     return (
         <div
             id={props.id}
-            data-tier="leaf"
+
             data-component="Text"
             data-tone={tone}
             data-size={size}
@@ -159,4 +159,3 @@ export const Text = ({ props, isLoading = false }: TextProps) => {
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

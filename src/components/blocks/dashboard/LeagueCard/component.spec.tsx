@@ -35,11 +35,11 @@ describe("LeagueCardBase", () => {
             "data-surface-context",
             "nested",
         )
-        expect(container.querySelectorAll("[data-node=\"ranked-user-row-success-verdict\"]")).toHaveLength(1)
+        expect(container.querySelectorAll(".layout-name-ranked-user-row-success-verdict")).toHaveLength(1)
     })
 
     it("preserves five ranked rows while loading", () => {
         const { container } = render(<LeagueCardBase state="pending" props={{ ...frame, rows: [] }} />)
-        expect(container.querySelectorAll("[data-node^=\"ranked-user-row\"]")).toHaveLength(5)
+        expect(container.querySelectorAll("[class*=\"layout-name-ranked-user-row\"]")).toHaveLength(5)
     })
 })

@@ -1,20 +1,20 @@
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
 import { SurfaceListCard, type SurfaceListCardData } from "@/components/branches/SurfaceListCard"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Avatar } from "@/components/leaves/Avatar"
 import { Badge } from "@/components/leaves/Badge"
 import { Button } from "@/components/leaves/Button"
 import { Icon } from "@/components/leaves/Icon"
 import { Text } from "@/components/leaves/Text"
-import { CONTRACTS } from "@/components/contracts"
+import { LAYOUTS } from "@/resources/visual-layouts"
 import {
-    createCompositeNode,
-    createGrammarNode,
-    createGrammarProjection,
-    createLeafNode,
+    renderComposite,
+    layoutNode,
+    layoutContent,
+    renderLeaf,
     type ComponentProps,
-} from "@/components/contracts/props"
+} from "@/modules/types/layout"
 
 /** One learner shown in the weekly challenge's compact finisher list. */
 export type WeeklyChallengeFinisher = {
@@ -53,7 +53,7 @@ export type WeeklyChallengeCardProps = {
     readonly on?: WeeklyChallengeCardActions
 }
 
-const FINISHER_COUNT = CONTRACTS["weekly-challenge-finishers"].children.finisher.restingCount
+const FINISHER_COUNT = LAYOUTS["weekly-challenge-finishers"].children.finisher.restingCount
 type FinisherRowProps = ComponentProps<WeeklyChallengeFinisher>
 
 type WeeklyChallengeFinisherListData = SurfaceListCardData & {
@@ -62,24 +62,24 @@ type WeeklyChallengeFinisherListData = SurfaceListCardData & {
 
 /** Draw only the repeated rows; SurfaceListCard owns their shared bounded surface. */
 const WeeklyChallengeFinisherListContent = ({ props, isLoading = false }: ComponentProps<WeeklyChallengeFinisherListData>) => (
-    <Grammar contract="weekly-challenge-finishers" render={createGrammarNode("weekly-challenge-finishers", {
-        finisher: props.finishers.map((finisher) => createCompositeNode("weekly-challenge-finisher-row", {}, () => (
+    <Grammar layout="weekly-challenge-finishers" render={layoutNode("weekly-challenge-finishers", {
+        finisher: props.finishers.map((finisher) => renderComposite("weekly-challenge-finisher-row", {}, () => (
             <WeeklyChallengeFinisherRow props={finisher} isLoading={isLoading} />
         ))),
     })} />
 )
 
-const WeeklyChallengeFinisherList = createGrammarNode(
+const WeeklyChallengeFinisherList = layoutNode(
     "weekly-challenge-finishers",
     WeeklyChallengeFinisherListContent,
 )
 
 /** Legacy row: avatar, username and relative time. It is not a feature StatRow. */
 const WeeklyChallengeFinisherRow = ({ props, isLoading = false }: FinisherRowProps) => (
-    <Grammar contract="weekly-challenge-finisher-row" render={createGrammarNode("weekly-challenge-finisher-row", {
-        avatar: createLeafNode("avatar", {}, () => <Avatar props={{ name: props.label, size: "sm" }} isLoading={isLoading} />),
-        name: createLeafNode("text", {}, () => <Text props={{ content: props.label, size: "sm" }} isLoading={isLoading} />),
-        passedAt: createLeafNode("text", { size: "xs", tone: "muted" }, () => <Text props={{ content: props.passedAtLabel, size: "xs", tone: "muted" }} isLoading={isLoading} />),
+    <Grammar layout="weekly-challenge-finisher-row" render={layoutNode("weekly-challenge-finisher-row", {
+        avatar: renderLeaf("avatar", {}, () => <Avatar props={{ name: props.label, size: "sm" }} isLoading={isLoading} />),
+        name: renderLeaf("text", {}, () => <Text props={{ content: props.label, size: "sm" }} isLoading={isLoading} />),
+        passedAt: renderLeaf("text", { size: "xs", tone: "muted" }, () => <Text props={{ content: props.passedAtLabel, size: "xs", tone: "muted" }} isLoading={isLoading} />),
     })} />
 )
 
@@ -91,9 +91,9 @@ export const WeeklyChallengeCardBase = (input: WeeklyChallengeCardProps) => {
         return (
             <SurfaceCard
                 props={{ label: input.props.label }}
-                contract="empty-notice-card"
-                render={createGrammarNode("empty-notice-card", {
-                    notice: createCompositeNode("empty-notice", {}, () => (
+                layout="empty-notice-card"
+                render={layoutNode("empty-notice-card", {
+                    notice: renderComposite("empty-notice", {}, () => (
                         <EmptyNotice
                             props={{
                                 icon: "practice",
@@ -112,35 +112,35 @@ export const WeeklyChallengeCardBase = (input: WeeklyChallengeCardProps) => {
         ? Array.from({ length: FINISHER_COUNT }, (_unused, index) => ({ id: `resting-${index + 1}`, label: "", passedAtLabel: "" }))
         : (input.props.finishers ?? [])
 
-    const title = createCompositeNode("weekly-challenge-title", {}, () => (
-        <Grammar contract="weekly-challenge-title" render={createGrammarNode("weekly-challenge-title", {
-            ...(isLoading ? {} : { glyph: createLeafNode("icon", {}, () => <Icon props={{ name: "practice", role: "leading" }} />) }),
-            title: createLeafNode("text", {}, () => <Text props={{ content: input.props.title, size: "sm" }} isLoading={isLoading} />),
+    const title = renderComposite("weekly-challenge-title", {}, () => (
+        <Grammar layout="weekly-challenge-title" render={layoutNode("weekly-challenge-title", {
+            ...(isLoading ? {} : { glyph: renderLeaf("icon", {}, () => <Icon props={{ name: "practice", role: "leading" }} />) }),
+            title: renderLeaf("text", {}, () => <Text props={{ content: input.props.title, size: "sm" }} isLoading={isLoading} />),
         })} />
     ))
     const renderAction = () => {
         if (isLoading) {
-            return createLeafNode("button", {}, () => <Button props={{ label: input.props.actionLabel ?? "", size: "sm", variant: "primary" }} isLoading />)
+            return renderLeaf("button", {}, () => <Button props={{ label: input.props.actionLabel ?? "", size: "sm", variant: "primary" }} isLoading />)
         }
         if (input.props.claimed === true) {
-            return createLeafNode("badge", {}, () => <Badge props={{ content: input.props.claimedLabel ?? "", tone: "success" }} />)
+            return renderLeaf("badge", {}, () => <Badge props={{ content: input.props.claimedLabel ?? "", tone: "success" }} />)
         }
-        return createLeafNode("button", {}, () => <Button
+        return renderLeaf("button", {}, () => <Button
             props={{ label: input.props.actionLabel ?? "", size: "sm", variant: "primary", isPending: input.props.isClaiming === true }}
             on={{ press: input.on?.act }}
         />)
     }
-    const status = createCompositeNode("weekly-challenge-status", {}, () => (
-        <Grammar contract="weekly-challenge-status" render={createGrammarNode("weekly-challenge-status", {
-            endsIn: createLeafNode("text", { size: "xs", tone: "muted" }, () => <Text props={{ content: input.props.endsInLabel, size: "xs", tone: "muted" }} isLoading={isLoading} />),
+    const status = renderComposite("weekly-challenge-status", {}, () => (
+        <Grammar layout="weekly-challenge-status" render={layoutNode("weekly-challenge-status", {
+            endsIn: renderLeaf("text", { size: "xs", tone: "muted" }, () => <Text props={{ content: input.props.endsInLabel, size: "xs", tone: "muted" }} isLoading={isLoading} />),
             action: renderAction(),
         })} />
     ))
-    const finisherList = finishers.length === 0 ? undefined : createGrammarProjection(
+    const finisherList = finishers.length === 0 ? undefined : layoutContent(
         "weekly-challenge-finishers",
         () => (
             <SurfaceListCard
-                contract="weekly-challenge-finishers"
+                layout="weekly-challenge-finishers"
                 render={WeeklyChallengeFinisherList}
                 props={{
                     label: input.props.passedCountLabel ?? "",
@@ -155,13 +155,13 @@ export const WeeklyChallengeCardBase = (input: WeeklyChallengeCardProps) => {
     return (
         <SurfaceCard
             props={{ label: input.props.label }}
-            contract="weekly-challenge-card"
+            layout="weekly-challenge-card"
             isLoading={isLoading}
-            render={createGrammarNode("weekly-challenge-card", {
+            render={layoutNode("weekly-challenge-card", {
                 title,
                 status,
                 ...(finisherList === undefined ? {
-                    passed: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+                    passed: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                         <Text props={{ content: input.props.passedCountLabel, size: "xs", tone: "muted" }} isLoading={isLoading} />
                     )),
                 } : {}),
@@ -172,4 +172,3 @@ export const WeeklyChallengeCardBase = (input: WeeklyChallengeCardProps) => {
 }
 
 /** Source-level tier marker for the pure dashboard block. */
-export const meta = { world: "pure", domain: "dashboard" } as const

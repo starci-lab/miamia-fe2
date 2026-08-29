@@ -1,16 +1,16 @@
-import { CLASS_NAME_1, CLASS_NAME_2 } from './styles'
+import { CLASS_NAME_1 } from "./classNames"
 import { Card } from "@heroui/react"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { Heading } from "@/components/leaves/Heading"
 import { Text } from "@/components/leaves/Text"
 import { SeeMoreLink } from "@/components/leaves/SeeMoreLink"
-import type { ContractKey } from "@/components/contracts"
+import type { LayoutKey } from "@/resources/visual-layouts"
 import {
-    createGrammarNode,
-    createGrammarProjection,
-    createLeafNode,
-    type ContractBranchProps,
-} from "@/components/contracts/props"
+    layoutNode,
+    layoutContent,
+    renderLeaf,
+    type BranchProps,
+} from "@/modules/types/layout"
 
 /**
  * BRANCH - `SurfaceCard`: a named section, and the surface its content sits on.
@@ -21,18 +21,18 @@ import {
  * the label above means `frameless` can drop the inner surface without the label going with it.
  *
  * THIS IS WHY BRANCHES EXIST. `Grammar` draws ONE node; a section is three - the column, the label
- * line, the surface - and nothing in the registry stacks nodes. Assembly is a branch's whole job.
+ * line, the surface - and nothing in the catalog stacks nodes. Assembly is a branch's whole job.
  *
  * WHAT IT MAY CONTAIN, AND NOTHING ELSE: `Grammar`, leaves, other branches. Every class that decides
- * a SHAPE comes from a registry entry; the only class written here is the zero inset that empties
+ * a SHAPE comes from a catalog entry; the only class written here is the zero inset that empties
  * the vendor body, which cannot vary by caller and decides nothing about what is inside. That
- * single sentence is what stops a branch quietly becoming a second registry.
+ * single sentence is what stops a branch quietly becoming a second catalog.
  *
- * THE ENTRY'S NODE IS RENDERED, NOT IMITATED. Spreading `contractNodeProps` onto `Card.Content`
+ * THE ENTRY'S NODE IS RENDERED, NOT IMITATED. Spreading `layoutNodeProps` onto `Card.Content`
  * copied an entry's classes and markers onto a vendor element and dropped the one thing that
  * element could not carry: the `host`. An entry declaring `host: "ol"` came out a `div`, so the
- * list left the accessibility Grammar while every marker still claimed the contract was honoured -
- * and nothing reported it, because the classes and the `data-node` all looked right. The frame is
+ * list left the accessibility Grammar while every marker still claimed the layout was honoured -
+ * and nothing reported it, because the old structural marker looked right. The frame is
  * the only thing that turns a key into an element, so the frame draws it, inside a vendor body
  * emptied of its own inset. The entry owns the inset now, the way a joined list already did.
  *
@@ -41,7 +41,7 @@ import {
  * where each other would, is how a reader presses the count.
  *
  * `level` IS DECIDED HERE, ONCE. Three blocks each choosing a heading level by hand is how one of
- * them ends up different; the branch is the single place, now that contracts hold only classes.
+ * them ends up different; the branch is the single place, now that layouts hold only classes.
  */
 
 /** What this branch draws. A `type`, not an `interface` - only an alias satisfies the data fence. */
@@ -82,7 +82,7 @@ export type SurfaceCardActions = {
 }
 
 /** Props for {@link SurfaceCard}. Fixed slots plus what it assembles - see {@link BranchProps}. */
-export type SurfaceCardProps<K extends ContractKey> = ContractBranchProps<K> & {
+export type SurfaceCardProps<K extends LayoutKey> = BranchProps<K> & {
     /** Absent altogether when the object names itself: then this draws the ground and nothing else. */
     readonly props?: SurfaceCardData
     readonly on?: SurfaceCardActions
@@ -106,10 +106,10 @@ const deriveEnd = (
  *
  * @param input - {@link SurfaceCardProps}
  */
-export const SurfaceCard = <const K extends ContractKey>({
+export const SurfaceCard = <const K extends LayoutKey>({
     props = {},
     on,
-    contract,
+    layout,
     render,
     isLoading = false,
 }: SurfaceCardProps<K>) => {
@@ -117,25 +117,25 @@ export const SurfaceCard = <const K extends ContractKey>({
     const hasSeeMore = props.seeMoreLabel !== undefined && on?.seeMore !== undefined
     const end = deriveEnd(hasSeeMore, props.seeMoreLabel, on?.seeMore, props.fact, isLoading)
 
-    const labelContract = !hasSeeMore && props.fact !== undefined
+    const labelLayout = !hasSeeMore && props.fact !== undefined
         ? "title-with-baseline-fact"
         : "title-with-end-action"
-    const title = createLeafNode("heading", {}, () => (
+    const title = renderLeaf("heading", {}, () => (
         <Heading props={{ content: props.label, level: 3 }} />
     ))
-    const labelRow = labelContract === "title-with-baseline-fact"
-        ? createGrammarNode("title-with-baseline-fact", {
+    const labelRow = labelLayout === "title-with-baseline-fact"
+        ? layoutNode("title-with-baseline-fact", {
             title,
-            fact: createLeafNode("text", { size: "sm", tone: "muted" }, () => end),
+            fact: renderLeaf("text", { size: "sm", tone: "muted" }, () => end),
         })
-        : createGrammarNode("title-with-end-action", {
+        : layoutNode("title-with-end-action", {
             title,
             ...(hasSeeMore ? {
-                end: createLeafNode("see-more-link", {}, () => end),
+                end: renderLeaf("see-more-link", {}, () => end),
             } : {}),
         })
     const surface = props.isFrameless === true ? (
-        <Grammar contract={contract} render={render} />
+        <Grammar layout={layout} render={render} />
     ) : (
         /*
          * THE MARKER IS WHAT ZEROES THE VENDOR INSET, not the class beside it.
@@ -148,7 +148,7 @@ export const SurfaceCard = <const K extends ContractKey>({
          */
         <Card className={CLASS_NAME_1} data-component="SurfaceCardSurface">
             <Card.Content className={CLASS_NAME_1} data-component="SurfaceCardBody">
-                <Grammar contract={contract} render={render} />
+                <Grammar layout={layout} render={render} />
             </Card.Content>
         </Card>
     )
@@ -159,20 +159,19 @@ export const SurfaceCard = <const K extends ContractKey>({
 
     return (
         <Grammar
-            contract="label-row-over-card"
-            render={createGrammarNode("label-row-over-card", {
+            layout="label-row-over-card"
+            render={layoutNode("label-row-over-card", {
                 label: labelRow,
                 /*
                  * The surface is ALREADY a whole node - vendor card, body and the caller's own
-                 * contract inside it - so it enters the section as a projection. Handing the
+                 * layout inside it - so it enters the section as a projection. Handing the
                  * caller's key back as slots would open a second node around a node that is
                  * already drawn, which is the duplicate wrapper this branch was inset twice by.
                  */
-                body: createGrammarProjection(contract, () => surface),
+                body: layoutContent(layout, () => surface),
             })}
         />
     )
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "branch", contract: "label-row-over-card", world: "pure" } as const

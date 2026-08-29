@@ -1,5 +1,5 @@
 import { Link as HeroLink } from "@heroui/react"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `TextLink`: words that change what is on screen without going anywhere.
@@ -54,7 +54,7 @@ const SELECTED_CLASSES = "bg-accent-soft text-accent-soft-foreground"
  */
 export const TextLink = ({ props, on }: TextLinkProps) => (
     <HeroLink
-        data-tier="leaf"
+
         data-component="TextLink"
         data-size={props.size ?? "md"}
         data-selected={props.isSelected}
@@ -67,4 +67,3 @@ export const TextLink = ({ props, on }: TextLinkProps) => (
 )
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

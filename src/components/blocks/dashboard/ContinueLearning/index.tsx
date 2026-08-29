@@ -102,4 +102,3 @@ export const ContinueLearning = () => {
 }
 
 /** Source-level world marker for the connected dashboard block. */
-export const meta = { world: "connected", domain: "dashboard" } as const

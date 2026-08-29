@@ -34,7 +34,7 @@ describe("TopLearnersBase", () => {
 
     it("preserves five ranked rows while loading", () => {
         const { container } = render(<TopLearnersBase state="pending" props={{ ...frame, rows: [] }} />)
-        expect(container.querySelectorAll("[data-node^=\"ranked-user-row\"]")).toHaveLength(5)
+        expect(container.querySelectorAll("[class*=\"layout-name-ranked-user-row\"]")).toHaveLength(5)
     })
 
     it("offers the request again on failure, and nothing to press on a settled empty board", () => {
@@ -56,7 +56,7 @@ describe("TopLearnersBase", () => {
         // without resolving the sentence for it. The card must draw nothing, never "undefined".
         const bare = { label: "Top learners", standing: frame.standing, rows: [] }
         const empty = render(<TopLearnersBase state="empty" props={bare} />)
-        expect(empty.container.querySelector("[data-node=\"empty-notice-stack\"]")).toBeInTheDocument()
+        expect(empty.container.querySelector(".layout-name-empty-notice-stack")).toBeInTheDocument()
         expect(empty.queryByText("undefined")).toBeNull()
         cleanup()
 

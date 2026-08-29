@@ -1,9 +1,9 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { LearnerProgressSnapshot, type LearnerProgressSnapshotProps } from "@/components/blocks/profile/learner/LearnerProgressSnapshot/component"
 import { LearnerWrappedSummary, type LearnerWrappedSummaryProps } from "@/components/blocks/profile/learner/LearnerWrappedSummary/component"
 import { ProfileViewSwitch, type ProfileView } from "@/components/blocks/profile/learner/ProfileViewSwitch/component"
-import { createCompositeNode, createGrammarNode, createGrammarProjection, createLeafNode } from "@/components/contracts/props"
+import { renderComposite, layoutNode, layoutContent, renderLeaf } from "@/modules/types/layout"
 
 /** Audience, evidence and actions consumed by the pure learner overview page. */
 export type ProfileOverviewPageProps = {
@@ -23,14 +23,14 @@ export type ProfileOverviewPageProps = {
 export const ProfileOverviewPageBase = (input: ProfileOverviewPageProps) => {
     const privateView = input.state === "owner" && input.props.selectedView === "private"
     return (
-        <Grammar contract="learner-profile-overview" render={createGrammarNode("learner-profile-overview", {
-            ...(input.state === "owner" ? { view: createLeafNode("choice-tabs", {}, () => <ProfileViewSwitch props={{ ...input.props.switchLabels, selectedView: input.props.selectedView }} on={{ select: input.on?.selectView }} />) } : {}),
+        <Grammar layout="learner-profile-overview" render={layoutNode("learner-profile-overview", {
+            ...(input.state === "owner" ? { view: renderLeaf("choice-tabs", {}, () => <ProfileViewSwitch props={{ ...input.props.switchLabels, selectedView: input.props.selectedView }} on={{ select: input.on?.selectView }} />) } : {}),
             ...(privateView ? {
-                progress: createGrammarProjection("learner-progress-snapshot", () => <LearnerProgressSnapshot {...input.props.progress} on={{ retry: input.on?.retryProgress }} />),
-                wrapped: createGrammarProjection("learner-wrapped-summary", () => <LearnerWrappedSummary {...input.props.wrapped} on={{ action: input.on?.openWrapped }} />),
+                progress: layoutContent("learner-progress-snapshot", () => <LearnerProgressSnapshot {...input.props.progress} on={{ retry: input.on?.retryProgress }} />),
+                wrapped: layoutContent("learner-wrapped-summary", () => <LearnerWrappedSummary {...input.props.wrapped} on={{ action: input.on?.openWrapped }} />),
             } : {
-                public: createGrammarProjection("centred-empty-notice", () => (
-                    <Grammar contract="centred-empty-notice" render={createGrammarNode("centred-empty-notice", { notice: createCompositeNode("empty-notice", {}, () => <EmptyNotice props={{ message: input.props.publicMessage, description: input.props.publicDescription }} />) })} />
+                public: layoutContent("centred-empty-notice", () => (
+                    <Grammar layout="centred-empty-notice" render={layoutNode("centred-empty-notice", { notice: renderComposite("empty-notice", {}, () => <EmptyNotice props={{ message: input.props.publicMessage, description: input.props.publicDescription }} />) })} />
                 )),
             }),
         })} />
@@ -38,4 +38,3 @@ export const ProfileOverviewPageBase = (input: ProfileOverviewPageProps) => {
 }
 
 /** Source-level page marker. */
-export const meta = { world: "pure", domain: "profile" } as const

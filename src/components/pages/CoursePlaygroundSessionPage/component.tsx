@@ -1,4 +1,4 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Article } from "@/components/leaves/Article"
 import { Button } from "@/components/leaves/Button"
@@ -6,7 +6,7 @@ import { CodeBlock } from "@/components/leaves/CodeBlock"
 import { Heading } from "@/components/leaves/Heading"
 import { NavLink } from "@/components/leaves/NavLink"
 import { Text } from "@/components/leaves/Text"
-import { createCompositeNode, createGrammarNode, createLeafNode } from "@/components/contracts/props"
+import { renderComposite, layoutNode, renderLeaf } from "@/modules/types/layout"
 import type { PlaygroundStep } from "@/modules/api/graphql/queries/query-playground"
 
 /** Live relay states exposed by the pure playground workspace. */
@@ -45,7 +45,7 @@ export const CoursePlaygroundSessionPageBase = (input: CoursePlaygroundSessionPa
     const actionHint = current?.actionHint ?? undefined
     const settled = input.state === "failed" || input.state === "completed"
     const notice = settled
-        ? createCompositeNode("empty-notice", {}, () => (
+        ? renderComposite("empty-notice", {}, () => (
             <EmptyNotice
                 props={{
                     message: input.state === "completed" ? input.props.completedTitle : input.props.failedText,
@@ -58,21 +58,21 @@ export const CoursePlaygroundSessionPageBase = (input: CoursePlaygroundSessionPa
         : undefined
 
     return (
-        <Grammar contract="course-playground-session-page" render={createGrammarNode("course-playground-session-page", {
-            leave: createLeafNode("button", {}, () => (
+        <Grammar layout="course-playground-session-page" render={layoutNode("course-playground-session-page", {
+            leave: renderLeaf("button", {}, () => (
                 <Button props={{ label: input.props.leaveLabel, variant: "ghost" }} on={{ press: input.on.leave }} />
             )),
-            connection: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+            connection: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                 <Text props={{ content: input.props.connectionText, size: "xs", tone: "muted", live: "polite" }} />
             )),
-            title: createLeafNode("heading", {}, () => (
+            title: renderLeaf("heading", {}, () => (
                 <Heading props={{ content: current?.title ?? input.props.title, level: 1 }} />
             )),
             step: input.props.steps.map((step, index) => {
                 const passed = input.props.passedStepIndexes.includes(index)
                 const available = passed || index <= Math.max(0, input.props.passedStepIndexes.length)
                 const status = passed ? `${input.props.passedLabel} · ` : ""
-                return createLeafNode("nav-link", { kind: "section" }, () => (
+                return renderLeaf("nav-link", { kind: "section" }, () => (
                     <NavLink
                         props={{
                             label: `${input.props.stepLabel} ${index + 1} · ${status}${step.title}`,
@@ -84,21 +84,21 @@ export const CoursePlaygroundSessionPageBase = (input: CoursePlaygroundSessionPa
                 ))
             }),
             ...(!settled ? {
-                body: createLeafNode("article", {}, () => (
+                body: renderLeaf("article", {}, () => (
                     <Article props={{ body: current?.body }} />
                 )),
                 ...(commandHint === undefined ? {} : {
-                    command: createLeafNode("code-block", {}, () => (
+                    command: renderLeaf("code-block", {}, () => (
                         <CodeBlock props={{ code: commandHint }} />
                     )),
                 }),
                 ...(actionHint === undefined ? {} : {
-                    hint: createLeafNode("text", { size: "sm" }, () => (
+                    hint: renderLeaf("text", { size: "sm" }, () => (
                         <Text props={{ content: actionHint, size: "sm" }} />
                     )),
                 }),
                 ...(input.state !== "live" || current === undefined || input.props.passedStepIndexes.includes(input.props.selectedStepIndex) ? {} : {
-                    submit: createLeafNode("button", {}, () => (
+                    submit: renderLeaf("button", {}, () => (
                         <Button props={{ label: input.props.submitLabel, variant: "primary" }} on={{ press: input.on.submit }} />
                     )),
                 }),
@@ -109,4 +109,3 @@ export const CoursePlaygroundSessionPageBase = (input: CoursePlaygroundSessionPa
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "pure", domain: "learn" } as const

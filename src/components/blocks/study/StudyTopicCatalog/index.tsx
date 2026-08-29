@@ -78,4 +78,3 @@ export const StudyTopicCatalog = ({ onOpenTopic }: StudyTopicCatalogConnectedPro
     )
 }
 /** Declares the connected Study catalogue block. */
-export const meta = { shape: "block", world: "connected", domain: "study" } as const

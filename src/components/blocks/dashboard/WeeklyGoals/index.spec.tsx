@@ -34,7 +34,7 @@ describe("WeeklyGoals", () => {
         } as never)
 
         const { container } = render(<WeeklyGoals />)
-        const rows = container.querySelectorAll("[data-node=\"label-fact-over-progress\"]")
+        const rows = container.querySelectorAll(".layout-name-label-fact-over-progress")
         expect(rows).toHaveLength(6)
         expect(Array.from(rows, (row) => row.textContent)).toEqual([
             "labels.lessons0/5",

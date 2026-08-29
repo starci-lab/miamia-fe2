@@ -13,4 +13,3 @@ export const StudyTopicPage = ({ slug }: StudyTopicPageConnectedProps) => {
     return <StudyTopicPageView surface={Surface} />
 }
 /** Declares the connected Study topic page. */
-export const meta = { shape: "page", world: "connected", domain: "study" } as const

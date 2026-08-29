@@ -1,8 +1,8 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import {
-    createGrammarNode,
-    createGrammarProjection,
-} from "@/components/contracts/props"
+    layoutNode,
+    layoutContent,
+} from "@/modules/types/layout"
 import {
     JudgeStatusStripBase,
     type JudgeStatusStripData,
@@ -79,24 +79,24 @@ export type CodingProblemPageProps = {
  */
 export const CodingProblemPageBase = (input: CodingProblemPageProps) => (
     <Grammar
-        contract="coding-problem-page"
-        render={createGrammarNode("coding-problem-page", {
-            reading: createGrammarProjection("problem-reading-column", () => (
+        layout="coding-problem-page"
+        render={layoutNode("coding-problem-page", {
+            reading: layoutContent("problem-reading-column", () => (
                 <ProblemReadingColumnBase
                     state={input.props.reading.state}
                     props={input.props.reading.props}
                     on={{ selectTab: input.on?.selectTab }}
                 />
             )),
-            work: createGrammarNode("problem-work-column", {
-                verdict: createGrammarProjection("judge-status-strip", () => (
+            work: layoutNode("problem-work-column", {
+                verdict: layoutContent("judge-status-strip", () => (
                     <JudgeStatusStripBase
                         state={input.props.verdict.state}
                         props={input.props.verdict.props}
                         on={{ act: input.on?.verdictAct }}
                     />
                 )),
-                work: createGrammarProjection("editor-over-console", () => (
+                work: layoutContent("editor-over-console", () => (
                     <SolutionEditorBase
                         state={input.props.editor.state}
                         props={input.props.editor.props}
@@ -114,4 +114,3 @@ export const CodingProblemPageBase = (input: CodingProblemPageProps) => (
 )
 
 /** Source-level ownership marker. */
-export const meta = { world: "pure", domain: "coding" } as const

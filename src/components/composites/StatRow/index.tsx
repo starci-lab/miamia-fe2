@@ -1,9 +1,9 @@
 import { Icon } from "@/components/leaves/Icon"
 import { Text } from "@/components/leaves/Text"
 import type { IconName } from "@/components/leaves/Icon"
-import type { CompositeProps } from "@/components/contracts/props"
-import { Grammar } from "@/components/branches/Grammar"
-import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
+import type { CompositeProps } from "@/modules/types/layout"
+import { Grammar } from "@/components/layouts/Grammar"
+import { layoutNode, renderLeaf } from "@/modules/types/layout"
 
 /**
  * COMPOSITE - `StatRow`: one standing figure, as a glyph, its name and the number.
@@ -38,13 +38,12 @@ export type StatRowProps = CompositeProps<StatRowData>
  * @param input - {@link StatRowProps}
  */
 export const StatRow = ({ props, isLoading = false }: StatRowProps) => {
-    const content = createGrammarNode("glyph-title-fact-row", {
-        glyph: createLeafNode("icon", { size: "sm" }, () => <Icon props={{ name: props.icon, role: "leading" }} />),
-        title: createLeafNode("text", { size: "md", tone: "default" }, () => <Text props={{ content: props.label, size: "md" }} />),
-        fact: createLeafNode("text", { size: "xs", tone: "muted" }, () => <Text props={{ content: props.value, size: "xs" }} isLoading={isLoading} />),
+    const content = layoutNode("glyph-title-fact-row", {
+        glyph: renderLeaf("icon", { size: "sm" }, () => <Icon props={{ name: props.icon, role: "leading" }} />),
+        title: renderLeaf("text", { size: "md", tone: "default" }, () => <Text props={{ content: props.label, size: "md" }} />),
+        fact: renderLeaf("text", { size: "xs", tone: "muted" }, () => <Text props={{ content: props.value, size: "xs" }} isLoading={isLoading} />),
     })
-    return <Grammar contract="glyph-title-fact-row" render={content} />
+    return <Grammar layout="glyph-title-fact-row" render={content} />
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "composite", world: "pure" } as const

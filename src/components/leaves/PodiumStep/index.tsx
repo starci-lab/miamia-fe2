@@ -1,5 +1,5 @@
 import { skeletonVariants } from "@heroui/react"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `PodiumStep`: the block a finisher stands on, and how tall it is.
@@ -32,7 +32,7 @@ const BASE_CLASSES = "flex w-20 items-center justify-center rounded-t-2xl bg-def
 /**
  * One complete class string per place, written out rather than assembled.
  *
- * A shared base plus an interpolated height reads shorter and is exactly what the contract rules
+ * A shared base plus an interpolated height reads shorter and is exactly what the layout rules
  * refuse: the string a place actually renders would then exist only while this component runs, so
  * nothing that reads this file as text could tell how tall first place is.
  */
@@ -59,7 +59,7 @@ export const PodiumStep = ({ props, isLoading = false }: PodiumStepProps) => {
     if (isLoading) {
         return (
             <span
-                data-tier="leaf"
+
                 data-component="PodiumStep"
                 data-place={place}
                 data-loading="true"
@@ -70,7 +70,7 @@ export const PodiumStep = ({ props, isLoading = false }: PodiumStepProps) => {
     }
     return (
         <span
-            data-tier="leaf"
+
             data-component="PodiumStep"
             data-place={place}
             data-loading="false"
@@ -82,4 +82,3 @@ export const PodiumStep = ({ props, isLoading = false }: PodiumStepProps) => {
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

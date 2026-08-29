@@ -73,4 +73,3 @@ export const RecommendedCourses = ({ onOpenPriceDetail }: RecommendedCoursesConn
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "connected", domain: "courses" } as const

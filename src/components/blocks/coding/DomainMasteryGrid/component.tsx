@@ -3,13 +3,13 @@ import type { IconName } from "@/components/leaves/Icon"
 import { Progress } from "@/components/leaves/Progress"
 import { Text } from "@/components/leaves/Text"
 import { PressableSurface } from "@/components/branches/PressableSurface"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import {
-    createGrammarNode,
-    createGrammarProjection,
-    createLeafNode,
+    layoutNode,
+    layoutContent,
+    renderLeaf,
     type BlockProps,
-} from "@/components/contracts/props"
+} from "@/modules/types/layout"
 
 /**
  * BLOCK - `DomainMasteryGrid`: where this learner is strong and where they are not.
@@ -145,24 +145,24 @@ export const DomainMasteryGridBase = (input: DomainMasteryGridProps) => {
 
     return (
         <Grammar
-            contract="domain-mastery-grid"
-            render={createGrammarNode("domain-mastery-grid", {
-                domain: domains.map((domain) => createGrammarProjection("domain-mastery-card", () => (
+            layout="domain-mastery-grid"
+            render={layoutNode("domain-mastery-grid", {
+                domain: domains.map((domain) => layoutContent("domain-mastery-card", () => (
                     <PressableSurface
-                        contract="domain-mastery-card"
+                        layout="domain-mastery-card"
                         label={domain.label}
                         press={() => input.on?.open?.(domain.id)}
                         hover="surface"
                         isRaised
                         disabled={isLoading}
-                        render={createGrammarNode("domain-mastery-card", {
-                            name: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
+                        render={layoutNode("domain-mastery-card", {
+                            name: renderLeaf("text", { size: "sm", weight: "semibold" }, () => (
                                 <Text
                                     props={{ content: domain.name, size: "sm", weight: "semibold" }}
                                     isLoading={isLoading}
                                 />
                             )),
-                            count: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+                            count: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                                 <Text
                                     props={{ content: domain.countLabel, size: "xs", tone: "muted" }}
                                     isLoading={isLoading}
@@ -171,7 +171,7 @@ export const DomainMasteryGridBase = (input: DomainMasteryGridProps) => {
                             // `Progress` reads 0..100, not a ratio - a bar handed 0.75 draws
                             // three-quarters of one percent and announces nothing, which this
                             // workspace has already shipped once.
-                            meter: createLeafNode("progress", {}, () => (
+                            meter: renderLeaf("progress", {}, () => (
                                 <Progress
                                     props={{
                                         label: domain.meterLabel,
@@ -191,4 +191,3 @@ export const DomainMasteryGridBase = (input: DomainMasteryGridProps) => {
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "pure", domain: "coding" } as const

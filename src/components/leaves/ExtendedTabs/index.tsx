@@ -1,9 +1,9 @@
-import { CLASS_NAME_1, CLASS_NAME_2, CLASS_NAME_3, CLASS_NAME_4 } from './styles'
 "use client"
+import { CLASS_NAME_1, CLASS_NAME_2, CLASS_NAME_3, CLASS_NAME_4 } from "./classNames"
 
 import { Tabs } from "@heroui/react"
 import { Icon, type IconName } from "@/components/leaves/Icon"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /** One tab in the legacy dashboard strip. */
 export type ExtendedTab = {
@@ -35,7 +35,7 @@ export type ExtendedTabsProps = ComponentProps<ExtendedTabsData, ExtendedTabsAct
  * can no longer replace that anatomy with arbitrary markup.
  */
 export const ExtendedTabs = ({ props, on }: ExtendedTabsProps) => (
-    <div data-tier="leaf" data-component="ExtendedTabs" className={CLASS_NAME_1}>
+    <div data-component="ExtendedTabs" className={CLASS_NAME_1}>
         <Tabs
             variant="secondary"
             selectedKey={props.selectedKey}
@@ -64,4 +64,3 @@ export const ExtendedTabs = ({ props, on }: ExtendedTabsProps) => (
 )
 
 /** Source-level tier marker for the closed tab primitive. */
-export const meta = { shape: "leaf", world: "pure" } as const

@@ -1,8 +1,8 @@
-import { CLASS_NAME_1 } from './styles'
+import { CLASS_NAME_1 } from "./classNames"
 import { Avatar as DiceAvatar, Style } from "@dicebear/core"
 import lorelei from "@dicebear/styles/lorelei.json" with { type: "json" }
 import { Avatar as HeroAvatar, skeletonVariants } from "@heroui/react"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `Avatar`: the mark that says which person a row is about.
@@ -61,7 +61,7 @@ export const Avatar = ({ props, isLoading = false }: AvatarProps) => {
     const fallbackSrc = isLoading ? undefined : fallbackAvatarOf(name)
     return (
         <HeroAvatar
-            data-tier="leaf"
+
             data-component="Avatar"
             data-size={size}
             data-loading={isLoading ? "true" : "false"}
@@ -86,4 +86,3 @@ export const Avatar = ({ props, isLoading = false }: AvatarProps) => {
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

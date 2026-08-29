@@ -4,11 +4,11 @@ import { NavLink } from "@/components/leaves/NavLink"
 import type { IconName } from "@/components/leaves/Icon"
 import { Text } from "@/components/leaves/Text"
 import {
-    createCompositeNode,
-    createGrammarNode,
-    createGrammarProjection,
-    createLeafNode,
-} from "@/components/contracts/props"
+    renderComposite,
+    layoutNode,
+    layoutContent,
+    renderLeaf,
+} from "@/modules/types/layout"
 
 /**
  * BLOCK - `LearnSpine`: everything a learner can do in this course, and where they left off.
@@ -94,7 +94,7 @@ export type LearnSpineProps = {
 /**
  * Build the spine as the frame's own child.
  *
- * It returns contract content rather than an element, because the frame renders it: a block that
+ * It returns layout content rather than an element, because the frame renders it: a block that
  * opened its own `Grammar` would draw a second node around a node the frame already draws.
  *
  * @param input - {@link LearnSpineProps}
@@ -108,32 +108,32 @@ export const learnSpine = ({ props, on, isLoading = false }: LearnSpineProps) =>
     const factSlot = (row: LearnSpineRow) => {
         if (row.isLocked === true) {
             return {
-                fact: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+                fact: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                     <Text props={{ content: lockedLabel, size: "xs" }} />
                 )),
             }
         }
         if (row.fact === undefined) return {}
         return {
-            fact: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+            fact: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                 <Text props={{ content: row.fact, size: "xs" }} />
             )),
         }
     }
     return (
-        createGrammarNode("learn-spine-column", {
+        layoutNode("learn-spine-column", {
             ...(props.resume === undefined ? {} : {
-                resume: createGrammarProjection("learn-resume-card", () => (
+                resume: layoutContent("learn-resume-card", () => (
                     <PressableSurface
-                        contract="learn-resume-card"
+                        layout="learn-resume-card"
                         label={props.resume?.title ?? ""}
                         press={on?.resume}
                         isRaised
-                        render={createGrammarNode("learn-resume-card", {
-                            label: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+                        render={layoutNode("learn-resume-card", {
+                            label: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                                 <Text props={{ content: props.resume?.label, size: "xs" }} />
                             )),
-                            progress: createCompositeNode("labelled-progress-row", {}, () => (
+                            progress: renderComposite("labelled-progress-row", {}, () => (
                                 <LabelledProgressRow
                                     props={{
                                         id: "resume",
@@ -148,12 +148,12 @@ export const learnSpine = ({ props, on, isLoading = false }: LearnSpineProps) =>
                     />
                 )),
             }),
-            group: props.groups.map((group) => createGrammarNode("learn-nav-group", {
-                label: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+            group: props.groups.map((group) => layoutNode("learn-nav-group", {
+                label: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                     <Text props={{ content: group.label, size: "xs" }} />
                 )),
-                row: group.rows.map((row) => createGrammarNode("learn-nav-row", {
-                    link: createLeafNode("nav-link", { kind: "route" }, () => (
+                row: group.rows.map((row) => layoutNode("learn-nav-row", {
+                    link: renderLeaf("nav-link", { kind: "route" }, () => (
                         <NavLink
                             props={{ label: row.label, icon: row.icon, kind: "route", isCurrent: row.isCurrent }}
                             on={{ press: () => on?.openRow?.(row.id) }}
@@ -167,4 +167,3 @@ export const learnSpine = ({ props, on, isLoading = false }: LearnSpineProps) =>
 }
 
 /** Source-level ownership marker. */
-export const meta = { shape: "block", world: "pure", domain: "learn" } as const

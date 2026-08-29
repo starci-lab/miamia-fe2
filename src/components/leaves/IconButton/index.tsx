@@ -1,7 +1,7 @@
-import { CLASS_NAME_1 } from './styles'
+import { CLASS_NAME_1 } from "./classNames"
 import { Button as HeroButton } from "@heroui/react"
 import { Icon, type IconName } from "@/components/leaves/Icon"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `IconButton`: a control the bar has room for only as a glyph.
@@ -41,7 +41,7 @@ export type IconButtonProps = ComponentProps<IconButtonData, IconButtonActions>
  */
 export const IconButton = ({ props, on }: IconButtonProps) => (
     <HeroButton
-        data-tier="leaf"
+
         data-component="IconButton"
         data-active={props.isActive === true ? "true" : "false"}
         type="button"
@@ -56,4 +56,3 @@ export const IconButton = ({ props, on }: IconButtonProps) => (
 )
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

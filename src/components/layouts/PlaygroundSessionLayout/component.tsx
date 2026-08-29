@@ -1,7 +1,7 @@
 import type { ComponentType } from "react"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
-import { createCompositeNode, createGrammarNode, createLeafNode } from "@/components/contracts/props"
+import { renderComposite, layoutNode, renderLeaf } from "@/modules/types/layout"
 
 /** Data states the persistent playground frame can expose. */
 export type PlaygroundSessionFrameState = "pending" | "ready" | "failed"
@@ -19,12 +19,12 @@ export type PlaygroundSessionLayoutProps = {
 export const PlaygroundSessionLayoutBase = (input: PlaygroundSessionLayoutProps) => {
     const Surface = input.surface
     return (
-        <Grammar contract="playground-session-frame" render={createGrammarNode("playground-session-frame", {
+        <Grammar layout="playground-session-frame" render={layoutNode("playground-session-frame", {
             ...(input.state === "failed" ? {} : {
-                surface: createLeafNode("page", {}, () => <Surface />),
+                surface: renderLeaf("page", {}, () => <Surface />),
             }),
             ...(input.state !== "failed" ? {} : {
-                notice: createCompositeNode("empty-notice", {}, () => (
+                notice: renderComposite("empty-notice", {}, () => (
                     <EmptyNotice
                         props={{ message: input.failedLabel, actionLabel: input.retryLabel }}
                         on={{ act: input.onRetry }}
@@ -36,4 +36,3 @@ export const PlaygroundSessionLayoutBase = (input: PlaygroundSessionLayoutProps)
 }
 
 /** Source-level ownership marker. */
-export const meta = { shape: "layout", world: "pure", domain: "learn" } as const

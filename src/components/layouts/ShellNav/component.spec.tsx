@@ -53,8 +53,8 @@ describe("ShellNavBase", () => {
         expect(screen.getByRole("switch", { name: "Switch theme" })).toBeTruthy()
         expect(screen.getByRole("button", { name: "Account" })).toBeTruthy()
         expect(screen.queryByText("Sign in")).toBeNull()
-        const navbar = container.querySelector("[data-node=\"double-navbar\"]")
-        expect(navbar?.querySelector("[data-node=\"underlined-tab-strip\"]")).toBeTruthy()
+        const navbar = container.querySelector(".layout-name-double-navbar")
+        expect(navbar?.querySelector(".layout-name-underlined-tab-strip")).toBeTruthy()
         expect(navbar?.querySelector("[data-component=\"ExtendedTabs\"]")).toBeTruthy()
     })
 

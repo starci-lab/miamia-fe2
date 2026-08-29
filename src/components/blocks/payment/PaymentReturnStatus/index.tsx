@@ -17,4 +17,3 @@ export const PaymentReturnStatus = ({ referenceId, onContinue }: PaymentReturnSt
     return <PaymentReturnStatusBase badge={t("failedBadge")} title={t(`${value}Title`)} body={t(`${value}Body`)} tone={value === "cancelled" ? "neutral" : "danger"} action={t("back")} onAction={onContinue} />
 }
 /** Declares the connected payment status boundary. */
-export const meta = { shape: "block", world: "connected", domain: "payment" } as const

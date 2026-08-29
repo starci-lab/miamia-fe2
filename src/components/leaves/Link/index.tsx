@@ -1,7 +1,7 @@
-import { CLASS_NAME_1, CLASS_NAME_2, CLASS_NAME_3, CLASS_NAME_4 } from './styles'
+import { CLASS_NAME_1, CLASS_NAME_2, CLASS_NAME_3, CLASS_NAME_4 } from "./classNames"
 import { Link as HeroLink } from "@heroui/react"
 import { Icon, type IconName } from "@/components/leaves/Icon"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `Link`: text that either reports internal navigation or opens an external destination.
@@ -75,7 +75,7 @@ const BrandLockup = ({ label }: BrandLockupProps) => (
  */
 export const Link = ({ props, on }: LinkProps) => (
     <HeroLink
-        data-tier="leaf"
+
         data-component="Link"
         data-emphasis={props.emphasis ?? "default"}
         href={props.externalHref}
@@ -92,4 +92,3 @@ export const Link = ({ props, on }: LinkProps) => (
 )
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

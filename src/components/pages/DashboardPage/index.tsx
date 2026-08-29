@@ -44,4 +44,3 @@ export const DashboardPage = () => {
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { world: "connected", domain: "dashboard" } as const

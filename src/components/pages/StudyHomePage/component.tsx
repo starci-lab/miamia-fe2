@@ -1,14 +1,13 @@
 import type { ComponentType } from "react"
-import { Grammar } from "@/components/branches/Grammar"
-import { createGrammarNode, createGrammarProjection } from "@/components/contracts/props"
+import { Grammar } from "@/components/layouts/Grammar"
+import { layoutNode, layoutContent } from "@/modules/types/layout"
 
 type StudyHomePageProps = { readonly continueSurface: ComponentType; readonly progressSurface: ComponentType }
 
 /** Keeps resume before progress in the Study landing reading order. */
-export const StudyHomePageBase = ({ continueSurface: ContinueSurface, progressSurface: ProgressSurface }: StudyHomePageProps) => <Grammar contract="study-home-grid" render={createGrammarNode("study-home-grid", {
-    resume: createGrammarProjection("study-resume-hero", () => <ContinueSurface />),
-    progress: createGrammarProjection("study-progress-card", () => <ProgressSurface />),
+export const StudyHomePageBase = ({ continueSurface: ContinueSurface, progressSurface: ProgressSurface }: StudyHomePageProps) => <Grammar layout="study-home-grid" render={layoutNode("study-home-grid", {
+    resume: layoutContent("study-resume-hero", () => <ContinueSurface />),
+    progress: layoutContent("study-progress-card", () => <ProgressSurface />),
 })} />
 
 /** Declares the pure Study landing page. */
-export const meta = { shape: "page", world: "pure", domain: "study" } as const

@@ -1,4 +1,4 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { ExamPaperCard, type ExamPaperCardData } from "@/components/composites/ExamPaperCard"
 import { Button } from "@/components/leaves/Button"
@@ -7,7 +7,7 @@ import { Heading } from "@/components/leaves/Heading"
 import { Pagination } from "@/components/leaves/Pagination"
 import { SearchBox } from "@/components/leaves/SearchBox"
 import { Text } from "@/components/leaves/Text"
-import { createCompositeNode, createGrammarNode, createGrammarProjection, createLeafNode, type BlockProps } from "@/components/contracts/props"
+import { renderComposite, layoutNode, layoutContent, renderLeaf, type BlockProps } from "@/modules/types/layout"
 
 /** One real paper collection shown in the catalogue selector. */
 export type ExamCollectionData = { readonly id: string; readonly label: string; readonly count: number }
@@ -21,46 +21,45 @@ export type ExamCatalogData = {
 }
 /** User intents emitted by the pure catalogue. */
 export type ExamCatalogActions = { readonly search?: (query: string) => void; readonly selectCollection?: (id: string) => void; readonly changePage?: (page: number) => void; readonly requestPremium?: () => void; readonly retry?: () => void; readonly [key: `open:${string}`]: (() => void) | undefined }
-/** State contract for the pure catalogue block. */
+/** State layout for the pure catalogue block. */
 export type ExamCatalogProps = BlockProps<"loading" | "failed" | "empty" | "ready", ExamCatalogData> & { readonly on?: ExamCatalogActions }
 
 /** Render one settled catalogue state. */
 export const ExamCatalogBase = (input: ExamCatalogProps) => {
     const isLoading = input.state === "loading"
     const notice = input.state === "failed" || input.state === "empty"
-    return <Grammar contract="exam-catalog-page" render={createGrammarNode("exam-catalog-page", {
-        header: createGrammarNode("page-header-stack", {
-            title: createLeafNode("heading", {}, () => <Heading props={{ content: input.props.title, level: 1 }} />),
+    return <Grammar layout="exam-catalog-page" render={layoutNode("exam-catalog-page", {
+        header: layoutNode("page-header-stack", {
+            title: renderLeaf("heading", {}, () => <Heading props={{ content: input.props.title, level: 1 }} />),
         }),
-        premium: createGrammarNode("premium-value-band", {
-            copy: createGrammarNode("premium-copy-stack", {
-                title: createLeafNode("heading", {}, () => <Heading props={{ content: input.props.premiumTitle, level: 2 }} />),
-                body: createLeafNode("text", {}, () => <Text props={{ content: input.props.premiumBody, tone: "muted" }} />),
+        premium: layoutNode("premium-value-band", {
+            copy: layoutNode("premium-copy-stack", {
+                title: renderLeaf("heading", {}, () => <Heading props={{ content: input.props.premiumTitle, level: 2 }} />),
+                body: renderLeaf("text", {}, () => <Text props={{ content: input.props.premiumBody, tone: "muted" }} />),
             }),
-            action: createLeafNode("button", {}, () => <Button props={{ label: input.props.premiumAction, variant: "primary" }} on={{ press: input.on?.requestPremium }} />),
+            action: renderLeaf("button", {}, () => <Button props={{ label: input.props.premiumAction, variant: "primary" }} on={{ press: input.on?.requestPremium }} />),
         }),
-        query: createGrammarNode("catalog-query-with-count", {
-            query: createLeafNode("search-box", {}, () => <SearchBox props={{ label: input.props.searchLabel, placeholder: input.props.searchPlaceholder, clearLabel: input.props.searchClearLabel }} on={{ search: input.on?.search }} />),
-            count: createLeafNode("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: input.props.countLabel, size: "sm", tone: "muted" }} />),
+        query: layoutNode("catalog-query-with-count", {
+            query: renderLeaf("search-box", {}, () => <SearchBox props={{ label: input.props.searchLabel, placeholder: input.props.searchPlaceholder, clearLabel: input.props.searchClearLabel }} on={{ search: input.on?.search }} />),
+            count: renderLeaf("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: input.props.countLabel, size: "sm", tone: "muted" }} />),
         }),
-        collections: createLeafNode("choice-tabs", {}, () => <ChoiceTabs props={{ label: input.props.collectionLabel, selectedKey: input.props.selectedCollectionId, variant: "primary", tabs: input.props.collections.map((item) => ({ id: item.id, label: item.label })) }} on={{ select: input.on?.selectCollection }} />),
+        collections: renderLeaf("choice-tabs", {}, () => <ChoiceTabs props={{ label: input.props.collectionLabel, selectedKey: input.props.selectedCollectionId, variant: "primary", tabs: input.props.collections.map((item) => ({ id: item.id, label: item.label })) }} on={{ select: input.on?.selectCollection }} />),
         ...(notice ? {} : {
-            section: createGrammarNode("exam-program-section", {
-                heading: createGrammarNode("title-with-baseline-fact", {
-                    title: createLeafNode("heading", {}, () => <Heading props={{ content: input.props.sectionTitle, level: 2 }} />),
-                    fact: createLeafNode("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: input.props.countLabel, size: "sm", tone: "muted" }} />),
+            section: layoutNode("exam-program-section", {
+                heading: layoutNode("title-with-baseline-fact", {
+                    title: renderLeaf("heading", {}, () => <Heading props={{ content: input.props.sectionTitle, level: 2 }} />),
+                    fact: renderLeaf("text", { size: "sm", tone: "muted" }, () => <Text props={{ content: input.props.countLabel, size: "sm", tone: "muted" }} />),
                 }),
-                papers: createGrammarNode("exam-paper-grid", {
-                    paper: input.props.papers.map((paper) => createGrammarProjection("exam-paper-card", () => <ExamPaperCard key={paper.id} props={paper} on={{ open: input.on?.[`open:${paper.id}`] }} isLoading={isLoading} />)),
+                papers: layoutNode("exam-paper-grid", {
+                    paper: input.props.papers.map((paper) => layoutContent("exam-paper-card", () => <ExamPaperCard key={paper.id} props={paper} on={{ open: input.on?.[`open:${paper.id}`] }} isLoading={isLoading} />)),
                 }),
             }),
-            pagination: createLeafNode("pagination", {}, () => <Pagination props={{ label: input.props.pageLabel, page: input.props.page, total: input.props.totalPages, previousLabel: input.props.previousLabel, nextLabel: input.props.nextLabel }} on={{ change: input.on?.changePage }} />),
+            pagination: renderLeaf("pagination", {}, () => <Pagination props={{ label: input.props.pageLabel, page: input.props.page, total: input.props.totalPages, previousLabel: input.props.previousLabel, nextLabel: input.props.nextLabel }} on={{ change: input.on?.changePage }} />),
         }),
         ...(notice ? {
-            notice: createCompositeNode("empty-notice", {}, () => <EmptyNotice props={{ icon: "review", message: input.state === "failed" ? input.props.failedMessage : input.props.emptyMessage, actionLabel: input.state === "failed" ? input.props.retryLabel : undefined }} on={{ act: input.on?.retry }} />),
+            notice: renderComposite("empty-notice", {}, () => <EmptyNotice props={{ icon: "review", message: input.state === "failed" ? input.props.failedMessage : input.props.emptyMessage, actionLabel: input.state === "failed" ? input.props.retryLabel : undefined }} on={{ act: input.on?.retry }} />),
         } : {}),
     })} />
 }
 
 /** Source-level block marker. */
-export const meta = { shape: "block", world: "pure", domain: "exam" } as const

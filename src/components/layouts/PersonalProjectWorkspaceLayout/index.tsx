@@ -41,4 +41,3 @@ export const PersonalProjectWorkspaceLayout = (input: PersonalProjectWorkspaceLa
 }
 
 /** Architectural identity for the connected personal-project layout twin. */
-export const meta = { world: "connected", domain: "learn" } as const

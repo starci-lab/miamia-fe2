@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from "react"
 import { WhiteLabelInquiryPanel } from "@/components/blocks/payment/WhiteLabelInquiryPanel"
-import { createGrammarProjection } from "@/components/contracts/props"
+import { layoutContent } from "@/modules/types/layout"
 import { WhiteLabelInquiryOverlayBase as WhiteLabelInquiryOverlayView } from "./component"
 
 /** Visibility and dismissal behavior for the White-label inquiry. */
@@ -15,11 +15,10 @@ export const WhiteLabelInquiryOverlay = ({ isOpen, onDismiss }: WhiteLabelInquir
         <WhiteLabelInquiryOverlayView
             isOpen={isOpen}
             onDismiss={guardedDismiss}
-            render={createGrammarProjection("white-label-inquiry-panel", () => (
+            render={layoutContent("white-label-inquiry-panel", () => (
                 <WhiteLabelInquiryPanel onDismiss={guardedDismiss} onPendingChange={setPending} />
             ))}
         />
     )
 }
 /** Declares the connected inquiry overlay boundary. */
-export const meta = { shape: "overlay", world: "connected", domain: "payment" } as const

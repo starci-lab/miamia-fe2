@@ -1,4 +1,4 @@
-import { CLASS_NAME_1 } from './styles'
+import { CLASS_NAME_1 } from "./classNames"
 import {
     AcademicCapIcon,
     ArrowPathIcon,
@@ -83,7 +83,7 @@ import {
 } from "@heroicons/react/16/solid"
 import type { ComponentType, SVGProps } from "react"
 import { GithubMark, GoogleMark } from "./brands"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `Icon`: the picture a word needs when the word alone is slower to find.
@@ -230,7 +230,7 @@ export const Icon = ({ props, isLoading = false }: IconProps) => {
     const role = props.role ?? "chip"
     const Glyph = glyph[role]
     if (isLoading) {
-        return <span aria-hidden="true" data-tier="leaf" data-component="Icon" className={CLASS_NAME_1} />
+        return <span aria-hidden="true" data-component="Icon" className={CLASS_NAME_1} />
     }
     const className = props.name === "complete"
         ? `${ROLE_CLASSES[role]} text-success-soft-foreground`
@@ -239,4 +239,3 @@ export const Icon = ({ props, isLoading = false }: IconProps) => {
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

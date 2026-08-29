@@ -62,4 +62,3 @@ export const CartLine = ({ state = "ready", line }: CartLineProps) => {
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "connected", domain: "commerce" } as const

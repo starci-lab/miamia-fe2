@@ -112,4 +112,3 @@ export const CoursePersonalProjectResultPage = ({ displayId, taskId }: CoursePer
 }
 
 /** Architectural identity for the connected result page twin. */
-export const meta = { world: "connected", domain: "learn" } as const

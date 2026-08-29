@@ -1,9 +1,9 @@
-import { CLASS_NAME_1 } from './styles'
 "use client"
+import { CLASS_NAME_1 } from "./classNames"
 
 import { Tabs } from "@heroui/react"
 import { Icon, type IconName } from "@/components/leaves/Icon"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /** One peer choice, optionally led by a glyph naming the shape it selects. */
 export type ChoiceTabData = {
@@ -86,4 +86,3 @@ export const ChoiceTabs = ({ props, on }: ChoiceTabsProps) => {
 }
 
 /** Source-level tier marker for the intrinsic peer-choice control. */
-export const meta = { shape: "leaf", world: "pure" } as const

@@ -223,4 +223,3 @@ export const LearnShellLayout = (input: LearnShellLayoutProps) => {
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "connected", domain: "learn" } as const

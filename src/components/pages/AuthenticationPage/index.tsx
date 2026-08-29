@@ -17,4 +17,3 @@ export const AuthenticationPage = () => {
 }
 
 /** Source-level tier marker for the connected authentication page. */
-export const meta = { world: "connected", domain: "auth" } as const

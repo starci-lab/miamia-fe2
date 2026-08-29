@@ -3,12 +3,12 @@ import { Badge } from "@/components/leaves/Badge"
 import { ExtendedTabs } from "@/components/leaves/ExtendedTabs"
 import { Heading } from "@/components/leaves/Heading"
 import { Text } from "@/components/leaves/Text"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import {
-    createGrammarNode,
-    createLeafNode,
+    layoutNode,
+    renderLeaf,
     type BlockProps,
-} from "@/components/contracts/props"
+} from "@/modules/types/layout"
 
 /**
  * BLOCK - `ProblemReadingColumn`: everything about the problem that is read rather than written.
@@ -84,9 +84,9 @@ export const ProblemReadingColumnBase = (input: ProblemReadingColumnProps) => {
 
     return (
         <Grammar
-            contract="problem-reading-column"
-            render={createGrammarNode("problem-reading-column", {
-                tabs: createLeafNode("extended-tabs", {}, () => (
+            layout="problem-reading-column"
+            render={layoutNode("problem-reading-column", {
+                tabs: renderLeaf("extended-tabs", {}, () => (
                     <ExtendedTabs
                         props={{
                             label: labels.group,
@@ -101,24 +101,24 @@ export const ProblemReadingColumnBase = (input: ProblemReadingColumnProps) => {
                         on={{ select: input.on?.selectTab }}
                     />
                 )),
-                body: createGrammarNode("problem-statement-stack", {
-                    heading: createGrammarNode("title-with-baseline-fact", {
-                        title: createLeafNode("heading", {}, () => (
+                body: layoutNode("problem-statement-stack", {
+                    heading: layoutNode("title-with-baseline-fact", {
+                        title: renderLeaf("heading", {}, () => (
                             <Heading props={{ content: input.props.title, level: 1 }} isLoading={isLoading} />
                         )),
-                        fact: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+                        fact: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                             <Text
                                 props={{ content: input.props.difficulty, size: "sm", tone: "muted" }}
                                 isLoading={isLoading}
                             />
                         )),
                     }),
-                    prose: createLeafNode("article", {}, () => (
+                    prose: renderLeaf("article", {}, () => (
                         <Article props={{ body: input.props.body }} isLoading={isLoading} />
                     )),
                     ...(tags.length === 0 ? {} : {
-                        tags: createGrammarNode("profile-topic-chip-run", {
-                            topic: tags.map((tag) => createLeafNode("badge", {}, () => (
+                        tags: layoutNode("profile-topic-chip-run", {
+                            topic: tags.map((tag) => renderLeaf("badge", {}, () => (
                                 <Badge props={{ content: tag, tone: "neutral" }} />
                             ))),
                         }),
@@ -130,4 +130,3 @@ export const ProblemReadingColumnBase = (input: ProblemReadingColumnProps) => {
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "pure", domain: "coding" } as const

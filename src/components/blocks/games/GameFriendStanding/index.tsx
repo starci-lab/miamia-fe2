@@ -73,4 +73,3 @@ export const GameFriendStanding = ({ onChooseGame, onRequireSignIn }: GameFriend
 }
 
 /** Declares the friend standing binder as a connected game block. */
-export const meta = { shape: "block", world: "connected", domain: "games" } as const

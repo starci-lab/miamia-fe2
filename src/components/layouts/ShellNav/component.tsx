@@ -1,4 +1,4 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { Link } from "@/components/leaves/Link"
 import { NavLink } from "@/components/leaves/NavLink"
 import { IconButton } from "@/components/leaves/IconButton"
@@ -7,7 +7,7 @@ import { PressableInputLike } from "@/components/leaves/PressableInputLike"
 import { ThemeSwitch } from "@/components/leaves/ThemeSwitch"
 import { ExtendedTabs } from "@/components/leaves/ExtendedTabs"
 import type { IconName } from "@/components/leaves/Icon"
-import { createGrammarNode, createLeafNode } from "@/components/contracts/props"
+import { layoutNode, renderLeaf } from "@/modules/types/layout"
 
 /** One destination in the primary navbar row. */
 export type ShellNavRoute = {
@@ -63,18 +63,18 @@ export type ShellNavProps = {
 /** Draw the primary navbar and its optional page-tab bottom layer as one landmark. */
 export const ShellNavBase = (input: ShellNavProps) => (
     <Grammar
-        contract="double-navbar"
-        render={createGrammarNode("double-navbar", {
-            primary: createGrammarNode("brand-links-then-tools-bar", {
-                navigation: createGrammarNode("inline-nav-links", {
-                    brand: createLeafNode("link", { emphasis: "brand" }, () => (
+        layout="double-navbar"
+        render={layoutNode("double-navbar", {
+            primary: layoutNode("brand-links-then-tools-bar", {
+                navigation: layoutNode("inline-nav-links", {
+                    brand: renderLeaf("link", { emphasis: "brand" }, () => (
                         <Link
                             props={{ label: input.props.brand, emphasis: "brand" }}
                             on={{ press: () => input.on?.navigate?.("dashboard") }}
                         />
                     )),
-                    routes: createGrammarNode("inline-route-links", {
-                        route: input.props.routes.map((route) => createLeafNode("nav-link", { kind: "route" }, () => (
+                    routes: layoutNode("inline-route-links", {
+                        route: input.props.routes.map((route) => renderLeaf("nav-link", { kind: "route" }, () => (
                             <NavLink
                                 props={{ label: route.label, isCurrent: route.isCurrent, kind: "route" }}
                                 on={{ press: () => input.on?.navigate?.(route.id) }}
@@ -82,18 +82,18 @@ export const ShellNavBase = (input: ShellNavProps) => (
                         ))),
                     }),
                 }),
-                tools: createGrammarNode("inline-tool-row", {
-                    desktop: createGrammarNode("desktop-navbar-tools", {
-                        search: createLeafNode("pressable-input-like", {}, () => (
+                tools: layoutNode("inline-tool-row", {
+                    desktop: layoutNode("desktop-navbar-tools", {
+                        search: renderLeaf("pressable-input-like", {}, () => (
                             <PressableInputLike
                                 props={{ placeholder: input.props.searchPlaceholder, label: input.props.searchLabel, shortcut: input.props.searchShortcut }}
                                 on={{ press: input.on?.openSearch }}
                             />
                         )),
-                        locale: createLeafNode("icon-button", {}, () => (
+                        locale: renderLeaf("icon-button", {}, () => (
                             <IconButton props={{ icon: "locale", label: input.props.localeLabel }} on={{ press: input.on?.toggleLocale }} />
                         )),
-                        theme: createLeafNode("theme-switch", {}, () => (
+                        theme: renderLeaf("theme-switch", {}, () => (
                             <ThemeSwitch
                                 props={{ isDark: input.props.isDark, label: input.props.themeLabel }}
                                 on={{ change: input.on?.toggleTheme }}
@@ -101,15 +101,15 @@ export const ShellNavBase = (input: ShellNavProps) => (
                         )),
                     }),
                     tool: [
-                        createLeafNode("icon-button", {}, () => (
+                        renderLeaf("icon-button", {}, () => (
                             <IconButton props={{ icon: "cart", label: input.props.cartLabel }} on={{ press: input.on?.openCart }} />
                         )),
-                        ...(input.props.isSignedIn ? [createLeafNode("icon-button", {}, () => (
+                        ...(input.props.isSignedIn ? [renderLeaf("icon-button", {}, () => (
                             <IconButton props={{ icon: "notification", label: input.props.notificationLabel }} />
                         ))] : []),
-                        ...(input.props.isSignedIn ? [createLeafNode("icon-button", {}, () => (
+                        ...(input.props.isSignedIn ? [renderLeaf("icon-button", {}, () => (
                             <IconButton props={{ icon: "account", label: input.props.accountLabel }} />
-                        ))] : [createLeafNode("account-menu", {}, () => (
+                        ))] : [renderLeaf("account-menu", {}, () => (
                             <AccountMenu
                                 props={{
                                     label: input.props.accountLabel,
@@ -123,8 +123,8 @@ export const ShellNavBase = (input: ShellNavProps) => (
                     ],
                 }),
             }),
-            bottom: input.props.tabs === undefined ? undefined : createGrammarNode("underlined-tab-strip", {
-                tabs: createLeafNode("extended-tabs", {}, () => (
+            bottom: input.props.tabs === undefined ? undefined : layoutNode("underlined-tab-strip", {
+                tabs: renderLeaf("extended-tabs", {}, () => (
                     <ExtendedTabs
                         props={{
                             label: input.props.brand,
@@ -140,4 +140,3 @@ export const ShellNavBase = (input: ShellNavProps) => (
 )
 
 /** Source-level tier marker for the pure shell layout. */
-export const meta = { world: "pure", domain: "shell" } as const

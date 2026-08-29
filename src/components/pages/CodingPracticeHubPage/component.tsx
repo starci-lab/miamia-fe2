@@ -4,13 +4,13 @@ import { SeeMoreLink } from "@/components/leaves/SeeMoreLink"
 import { Text } from "@/components/leaves/Text"
 import { RankedUserRow } from "@/components/composites/RankedUserRow"
 import { SurfaceCard } from "@/components/branches/SurfaceCard"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import {
-    createCompositeNode,
-    createGrammarNode,
-    createGrammarProjection,
-    createLeafNode,
-} from "@/components/contracts/props"
+    renderComposite,
+    layoutNode,
+    layoutContent,
+    renderLeaf,
+} from "@/modules/types/layout"
 import {
     DomainMasteryGridBase,
     type DomainMastery,
@@ -109,10 +109,10 @@ export const CodingPracticeHubPageBase = (input: CodingPracticeHubPageProps) => 
 
     return (
         <Grammar
-            contract="coding-practice-page"
-            render={createGrammarNode("coding-practice-page", {
-                header: createGrammarNode("page-header-stack", {
-                    trail: createLeafNode("breadcrumbs", {}, () => (
+            layout="coding-practice-page"
+            render={layoutNode("coding-practice-page", {
+                header: layoutNode("page-header-stack", {
+                    trail: renderLeaf("breadcrumbs", {}, () => (
                         <Breadcrumbs
                             props={{
                                 label: labels.title,
@@ -124,21 +124,21 @@ export const CodingPracticeHubPageBase = (input: CodingPracticeHubPageProps) => 
                             on={{ home: input.on?.goHome }}
                         />
                     )),
-                    title: createLeafNode("heading", {}, () => (
+                    title: renderLeaf("heading", {}, () => (
                         <Heading props={{ content: labels.title, level: 1 }} />
                     )),
                 }),
                 // An ABSENT slot, not a slot holding null: a learner with nothing half-done should
                 // not be shown an empty shelf where the way back would be.
                 ...(resume === undefined ? {} : {
-                    resume: createGrammarNode("resume-item-card", {
-                        title: createLeafNode("text", { size: "md", weight: "medium" }, () => (
+                    resume: layoutNode("resume-item-card", {
+                        title: renderLeaf("text", { size: "md", weight: "medium" }, () => (
                             <Text props={{ content: resume.title, size: "md", weight: "medium" }} />
                         )),
-                        kind: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+                        kind: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                             <Text props={{ content: resume.kind, size: "sm", tone: "muted" }} />
                         )),
-                        resume: createLeafNode("see-more-link", {}, () => (
+                        resume: renderLeaf("see-more-link", {}, () => (
                             <SeeMoreLink
                                 props={{ label: resume.actionLabel }}
                                 on={{ press: input.on?.resume }}
@@ -146,7 +146,7 @@ export const CodingPracticeHubPageBase = (input: CodingPracticeHubPageProps) => 
                         )),
                     }),
                 }),
-                domains: createGrammarProjection("domain-mastery-grid", () => (
+                domains: layoutContent("domain-mastery-grid", () => (
                     <DomainMasteryGridBase
                         state={input.session === "guest" ? "guest" : input.props.domains.state}
                         // The whole payload, not just the list. Forwarding only `items` dropped the
@@ -166,14 +166,14 @@ export const CodingPracticeHubPageBase = (input: CodingPracticeHubPageProps) => 
                     // ranked identities, which is exactly what a summary of a ranking is. The
                     // viewer's row is the same composite as everyone else's - being the reader is a
                     // fact about WHICH row, not a different kind of row.
-                    standing: createGrammarProjection("leaderboard-card", () => (
+                    standing: layoutContent("leaderboard-card", () => (
                         <SurfaceCard
-                            contract="leaderboard-card"
+                            layout="leaderboard-card"
                             props={{ label: labels.standingLabel, seeMoreLabel: labels.standingMore }}
                             on={{ seeMore: input.on?.openStanding }}
-                            render={createGrammarNode("leaderboard-card", {
-                                list: createGrammarNode("ranked-user-list", {
-                                    user: standing.map((row) => createCompositeNode("ranked-user-row", {}, () => (
+                            render={layoutNode("leaderboard-card", {
+                                list: layoutNode("ranked-user-list", {
+                                    user: standing.map((row) => renderComposite("ranked-user-row", {}, () => (
                                         <RankedUserRow
                                             props={{
                                                 id: row.id,
@@ -194,4 +194,3 @@ export const CodingPracticeHubPageBase = (input: CodingPracticeHubPageProps) => 
 }
 
 /** Source-level ownership marker. */
-export const meta = { world: "pure", domain: "coding" } as const

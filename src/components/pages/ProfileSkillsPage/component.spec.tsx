@@ -13,7 +13,7 @@ describe("ProfileSkillsPageBase", () => {
         const text = container.textContent ?? ""
         expect(text.indexOf("Coding metrics")).toBeLessThan(text.indexOf("Stats"))
         expect(text.indexOf("Stats")).toBeLessThan(text.indexOf("Solve history"))
-        expect(container.querySelectorAll("[data-node='profile-breakdown']")).toHaveLength(3)
+        expect(container.querySelectorAll(".layout-name-profile-breakdown")).toHaveLength(3)
         expect(screen.getByText("Shortest path")).toBeInTheDocument()
         expect(container.querySelector("[data-component='ProfileEvidenceSection']")).toBeNull()
     })

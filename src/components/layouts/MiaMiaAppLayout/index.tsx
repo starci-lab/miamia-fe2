@@ -54,4 +54,3 @@ export const MiaMiaAppLayout = ({ surface }: MiaMiaAppLayoutProps) => {
 }
 
 /** Declares the component architecture metadata. */
-export const meta = { shape: "layout", world: "connected", domain: "miamia" } as const

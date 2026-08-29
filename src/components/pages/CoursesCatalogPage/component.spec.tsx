@@ -90,7 +90,7 @@ describe("CoursesCatalogPageBase", () => {
         expect(screen.getByRole("searchbox", { name: "Tìm khóa học" })).toBeInTheDocument()
         expect(screen.getByText("0 khóa học")).toBeInTheDocument()
         expect(screen.getByText("Chưa có khóa học nào để hiển thị.")).toBeInTheDocument()
-        expect(container.querySelector("[data-node=\"catalog-section-group\"]")).toBeNull()
+        expect(container.querySelector(".layout-name-catalog-section-group")).toBeNull()
         expect(screen.queryByRole("navigation", { name: "Phân trang khóa học" })).not.toBeInTheDocument()
 
         fireEvent.click(screen.getByRole("button", { name: "Khám phá lộ trình" }))
@@ -110,8 +110,8 @@ describe("CoursesCatalogPageBase", () => {
         )
 
         expect(screen.getByTestId("owned-progress")).toBeInTheDocument()
-        expect(container.querySelector("[data-node=\"catalog-card-grid\"]")).not.toBeNull()
-        expect(container.querySelector("[data-node=\"catalog-card-list\"]")).toBeNull()
+        expect(container.querySelector(".layout-name-catalog-card-grid")).not.toBeNull()
+        expect(container.querySelector(".layout-name-catalog-card-list")).toBeNull()
         expect(screen.getByText("System Design Mastery")).toBeInTheDocument()
         expect(screen.getByRole("heading", { name: "Khám phá" })).toBeInTheDocument()
 
@@ -136,8 +136,8 @@ describe("CoursesCatalogPageBase", () => {
             />,
         )
 
-        expect(container.querySelector("[data-node=\"catalog-card-list\"]")).not.toBeNull()
-        expect(container.querySelector("[data-node=\"catalog-card-grid\"]")).toBeNull()
+        expect(container.querySelector(".layout-name-catalog-card-list")).not.toBeNull()
+        expect(container.querySelector(".layout-name-catalog-card-grid")).toBeNull()
         expect(screen.queryByText("2 khóa học")).not.toBeInTheDocument()
         expect(screen.queryByTestId("owned-progress")).not.toBeInTheDocument()
         expect(screen.getAllByTestId("catalog-card")[0]).toHaveAttribute("data-layout", "line")
@@ -156,7 +156,7 @@ describe("CoursesCatalogPageBase", () => {
         expect(screen.getAllByTestId("catalog-card")).toHaveLength(3)
         expect(screen.getAllByTestId("catalog-card")[0]).toHaveAttribute("data-card-state", "pending")
         expect(screen.getAllByTestId("catalog-card")[0]).toHaveAttribute("data-layout", "grid")
-        expect(container.querySelector("[data-node=\"catalog-card-grid\"]")).not.toBeNull()
+        expect(container.querySelector(".layout-name-catalog-card-grid")).not.toBeNull()
         expect(screen.queryByRole("navigation", { name: "Phân trang khóa học" })).not.toBeInTheDocument()
         expect(screen.getByTestId("owned-progress")).toBeInTheDocument()
     })
@@ -166,7 +166,7 @@ describe("CoursesCatalogPageBase", () => {
             <CoursesCatalogPageBase state="pending" props={{ labels, view: "line" }} />,
         )
 
-        expect(container.querySelector("[data-node=\"catalog-card-list\"]")).not.toBeNull()
+        expect(container.querySelector(".layout-name-catalog-card-list")).not.toBeNull()
         expect(screen.getAllByTestId("catalog-card")).toHaveLength(3)
         expect(screen.getAllByTestId("catalog-card")[0]).toHaveAttribute("data-card-state", "pending")
         expect(screen.getAllByTestId("catalog-card")[0]).toHaveAttribute("data-layout", "line")
@@ -177,8 +177,8 @@ describe("CoursesCatalogPageBase", () => {
             <CoursesCatalogPageBase state="filtered-empty" props={{ labels, query: "khong-co", discover: [] }} />,
         )
 
-        expect(container.querySelector("[data-node=\"empty-notice-stack\"]")).not.toBeNull()
-        expect(container.querySelector("[data-node=\"catalog-section-group\"]")).toBeNull()
+        expect(container.querySelector(".layout-name-empty-notice-stack")).not.toBeNull()
+        expect(container.querySelector(".layout-name-catalog-section-group")).toBeNull()
         expect(screen.queryByRole("button", { name: /Khám phá/ })).not.toBeInTheDocument()
     })
 

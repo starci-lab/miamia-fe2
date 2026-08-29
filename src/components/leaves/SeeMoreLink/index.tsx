@@ -1,6 +1,6 @@
 import { Link as HeroLink, skeletonVariants } from "@heroui/react"
 import { Icon } from "@/components/leaves/Icon"
-import type { ComponentProps } from "@/components/contracts/props"
+import type { ComponentProps } from "@/modules/types/layout"
 
 /**
  * LEAF - `SeeMoreLink`: the way out of a section, drawn at the end of its label line.
@@ -53,7 +53,7 @@ export const SeeMoreLink = ({ props, on, isLoading = false }: SeeMoreLinkProps) 
     if (isLoading) {
         return (
             <span
-                data-tier="leaf"
+
                 data-component="SeeMoreLink"
                 data-loading="true"
                 aria-hidden
@@ -72,11 +72,10 @@ export const SeeMoreLink = ({ props, on, isLoading = false }: SeeMoreLinkProps) 
     )
 
     return (
-        <HeroLink data-tier="leaf" data-component="SeeMoreLink" onPress={on?.press} className={LINE_CLASSES}>
+        <HeroLink data-component="SeeMoreLink" onPress={on?.press} className={LINE_CLASSES}>
             {inside}
         </HeroLink>
     )
 }
 
 /** Source-level tier marker - lets a gate read the tier without guessing from the folder path. */
-export const meta = { shape: "leaf", world: "pure" } as const

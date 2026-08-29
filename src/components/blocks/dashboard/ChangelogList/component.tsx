@@ -2,14 +2,14 @@ import {
     SurfaceListCard,
     type SurfaceListCardActions,
 } from "@/components/branches/SurfaceListCard"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import {
     ChangelogEntryRow,
     type ChangelogEntryRowData,
 } from "@/components/composites/ChangelogEntryRow"
-import { CONTRACTS } from "@/components/contracts"
-import type { SerializableValue, ComponentProps } from "@/components/contracts/props"
-import { createCompositeNode, createGrammarNode } from "@/components/contracts/props"
+import { LAYOUTS } from "@/resources/visual-layouts"
+import type { SerializableValue, ComponentProps } from "@/modules/types/layout"
+import { renderComposite, layoutNode } from "@/modules/types/layout"
 
 /** Product category attached to a changelog entry. */
 export type ChangelogCategory = "feature" | "fix" | "announcement"
@@ -53,7 +53,7 @@ type ChangelogContentData = {
 
 type ChangelogContentProps = ComponentProps<ChangelogContentData, SurfaceListCardActions>
 
-const RESTING_COUNT = CONTRACTS["changelog-list"].children.entry.restingCount
+const RESTING_COUNT = LAYOUTS["changelog-list"].children.entry.restingCount
 
 const categoryTone = (category: ChangelogCategory | undefined): ChangelogEntryRowData["categoryTone"] => {
     if (category === "feature") return "success"
@@ -73,8 +73,8 @@ const ChangelogContentView = ({ props, on, isLoading = false }: ChangelogContent
         : props.entries
 
     return (
-        <Grammar contract="changelog-list" render={createGrammarNode("changelog-list", {
-            entry: entries.map((entry) => createCompositeNode("changelog-entry-row", {}, () => (
+        <Grammar layout="changelog-list" render={layoutNode("changelog-list", {
+            entry: entries.map((entry) => renderComposite("changelog-entry-row", {}, () => (
                 <ChangelogEntryRow
                     props={{
                         id: entry.id,
@@ -93,7 +93,7 @@ const ChangelogContentView = ({ props, on, isLoading = false }: ChangelogContent
     )
 }
 
-const ChangelogContent = createGrammarNode("changelog-list", ChangelogContentView)
+const ChangelogContent = layoutNode("changelog-list", ChangelogContentView)
 
 /** The rows to draw: the resolved entries, one synthetic error row, or none while pending. */
 const resolveChangelogEntries = (input: ChangelogListProps): ReadonlyArray<ChangelogEntry> => {
@@ -117,7 +117,7 @@ export const ChangelogListBase = (input: ChangelogListProps) => {
         <SurfaceListCard
             props={{ label: input.props.label, entries }}
             on={openById}
-            contract="changelog-list"
+            layout="changelog-list"
             render={ChangelogContent}
             isLoading={isLoading}
         />
@@ -125,4 +125,3 @@ export const ChangelogListBase = (input: ChangelogListProps) => {
 }
 
 /** Source-level tier marker for the pure dashboard block. */
-export const meta = { world: "pure", domain: "dashboard" } as const

@@ -1,13 +1,13 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Button } from "@/components/leaves/Button"
 import { Heading } from "@/components/leaves/Heading"
 import { Text } from "@/components/leaves/Text"
 import {
-    createCompositeNode,
-    createGrammarNode,
-    createLeafNode,
-} from "@/components/contracts/props"
+    renderComposite,
+    layoutNode,
+    renderLeaf,
+} from "@/modules/types/layout"
 import type { FlashcardSessionMode } from "@/modules/api/graphql/queries/query-my-in-progress-flashcard-session"
 
 /** Pure live-session states frozen by the approved A3 review. */
@@ -59,43 +59,43 @@ export const CourseFlashcardSessionPageBase = (input: CourseFlashcardSessionPage
     const { state, data, on } = input
     const isLoading = state === "pending"
     const settledFailure = state === "failed" || state === "expired"
-    const header = createGrammarNode("flashcard-session-header", {
+    const header = layoutNode("flashcard-session-header", {
         deck: data.deckTitle === undefined
             ? undefined
-            : createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+            : renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                 <Text props={{ content: data.deckTitle, size: "sm", tone: "muted" }} isLoading={isLoading} />
             )),
-        title: createLeafNode("heading", {}, () => (
+        title: renderLeaf("heading", {}, () => (
             <Heading props={{ content: data.title, level: 1 }} isLoading={isLoading} />
         )),
-        leave: createLeafNode("button", {}, () => (
+        leave: renderLeaf("button", {}, () => (
             <Button props={{ label: data.leaveLabel, variant: "outline" }} on={{ press: on.leave }} />
         )),
     })
     const progress = settledFailure
         ? undefined
-        : createGrammarNode("label-with-muted-fact-row", {
-            label: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
+        : layoutNode("label-with-muted-fact-row", {
+            label: renderLeaf("text", { size: "sm", weight: "semibold" }, () => (
                 <Text props={{ content: data.progressText, size: "sm", weight: "semibold" }} isLoading={isLoading} />
             )),
-            fact: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+            fact: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
                 <Text props={{ content: data.level ?? undefined, size: "xs" }} isLoading={isLoading} />
             )),
         })
     const card = settledFailure
         ? undefined
-        : createGrammarNode("flashcard-session-card", {
-            prompt: createLeafNode("text", { size: "md", weight: "medium" }, () => (
+        : layoutNode("flashcard-session-card", {
+            prompt: renderLeaf("text", { size: "md", weight: "medium" }, () => (
                 <Text props={{ content: data.prompt, size: "md", weight: "medium" }} isLoading={isLoading} />
             )),
             answer: data.answerVisible
-                ? createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+                ? renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                     <Text props={{ content: data.answer, size: "sm", tone: "muted" }} />
                 ))
                 : undefined,
         })
     const status = state === "syncing" || state === "completing"
-        ? createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+        ? renderLeaf("text", { size: "sm", tone: "muted" }, () => (
             <Text
                 props={{
                     content: state === "syncing" ? data.syncingLabel : data.completingLabel,
@@ -110,27 +110,27 @@ export const CourseFlashcardSessionPageBase = (input: CourseFlashcardSessionPage
     if (state !== "active") {
         actions = undefined
     } else if (!data.answerVisible) {
-        actions = [createLeafNode("button", {}, () => (
+        actions = [renderLeaf("button", {}, () => (
             <Button props={{ label: data.revealLabel, variant: "primary" }} on={{ press: on.reveal }} />
         ))]
     } else if (data.mode === "review") {
         actions = ([data.againLabel, data.hardLabel, data.goodLabel, data.easyLabel] as const).map((label, grade) => (
-            createLeafNode("button", {}, () => (
+            renderLeaf("button", {}, () => (
                 <Button props={{ label, variant: grade === 2 ? "primary" : "outline" }} on={{ press: () => on.rate(grade as 0 | 1 | 2 | 3) }} />
             ))
         ))
     } else {
         actions = [
-            createLeafNode("button", {}, () => (
+            renderLeaf("button", {}, () => (
                 <Button props={{ label: data.incorrectLabel, variant: "outline" }} on={{ press: () => on.answerQuiz(false) }} />
             )),
-            createLeafNode("button", {}, () => (
+            renderLeaf("button", {}, () => (
                 <Button props={{ label: data.correctLabel, variant: "primary" }} on={{ press: () => on.answerQuiz(true) }} />
             )),
         ]
     }
     const notice = settledFailure
-        ? createCompositeNode("empty-notice", {}, () => (
+        ? renderComposite("empty-notice", {}, () => (
             <EmptyNotice
                 props={{
                     message: state === "expired" ? data.expiredText : data.failedText,
@@ -142,7 +142,7 @@ export const CourseFlashcardSessionPageBase = (input: CourseFlashcardSessionPage
         : undefined
 
     return (
-        <Grammar contract="course-flashcard-session-page" render={createGrammarNode("course-flashcard-session-page", {
+        <Grammar layout="course-flashcard-session-page" render={layoutNode("course-flashcard-session-page", {
             header,
             progress,
             card,
@@ -154,4 +154,3 @@ export const CourseFlashcardSessionPageBase = (input: CourseFlashcardSessionPage
 }
 
 /** Canon metadata for the pure page half. */
-export const meta = { world: "pure", domain: "learn" } as const

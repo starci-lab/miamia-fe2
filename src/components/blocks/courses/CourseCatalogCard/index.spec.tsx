@@ -48,7 +48,7 @@ const stubPreview = (data?: unknown) => {
 }
 
 const priceLine = (root: HTMLElement) =>
-    root.querySelector("[data-node=\"price-discount-line\"]")?.textContent
+    root.querySelector(".layout-name-price-discount-line")?.textContent
 
 afterEach(() => {
     vi.clearAllMocks()
@@ -72,7 +72,7 @@ describe("CourseCatalogCard", () => {
         expect(priceLine(container)).toContain("₫890,000")
         expect(priceLine(container)).toContain("₫1,290,000")
         expect(container.querySelector("[data-component=\"Badge\"]")?.textContent).toBe("discount:31")
-        expect(container.querySelector("[data-node=\"price-note-row\"]")?.textContent)
+        expect(container.querySelector(".layout-name-price-note-row")?.textContent)
             .toBe("savings:₫400,000priceDetail")
     })
 

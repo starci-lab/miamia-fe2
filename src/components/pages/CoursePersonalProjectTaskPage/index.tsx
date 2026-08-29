@@ -97,4 +97,3 @@ export const CoursePersonalProjectTaskPage = ({ displayId, taskId }: CoursePerso
 }
 
 /** Architectural identity for the connected task page twin. */
-export const meta = { world: "connected", domain: "learn" } as const

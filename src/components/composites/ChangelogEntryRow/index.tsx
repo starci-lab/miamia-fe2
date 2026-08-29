@@ -1,12 +1,12 @@
 import { Badge, type BadgeTone } from "@/components/leaves/Badge"
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { Text } from "@/components/leaves/Text"
 import { TextLink } from "@/components/leaves/TextLink"
 import {
-    createGrammarNode,
-    createLeafNode,
+    layoutNode,
+    renderLeaf,
     type CompositeProps,
-} from "@/components/contracts/props"
+} from "@/modules/types/layout"
 
 /** One dated product update rendered inside a joined changelog list. */
 export type ChangelogEntryRowData = {
@@ -29,27 +29,27 @@ export type ChangelogEntryRowProps = CompositeProps<ChangelogEntryRowData, Chang
 
 /** Draw one changelog entry without owning the list surface or navigation. */
 export const ChangelogEntryRow = ({ props, on, isLoading = false }: ChangelogEntryRowProps) => {
-    const metaRow = createGrammarNode("date-category-row", {
-        date: createLeafNode("text", { size: "xs", tone: "muted" }, () => (
+    const metaRow = layoutNode("date-category-row", {
+        date: renderLeaf("text", { size: "xs", tone: "muted" }, () => (
             <Text props={{ content: props.dateLabel, size: "xs", tone: "muted" }} isLoading={isLoading} />
         )),
-        category: props.categoryLabel === undefined ? undefined : createLeafNode("badge", {}, () => (
+        category: props.categoryLabel === undefined ? undefined : renderLeaf("badge", {}, () => (
             <Badge props={{ content: props.categoryLabel, tone: props.categoryTone }} isLoading={isLoading} />
         )),
     })
     const title = props.isAction === true && on?.open !== undefined
-        ? createLeafNode("text-link", { size: "sm" }, () => (
+        ? renderLeaf("text-link", { size: "sm" }, () => (
             <TextLink props={{ label: props.title ?? "", size: "sm" }} on={{ press: on.open }} />
         ))
-        : createLeafNode("text", { size: "sm" }, () => (
+        : renderLeaf("text", { size: "sm" }, () => (
             <Text props={{ content: props.title, size: "sm", weight: "medium" }} isLoading={isLoading} />
         ))
 
     return (
-        <Grammar contract="changelog-entry-row" render={createGrammarNode("changelog-entry-row", {
+        <Grammar layout="changelog-entry-row" render={layoutNode("changelog-entry-row", {
             meta: metaRow,
             title,
-            body: props.body === undefined && !isLoading ? undefined : createLeafNode(
+            body: props.body === undefined && !isLoading ? undefined : renderLeaf(
                 "text",
                 { size: "xs", tone: "muted" },
                 () => <Text props={{ content: props.body, size: "xs", tone: "muted" }} isLoading={isLoading} />,
@@ -59,4 +59,3 @@ export const ChangelogEntryRow = ({ props, on, isLoading = false }: ChangelogEnt
 }
 
 /** Source-level tier marker for the fixed changelog row composition. */
-export const meta = { shape: "composite", world: "pure" } as const

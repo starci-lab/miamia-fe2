@@ -1,16 +1,16 @@
-import { Grammar } from "@/components/branches/Grammar"
+import { Grammar } from "@/components/layouts/Grammar"
 import { EmptyNotice } from "@/components/composites/EmptyNotice"
 import { Button } from "@/components/leaves/Button"
 import { Heading } from "@/components/leaves/Heading"
 import { NavLink } from "@/components/leaves/NavLink"
 import { Text } from "@/components/leaves/Text"
 import {
-    createCompositeNode,
-    createGrammarNode,
-    createLeafNode,
-} from "@/components/contracts/props"
+    renderComposite,
+    layoutNode,
+    renderLeaf,
+} from "@/modules/types/layout"
 
-/** Pure quiz-setup contract after configuration facts and actions resolve. */
+/** Pure quiz-setup layout after configuration facts and actions resolve. */
 export type CourseFlashcardsQuizPageProps = {
     readonly state: "pending" | "ready" | "empty" | "failed"
     readonly props: {
@@ -62,41 +62,41 @@ export const CourseFlashcardsQuizPageBase = (input: CourseFlashcardsQuizPageProp
         { id: "senior", label: data.seniorLabel },
         { id: "staff", label: data.staffLabel },
     ] as const
-    const header = createGrammarNode("centred-title-pair", {
-        title: createLeafNode("heading", {}, () => (
+    const header = layoutNode("centred-title-pair", {
+        title: renderLeaf("heading", {}, () => (
             <Heading props={{ content: data.title, level: 1 }} isLoading={isLoading} />
         )),
-        description: createLeafNode("text", { size: "sm" }, () => (
+        description: renderLeaf("text", { size: "sm" }, () => (
             <Text props={{ content: data.subtitle, size: "sm", tone: "muted" }} isLoading={isLoading} />
         )),
     })
-    const modes = createGrammarNode("flashcard-mode-tabs", {
+    const modes = layoutNode("flashcard-mode-tabs", {
         tab: [
-            createLeafNode("nav-link", { kind: "tab" }, () => (
+            renderLeaf("nav-link", { kind: "tab" }, () => (
                 <NavLink props={{ label: data.reviewLabel, kind: "tab" }} on={{ press: on.openReview }} />
             )),
-            createLeafNode("nav-link", { kind: "tab" }, () => (
+            renderLeaf("nav-link", { kind: "tab" }, () => (
                 <NavLink props={{ label: data.quizLabel, kind: "tab", isCurrent: true }} />
             )),
         ],
     })
     const configuration = state === "ready" || state === "pending"
-        ? createGrammarNode("flashcard-quiz-configuration", {
-            title: createLeafNode("heading", {}, () => (
+        ? layoutNode("flashcard-quiz-configuration", {
+            title: renderLeaf("heading", {}, () => (
                 <Heading props={{ content: data.configurationTitle, level: 2 }} isLoading={isLoading} />
             )),
-            fact: createLeafNode("text", { size: "sm", tone: "muted" }, () => (
+            fact: renderLeaf("text", { size: "sm", tone: "muted" }, () => (
                 <Text props={{ content: `${data.cardCount} ${data.cardsLabel}`, size: "sm", tone: "muted" }} isLoading={isLoading} />
             )),
             resume: data.resumeSessionId === undefined
                 ? undefined
-                : createLeafNode("button", {}, () => (
+                : renderLeaf("button", {}, () => (
                     <Button props={{ label: data.resumeLabel, variant: "outline" }} on={{ press: () => on.resume(data.resumeSessionId ?? "") }} />
                 )),
-            modeLabel: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
+            modeLabel: renderLeaf("text", { size: "sm", weight: "semibold" }, () => (
                 <Text props={{ content: data.modeLabel, size: "sm", weight: "semibold" }} isLoading={isLoading} />
             )),
-            mode: (["quick", "deep"] as const).map((mode) => createLeafNode("button", {}, () => (
+            mode: (["quick", "deep"] as const).map((mode) => renderLeaf("button", {}, () => (
                 <Button
                     props={{
                         label: mode === "quick" ? data.quickLabel : data.deepLabel,
@@ -106,10 +106,10 @@ export const CourseFlashcardsQuizPageBase = (input: CourseFlashcardsQuizPageProp
                     isLoading={isLoading}
                 />
             ))),
-            levelLabel: createLeafNode("text", { size: "sm", weight: "semibold" }, () => (
+            levelLabel: renderLeaf("text", { size: "sm", weight: "semibold" }, () => (
                 <Text props={{ content: data.levelLabel, size: "sm", weight: "semibold" }} isLoading={isLoading} />
             )),
-            level: levels.map((level) => createLeafNode("button", {}, () => (
+            level: levels.map((level) => renderLeaf("button", {}, () => (
                 <Button
                     props={{
                         label: level.label,
@@ -119,13 +119,13 @@ export const CourseFlashcardsQuizPageBase = (input: CourseFlashcardsQuizPageProp
                     isLoading={isLoading}
                 />
             ))),
-            start: createLeafNode("button", {}, () => (
+            start: renderLeaf("button", {}, () => (
                 <Button props={{ label: data.startLabel, variant: "primary" }} on={{ press: on.start }} isLoading={isLoading} />
             )),
         })
         : undefined
     const notice = state === "failed" || state === "empty"
-        ? createCompositeNode("empty-notice", {}, () => (
+        ? renderComposite("empty-notice", {}, () => (
             <EmptyNotice
                 props={{
                     message: state === "failed" ? data.failedText : data.emptyText,
@@ -137,7 +137,7 @@ export const CourseFlashcardsQuizPageBase = (input: CourseFlashcardsQuizPageProp
         : undefined
 
     return (
-        <Grammar contract="course-flashcards-quiz-page" render={createGrammarNode("course-flashcards-quiz-page", {
+        <Grammar layout="course-flashcards-quiz-page" render={layoutNode("course-flashcards-quiz-page", {
             header,
             modes,
             configuration,
@@ -147,4 +147,3 @@ export const CourseFlashcardsQuizPageBase = (input: CourseFlashcardsQuizPageProp
 }
 
 /** Canon metadata for the pure page half. */
-export const meta = { world: "pure", domain: "learn" } as const
